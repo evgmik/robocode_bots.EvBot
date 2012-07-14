@@ -21,8 +21,6 @@ public class EvBot extends AdvancedRobot
 	double angle2enemy= 0;
 	boolean gameJustStarted = true;
 	int radarSpinDirection =1;
-	int dx=0;
-	int dy=0;
 	String targetName;
 	int turnCount=0;
 
@@ -49,6 +47,8 @@ public class EvBot extends AdvancedRobot
 
 
 	public void run() {
+		int dx=0;
+		int dy=0;
 		double angle;
 		setColors(Color.red,Color.blue,Color.green);
 		while(true) {
