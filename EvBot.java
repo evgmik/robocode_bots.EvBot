@@ -4,9 +4,9 @@ import java.awt.Graphics2D;
 import robocode.*;
 
 /**
- * MyFirstRobot - a robot by (your name here)
+ * EvBot - a robot by Eugeniy Mikhailov
  */
-public class MyFirstRobot extends AdvancedRobot
+public class EvBot extends AdvancedRobot
 {
 	/**
 	 * run: MyFirstRobot's default behavior
