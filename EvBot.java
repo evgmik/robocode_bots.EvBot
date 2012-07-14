@@ -16,7 +16,10 @@ public class EvBot extends AdvancedRobot
 	int scannedY = Integer.MIN_VALUE;
 	boolean enemyDetected = false; 
 	boolean enemyLost = false; 
+	double absurdly_huge=1e6; // something huge
+	double targetDistance = absurdly_huge;
 	double angle2enemy= 0;
+	boolean gameJustStarted = true;
 	int radarSpinDirection =1;
 	int dx=0;
 	int dy=0;
@@ -51,6 +54,13 @@ public class EvBot extends AdvancedRobot
 		while(true) {
 			// Replace the next 4 lines with any behavior you would like
 			dbg("----------- Next run -------------");
+			if ( gameJustStarted ) {
+				gameJustStarted = false;
+				angle = 360;
+				dbg("Beginning of the game sweep  by angle = " + angle);
+				turnRadarRight(angle);
+			}
+
 			turnCount++;
 			dbg("Turn count: " + turnCount);
 			dbg("enemyLost = " + enemyLost);
@@ -106,7 +116,11 @@ public class EvBot extends AdvancedRobot
 	 * onScannedRobot: What to do when you see another robot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
-		targetName=e.getName();
+		if ( !e.getName().equals(targetName) && (targetDistance < e.getDistance()) ) {
+			//new target is further then old one
+			//we will not switch to it
+			return; 
+		}
 
 		// Calculate the angle to the scanned robot
 		double angle = (getHeading()+ e.getBearing())/360*2*3.14;
@@ -114,6 +128,9 @@ public class EvBot extends AdvancedRobot
 		// Calculate the coordinates of the robot
 		scannedX = (int)(getX() + Math.sin(angle) * e.getDistance());
 		scannedY = (int)(getY() + Math.cos(angle) * e.getDistance());
+		targetDistance = e.getDistance();
+
+		targetName=e.getName();
 		radarSpinDirection=1;
 		enemyDetected = true;
 		enemyLost = false;
@@ -135,6 +152,8 @@ public class EvBot extends AdvancedRobot
 		if (e.getName().equals(targetName)) {
 			enemyDetected = false;
 			enemyLost = false;
+			targetDistance = absurdly_huge;
+			targetName = ""; // something non existing
 		}
 	}
 
