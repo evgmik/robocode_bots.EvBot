@@ -168,7 +168,8 @@ public class EvBot extends AdvancedRobot
 
 
 	public void onHitWall(HitWallEvent e) {
-		double angle=180; // turn away from wall
+		// turn and move along the hit wall
+		double angle = 90-(180 - e.getBearing());
 		if ( enemyDetected ) {
 			// we need to be focused on enemy
 			// body rotation and radar/gun are independent
@@ -180,7 +181,7 @@ public class EvBot extends AdvancedRobot
 			setAdjustRadarForRobotTurn(true); 
 			setAdjustGunForRobotTurn(false);
 		}
-		dbg("Turning away from hit wall by angle = " + angle);
+		dbg("Changing course after wall is hit  by angle = " + angle);
 		turnRight (angle);
 	}
 	
