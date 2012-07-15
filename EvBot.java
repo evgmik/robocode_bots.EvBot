@@ -12,6 +12,7 @@ public class EvBot extends AdvancedRobot
 	 * run: MyFirstRobot's default behavior
 	 */
 	// The coordinates of the last scanned robot
+	int robotHalfSize = 20;
 	int scannedX = Integer.MIN_VALUE;
 	int scannedY = Integer.MIN_VALUE;
 	boolean haveTarget = false; 
@@ -27,7 +28,7 @@ public class EvBot extends AdvancedRobot
 	int turnsToEvasiveMove = 4;
 	int countToEvasiveMove = turnsToEvasiveMove;
 	int radarSpinDirection =1;
-	String targetName;
+	String targetName="";
 	int turnCount=0;
 
 	public double cortesian2game_angles(double angle) {
@@ -51,6 +52,55 @@ public class EvBot extends AdvancedRobot
 		return angle;
 	}
 
+	public double distanceToWallAhead() {
+		double angle=getHeading();
+		double dist=0;
+		dbg("----angle " + angle);
+		dbg("----width " + getBattleFieldWidth());
+		dbg("----X " + getX());
+		dbg("----height " + getBattleFieldHeight());
+		dbg("----Y " + getY());
+		if ( 0<= angle && angle < 90 ) {
+			dist = Math.min(getBattleFieldWidth()-getX(), getBattleFieldHeight()-getY());
+		}
+		if ( 90 <= angle && angle < 180 ) {
+			dist = Math.min(getBattleFieldWidth()-getX(), getY());
+		}
+		if ( 180<= angle && angle < 270 ) {
+			dist = Math.min(getX(), getY());
+		}
+		if ( 270 <= angle && angle < 360 ) {
+			dist = Math.min(getX(), getBattleFieldHeight()-getY());
+		}
+		dist = dist - robotHalfSize;
+		dist = Math.max(dist,0);
+		if (dist < 1) dist = 0 ;
+		dbg("distance to closest wall ahead " + dist);
+		return dist;
+	}
+
+	public void moveOrTurn(double dist, double angle) {
+		double moveLength;
+		moveLength = Math.min(distanceToWallAhead(),dist);
+		if (moveLength == 0 ) {
+			if ( haveTarget ) {
+				// we need to be focused on enemy
+				// body rotation and radar/gun are independent
+				setAdjustRadarForRobotTurn(true);
+				setAdjustGunForRobotTurn(true);
+			} else {
+				// there is a chance that we will detect new enemy so
+				// body rotation  and radar/gun are locked
+				setAdjustRadarForRobotTurn(false); 
+				setAdjustGunForRobotTurn(false);
+			}
+			dbg("Cannot move, rotating by " + angle);
+			setTurnRight(angle);
+		} else {
+			dbg("Moving by " + moveLength);
+			setAhead(moveLength);
+		}
+	}
 
 	public void run() {
 		int dx=0;
@@ -58,6 +108,7 @@ public class EvBot extends AdvancedRobot
 		double angle;
 		double firePower;
 		double targetDistance;
+		double moveLength;
 		setColors(Color.red,Color.blue,Color.green);
 		while(true) {
 			// Replace the next 4 lines with any behavior you would like
@@ -78,7 +129,8 @@ public class EvBot extends AdvancedRobot
 			countToEvasiveMove--;
 			if ( countToEvasiveMove < 0 ) {
 				countToEvasiveMove = turnsToEvasiveMove;
-				setAhead(100);
+				dbg("Attempting to move ahead for preemptive evasion");
+				moveOrTurn(100,90);
 			}
 
 
@@ -171,9 +223,10 @@ public class EvBot extends AdvancedRobot
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
 		double angle = shortest_arc( 90 - e.getBearing() );
-		dbg("Evasion maneuver by rotating body by angle = " + angle);
+		dbg("Evasion maneuver after a hit by rotating body by angle = " + angle);
 		setTurnLeft(angle);
-		setAhead(100);
+		dbg("Attempting to move ahead for bullet evasion");
+		moveOrTurn(100,90);
 		targetUnlocked=true;
 
 	}
