@@ -22,6 +22,8 @@ public class EvBot extends AdvancedRobot
 	double angle_resolution = 1; 
 	double angle2enemy= 0;
 	boolean gameJustStarted = true;
+	int fullSweepDelay = 4;
+	int countFullSeepDelay=0;
 	int turnsToEvasiveMove = 4;
 	int countToEvasiveMove = turnsToEvasiveMove;
 	int radarSpinDirection =1;
@@ -63,11 +65,13 @@ public class EvBot extends AdvancedRobot
 			dbg("Turn count: " + turnCount);
 			dbg("targetUnlocked = " + targetUnlocked);
 
-			if ( gameJustStarted ) {
-				gameJustStarted = false;
+			countFullSeepDelay--;
+			if ( !haveTarget || countFullSeepDelay<0) {
+				//gameJustStarted = false;
+				countFullSeepDelay = fullSweepDelay;
 				angle = 360;
-				dbg("Beginning of the game sweep  by angle = " + angle);
-				setTurnRadarRight(angle);
+				dbg("Beginning of the search sweep  by angle = " + angle);
+				turnRadarRight(angle);
 			}
 
 			countToEvasiveMove--;
@@ -108,7 +112,8 @@ public class EvBot extends AdvancedRobot
 				setAdjustRadarForGunTurn(true);
 				setTurnGunRight(angle);
 
-				if ( Math.abs(angle) < angle_resolution ) {
+				if (getGunHeat() == 0 && 
+				    Math.abs(getGunTurnRemaining()) < angle_resolution) {
 					firePower=3;
 					dbg("Firing the gun with power = " + firePower);
 					setFire(firePower);
