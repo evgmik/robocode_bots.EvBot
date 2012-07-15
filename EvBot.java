@@ -39,11 +39,12 @@ public class EvBot extends AdvancedRobot
 	int radarSpinDirection =1;
 	String targetName="";
 	// logger staff
-	int verbosity_level=5; // current levels, smaller is less noisy
 	// debug levels
 	int dbg_important=0;
 	int dbg_rutine=5;
+	int dbg_debuging=6;
 	int dbg_noise=10;
+	int verbosity_level=6; // current level, smaller is less noisy
 
 
 	public double cortesian2game_angles(double angle) {
@@ -56,7 +57,7 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public double shortest_arc( double angle ) {
-		//dbg(dbg_rutine, "angle received = " + angle);
+		dbg(dbg_noise, "angle received = " + angle);
 		angle = angle % 360;
 		if ( angle > 180 ) {
 			angle = 360 - angle;
@@ -64,18 +65,18 @@ public class EvBot extends AdvancedRobot
 		if ( angle < -180 ) {
 			angle = 360+angle;
 		}
-		//dbg(dbg_rutine, "angle return = " + angle);
+		dbg(dbg_noise, "angle return = " + angle);
 		return angle;
 	}
 
 	public double distanceToWallAhead() {
 		double angle=getHeading();
 		double dist=0;
-		dbg(dbg_rutine, "----angle " + angle);
-		dbg(dbg_rutine, "----width " + getBattleFieldWidth());
-		dbg(dbg_rutine, "----X " + getX());
-		dbg(dbg_rutine, "----height " + getBattleFieldHeight());
-		dbg(dbg_rutine, "----Y " + getY());
+		dbg(dbg_noise, "----angle " + angle);
+		dbg(dbg_noise, "----width " + getBattleFieldWidth());
+		dbg(dbg_noise, "----X " + getX());
+		dbg(dbg_noise, "----height " + getBattleFieldHeight());
+		dbg(dbg_noise, "----Y " + getY());
 		if ( 0<= angle && angle < 90 ) {
 			dist = Math.min(getBattleFieldWidth()-getX(), getBattleFieldHeight()-getY());
 		}
