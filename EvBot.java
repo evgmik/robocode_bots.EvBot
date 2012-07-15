@@ -14,8 +14,8 @@ public class EvBot extends AdvancedRobot
 	// The coordinates of the last scanned robot
 	int scannedX = Integer.MIN_VALUE;
 	int scannedY = Integer.MIN_VALUE;
-	boolean enemyDetected = false; 
-	boolean enemyLost = false; 
+	boolean haveTarget = false; 
+	boolean targetUnlocked = false; 
 	double absurdly_huge=1e6; // something huge
 	double targetDistance = absurdly_huge;
 	double angle2enemy= 0;
@@ -72,19 +72,19 @@ public class EvBot extends AdvancedRobot
 
 			turnCount++;
 			dbg("Turn count: " + turnCount);
-			dbg("enemyLost = " + enemyLost);
+			dbg("targetUnlocked = " + targetUnlocked);
 
-			dbg("enemyDetected = " + enemyDetected);
+			dbg("haveTarget = " + haveTarget);
 			dbg("radarSpinDirection = " + radarSpinDirection);
 
-			if (!enemyDetected) {
+			if (!haveTarget) {
 				radarSpinDirection=1;
 				angle = shortest_arc(radarSpinDirection*20);
 				dbg("Searching enemy by rotating by angle = " + angle);
 				turnRadarRight(angle);
 			}
 
-			if (enemyDetected && !enemyLost ) {
+			if (haveTarget && !targetUnlocked ) {
 				//angle to enemy
 				dx=scannedX - (int)(getX());
 				dy=scannedY - (int)(getY());
@@ -98,7 +98,7 @@ public class EvBot extends AdvancedRobot
 				turnGunRight(angle);
 				fire(3);
 
-				enemyLost=true;
+				targetUnlocked=true;
 
 				// radar angle
 				double radar_angle = getRadarHeading();
@@ -109,10 +109,10 @@ public class EvBot extends AdvancedRobot
 				turnRadarRight(angle);
 			}
 
-			if (enemyLost ) {
+			if (targetUnlocked ) {
 				radarSpinDirection=-2*radarSpinDirection;
 				angle=shortest_arc(radarSpinDirection*2);
-				dbg("Reseek spin with spin = " + angle);
+				dbg("Trying to find unlocked target with radar move by angle = " + angle);
 				turnRadarRight(angle);
 			}
 
@@ -141,8 +141,8 @@ public class EvBot extends AdvancedRobot
 
 		targetName=e.getName();
 		radarSpinDirection=1;
-		enemyDetected = true;
-		enemyLost = false;
+		haveTarget = true;
+		targetUnlocked = false;
 	}
 
 	/**
@@ -153,14 +153,14 @@ public class EvBot extends AdvancedRobot
 		dbg("Evasion maneuver by rotating body by angle = " + angle);
 		turnLeft(angle);
 		ahead(100);
-		enemyLost=true;
+		targetUnlocked=true;
 
 	}
 
 	public void onRobotDeath(RobotDeathEvent e) {
 		if (e.getName().equals(targetName)) {
-			enemyDetected = false;
-			enemyLost = false;
+			haveTarget = false;
+			targetUnlocked = false;
 			targetDistance = absurdly_huge;
 			targetName = ""; // something non existing
 		}
@@ -170,7 +170,7 @@ public class EvBot extends AdvancedRobot
 	public void onHitWall(HitWallEvent e) {
 		// turn and move along the hit wall
 		double angle = 90-(180 - e.getBearing());
-		if ( enemyDetected ) {
+		if ( haveTarget ) {
 			// we need to be focused on enemy
 			// body rotation and radar/gun are independent
 			setAdjustRadarForRobotTurn(false);
@@ -187,7 +187,7 @@ public class EvBot extends AdvancedRobot
 	
 	public void onPaint(Graphics2D g) {
 		// Set the paint color to a red half transparent color
-		if (enemyDetected ) {
+		if (haveTarget ) {
 			g.setColor(new Color(0xff, 0x00, 0x00, 0x80));
 
 			// Draw a line from our robot to the scanned robot
