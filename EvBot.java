@@ -43,7 +43,7 @@ public class EvBot extends AdvancedRobot
 		if ( angle < -180 ) {
 			angle = 360+angle;
 		}
-		//dbg("angle return = " + angle);
+		dbg("angle return = " + angle);
 		return angle;
 	}
 
@@ -56,23 +56,23 @@ public class EvBot extends AdvancedRobot
 		while(true) {
 			// Replace the next 4 lines with any behavior you would like
 			dbg("----------- Next run -------------");
+			turnCount++;
+			dbg("Turn count: " + turnCount);
+			dbg("targetUnlocked = " + targetUnlocked);
+
 			if ( gameJustStarted ) {
 				gameJustStarted = false;
 				angle = 360;
 				dbg("Beginning of the game sweep  by angle = " + angle);
-				turnRadarRight(angle);
+				setTurnRadarRight(angle);
 			}
 
 			countToEvasiveMove--;
 			if ( countToEvasiveMove < 0 ) {
 				countToEvasiveMove = turnsToEvasiveMove;
-				ahead(100);
+				setAhead(100);
 			}
 
-
-			turnCount++;
-			dbg("Turn count: " + turnCount);
-			dbg("targetUnlocked = " + targetUnlocked);
 
 			dbg("haveTarget = " + haveTarget);
 			dbg("radarSpinDirection = " + radarSpinDirection);
@@ -81,7 +81,7 @@ public class EvBot extends AdvancedRobot
 				radarSpinDirection=1;
 				angle = shortest_arc(radarSpinDirection*20);
 				dbg("Searching enemy by rotating by angle = " + angle);
-				turnRadarRight(angle);
+				setTurnRadarRight(angle);
 			}
 
 			if (haveTarget && !targetUnlocked ) {
@@ -95,7 +95,8 @@ public class EvBot extends AdvancedRobot
 				double gun_angle =getGunHeading();
 				angle = shortest_arc(angle2enemy-gun_angle);
 				dbg("Pointing gun to enemy by rotating by angle = " + angle);
-				turnGunRight(angle);
+				setAdjustRadarForGunTurn(true);
+				setTurnGunRight(angle);
 				fire(3);
 
 				targetUnlocked=true;
@@ -106,18 +107,19 @@ public class EvBot extends AdvancedRobot
 				angle=radarSpinDirection*(angle2enemy-radar_angle);
 				angle = shortest_arc(angle);
 				dbg("Pointing radar to the old target location, rotating by angle = " + angle);
-				turnRadarRight(angle);
+				setTurnRadarRight(angle);
 			}
 
 			if (targetUnlocked ) {
 				radarSpinDirection=-2*radarSpinDirection;
 				angle=shortest_arc(radarSpinDirection*2);
 				dbg("Trying to find unlocked target with radar move by angle = " + angle);
-				turnRadarRight(angle);
+				setTurnRadarRight(angle);
 			}
 
 			
 
+			execute();
 		}
 	}
 
@@ -151,8 +153,8 @@ public class EvBot extends AdvancedRobot
 	public void onHitByBullet(HitByBulletEvent e) {
 		double angle = shortest_arc( 90 - e.getBearing() );
 		dbg("Evasion maneuver by rotating body by angle = " + angle);
-		turnLeft(angle);
-		ahead(100);
+		setTurnLeft(angle);
+		setAhead(100);
 		targetUnlocked=true;
 
 	}
@@ -182,7 +184,7 @@ public class EvBot extends AdvancedRobot
 			setAdjustGunForRobotTurn(false);
 		}
 		dbg("Changing course after wall is hit  by angle = " + angle);
-		turnRight (angle);
+		setTurnRight (angle);
 	}
 	
 	public void onPaint(Graphics2D g) {
