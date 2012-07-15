@@ -24,7 +24,7 @@ public class EvBot extends AdvancedRobot
 	double angle2enemy= 0;
 	boolean gameJustStarted = true;
 	int fullSweepDelay = 4;
-	int countFullSeepDelay=0;
+	int countFullSweepDelay=0;
 	int turnsToEvasiveMove = 4;
 	int countToEvasiveMove = turnsToEvasiveMove;
 	int radarSpinDirection =1;
@@ -117,10 +117,10 @@ public class EvBot extends AdvancedRobot
 			dbg("Turn count: " + turnCount);
 			dbg("targetUnlocked = " + targetUnlocked);
 
-			countFullSeepDelay--;
-			if ( !haveTarget || countFullSeepDelay<0) {
+			countFullSweepDelay--;
+			if ( !haveTarget || countFullSweepDelay<0) {
 				//gameJustStarted = false;
-				countFullSeepDelay = fullSweepDelay;
+				countFullSweepDelay = fullSweepDelay;
 				angle = 360;
 				dbg("Beginning of the search sweep  by angle = " + angle);
 				turnRadarRight(angle);
