@@ -38,17 +38,25 @@ public class EvBot extends AdvancedRobot
 	int countToEvasiveMove = turnsToEvasiveMove;
 	int radarSpinDirection =1;
 	String targetName="";
+	// logger staff
+	int verbosity_level=5; // current levels, smaller is less noisy
+	// debug levels
+	int dbg_important=0;
+	int dbg_rutine=5;
+	int dbg_noise=10;
+
 
 	public double cortesian2game_angles(double angle) {
 		angle=90-angle;
 		return angle;
 	}
-	public void dbg(String s) {
-		System.out.println(s);
+	public void dbg(int level, String s) {
+		if (level <= verbosity_level)
+			System.out.println(s);
 	}
 
 	public double shortest_arc( double angle ) {
-		//dbg("angle received = " + angle);
+		//dbg(dbg_rutine, "angle received = " + angle);
 		angle = angle % 360;
 		if ( angle > 180 ) {
 			angle = 360 - angle;
@@ -56,18 +64,18 @@ public class EvBot extends AdvancedRobot
 		if ( angle < -180 ) {
 			angle = 360+angle;
 		}
-		//dbg("angle return = " + angle);
+		//dbg(dbg_rutine, "angle return = " + angle);
 		return angle;
 	}
 
 	public double distanceToWallAhead() {
 		double angle=getHeading();
 		double dist=0;
-		dbg("----angle " + angle);
-		dbg("----width " + getBattleFieldWidth());
-		dbg("----X " + getX());
-		dbg("----height " + getBattleFieldHeight());
-		dbg("----Y " + getY());
+		dbg(dbg_rutine, "----angle " + angle);
+		dbg(dbg_rutine, "----width " + getBattleFieldWidth());
+		dbg(dbg_rutine, "----X " + getX());
+		dbg(dbg_rutine, "----height " + getBattleFieldHeight());
+		dbg(dbg_rutine, "----Y " + getY());
 		if ( 0<= angle && angle < 90 ) {
 			dist = Math.min(getBattleFieldWidth()-getX(), getBattleFieldHeight()-getY());
 		}
@@ -83,7 +91,7 @@ public class EvBot extends AdvancedRobot
 		dist = dist - robotHalfSize;
 		dist = Math.max(dist,0);
 		if (dist < 1) dist = 0 ;
-		dbg("distance to closest wall ahead " + dist);
+		dbg(dbg_rutine, "distance to closest wall ahead " + dist);
 		return dist;
 	}
 
@@ -102,10 +110,10 @@ public class EvBot extends AdvancedRobot
 				setAdjustRadarForRobotTurn(false); 
 				setAdjustGunForRobotTurn(false);
 			}
-			dbg("Cannot move, rotating by " + angle);
+			dbg(dbg_rutine, "Cannot move, rotating by " + angle);
 			setTurnRight(angle);
 		} else {
-			dbg("Moving by " + moveLength);
+			dbg(dbg_rutine, "Moving by " + moveLength);
 			setAhead(moveLength);
 		}
 	}
@@ -116,23 +124,23 @@ public class EvBot extends AdvancedRobot
 		countForNumberOfSmallRadarSweeps--;
 			// full sweep for the closest enemy
 			if ( (countFullSweepDelay<0) && !searchForClosestTarget && (!haveTarget && getOthers() == 1) ) {
-				dbg("Begin new cycle for closest enemy search");
+				dbg(dbg_rutine, "Begin new cycle for closest enemy search");
 				searchForClosestTarget = true;
 				countForNumberOfSmallRadarSweeps = numberOfSmallRadarSweeps;
 			}
 
 			if ( searchForClosestTarget ) {
 				angle = radarSweepSubAngle;
-				dbg("Search sweep  by angle = " + angle);
+				dbg(dbg_rutine, "Search sweep  by angle = " + angle);
 				setTurnRadarRight(angle);
 				targetUnlocked = true;
 			}
 
-			dbg("countForNumberOfSmallRadarSweeps = " + countForNumberOfSmallRadarSweeps);
+			dbg(dbg_rutine, "countForNumberOfSmallRadarSweeps = " + countForNumberOfSmallRadarSweeps);
 			if ( countForNumberOfSmallRadarSweeps <= 0 && searchForClosestTarget ) {
 				searchForClosestTarget = false;
 				countFullSweepDelay = fullSweepDelay;
-				dbg("Full sweep for closest enemy is completed");
+				dbg(dbg_rutine, "Full sweep for closest enemy is completed");
 				movingRadarToLastKnownTargetLocation = true;
 
 				double radar_angle = getRadarHeading();
@@ -169,9 +177,9 @@ public class EvBot extends AdvancedRobot
 		setColors(Color.red,Color.blue,Color.green);
 		while(true) {
 			// Replace the next 4 lines with any behavior you would like
-			dbg("----------- Next run -------------");
-			dbg("Game time: " + getTime());
-			dbg("Number of other bots = " + getOthers());
+			dbg(dbg_rutine, "----------- Next run -------------");
+			dbg(dbg_rutine, "Game time: " + getTime());
+			dbg(dbg_rutine, "Number of other bots = " + getOthers());
 
 			if ( ( getTime() - targetLastSeenTime ) > 1) 
 				targetUnlocked = true;
@@ -179,7 +187,7 @@ public class EvBot extends AdvancedRobot
 				targetUnlocked = false;
 
 
-			dbg("targetUnlocked = " + targetUnlocked);
+			dbg(dbg_rutine, "targetUnlocked = " + targetUnlocked);
 
 			if (haveTarget) {
 				//angle to enemy
@@ -195,23 +203,23 @@ public class EvBot extends AdvancedRobot
 			// make preemptive evasive motion
 			if ( countToEvasiveMove < 0 ) {
 				countToEvasiveMove = turnsToEvasiveMove;
-				dbg("Attempting to move ahead for preemptive evasion");
+				dbg(dbg_rutine, "Attempting to move ahead for preemptive evasion");
 				moveOrTurn(100,90);
 			}
 
 
-			dbg("haveTarget = " + haveTarget);
+			dbg(dbg_rutine, "haveTarget = " + haveTarget);
 
 			//if (!haveTarget) {
 				//radarSpinDirection=1;
 				//angle = shortest_arc(radarSpinDirection*20);
-				//dbg("Searching enemy by rotating by angle = " + angle);
+				//dbg(dbg_rutine, "Searching enemy by rotating by angle = " + angle);
 				//setTurnRadarRight(angle);
 			//}
 
-			dbg("targetUnlocked = " + targetUnlocked);
-			dbg("searchForClosestTarget = " + searchForClosestTarget);
-			dbg("radarSpinDirection = " + radarSpinDirection);
+			dbg(dbg_rutine, "targetUnlocked = " + targetUnlocked);
+			dbg(dbg_rutine, "searchForClosestTarget = " + searchForClosestTarget);
+			dbg(dbg_rutine, "radarSpinDirection = " + radarSpinDirection);
 
 			// radar rocking motion to relock target
 			if (haveTarget && !searchForClosestTarget && !movingRadarToLastKnownTargetLocation) {
@@ -227,7 +235,7 @@ public class EvBot extends AdvancedRobot
 				}
 
 
-				dbg("Trying to relock on target with radar move by angle = " + angle);
+				dbg(dbg_rutine, "Trying to relock on target with radar move by angle = " + angle);
 				setTurnRadarRight(angle);
 				//targetUnlocked = true;
 			}
@@ -237,20 +245,20 @@ public class EvBot extends AdvancedRobot
 				//gun angle	
 				double gun_angle =getGunHeading();
 				angle = shortest_arc(angle2enemy-gun_angle);
-				dbg("Pointing gun to enemy by rotating by angle = " + angle);
+				dbg(dbg_rutine, "Pointing gun to enemy by rotating by angle = " + angle);
 				setAdjustRadarForGunTurn(true);
 				setTurnGunRight(angle);
 
 				double predictedBulletDeviation=angle*Math.PI/180*targetDistance;
 
-				dbg("Gun heat = " + getGunHeat() );
+				dbg(dbg_rutine, "Gun heat = " + getGunHeat() );
 				// if gun is called and
 				// predicted bullet deviation within half a body size of the robot
 				if (getGunHeat() == 0 && 
 				    Math.abs(predictedBulletDeviation) < Math.min( getHeight(), getWidth())/2 ) {
 					// calculate firepower based on distance
 					firePower = Math.min(500 / targetDistance, 3);
-					dbg("Firing the gun with power = " + firePower);
+					dbg(dbg_rutine, "Firing the gun with power = " + firePower);
 					setFire(firePower);
 				}
 
@@ -260,7 +268,7 @@ public class EvBot extends AdvancedRobot
 			// moving radar to or over old target position
 			if ( !searchForClosestTarget && targetUnlocked && movingRadarToLastKnownTargetLocation) {
 				angle = radarSpinDirection*game_rules.RADAR_TURN_RATE;
-				dbg("Pointing radar to the old target location and potentially over sweeping by angle = " + angle);
+				dbg(dbg_rutine, "Pointing radar to the old target location and potentially over sweeping by angle = " + angle);
 				setTurnRadarRight(angle);
 			}
 
@@ -296,7 +304,7 @@ public class EvBot extends AdvancedRobot
 		//radarSpinDirection=1;
 		haveTarget = true;
 		targetUnlocked = true;
-		dbg("Found target");
+		dbg(dbg_rutine, "Found target");
 	}
 
 	/**
@@ -304,9 +312,9 @@ public class EvBot extends AdvancedRobot
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
 		double angle = shortest_arc( 90 - e.getBearing() );
-		dbg("Evasion maneuver after a hit by rotating body by angle = " + angle);
+		dbg(dbg_rutine, "Evasion maneuver after a hit by rotating body by angle = " + angle);
 		setTurnLeft(angle);
-		dbg("Attempting to move ahead for bullet evasion");
+		dbg(dbg_rutine, "Attempting to move ahead for bullet evasion");
 		moveOrTurn(100,90);
 		//targetUnlocked=true;
 
@@ -336,7 +344,7 @@ public class EvBot extends AdvancedRobot
 			setAdjustRadarForRobotTurn(false); 
 			setAdjustGunForRobotTurn(false);
 		}
-		dbg("Changing course after wall is hit  by angle = " + angle);
+		dbg(dbg_rutine, "Changing course after wall is hit  by angle = " + angle);
 		setTurnRight (angle);
 	}
 	
