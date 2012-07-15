@@ -12,14 +12,19 @@ public class EvBot extends AdvancedRobot
 	 * run: MyFirstRobot's default behavior
 	 */
 	// The coordinates of the last scanned robot
+	Rules game_rules;
 	int robotHalfSize = 20;
 	int scannedX = Integer.MIN_VALUE;
 	int scannedY = Integer.MIN_VALUE;
+	long targetLastSeenTime = - 10; // in far past
 	boolean haveTarget = false; 
 	boolean targetUnlocked = false; 
-	boolean searchForClosestTarget = false;
+	boolean searchForClosestTarget = true;
+	boolean movingRadarToLastKnownTargetLocation = false;
+	int radarMotionMultiplier = 1;
 	int fullSweepDelay = 40;
-	int radarSweepSubAngle=20;
+	double radarSweepSubAngle=game_rules.RADAR_TURN_RATE ;
+	double radarSmallestRockingMotion = game_rules.RADAR_TURN_RATE/4;
 	int numberOfSmallRadarSweeps =(int) Math.ceil(360 / radarSweepSubAngle);
 	int countForNumberOfSmallRadarSweeps=numberOfSmallRadarSweeps;
 	double absurdly_huge=1e6; // something huge
@@ -33,7 +38,6 @@ public class EvBot extends AdvancedRobot
 	int countToEvasiveMove = turnsToEvasiveMove;
 	int radarSpinDirection =1;
 	String targetName="";
-	int turnCount=0;
 
 	public double cortesian2game_angles(double angle) {
 		angle=90-angle;
@@ -109,7 +113,6 @@ public class EvBot extends AdvancedRobot
 	public void performFullSweepIfNeded() {
 		double angle;
 
-			countFullSweepDelay--;
 			// full sweep for the closest enemy
 			if ( (countFullSweepDelay<0) && !searchForClosestTarget) {
 				dbg("Begin new cycle for closest enemy search");
@@ -130,7 +133,28 @@ public class EvBot extends AdvancedRobot
 				searchForClosestTarget = false;
 				countFullSweepDelay = fullSweepDelay;
 				dbg("Full sweep for closest enemy is completed");
+				movingRadarToLastKnownTargetLocation = true;
+
+				double radar_angle = getRadarHeading();
+				angle=(angle2enemy-radar_angle);
+				angle = shortest_arc(angle);
+				if (sign(angle) >= 0 ) {
+					radarSpinDirection=1;
+					angle = game_rules.RADAR_TURN_RATE;
+				} else {
+					radarSpinDirection=-1;
+					angle = -game_rules.RADAR_TURN_RATE;
+				}
 			}
+	}
+
+	public int sign( double n) {
+		if (n==0) 
+			return 0;
+		if (n > 0 )
+			return 1;
+		else
+			return -1;
 	}
 
 	public void run() {
@@ -138,18 +162,33 @@ public class EvBot extends AdvancedRobot
 		int dy=0;
 		double angle;
 		double firePower;
-		double targetDistance;
 		double moveLength;
+		double targetDistance = absurdly_huge;
+		double radarBearingToEnemy=0;
+
 		setColors(Color.red,Color.blue,Color.green);
 		while(true) {
 			// Replace the next 4 lines with any behavior you would like
 			dbg("----------- Next run -------------");
-			turnCount++;
-			dbg("Turn count: " + turnCount);
+			dbg("Game time: " + getTime());
+
+			if ( ( getTime() - targetLastSeenTime ) > 1) 
+				targetUnlocked = true;
+			else
+				targetUnlocked = false;
+
+
 			dbg("targetUnlocked = " + targetUnlocked);
 
+			if (haveTarget) {
+				//angle to enemy
+				dx=scannedX - (int)(getX());
+				dy=scannedY - (int)(getY());
+				targetDistance = Math.sqrt( dx*dx + dy*dy);
 
-			performFullSweepIfNeded();
+				angle2enemy=Math.atan2(dy,dx);
+				angle2enemy=cortesian2game_angles(angle2enemy*180/3.14);
+			}
 
 			countToEvasiveMove--;
 			// make preemptive evasive motion
@@ -161,7 +200,6 @@ public class EvBot extends AdvancedRobot
 
 
 			dbg("haveTarget = " + haveTarget);
-			dbg("radarSpinDirection = " + radarSpinDirection);
 
 			//if (!haveTarget) {
 				//radarSpinDirection=1;
@@ -172,23 +210,29 @@ public class EvBot extends AdvancedRobot
 
 			dbg("targetUnlocked = " + targetUnlocked);
 			dbg("searchForClosestTarget = " + searchForClosestTarget);
+			dbg("radarSpinDirection = " + radarSpinDirection);
 
-			if (targetUnlocked && !searchForClosestTarget ) {
-				radarSpinDirection=-2*radarSpinDirection;
-				angle=shortest_arc(radarSpinDirection*2);
-				dbg("Trying to find unlocked target with radar move by angle = " + angle);
+			// radar rocking motion to relock target
+			if (haveTarget && !searchForClosestTarget && !movingRadarToLastKnownTargetLocation) {
+				radarSpinDirection*=-1;
+				if (targetUnlocked) {
+					radarMotionMultiplier *= 2;
+					radarBearingToEnemy=0; //unknown
+					angle=(radarBearingToEnemy + radarSpinDirection*radarMotionMultiplier*radarSmallestRockingMotion);
+				} else {
+					radarBearingToEnemy= shortest_arc(angle2enemy-getRadarHeading());
+					radarMotionMultiplier = 1;
+					angle=(radarBearingToEnemy + radarSpinDirection*radarMotionMultiplier*radarSmallestRockingMotion/2);
+				}
+
+
+				dbg("Trying to relock on target with radar move by angle = " + angle);
 				setTurnRadarRight(angle);
+				//targetUnlocked = true;
 			}
 
-			if (haveTarget && !targetUnlocked ) {
-				//angle to enemy
-				dx=scannedX - (int)(getX());
-				dy=scannedY - (int)(getY());
-				targetDistance = Math.sqrt( dx*dx + dy*dy);
 
-				angle2enemy=Math.atan2(dy,dx);
-				angle2enemy=cortesian2game_angles(angle2enemy*180/3.14);
-				
+			if (haveTarget && !targetUnlocked ) {
 				//gun angle	
 				double gun_angle =getGunHeading();
 				angle = shortest_arc(angle2enemy-gun_angle);
@@ -196,8 +240,13 @@ public class EvBot extends AdvancedRobot
 				setAdjustRadarForGunTurn(true);
 				setTurnGunRight(angle);
 
+				double predictedBulletDeviation=angle*Math.PI/180*targetDistance;
+
+				dbg("Gun heat = " + getGunHeat() );
+				// if gun is called and
+				// predicted bullet deviation within half a body size of the robot
 				if (getGunHeat() == 0 && 
-				    Math.abs(getGunTurnRemaining()) < angle_resolution) {
+				    Math.abs(predictedBulletDeviation) < Math.min( getHeight(), getWidth())/2 ) {
 					// calculate firepower based on distance
 					firePower = Math.min(500 / targetDistance, 3);
 					dbg("Firing the gun with power = " + firePower);
@@ -207,18 +256,15 @@ public class EvBot extends AdvancedRobot
 
 			}
 
-			if ( !searchForClosestTarget ) {
-				double radar_angle = getRadarHeading();
-				radarSpinDirection=1;
-				angle=radarSpinDirection*(angle2enemy-radar_angle);
-				angle = shortest_arc(angle);
-				dbg("Pointing radar to the old target location, rotating by angle = " + angle);
+			// moving radar to or over old target position
+			if ( !searchForClosestTarget && targetUnlocked && movingRadarToLastKnownTargetLocation) {
+				angle = radarSpinDirection*game_rules.RADAR_TURN_RATE;
+				dbg("Pointing radar to the old target location and potentially over sweeping by angle = " + angle);
 				setTurnRadarRight(angle);
-				targetUnlocked=true;
 			}
 
 
-			
+			performFullSweepIfNeded();
 
 			execute();
 		}
@@ -241,11 +287,13 @@ public class EvBot extends AdvancedRobot
 		scannedX = (int)(getX() + Math.sin(angle) * e.getDistance());
 		scannedY = (int)(getY() + Math.cos(angle) * e.getDistance());
 		targetDistance = e.getDistance();
+		targetLastSeenTime = getTime();
 
 		targetName=e.getName();
-		radarSpinDirection=1;
+		movingRadarToLastKnownTargetLocation = false;
+		//radarSpinDirection=1;
 		haveTarget = true;
-		targetUnlocked = false;
+		targetUnlocked = true;
 		dbg("Found target");
 	}
 
@@ -258,7 +306,7 @@ public class EvBot extends AdvancedRobot
 		setTurnLeft(angle);
 		dbg("Attempting to move ahead for bullet evasion");
 		moveOrTurn(100,90);
-		targetUnlocked=true;
+		//targetUnlocked=true;
 
 	}
 
