@@ -18,6 +18,8 @@ public class EvBot extends AdvancedRobot
 	boolean targetUnlocked = false; 
 	double absurdly_huge=1e6; // something huge
 	double targetDistance = absurdly_huge;
+	//firing with this deviation will bring bullet to the same point
+	double angle_resolution = 1; 
 	double angle2enemy= 0;
 	boolean gameJustStarted = true;
 	int turnsToEvasiveMove = 4;
@@ -43,7 +45,7 @@ public class EvBot extends AdvancedRobot
 		if ( angle < -180 ) {
 			angle = 360+angle;
 		}
-		dbg("angle return = " + angle);
+		//dbg("angle return = " + angle);
 		return angle;
 	}
 
@@ -52,6 +54,7 @@ public class EvBot extends AdvancedRobot
 		int dx=0;
 		int dy=0;
 		double angle;
+		double firePower;
 		setColors(Color.red,Color.blue,Color.green);
 		while(true) {
 			// Replace the next 4 lines with any behavior you would like
@@ -84,6 +87,13 @@ public class EvBot extends AdvancedRobot
 				setTurnRadarRight(angle);
 			}
 
+			if (targetUnlocked ) {
+				radarSpinDirection=-2*radarSpinDirection;
+				angle=shortest_arc(radarSpinDirection*2);
+				dbg("Trying to find unlocked target with radar move by angle = " + angle);
+				setTurnRadarRight(angle);
+			}
+
 			if (haveTarget && !targetUnlocked ) {
 				//angle to enemy
 				dx=scannedX - (int)(getX());
@@ -97,7 +107,12 @@ public class EvBot extends AdvancedRobot
 				dbg("Pointing gun to enemy by rotating by angle = " + angle);
 				setAdjustRadarForGunTurn(true);
 				setTurnGunRight(angle);
-				fire(3);
+
+				if ( Math.abs(angle) < angle_resolution ) {
+					firePower=3;
+					dbg("Firing the gun with power = " + firePower);
+					setFire(firePower);
+				}
 
 				targetUnlocked=true;
 
@@ -110,12 +125,6 @@ public class EvBot extends AdvancedRobot
 				setTurnRadarRight(angle);
 			}
 
-			if (targetUnlocked ) {
-				radarSpinDirection=-2*radarSpinDirection;
-				angle=shortest_arc(radarSpinDirection*2);
-				dbg("Trying to find unlocked target with radar move by angle = " + angle);
-				setTurnRadarRight(angle);
-			}
 
 			
 
@@ -145,6 +154,7 @@ public class EvBot extends AdvancedRobot
 		radarSpinDirection=1;
 		haveTarget = true;
 		targetUnlocked = false;
+		dbg("Found target");
 	}
 
 	/**
@@ -175,12 +185,12 @@ public class EvBot extends AdvancedRobot
 		if ( haveTarget ) {
 			// we need to be focused on enemy
 			// body rotation and radar/gun are independent
-			setAdjustRadarForRobotTurn(false);
+			setAdjustRadarForRobotTurn(true);
 			setAdjustGunForRobotTurn(true);
 		} else {
 			// there is a chance that we will detect new enemy so
 			// body rotation  and radar/gun are locked
-			setAdjustRadarForRobotTurn(true); 
+			setAdjustRadarForRobotTurn(false); 
 			setAdjustGunForRobotTurn(false);
 		}
 		dbg("Changing course after wall is hit  by angle = " + angle);
