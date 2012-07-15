@@ -17,13 +17,17 @@ public class EvBot extends AdvancedRobot
 	int scannedY = Integer.MIN_VALUE;
 	boolean haveTarget = false; 
 	boolean targetUnlocked = false; 
+	boolean searchForClosestTarget = false;
+	int fullSweepDelay = 40;
+	int radarSweepSubAngle=20;
+	int numberOfSmallRadarSweeps =(int) Math.ceil(360 / radarSweepSubAngle);
+	int countForNumberOfSmallRadarSweeps=numberOfSmallRadarSweeps;
 	double absurdly_huge=1e6; // something huge
 	double targetDistance = absurdly_huge;
 	//firing with this deviation will bring bullet to the same point
 	double angle_resolution = 1; 
 	double angle2enemy= 0;
 	boolean gameJustStarted = true;
-	int fullSweepDelay = 4;
 	int countFullSweepDelay=0;
 	int turnsToEvasiveMove = 4;
 	int countToEvasiveMove = turnsToEvasiveMove;
@@ -102,6 +106,33 @@ public class EvBot extends AdvancedRobot
 		}
 	}
 
+	public void performFullSweepIfNeded() {
+		double angle;
+
+			countFullSweepDelay--;
+			// full sweep for the closest enemy
+			if ( (countFullSweepDelay<0) && !searchForClosestTarget) {
+				dbg("Begin new cycle for closest enemy search");
+				searchForClosestTarget = true;
+				countForNumberOfSmallRadarSweeps = numberOfSmallRadarSweeps;
+			}
+
+			if ( searchForClosestTarget ) {
+				angle = radarSweepSubAngle;
+				dbg("Search sweep  by angle = " + angle);
+				setTurnRadarRight(angle);
+				targetUnlocked = true;
+				countForNumberOfSmallRadarSweeps--;
+			}
+
+			dbg("countForNumberOfSmallRadarSweeps = " + countForNumberOfSmallRadarSweeps);
+			if ( countForNumberOfSmallRadarSweeps <= 0 && searchForClosestTarget ) {
+				searchForClosestTarget = false;
+				countFullSweepDelay = fullSweepDelay;
+				dbg("Full sweep for closest enemy is completed");
+			}
+	}
+
 	public void run() {
 		int dx=0;
 		int dy=0;
@@ -117,16 +148,11 @@ public class EvBot extends AdvancedRobot
 			dbg("Turn count: " + turnCount);
 			dbg("targetUnlocked = " + targetUnlocked);
 
-			countFullSweepDelay--;
-			if ( !haveTarget || countFullSweepDelay<0) {
-				//gameJustStarted = false;
-				countFullSweepDelay = fullSweepDelay;
-				angle = 360;
-				dbg("Beginning of the search sweep  by angle = " + angle);
-				turnRadarRight(angle);
-			}
+
+			performFullSweepIfNeded();
 
 			countToEvasiveMove--;
+			// make preemptive evasive motion
 			if ( countToEvasiveMove < 0 ) {
 				countToEvasiveMove = turnsToEvasiveMove;
 				dbg("Attempting to move ahead for preemptive evasion");
@@ -137,14 +163,17 @@ public class EvBot extends AdvancedRobot
 			dbg("haveTarget = " + haveTarget);
 			dbg("radarSpinDirection = " + radarSpinDirection);
 
-			if (!haveTarget) {
-				radarSpinDirection=1;
-				angle = shortest_arc(radarSpinDirection*20);
-				dbg("Searching enemy by rotating by angle = " + angle);
-				setTurnRadarRight(angle);
-			}
+			//if (!haveTarget) {
+				//radarSpinDirection=1;
+				//angle = shortest_arc(radarSpinDirection*20);
+				//dbg("Searching enemy by rotating by angle = " + angle);
+				//setTurnRadarRight(angle);
+			//}
 
-			if (targetUnlocked ) {
+			dbg("targetUnlocked = " + targetUnlocked);
+			dbg("searchForClosestTarget = " + searchForClosestTarget);
+
+			if (targetUnlocked && !searchForClosestTarget ) {
 				radarSpinDirection=-2*radarSpinDirection;
 				angle=shortest_arc(radarSpinDirection*2);
 				dbg("Trying to find unlocked target with radar move by angle = " + angle);
@@ -175,15 +204,17 @@ public class EvBot extends AdvancedRobot
 					setFire(firePower);
 				}
 
-				targetUnlocked=true;
 
-				// radar angle
+			}
+
+			if ( !searchForClosestTarget ) {
 				double radar_angle = getRadarHeading();
 				radarSpinDirection=1;
 				angle=radarSpinDirection*(angle2enemy-radar_angle);
 				angle = shortest_arc(angle);
 				dbg("Pointing radar to the old target location, rotating by angle = " + angle);
 				setTurnRadarRight(angle);
+				targetUnlocked=true;
 			}
 
 
