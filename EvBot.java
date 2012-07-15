@@ -113,6 +113,7 @@ public class EvBot extends AdvancedRobot
 	public void performFullSweepIfNeded() {
 		double angle;
 
+		countForNumberOfSmallRadarSweeps--;
 			// full sweep for the closest enemy
 			if ( (countFullSweepDelay<0) && !searchForClosestTarget) {
 				dbg("Begin new cycle for closest enemy search");
@@ -125,7 +126,6 @@ public class EvBot extends AdvancedRobot
 				dbg("Search sweep  by angle = " + angle);
 				setTurnRadarRight(angle);
 				targetUnlocked = true;
-				countForNumberOfSmallRadarSweeps--;
 			}
 
 			dbg("countForNumberOfSmallRadarSweeps = " + countForNumberOfSmallRadarSweeps);
@@ -264,6 +264,7 @@ public class EvBot extends AdvancedRobot
 			}
 
 
+			countFullSweepDelay--;
 			performFullSweepIfNeded();
 
 			execute();
