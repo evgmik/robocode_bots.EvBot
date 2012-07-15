@@ -115,7 +115,7 @@ public class EvBot extends AdvancedRobot
 
 		countForNumberOfSmallRadarSweeps--;
 			// full sweep for the closest enemy
-			if ( (countFullSweepDelay<0) && !searchForClosestTarget) {
+			if ( (countFullSweepDelay<0) && !searchForClosestTarget && (!haveTarget && getOthers() == 1) ) {
 				dbg("Begin new cycle for closest enemy search");
 				searchForClosestTarget = true;
 				countForNumberOfSmallRadarSweeps = numberOfSmallRadarSweeps;
@@ -171,6 +171,7 @@ public class EvBot extends AdvancedRobot
 			// Replace the next 4 lines with any behavior you would like
 			dbg("----------- Next run -------------");
 			dbg("Game time: " + getTime());
+			dbg("Number of other bots = " + getOthers());
 
 			if ( ( getTime() - targetLastSeenTime ) > 1) 
 				targetUnlocked = true;
