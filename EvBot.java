@@ -20,6 +20,8 @@ public class EvBot extends AdvancedRobot
 	double targetDistance = absurdly_huge;
 	double angle2enemy= 0;
 	boolean gameJustStarted = true;
+	int turnsToEvasiveMove = 4;
+	int countToEvasiveMove = turnsToEvasiveMove;
 	int radarSpinDirection =1;
 	String targetName;
 	int turnCount=0;
@@ -60,6 +62,13 @@ public class EvBot extends AdvancedRobot
 				dbg("Beginning of the game sweep  by angle = " + angle);
 				turnRadarRight(angle);
 			}
+
+			countToEvasiveMove--;
+			if ( countToEvasiveMove < 0 ) {
+				countToEvasiveMove = turnsToEvasiveMove;
+				ahead(100);
+			}
+
 
 			turnCount++;
 			dbg("Turn count: " + turnCount);
