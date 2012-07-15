@@ -57,6 +57,7 @@ public class EvBot extends AdvancedRobot
 		int dy=0;
 		double angle;
 		double firePower;
+		double targetDistance;
 		setColors(Color.red,Color.blue,Color.green);
 		while(true) {
 			// Replace the next 4 lines with any behavior you would like
@@ -102,6 +103,8 @@ public class EvBot extends AdvancedRobot
 				//angle to enemy
 				dx=scannedX - (int)(getX());
 				dy=scannedY - (int)(getY());
+				targetDistance = Math.sqrt( dx*dx + dy*dy);
+
 				angle2enemy=Math.atan2(dy,dx);
 				angle2enemy=cortesian2game_angles(angle2enemy*180/3.14);
 				
@@ -114,7 +117,8 @@ public class EvBot extends AdvancedRobot
 
 				if (getGunHeat() == 0 && 
 				    Math.abs(getGunTurnRemaining()) < angle_resolution) {
-					firePower=3;
+					// calculate firepower based on distance
+					firePower = Math.min(500 / targetDistance, 3);
 					dbg("Firing the gun with power = " + firePower);
 					setFire(firePower);
 				}
