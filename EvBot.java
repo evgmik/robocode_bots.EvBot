@@ -270,6 +270,14 @@ public class EvBot extends AdvancedRobot
 			// Draw a filled square on top of the scanned robot that covers it
 			g.fillRect(scannedX - 20, scannedY - 20, 40, 40);
 		}
+		if ( haveTarget && targetUnlocked ) {
+			g.setColor(Color.yellow);
+			g.drawOval((int) (getX() - 50), (int) (getY() - 50), 100, 100);
+		}
+		if ( haveTarget && !targetUnlocked ) {
+			g.setColor(Color.red);
+			g.drawOval((int) (getX() - 50), (int) (getY() - 50), 100, 100);
+		}
 
 
 	}
