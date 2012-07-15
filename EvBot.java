@@ -166,6 +166,24 @@ public class EvBot extends AdvancedRobot
 		}
 	}
 
+
+	public void onHitWall(HitWallEvent e) {
+		double angle=180; // turn away from wall
+		if ( enemyDetected ) {
+			// we need to be focused on enemy
+			// body rotation and radar/gun are independent
+			setAdjustRadarForRobotTurn(false);
+			setAdjustGunForRobotTurn(true);
+		} else {
+			// there is a chance that we will detect new enemy so
+			// body rotation  and radar/gun are locked
+			setAdjustRadarForRobotTurn(true); 
+			setAdjustGunForRobotTurn(false);
+		}
+		dbg("Turning away from hit wall by angle = " + angle);
+		turnRight (angle);
+	}
+	
 	public void onPaint(Graphics2D g) {
 		// Set the paint color to a red half transparent color
 		if (enemyDetected ) {
