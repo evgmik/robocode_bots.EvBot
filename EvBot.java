@@ -165,7 +165,10 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public double  bulletSpeed( double firePower ) {
-		return ( 20 - firePower * 3 );
+		double bSpeed;
+		bSpeed = ( 20 - firePower * 3 );
+		dbg(dbg_noise, "bullet speed = " + bSpeed + " for firePower = " + firePower);
+		return bSpeed;
 	}
 
 	public int sign( double n) {
@@ -175,6 +178,76 @@ public class EvBot extends AdvancedRobot
 			return 1;
 		else
 			return -1;
+	}
+
+	public double quadraticSolverMinPosRoot(double a, double b, double c) {
+		// we are solving for time in ballistic calculation
+		// and interested only in positive solutions
+		// hopefully determinant is always >= 0 since we solve real problems
+		dbg(dbg_noise, "quadratic equation coefficient a = " + a);
+		dbg(dbg_noise, "quadratic equation coefficient b = " + b);
+		dbg(dbg_noise, "quadratic equation coefficient c = " + c);
+		double d = Math.sqrt(b*b - 4*a*c);
+		double x1= (-b + d)/(2*a);
+		double x2= (-b - d)/(2*a);
+
+		double root=Math.min(x1,x2);
+		if (root < 0) {
+			// if min gave as wrong root max should do better
+			root=Math.max(x1,x2);
+		}
+
+		dbg(dbg_noise, "quadratic equation min positive root = " + root);
+		return root;
+	}
+
+	public void  setFutureTargetPosition( double firePower ) {
+		double Tx, Ty, vTx, vTy, vT,  dx, dy, dist;
+		double timeToHit;
+		double a, b, c;
+		double bSpeed=bulletSpeed( firePower );
+
+		// target velocity
+		vTx = (targetLastX - targetPrevX)/(targetLastSeenTime - targetPrevSeenTime);
+		vTy = (targetLastY - targetPrevY)/(targetLastSeenTime - targetPrevSeenTime);
+		vT = Math.sqrt(vTx*vTx + vTy*vTy);
+		dbg(dbg_noise, "Target velocity vTx = " + vTx + " vTy = " + vTy);
+
+		// estimated current target position
+		Tx = targetLastX + vTx*(getTime()-targetLastSeenTime);
+		Ty = targetLastY + vTy*(getTime()-targetLastSeenTime);
+		dbg(dbg_noise, "Target estimated current position Tx = " + Tx + " Ty = " + Ty);
+
+		// radius vector to target
+		dx = Tx-getX();
+		dy = Ty-getY();
+		dist = Math.sqrt(dx*dx + dy*dy);
+		
+
+		// back of envelope calculations
+		// for the case of linear target motion with no acceleration
+		// lead to quadratic equation for time of flight to target hit
+		a = vT*vT - bSpeed*bSpeed;
+		b = 2*( dx*vTx + dy*vTy);
+		c = dist*dist;
+
+		timeToHit = quadraticSolverMinPosRoot( a, b, c);
+		targetFutureX = (int) ( Tx + vTx*timeToHit );
+		targetFutureY = (int) ( Ty + vTy*timeToHit );
+
+		// check that future target position within the battle field
+		targetFutureX = (int)Math.max(targetFutureX, 0);
+		targetFutureX = (int)Math.min(targetFutureX, getBattleFieldWidth() );
+		targetFutureY = (int)Math.max(targetFutureY, 0);
+		targetFutureY = (int)Math.min(targetFutureY, getBattleFieldHeight() );
+
+	}
+	
+	public double firePoverVsDistance( double targetDistance ) {
+		// calculate firepower based on distance
+		double firePower;
+		firePower = Math.min(500 / targetDistance, 3);
+		return firePower;
 	}
 
 	public void run() {
@@ -214,13 +287,11 @@ public class EvBot extends AdvancedRobot
 				angle2enemy=cortesian2game_angles(angle2enemy*180/Math.PI);
 
 				// calculate firepower based on distance
-				firePower = Math.min(500 / targetDistance, 3);
+				firePower = firePoverVsDistance( targetDistance );
 
 				// estimate future enemy location
-				bulletFlyTimeEstimate=targetDistance/bulletSpeed(firePower);
+				setFutureTargetPosition( firePower );
 
-				targetFutureX=(int) (targetLastX + (targetLastX - targetPrevX)/(targetLastSeenTime - targetPrevSeenTime)*(bulletFlyTimeEstimate+getTime()-targetLastSeenTime) );
-				targetFutureY=(int) (targetLastY + (targetLastY - targetPrevY)/(targetLastSeenTime - targetPrevSeenTime)*(bulletFlyTimeEstimate+getTime()-targetLastSeenTime) );
 				dbg(dbg_rutine, "Predicted target X coordinate = " + targetFutureX );
 				dbg(dbg_rutine, "Predicted target Y coordinate = " + targetFutureY );
 
