@@ -28,7 +28,7 @@ public class EvBot extends AdvancedRobot
 	boolean searchForClosestTarget = true;
 	boolean movingRadarToLastKnownTargetLocation = false;
 	int radarMotionMultiplier = 1;
-	int fullSweepDelay = 40;
+	int fullSweepDelay = 10;
 	double radarSweepSubAngle=game_rules.RADAR_TURN_RATE ;
 	double radarSmallestRockingMotion = game_rules.RADAR_TURN_RATE/4;
 	int numberOfSmallRadarSweeps =(int) Math.ceil(360 / radarSweepSubAngle);
