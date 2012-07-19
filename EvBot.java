@@ -76,8 +76,12 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public double distanceToWallAhead() {
-		double angle=getHeading();
+		double angle=getHeading(); 
+		double velocity=getVelocity();
+		dbg(dbg_noise, "Our velocity = " + velocity);
 		double dist=0;
+		if ( velocity < 0 ) angle +=180; // we are moving backwards
+		angle = angle % 360;
 		dbg(dbg_noise, "----angle " + angle);
 		dbg(dbg_noise, "----width " + getBattleFieldWidth());
 		dbg(dbg_noise, "----X " + getX());
@@ -103,12 +107,15 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public int whichWayToRotateAwayFromWall() {
-		double angle = shortest_arc(getHeading());
+		double angle = getHeading();
+		if ( getVelocity() < 0 ) 
+			angle += 180; // we are moving backwards
+		angle = shortest_arc(angle);
 	        double x = getX();
 	        double y = getY();
 		int rotDir = 1;
 
-		dbg(dbg_rutine, "body heading = " + angle);
+		dbg(dbg_noise, "body heading = " + angle);
 		if ( 0 <= angle	&& angle < 90 ) {
 			if ( (getBattleFieldWidth()-x) < (getBattleFieldHeight() - y) ) {
 				rotDir = -1;
@@ -137,6 +144,7 @@ public class EvBot extends AdvancedRobot
 				rotDir = -1;
 			}
 		}
+		//if ( getVelocity() < 0 ) rotDir = - rotDir; // we are moving backwards
 		return rotDir;
 	}
 	public double shortestTurnRadiusVsSpeed() {
@@ -148,42 +156,46 @@ public class EvBot extends AdvancedRobot
 		double angle;
 		double moveLength;
 		double shortestTurnRadius=shortestTurnRadiusVsSpeed();
-		double hardStopDistance = 5;
+		double hardStopDistance = 20;
 		double evadeWallDist= shortestTurnRadius + hardStopDistance;
 		double wallAheadDist;
 		wallAheadDist = distanceToWallAhead();
-		dbg(dbg_rutine, "hardStopDistance =  " + hardStopDistance);
-		dbg(dbg_rutine, "wallAheadDist =  " + wallAheadDist);
-		dbg(dbg_rutine, "rotate away from by " + whichWayToRotateAwayFromWall() );
+		dbg(dbg_noise, "hardStopDistance =  " + hardStopDistance);
+		dbg(dbg_noise, "wallAheadDist =  " + wallAheadDist);
+		dbg(dbg_noise, "getDistanceRemaining =  " + getDistanceRemaining());
+		dbg(dbg_noise, "rotate away from by " + whichWayToRotateAwayFromWall() );
 		if (wallAheadDist < hardStopDistance ) {
 			// wall is close full reverse
 			angle = 180*whichWayToRotateAwayFromWall();
-			dbg(dbg_rutine, "Wall is too close, hard stop now and rotating bu angle " + angle );
+			executingWallEvadingTurn=true;
+			dbg(dbg_noise, "Wall is too close, hard stop now and rotating by angle " + angle );
 			setTurnRight(angle);
-			setBack(0); // hard stop
+			setAhead(0); // hard stop
 		} 
 		if ( wallAheadDist > hardStopDistance && wallAheadDist <= evadeWallDist ){
 			if ( !executingWallEvadingTurn ) {
 				// make hard turn
 				executingWallEvadingTurn = true;
 				angle = 90*whichWayToRotateAwayFromWall();
-				dbg(dbg_rutine, "Wall is approaching, trying to turn away by " + angle);
+				dbg(dbg_noise, "Wall is approaching, trying to turn away by " + angle);
 				setTurnRight(angle);
+				dist= Math.PI/2*shortestTurnRadiusVsSpeed();
+				if ( getDistanceRemaining() < 0 ) {
+					dist = -dist;
+				}
+				setAhead(dist);
 			} else {
-				dbg(dbg_rutine, "Should be already turning away from the wall ");
+				dbg(dbg_noise, "Should be already turning away from the wall ");
+				if ( getVelocity() == 0 ) setAhead(Math.PI/2*shortestTurnRadiusVsSpeed());
 			}
-			setAhead(dist);
 		} 
 		if (wallAheadDist > evadeWallDist) {
 			executingWallEvadingTurn = false;
-			dbg(dbg_rutine, "getDistanceRemaining = " + getDistanceRemaining());
+			dbg(dbg_noise, "getDistanceRemaining = " + getDistanceRemaining());
 			if ( Math.abs(getDistanceRemaining()) <= 20 ) {
-				dbg(dbg_rutine, "Moving by " + dist);
-				if (dist > 0 ) {
-					setAhead(dist);
-				} else {
-					setBack(dist);
-				}
+				dbg(dbg_noise, "Moving by " + dist);
+				setAhead(dist);
+				dbg(dbg_noise, "Turning by " + suggestedAngle);
 				setTurnRight(suggestedAngle);
 			}
 		}
@@ -197,7 +209,7 @@ public class EvBot extends AdvancedRobot
 		countForNumberOfSmallRadarSweeps--;
 			// full sweep for the closest enemy
 			if ( (countFullSweepDelay<0) && !searchForClosestTarget && (getOthers() > 1) || !haveTarget) {
-				dbg(dbg_rutine, "Begin new cycle for closest enemy search");
+				dbg(dbg_noise, "Begin new cycle for closest enemy search");
 				searchForClosestTarget = true;
 				countForNumberOfSmallRadarSweeps = numberOfSmallRadarSweeps;
 			}
@@ -213,7 +225,7 @@ public class EvBot extends AdvancedRobot
 			if ( countForNumberOfSmallRadarSweeps <= 0 && searchForClosestTarget ) {
 				searchForClosestTarget = false;
 				countFullSweepDelay = fullSweepDelay;
-				dbg(dbg_rutine, "Full sweep for closest enemy is completed");
+				dbg(dbg_noise, "Full sweep for closest enemy is completed");
 				movingRadarToLastKnownTargetLocation = true;
 
 				double radar_angle = getRadarHeading();
@@ -329,8 +341,8 @@ public class EvBot extends AdvancedRobot
 		while(true) {
 			// Replace the next 4 lines with any behavior you would like
 			dbg(dbg_rutine, "----------- Next run -------------");
-			dbg(dbg_rutine, "Game time: " + getTime());
-			dbg(dbg_rutine, "Number of other bots = " + getOthers());
+			dbg(dbg_noise, "Game time: " + getTime());
+			dbg(dbg_noise, "Number of other bots = " + getOthers());
 
 			if ( ( getTime() - targetLastSeenTime ) > 1) 
 				targetUnlocked = true;
@@ -338,7 +350,7 @@ public class EvBot extends AdvancedRobot
 				targetUnlocked = false;
 
 
-			dbg(dbg_rutine, "targetUnlocked = " + targetUnlocked);
+			dbg(dbg_noise, "targetUnlocked = " + targetUnlocked);
 
 			if (haveTarget) {
 				//angle to enemy
@@ -369,16 +381,23 @@ public class EvBot extends AdvancedRobot
 			}
 
 			// make preemptive evasive motion
-			dbg(dbg_rutine, "Normal motion algorithm");
-			double angleRandDeviation=180*(0.5-Math.random());
-			moveOrTurn(100*(0.6-Math.random()), angleRandDeviation);
+			dbg(dbg_noise, "Normal motion algorithm");
+			double angleRandDeviation=45*sign(0.5-Math.random());
+			double dist=100*sign(0.6-Math.random());
+			if ( executingWallEvadingTurn ) {
+				dbg(dbg_noise, "executingWallEvadingTurn = " + executingWallEvadingTurn);
+				// if we were at hard stop near wall we need to
+				// move forward otherwise turn away algorithm stacks
+				dist = Math.abs(dist);
+			}
+			moveOrTurn(dist, angleRandDeviation);
 
 
-			dbg(dbg_rutine, "haveTarget = " + haveTarget);
+			dbg(dbg_noise, "haveTarget = " + haveTarget);
 
-			dbg(dbg_rutine, "targetUnlocked = " + targetUnlocked);
-			dbg(dbg_rutine, "searchForClosestTarget = " + searchForClosestTarget);
-			dbg(dbg_rutine, "radarSpinDirection = " + radarSpinDirection);
+			dbg(dbg_noise, "targetUnlocked = " + targetUnlocked);
+			dbg(dbg_noise, "searchForClosestTarget = " + searchForClosestTarget);
+			dbg(dbg_noise, "radarSpinDirection = " + radarSpinDirection);
 
 			// radar rocking motion to relock target
 			if (haveTarget && !searchForClosestTarget && !movingRadarToLastKnownTargetLocation) {
@@ -394,7 +413,7 @@ public class EvBot extends AdvancedRobot
 				}
 
 
-				dbg(dbg_rutine, "Trying to relock on target with radar move by angle = " + angle);
+				dbg(dbg_noise, "Trying to relock on target with radar move by angle = " + angle);
 				setTurnRadarRight(angle);
 				//targetUnlocked = true;
 			}
@@ -404,18 +423,18 @@ public class EvBot extends AdvancedRobot
 				//gun angle	
 				double gun_angle =getGunHeading();
 				angle = shortest_arc(angle2enemyInFutire-gun_angle);
-				dbg(dbg_rutine, "Pointing gun to enemy by rotating by angle = " + angle);
+				dbg(dbg_noise, "Pointing gun to enemy by rotating by angle = " + angle);
 				setAdjustRadarForGunTurn(true);
 				setTurnGunRight(angle);
 
 				double predictedBulletDeviation=angle*Math.PI/180*targetDistance;
 
-				dbg(dbg_rutine, "Gun heat = " + getGunHeat() );
+				dbg(dbg_noise, "Gun heat = " + getGunHeat() );
 				// if gun is called and
 				// predicted bullet deviation within half a body size of the robot
 				if (getGunHeat() == 0 && 
 				    Math.abs(predictedBulletDeviation) < Math.min( getHeight(), getWidth())/2 ) {
-					dbg(dbg_rutine, "Firing the gun with power = " + firePower);
+					dbg(dbg_noise, "Firing the gun with power = " + firePower);
 					setFire(firePower);
 				}
 
@@ -425,7 +444,7 @@ public class EvBot extends AdvancedRobot
 			// moving radar to or over old target position
 			if ( !searchForClosestTarget && targetUnlocked && movingRadarToLastKnownTargetLocation) {
 				angle = radarSpinDirection*game_rules.RADAR_TURN_RATE;
-				dbg(dbg_rutine, "Pointing radar to the old target location and potentially over sweeping by angle = " + angle);
+				dbg(dbg_noise, "Pointing radar to the old target location and potentially over sweeping by angle = " + angle);
 				setTurnRadarRight(angle);
 			}
 
@@ -474,7 +493,7 @@ public class EvBot extends AdvancedRobot
 		//radarSpinDirection=1;
 		haveTarget = true;
 		targetUnlocked = true;
-		dbg(dbg_rutine, "Found target");
+		dbg(dbg_noise, "Found target");
 	}
 
 	/**
@@ -482,8 +501,8 @@ public class EvBot extends AdvancedRobot
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
 		double angle = shortest_arc( 90 - e.getBearing() );
-		dbg(dbg_rutine, "Evasion maneuver after a hit by rotating body by angle = " + angle);
-		dbg(dbg_rutine, "Attempting to move ahead for bullet evasion");
+		dbg(dbg_noise, "Evasion maneuver after a hit by rotating body by angle = " + angle);
+		dbg(dbg_noise, "Attempting to move ahead for bullet evasion");
 		//setTurnLeft(angle);
 		moveOrTurn(100,angle);
 		//targetUnlocked=true;
