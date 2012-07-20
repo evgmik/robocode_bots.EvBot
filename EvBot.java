@@ -327,6 +327,38 @@ public class EvBot extends AdvancedRobot
 		return firePower;
 	}
 
+	public double angleToClosestCorner() {
+		double x=getX();
+		double y=getY();
+		// corner coordinates
+		double cX=0; 
+		double cY=0; 
+		
+		if (x <= getBattleFieldWidth()/2) {
+			// left corner is closer
+			cX=0;
+		} else {
+			// left corner is closer
+			cX=getBattleFieldWidth();
+		}
+		if (y <= getBattleFieldHeight()/2) {
+			// lower corner is closer
+			cY=0;
+		} else {
+			// upper corner is closer
+			cY=getBattleFieldHeight();
+		}
+		dbg(dbg_rutine, "the closest corner is at " + cX + ", " + cY);
+		return bearingTo(cX,cY);
+	}
+
+	public double bearingTo( double ptx, double pty ) {
+		return shortest_arc(
+				cortesian2game_angles( Math.atan2( pty-getY(), ptx-getX() )*180/Math.PI )
+				);
+		//return shortest_arc ( Math.atan2( pty-getY(), ptx-getX() )*180/Math.PI );
+	}
+
 	public void run() {
 		int dx=0;
 		int dy=0;
@@ -380,10 +412,22 @@ public class EvBot extends AdvancedRobot
 
 			}
 
-			// make preemptive evasive motion
-			dbg(dbg_noise, "Normal motion algorithm");
+			double dist = 100;
 			double angleRandDeviation=45*sign(0.5-Math.random());
-			double dist=100*sign(0.6-Math.random());
+			dbg(dbg_noise, "Normal motion algorithm");
+			if (getOthers()>=3) { 
+				//move to the closest corner as long as there are a lot of bots
+				double angle2corner = angleToClosestCorner();
+				dbg(dbg_noise, "angle to the closest corner = " + angle2corner );
+				angle = shortest_arc( angle2corner - getHeading());
+				dist = 50;
+				dbg(dbg_noise, "moving to the closest corner with rotation by " + angle );
+			} else {
+				// make preemptive evasive motion
+				angleRandDeviation=45*sign(0.5-Math.random());
+				dist=100*sign(0.6-Math.random());
+			}
+
 			if ( executingWallEvadingTurn ) {
 				dbg(dbg_noise, "executingWallEvadingTurn = " + executingWallEvadingTurn);
 				// if we were at hard stop near wall we need to
