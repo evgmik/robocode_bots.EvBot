@@ -545,7 +545,7 @@ public class EvBot extends AdvancedRobot
 				if (getGunHeat() == 0 && 
 				    Math.abs(predictedBulletDeviation) < Math.min( getHeight(), getWidth())/2 ) {
 					dbg(dbg_noise, "Firing the gun with power = " + firePower);
-					//setFire(firePower);
+					setFire(firePower);
 				}
 
 
