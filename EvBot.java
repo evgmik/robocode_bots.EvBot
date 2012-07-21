@@ -2,6 +2,8 @@ package eem;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import robocode.*;
+import robocode.util.*;
+import robocode.Rules.*;
 
 /**
  * EvBot - a robot by Eugeniy Mikhailov
@@ -13,6 +15,7 @@ public class EvBot extends AdvancedRobot
 	 */
 	// The coordinates of the last scanned robot
 	Rules game_rules;
+	double BodyTurnRate = 10;
 	int robotHalfSize = 20;
 	int targetLastX = Integer.MIN_VALUE;
 	int targetLastY = Integer.MIN_VALUE;
@@ -40,6 +43,7 @@ public class EvBot extends AdvancedRobot
 	double angle_resolution = 1; 
 	double angle2enemy= 0;
 	double angle2enemyInFutire= 0;
+	double desiredBodyRotationDirection = 0; // our robot body desired angle
 	boolean gameJustStarted = true;
 	int countFullSweepDelay=0;
 	int radarSpinDirection =1;
@@ -75,29 +79,64 @@ public class EvBot extends AdvancedRobot
 		return angle;
 	}
 
+	public String whichWallAhead() {
+		double angle=getHeadingRadians(); 
+		double velocity=getVelocity();
+		double x = getX();
+		double y = getY();
+
+		String wallName="";
+
+		if ( Utils.isNear(velocity, 0.0) ) {
+			// we are not moving anywhere 
+			// assigning fake velocity
+			velocity = 8;
+		}
+
+		double dx = Math.sin( angle )*velocity;
+		double dy = Math.cos( angle )*velocity;
+
+		while (  wallName.equals("") ) {
+			x+= dx;
+			y+= dy;
+			dbg(dbg_noise, "Projected position = " + x + ", " + y);
+
+			if ( x-robotHalfSize <= 0 ) {
+				wallName = "left";
+			}
+			if ( y-robotHalfSize <= 0 ) {
+				wallName = "bottom";
+			}
+			if ( x >= getBattleFieldWidth()-robotHalfSize ) {
+				wallName = "right";
+			}
+			if ( y >= getBattleFieldHeight()-robotHalfSize ) {
+				wallName = "top";
+			}
+		}
+		dbg(dbg_rutine, "Wall name = " + wallName);
+		return wallName;
+	}
+
 	public double distanceToWallAhead() {
 		double angle=getHeading(); 
 		double velocity=getVelocity();
 		dbg(dbg_noise, "Our velocity = " + velocity);
 		double dist=0;
-		if ( velocity < 0 ) angle +=180; // we are moving backwards
-		angle = angle % 360;
-		dbg(dbg_noise, "----angle " + angle);
-		dbg(dbg_noise, "----width " + getBattleFieldWidth());
-		dbg(dbg_noise, "----X " + getX());
-		dbg(dbg_noise, "----height " + getBattleFieldHeight());
-		dbg(dbg_noise, "----Y " + getY());
-		if ( 0<= angle && angle < 90 ) {
-			dist = Math.min(getBattleFieldWidth()-getX(), getBattleFieldHeight()-getY());
+
+		String wallName = whichWallAhead();
+
+		if ( wallName.equals("left") ) {
+				dist = getX();
+		}	
+		if ( wallName.equals("right") ) {
+				dist = getBattleFieldWidth() - getX();
 		}
-		if ( 90 <= angle && angle < 180 ) {
-			dist = Math.min(getBattleFieldWidth()-getX(), getY());
+		if ( wallName.equals("bottom") ) {
+				dist = getY();
 		}
-		if ( 180<= angle && angle < 270 ) {
-			dist = Math.min(getX(), getY());
-		}
-		if ( 270 <= angle && angle < 360 ) {
-			dist = Math.min(getX(), getBattleFieldHeight()-getY());
+		if ( wallName.equals("top") ) {
+				dist = getBattleFieldHeight() - getY();
 		}
 		dist = dist - robotHalfSize;
 		dist = Math.max(dist,0);
@@ -106,99 +145,120 @@ public class EvBot extends AdvancedRobot
 		return dist;
 	}
 
-	public int whichWayToRotateAwayFromWall() {
+	public double whichWayToRotateAwayFromWall() {
 		double angle = getHeading();
+		String wallName = whichWallAhead();
+
 		if ( getVelocity() < 0 ) 
 			angle += 180; // we are moving backwards
 		angle = shortest_arc(angle);
 	        double x = getX();
 	        double y = getY();
 		int rotDir = 1;
+		double retAngle=0;
 
+		if ( wallName.equals("left") ) {
+			if ( -90 <= angle && angle <= 0 ) {
+				retAngle = -angle;
+			} else {
+				retAngle = 180 - angle;
+			}
+		}
+		if ( wallName.equals("right") ) {
+			if ( 0 <= angle && angle <= 90 ) {
+				retAngle = - angle;
+			} else {
+				retAngle = 180 - angle;
+			}
+		}
+		if ( wallName.equals("bottom") ) {
+			if ( 90 <= angle && angle <= 180 ) {
+				retAngle =  angle - 90;
+			} else {
+				retAngle = 90 - angle;
+			}
+		}
+		if ( wallName.equals("top") ) {
+			if ( 0 <= angle && angle <= 90 ) {
+				retAngle =  90-angle;
+			} else {
+				retAngle = -90 - angle;
+			}
+		}
+
+		//retAngle += 20*desiredBodyRotationDirection; // add a bit of momentum
 		dbg(dbg_noise, "body heading = " + angle);
-		if ( 0 <= angle	&& angle < 90 ) {
-			if ( (getBattleFieldWidth()-x) < (getBattleFieldHeight() - y) ) {
-				rotDir = -1;
-			} else {
-				rotDir =  1;
-			}
-		}
-		if ( 90 <= angle && angle < 180 ) {
-			if ( (getBattleFieldWidth()-x) < y ) {
-				rotDir =  1;
-			} else {
-				rotDir = -1;
-			}
-		}
-		if ( -180 <= angle && angle < -90 ) {
-			if ( x < y ) {
-				rotDir = -1;
-			} else {
-				rotDir =  1;
-			}
-		}
-		if ( -90 <= angle && angle < 0 ) {
-			if ( x < (getBattleFieldHeight() - y) ) {
-				rotDir =  1;
-			} else {
-				rotDir = -1;
-			}
-		}
-		//if ( getVelocity() < 0 ) rotDir = - rotDir; // we are moving backwards
-		return rotDir;
+		dbg(dbg_rutine, "rotation from wall is " + retAngle);
+		return retAngle;
 	}
+
 	public double shortestTurnRadiusVsSpeed() {
 		// very empiric for full speed
-		return 115;
+		return 225;
+	}
+
+	public double distTo(double x, double y) {
+		double dx=x-getX();
+		double dy=y-getY();
+
+		return Math.sqrt(dx*dx + dy*dy);
 	}
 
 	public void moveOrTurn(double dist, double suggestedAngle) {
-		double angle;
+		double angle=0;
 		double moveLength;
 		double shortestTurnRadius=shortestTurnRadiusVsSpeed();
 		double hardStopDistance = 20;
-		double evadeWallDist= shortestTurnRadius + hardStopDistance;
+		double evadeWallDist = 
+			shortestTurnRadius*
+			Math.abs(
+					Math.sin( whichWayToRotateAwayFromWall() * Math.PI/360 )
+				       )
+			+ hardStopDistance;
 		double wallAheadDist;
 		wallAheadDist = distanceToWallAhead();
+		dbg(dbg_rutine, "moveOrTurn suggested dist =  " + dist + ", angle =" + suggestedAngle);
 		dbg(dbg_noise, "hardStopDistance =  " + hardStopDistance);
-		dbg(dbg_noise, "wallAheadDist =  " + wallAheadDist);
+		dbg(dbg_rutine, "wallAheadDist =  " + wallAheadDist);
 		dbg(dbg_noise, "getDistanceRemaining =  " + getDistanceRemaining());
 		dbg(dbg_noise, "rotate away from by " + whichWayToRotateAwayFromWall() );
 		if (wallAheadDist < hardStopDistance ) {
 			// wall is close full reverse
-			angle = 180*whichWayToRotateAwayFromWall();
+			angle = whichWayToRotateAwayFromWall();
 			executingWallEvadingTurn=true;
-			dbg(dbg_noise, "Wall is too close, hard stop now and rotating by angle " + angle );
-			setTurnRight(angle);
-			setAhead(0); // hard stop
+			dbg(dbg_rutine, "Wall is too close, hard stop now and rotating by angle " + angle );
+			dist =0; // hard stop
+			angle = BodyTurnRate; // and rotate to right
+
 		} 
 		if ( wallAheadDist > hardStopDistance && wallAheadDist <= evadeWallDist ){
-			if ( !executingWallEvadingTurn ) {
 				// make hard turn
 				executingWallEvadingTurn = true;
-				angle = 90*whichWayToRotateAwayFromWall();
-				dbg(dbg_noise, "Wall is approaching, trying to turn away by " + angle);
-				setTurnRight(angle);
-				dist= Math.PI/2*shortestTurnRadiusVsSpeed();
+				angle = whichWayToRotateAwayFromWall();
+				dbg(dbg_rutine, "Wall is approaching, trying to turn away by " + angle);
+				dist= Math.abs(angle)/180*Math.PI*shortestTurnRadiusVsSpeed();
 				if ( getDistanceRemaining() < 0 ) {
 					dist = -dist;
 				}
-				setAhead(dist);
-			} else {
-				dbg(dbg_noise, "Should be already turning away from the wall ");
-				if ( getVelocity() == 0 ) setAhead(Math.PI/2*shortestTurnRadiusVsSpeed());
-			}
 		} 
 		if (wallAheadDist > evadeWallDist) {
 			executingWallEvadingTurn = false;
-			dbg(dbg_noise, "getDistanceRemaining = " + getDistanceRemaining());
+			dbg(dbg_rutine, "getDistanceRemaining = " + getDistanceRemaining());
 			if ( Math.abs(getDistanceRemaining()) <= 20 ) {
-				dbg(dbg_noise, "Moving by " + dist);
-				setAhead(dist);
-				dbg(dbg_noise, "Turning by " + suggestedAngle);
-				setTurnRight(suggestedAngle);
+				angle = suggestedAngle;
+				dist = dist;
+			} else {
+				dist =getDistanceRemaining();
+				angle = 0;
 			}
 		}
+		dbg(dbg_rutine, "Moving by " + dist);
+		dbg(dbg_rutine, "Turning by " + angle);
+		if ( !Utils.isNear( angle, 0) ) {
+			setTurnRight(angle);
+		}
+		setBodyRotationDirection( sign(angle) );
+		setAhead(dist);
 	}
 
 	public void performFullSweepIfNeded() {
@@ -415,26 +475,32 @@ public class EvBot extends AdvancedRobot
 			double dist = 100;
 			double angleRandDeviation=45*sign(0.5-Math.random());
 			dbg(dbg_noise, "Normal motion algorithm");
-			if (getOthers()>=3) { 
+			if (getOthers()>=5 && Math.random() < 0.2 ) { 
 				//move to the closest corner as long as there are a lot of bots
 				double angle2corner = angleToClosestCorner();
 				dbg(dbg_noise, "angle to the closest corner = " + angle2corner );
 				angle = shortest_arc( angle2corner - getHeading());
 				dist = 50;
-				dbg(dbg_noise, "moving to the closest corner with rotation by " + angle );
+				if ( Math.abs(angle) > 90 ) {
+					// moving backwards is faster sometimes
+					angle = shortest_arc(angle - 180);
+					dist = -dist;
+				}
+				dbg(dbg_rutine, "moving to the closest corner with rotation by " + angle );
 			} else {
 				// make preemptive evasive motion
 				angleRandDeviation=45*sign(0.5-Math.random());
 				dist=100*sign(0.6-Math.random());
+				angle = angleRandDeviation + angleRandDeviation;
 			}
 
 			if ( executingWallEvadingTurn ) {
-				dbg(dbg_noise, "executingWallEvadingTurn = " + executingWallEvadingTurn);
+				dbg(dbg_rutine, "executingWallEvadingTurn = " + executingWallEvadingTurn);
 				// if we were at hard stop near wall we need to
 				// move forward otherwise turn away algorithm stacks
 				dist = Math.abs(dist);
 			}
-			moveOrTurn(dist, angleRandDeviation);
+			moveOrTurn(dist, angle);
 
 
 			dbg(dbg_noise, "haveTarget = " + haveTarget);
@@ -479,7 +545,7 @@ public class EvBot extends AdvancedRobot
 				if (getGunHeat() == 0 && 
 				    Math.abs(predictedBulletDeviation) < Math.min( getHeight(), getWidth())/2 ) {
 					dbg(dbg_noise, "Firing the gun with power = " + firePower);
-					setFire(firePower);
+					//setFire(firePower);
 				}
 
 
@@ -565,7 +631,7 @@ public class EvBot extends AdvancedRobot
 
 	public void onHitWall(HitWallEvent e) {
 		// turn and move along the hit wall
-		double angle = 90-(180 - e.getBearing());
+		double angle = whichWayToRotateAwayFromWall();
 		if ( haveTarget ) {
 			// we need to be focused on enemy
 			// body rotation and radar/gun are independent
@@ -579,7 +645,14 @@ public class EvBot extends AdvancedRobot
 		}
 		dbg(dbg_rutine, "Changing course after wall is hit  by angle = " + angle);
 		setTurnRight (angle);
+		setBodyRotationDirection( sign(angle) );
 	}
+		
+	public double setBodyRotationDirection( double dir ) {
+		desiredBodyRotationDirection = dir; // sets global var
+		return desiredBodyRotationDirection;
+	}
+
 	
 	public void onPaint(Graphics2D g) {
 		// Set the paint color to a red half transparent color
