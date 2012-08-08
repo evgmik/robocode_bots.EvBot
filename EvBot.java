@@ -16,7 +16,7 @@ public class EvBot extends AdvancedRobot
 	// The coordinates of the last scanned robot
 	Rules game_rules;
 	double BodyTurnRate = 10;
-	int robotHalfSize = 20;
+	int robotHalfSize = 18;
 	int targetLastX = Integer.MIN_VALUE;
 	int targetLastY = Integer.MIN_VALUE;
 	int nonexisting_coord = -10000;
@@ -188,7 +188,7 @@ public class EvBot extends AdvancedRobot
 
 		//retAngle += 20*desiredBodyRotationDirection; // add a bit of momentum
 		dbg(dbg_noise, "body heading = " + angle);
-		dbg(dbg_rutine, "rotation from wall is " + retAngle);
+		dbg(dbg_noise, "rotation from wall is " + retAngle);
 		return retAngle;
 	}
 
@@ -221,14 +221,22 @@ public class EvBot extends AdvancedRobot
 		dbg(dbg_noise, "hardStopDistance =  " + hardStopDistance);
 		dbg(dbg_rutine, "wallAheadDist =  " + wallAheadDist);
 		dbg(dbg_noise, "getDistanceRemaining =  " + getDistanceRemaining());
-		dbg(dbg_noise, "rotate away from by " + whichWayToRotateAwayFromWall() );
+		dbg(dbg_rutine, "rotate away from a wall by " + whichWayToRotateAwayFromWall() );
+		dbg(dbg_rutine, "Robot velocity =  " + getVelocity());
 		if (wallAheadDist < hardStopDistance ) {
 			// wall is close full reverse
 			angle = whichWayToRotateAwayFromWall();
 			executingWallEvadingTurn=true;
-			dbg(dbg_rutine, "Wall is too close, hard stop now and rotating by angle " + angle );
-			dist =0; // hard stop
-			angle = BodyTurnRate; // and rotate to right
+			dist = -111*sign(getVelocity());
+			if ( Math.abs(angle) > 45 && Utils.isNear(getVelocity(),0) ) {
+				// it takes too long to rotate nose
+				// we will reverse
+				dbg(dbg_rutine, "Wall is too close, reversing is faster");
+				dist = -111;
+				angle =0;
+			}
+			//dist = -dist; // hard stop and reverse
+			//angle = 0; // do not rotate
 
 		} 
 		if ( wallAheadDist > hardStopDistance && wallAheadDist <= evadeWallDist ){
@@ -244,7 +252,7 @@ public class EvBot extends AdvancedRobot
 		if (wallAheadDist > evadeWallDist) {
 			executingWallEvadingTurn = false;
 			dbg(dbg_rutine, "getDistanceRemaining = " + getDistanceRemaining());
-			if ( Math.abs(getDistanceRemaining()) <= 20 ) {
+			if (  Math.abs(getDistanceRemaining()) <= 20 ) {
 				angle = suggestedAngle;
 				dist = dist;
 			} else {
@@ -254,9 +262,9 @@ public class EvBot extends AdvancedRobot
 		}
 		dbg(dbg_rutine, "Moving by " + dist);
 		dbg(dbg_rutine, "Turning by " + angle);
-		if ( !Utils.isNear( angle, 0) ) {
+		//if ( !Utils.isNear( angle, 0) ) {
 			setTurnRight(angle);
-		}
+		//}
 		setBodyRotationDirection( sign(angle) );
 		setAhead(dist);
 	}
