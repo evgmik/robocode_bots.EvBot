@@ -114,7 +114,7 @@ public class EvBot extends AdvancedRobot
 				wallName = "top";
 			}
 		}
-		dbg(dbg_rutine, "Wall name = " + wallName);
+		dbg(dbg_noise, "Wall name = " + wallName);
 		return wallName;
 	}
 
@@ -226,6 +226,7 @@ public class EvBot extends AdvancedRobot
 		if (wallAheadDist < hardStopDistance ) {
 			// wall is close full reverse
 			angle = whichWayToRotateAwayFromWall();
+			angle = angle + 10*sign(angle); // add extra to rotate away from wall
 			executingWallEvadingTurn=true;
 			dist = -111*sign(getVelocity());
 			if ( Math.abs(angle) > 45 && Utils.isNear(getVelocity(),0) ) {
@@ -243,6 +244,7 @@ public class EvBot extends AdvancedRobot
 				// make hard turn
 				executingWallEvadingTurn = true;
 				angle = whichWayToRotateAwayFromWall();
+				angle = angle + 10*sign(angle); // add extra to rotate away from wall
 				dbg(dbg_rutine, "Wall is approaching, trying to turn away by " + angle);
 				dist= Math.abs(angle)/180*Math.PI*shortestTurnRadiusVsSpeed();
 				if ( getDistanceRemaining() < 0 ) {
@@ -462,6 +464,7 @@ public class EvBot extends AdvancedRobot
 
 				angle2enemy=Math.atan2(dy,dx);
 				angle2enemy=cortesian2game_angles(angle2enemy*180/Math.PI);
+				dbg(dbg_rutine, "angle to enemy = " + angle2enemy );
 
 				// calculate firepower based on distance
 				firePower = firePoverVsDistance( targetDistance );
@@ -495,6 +498,19 @@ public class EvBot extends AdvancedRobot
 					dist = -dist;
 				}
 				dbg(dbg_rutine, "moving to the closest corner with rotation by " + angle );
+			}
+			if ( haveTarget && getOthers() >= 4 && Math.random() < 0.9 ) {
+				// last enemy standing lets spiral in
+				angle = shortest_arc( -90 + (angle2enemy - getHeading() ) );
+				if ( Math.abs(angle) > 90 ) {
+					if (angle > 0) {
+						angle = angle - 180;
+					} else {
+						angle = angle + 180;
+					}
+				}
+				dist=100*sign(0.6-Math.random());
+				dbg(dbg_rutine, "circle around last enemy by rotating = " + angle );
 			} else {
 				// make preemptive evasive motion
 				angleRandDeviation=45*sign(0.5-Math.random());
