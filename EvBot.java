@@ -262,9 +262,9 @@ public class EvBot extends AdvancedRobot
 		}
 		dbg(dbg_rutine, "Moving by " + dist);
 		dbg(dbg_rutine, "Turning by " + angle);
-		//if ( !Utils.isNear( angle, 0) ) {
+		if ( !Utils.isNear( angle, 0) ) {
 			setTurnRight(angle);
-		//}
+		}
 		setBodyRotationDirection( sign(angle) );
 		setAhead(dist);
 	}
