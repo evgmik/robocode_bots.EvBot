@@ -103,6 +103,36 @@ public class EvBot extends AdvancedRobot
 		return d[0];
 	}
 
+	public boolean areBothSticksEndAtField() {
+		if ( distToTheClosestWallFromStick("starboard") > 0 && distToTheClosestWallFromStick("port") > 0 ) {
+			return true;
+		} 
+		return false;
+	}
+
+	public String whichStickIsFurtherFromWalls( ) {
+		String stick="none";
+		double starboardDist=distToTheClosestWallFromStick( "starboard" );
+		double portDist=distToTheClosestWallFromStick( "port" );
+
+		if ( starboardDist >= portDist ) {
+			stick="starboard";
+		} else {
+			stick="port";
+		}
+		return stick;
+	}
+
+	public double distToTheClosestWallFromStick( String stick ) {
+		double dist=0;
+		if ( stick.equals("starboard") ) {
+			dist=distanceToTheClosestWallFrom( starboardStickX, starboardStickY );
+		} else {
+			dist=distanceToTheClosestWallFrom( portStickX, portStickY );
+		}
+		return dist;
+	}
+
 	public String whichWallAhead() {
 		double angle=getHeadingRadians(); 
 		double velocity=getVelocity();
@@ -181,7 +211,7 @@ public class EvBot extends AdvancedRobot
 		int rotDir = 1;
 		double retAngle=0;
 
-		dbg(dbg_rutine, "heading angle = " + angle);
+		dbg(dbg_noise, "heading angle = " + angle);
 
 		if ( wallName.equals("left") ) {
 			if ( -90 <= angle && angle <= 0 ) {
@@ -220,7 +250,7 @@ public class EvBot extends AdvancedRobot
 
 	public double shortestTurnRadiusVsSpeed() {
 		// very empiric for full speed
-		return 225;
+		return 115;
 	}
 
 	public double distTo(double x, double y) {
@@ -232,6 +262,8 @@ public class EvBot extends AdvancedRobot
 
 	public int stopDistance( double velocity ) {
 		int dist =0;
+		if (Math.abs(velocity) == 0 ) 
+			dist = 0;
 		if (Math.abs(velocity) == 1 ) 
 			dist =1;
 		if (Math.abs(velocity) == 2 ) 
@@ -276,6 +308,7 @@ public class EvBot extends AdvancedRobot
 		return true;
 	}
 
+
 	public void moveOrTurn(double dist, double suggestedAngle) {
 		double angle=0;
 		double moveLength;
@@ -283,87 +316,78 @@ public class EvBot extends AdvancedRobot
 		double hardStopDistance = 20;
 		calculateSticksEndsPosition();
 		String wallAhead = whichWallAhead();
-		double evadeWallDist = 
-			shortestTurnRadius*
-			Math.abs(
-					Math.sin( whichWayToRotateAwayFromWall() * Math.PI/360 )
-				       )
-			+ hardStopDistance;
+		String furtherestStick = whichStickIsFurtherFromWalls();
+		double distFromStickEndToWall = distToTheClosestWallFromStick(furtherestStick);
+		dbg(dbg_rutine, "furtherestStick = " + furtherestStick );
+
+		double evadeWallDist = shortestTurnRadius+45;
 		double wallAheadDist;
 		wallAheadDist = distanceToWallAhead();
 		dbg(dbg_rutine, "moveOrTurn suggested dist =  " + dist + ", angle =" + suggestedAngle);
 		dbg(dbg_noise, "hardStopDistance =  " + hardStopDistance);
-		dbg(dbg_rutine, "Wall ahead is " + wallAhead );
-		dbg(dbg_rutine, "wallAheadDist =  " + wallAheadDist);
+		dbg(dbg_noise, "Wall ahead is " + wallAhead );
+		dbg(dbg_noise, "wallAheadDist =  " + wallAheadDist);
 		dbg(dbg_noise, "getDistanceRemaining =  " + getDistanceRemaining());
 		dbg(dbg_noise, "rotate away from a wall by " + whichWayToRotateAwayFromWall() );
-		dbg(dbg_rutine, "Robot velocity =  " + getVelocity());
+		dbg(dbg_noise, "Robot velocity =  " + getVelocity());
 		if (wallAheadDist < hardStopDistance ) {
 			// wall is close trying to stop
 			dbg(dbg_rutine, "Wall ahead is " + wallAhead );
+			dbg(dbg_rutine, "Trying to stop" );
 			angle = whichWayToRotateAwayFromWall();
-			angle = angle + 10*sign(angle); // add extra to rotate away from wall
 			executingWallEvadingTurn=true;
 			dbg(dbg_rutine, "Robot velocity =  " + getVelocity());
 			dist = stopDistance(getVelocity());
 			if ( Utils.isNear(getVelocity(),0) ) {
-				if ( Math.abs(angle) > 45 ) {
-					// it takes too long to rotate nose
-					// we will reverse
 					dbg(dbg_rutine, "Wall is too close, backward is faster");
 					dist = -11;
-					setTurnRight(angle);
-				} else {
-					dbg(dbg_rutine, "Wall is too close, forward is faster");
-					dist = 11;
-				}
+					setTurnRight(0);
 			}
 			setAhead(dist); // this is emergency stop or hit a wall
+			return;
+
 			//dist = -dist; // hard stop and reverse
 			//angle = 0; // do not rotate
 
 		} 
-		if ( wallAheadDist > hardStopDistance && wallAheadDist <= evadeWallDist ){
+		if (  distFromStickEndToWall <= evadeWallDist ){
 				// make hard turn
-				dbg(dbg_rutine, "Wall ahead is " + wallAhead );
+				dbg(dbg_rutine, "Trying to turn away from walls" );
 				executingWallEvadingTurn = true;
-				angle = whichWayToRotateAwayFromWall();
-				dbg(dbg_rutine, "desiredBodyRotationDirection = " + desiredBodyRotationDirection);
-				if ( !previoslyHeadedWall.equals("none") && sign(angle)*desiredBodyRotationDirection < 0 ) {
-					// suggested turn is in opposite to current direction
-					// this often happens near corners
-					// we will not reverse direction
-					if (angle > 0) {
-						angle = angle - 90;
-					} else {
-						angle = angle + 90;
-					}
+				if ( furtherestStick.equals("starboard") ) {
+					angle = 20*sign( getVelocity() );
+					dist  = 20*sign( getVelocity() );
+				} else {
+					angle = -20*sign( getVelocity() );
+					dist  = 20*sign( getVelocity() );
 				}
-				previoslyHeadedWall = wallAhead;
-				angle = angle + 10*sign(angle); // add extra to rotate away from wall
-				dbg(dbg_rutine, "Wall is approaching, trying to turn away by " + angle);
-				dist= sign(getVelocity())*Math.abs(angle)/180*Math.PI*shortestTurnRadiusVsSpeed();
+				if (angle == 0 ) {
+					// if bot velocity is 0 give it a kick
+					angle =20; 
+					dist =20;
+				}
+				setAhead (dist);
+				setTurnRight(angle);
+				return;
 		} 
-		if (wallAheadDist > evadeWallDist) {
+		if ( distFromStickEndToWall > evadeWallDist) {
 			executingWallEvadingTurn = false;
 			previoslyHeadedWall = "none";
 			dbg(dbg_noise, "getDistanceRemaining = " + getDistanceRemaining());
-			if (  Math.abs(getDistanceRemaining()) <=  0 ) {
+			//if (  Math.abs(getDistanceRemaining()) <=  0 ) {
 				dbg(dbg_rutine, "Proceeding with suggested motion");
 				angle = suggestedAngle;
 				dist = dist;
-			} else {
-				dbg(dbg_rutine, "Continue previous turn motion");
-				dist =getDistanceRemaining();
-				angle = 0;
-			}
+			//} else {
+				//dbg(dbg_rutine, "Continue previous turn motion");
+				//dist =getDistanceRemaining();
+				//angle = 0;
+			//}
 		}
 		dbg(dbg_rutine, "Moving by " + dist);
 		dbg(dbg_rutine, "Turning by " + angle);
-		if ( !Utils.isNear( angle, 0) ) {
-			setTurnRight(angle);
-			setBodyRotationDirection( sign(angle) );
-		}
+		setTurnRight(angle);
+		setBodyRotationDirection( sign(angle) );
 		setAhead(dist);
 	}
 
@@ -605,12 +629,18 @@ public class EvBot extends AdvancedRobot
 						angle = angle + 180;
 					}
 				}
-				dist=80*sign(0.6-Math.random());
+				if ( (Math.random() < 0.20) ) {
+					dbg(dbg_rutine, "setting a new motion" );
+					dist=180*sign(0.5-Math.random());
+				} else {
+					dbg(dbg_rutine, "continue previous motion" );
+					dist = getDistanceRemaining();
+				}
 				dbg(dbg_rutine, "circle around last enemy by rotating = " + angle );
 			} else {
 				// make preemptive evasive motion
 				angleRandDeviation=25*sign(0.5-Math.random());
-				dist=100*sign(0.6-Math.random());
+				dist=100*sign(0.5-Math.random());
 				angle =  angleRandDeviation;
 				dbg(dbg_rutine, "Random evasive motion");
 			}
@@ -667,7 +697,7 @@ public class EvBot extends AdvancedRobot
 				if (getGunHeat() == 0 && 
 				    Math.abs(predictedBulletDeviation) < Math.min( getHeight(), getWidth())/2 ) {
 					dbg(dbg_noise, "Firing the gun with power = " + firePower);
-					//setFire(firePower);
+					setFire(firePower);
 				}
 
 
@@ -813,7 +843,12 @@ public class EvBot extends AdvancedRobot
 		g.drawLine((int) portStickX, (int) portStickY, (int)getX(), (int)getY());
 		g.drawOval((int) portStickX-5, (int) portStickY-5, 10, 10);
 
+		//draw possible shortest turn radius paths
+		g.setColor(Color.green);
+		g.drawOval((int) (starboardStickX - shortestTurnRadiusVsSpeed()), (int) (starboardStickY - shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()));
 
+		g.setColor(Color.red);
+		g.drawOval((int) (portStickX - shortestTurnRadiusVsSpeed()), (int) (portStickY - shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()));
 
 	}
 
