@@ -1,14 +1,37 @@
 # -*- make -*-
-# FILE: "/home/evmik/.robocode/robots/eem/Makefile"
-# LAST MODIFICATION: "Sat, 14 Jul 2012 18:30:10 -0400 (evmik)"
+# FILE: "/home/evmik/src/my_src/robocode/Makefile"
+# LAST MODIFICATION: "Sat, 11 Aug 2012 16:16:16 -0400 (evmik)"
 # (C) 2012 by Eugeniy Mikhailov, <evgmik@gmail.com>
 # $Id:$
 
+OUTDIR=out
+SUPERPACKADE=eem
+JFLAGS=-d $(OUTDIR) -classpath /usr/share/java/robocode.jar:
 
-all: EvBot.class
+ROBOTS_DIR=~/.robocode/robots/
+TESTJAR=EvBot_vtest.jar
 
-EvBot.class: EvBot.java
-	javac EvBot.java -classpath classes:/usr/share/java/robocode.jar
+SRC=eem/EvBot.java eem/misc/PaintRobotPath.java
+CLASSES=$(SRC:%.java=$(OUTDIR)/%.class)
+
+.SUFFIXES: .java .class 
+
+all: $(CLASSES) $(TESTJAR) $(ROBOTS_DIR)/$(TESTJAR)
+
+copy-jar-test: $(ROBOTS_DIR)
+
+$(ROBOTS_DIR)/$(TESTJAR): $(TESTJAR)
+	cp $(TESTJAR) $(ROBOTS_DIR)/$(TESTJAR)
+
+$(TESTJAR): $(CLASSES)
+	cp EvBot.properties.test $(OUTDIR)/$(SUPERPACKADE)/EvBot.properties
+	cd $(OUTDIR); jar cvfM  ../EvBot_vtest.jar  `find $(SUPERPACKADE) -type f`
+
+out:
+	mkdir -p $(OUTDIR)
+
+$(CLASSES):$(OUTDIR)/%.class : %.java $(OUTDIR)
+javac $(JFLAGS) $<
 
 clean:
-	rm EvBot.class
+	rm -f $(CLASSES)
