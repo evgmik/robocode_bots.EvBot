@@ -245,6 +245,30 @@ public class EvBot extends AdvancedRobot
 		return dist;
 	}
 
+	public boolean isBotMovingClockWiseWithRespectToPoint (double px, double py) {
+		double x=getX();
+		double y=getY();
+		double a=getHeadingRadians();
+		double vx=getVelocity()*Math.sin(a);
+		double vy=getVelocity()*Math.cos(a);
+		
+		// radius vectors from the center of the battle fields
+		double rx1=x-px;
+		double ry1=y-py;
+
+		double rx2=x+vx - px;
+		double ry2=y+vy - py;
+
+		// recall linear algebra: 
+		// sign of z-component of vector product related to rotation direction
+		// positive z component means CCW rotation
+		double z=rx1*ry2 - ry1*rx2;
+		if (z >= 0) {
+			return false;
+		}
+		return true;
+	}
+
 	public void moveOrTurn(double dist, double suggestedAngle) {
 		double angle=0;
 		double moveLength;
