@@ -1,6 +1,7 @@
 package eem;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Arrays;
 import robocode.*;
 import robocode.util.*;
 import robocode.Rules.*;
@@ -94,6 +95,12 @@ public class EvBot extends AdvancedRobot
 		}
 		dbg(dbg_noise, "angle return = " + angle);
 		return angle;
+	}
+
+	public double distanceToTheClosestWallFrom( double px, double py ) {
+		double[] d={px, getBattleFieldWidth() -px, py, getBattleFieldHeight()-py};
+		Arrays.sort(d);
+		return d[0];
 	}
 
 	public String whichWallAhead() {
