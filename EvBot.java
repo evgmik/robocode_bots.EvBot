@@ -511,7 +511,7 @@ public class EvBot extends AdvancedRobot
 			dbg(dbg_noise, "Game time: " + getTime());
 			dbg(dbg_noise, "Number of other bots = " + getOthers());
 
-			if ( ( getTime() - targetLastSeenTime ) > 1) 
+			if ( ( getTime() - targetLastSeenTime ) > 2) 
 				targetUnlocked = true;
 			else
 				targetUnlocked = false;
@@ -762,9 +762,9 @@ public class EvBot extends AdvancedRobot
 			// show estimated future position
 			g.drawLine(targetFutureX, targetFutureY, (int)getX(), (int)getY());
 			g.fillRect(targetFutureX - 20, targetFutureY - 20, 40, 40);
-
-
 		}
+
+		dbg(dbg_noise, "targetUnlocked = " + targetUnlocked);
 		if ( haveTarget && targetUnlocked ) {
 			g.setColor(Color.yellow);
 			g.drawOval((int) (getX() - 50), (int) (getY() - 50), 100, 100);
