@@ -20,6 +20,13 @@ public class EvBot extends AdvancedRobot
 	int targetLastX = Integer.MIN_VALUE;
 	int targetLastY = Integer.MIN_VALUE;
 	int nonexisting_coord = -10000;
+	// bot tangent position at the starboard/port (right/left) 
+	// at minimal turning radius at the current speed
+	double starboardStickX = nonexisting_coord;
+	double starboardStickY = nonexisting_coord;
+	double portStickX = nonexisting_coord;
+	double portStickY = nonexisting_coord;
+
 	int targetPrevX = nonexisting_coord;
 	int targetPrevY = nonexisting_coord;
 	int targetFutureX = nonexisting_coord;
@@ -57,6 +64,15 @@ public class EvBot extends AdvancedRobot
 	int dbg_noise=10;
 	int verbosity_level=6; // current level, smaller is less noisy
 
+	public void calculateSticksEndsPosition() {
+		double r=shortestTurnRadiusVsSpeed();
+		double a=getHeadingRadians();
+		starboardStickX = getX() + r*Math.sin(a+Math.PI/2);
+		starboardStickY = getY() + r*Math.cos(a+Math.PI/2);
+
+		portStickX = getX() + r*Math.sin(a-Math.PI/2);
+		portStickY = getY() + r*Math.cos(a-Math.PI/2);
+	}
 
 	public double cortesian2game_angles(double angle) {
 		angle=90-angle;
@@ -234,6 +250,7 @@ public class EvBot extends AdvancedRobot
 		double moveLength;
 		double shortestTurnRadius=shortestTurnRadiusVsSpeed();
 		double hardStopDistance = 20;
+		calculateSticksEndsPosition();
 		String wallAhead = whichWallAhead();
 		double evadeWallDist = 
 			shortestTurnRadius*
@@ -676,7 +693,7 @@ public class EvBot extends AdvancedRobot
 		movingRadarToLastKnownTargetLocation = false;
 		//radarSpinDirection=1;
 		haveTarget = true;
-		targetUnlocked = true;
+		//targetUnlocked = true;
 		dbg(dbg_noise, "Found target");
 	}
 
@@ -756,6 +773,15 @@ public class EvBot extends AdvancedRobot
 			g.setColor(Color.red);
 			g.drawOval((int) (getX() - 50), (int) (getY() - 50), 100, 100);
 		}
+		// draw starboard and port side sticks
+		calculateSticksEndsPosition();
+		g.setColor(Color.green);
+		g.drawLine((int) starboardStickX, (int) starboardStickY, (int)getX(), (int)getY());
+		g.drawOval((int) starboardStickX -5, (int) starboardStickY-5, 10, 10);
+		g.setColor(Color.red);
+		g.drawLine((int) portStickX, (int) portStickY, (int)getX(), (int)getY());
+		g.drawOval((int) portStickX-5, (int) portStickY-5, 10, 10);
+
 
 
 	}
