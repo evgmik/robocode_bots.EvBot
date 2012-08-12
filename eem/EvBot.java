@@ -743,6 +743,9 @@ public class EvBot extends AdvancedRobot
 		targetDistance = e.getDistance();
 		targetLastSeenTime = getTime();
 
+		// show scanned bot path
+		PaintRobotPath.onPaint(getGraphics(), e.getName(), getTime(), targetLastX, targetLastY, Color.YELLOW);
+
 		if ( targetPrevY == nonexisting_coord ) {
 			// put same coordinate for unknown previous position
 			targetPrevX = targetLastX;
@@ -813,6 +816,9 @@ public class EvBot extends AdvancedRobot
 	public void onPaint(Graphics2D g) {
 		// Set the paint color to a red half transparent color
 		if (haveTarget ) {
+			// show our own path
+			PaintRobotPath.onPaint(g, getName(), getTime(), getX(), getY(), Color.GREEN);
+
 			g.setColor(new Color(0xff, 0x00, 0x00, 0x80));
 
 			// Draw a line from our robot to the scanned robot
@@ -836,20 +842,22 @@ public class EvBot extends AdvancedRobot
 			g.drawOval((int) (getX() - 50), (int) (getY() - 50), 100, 100);
 		}
 		// draw starboard and port side sticks
-		calculateSticksEndsPosition();
-		g.setColor(Color.green);
-		g.drawLine((int) starboardStickX, (int) starboardStickY, (int)getX(), (int)getY());
-		g.drawOval((int) starboardStickX -5, (int) starboardStickY-5, 10, 10);
-		g.setColor(Color.red);
-		g.drawLine((int) portStickX, (int) portStickY, (int)getX(), (int)getY());
-		g.drawOval((int) portStickX-5, (int) portStickY-5, 10, 10);
+		if (false) {
+			// show starboard and port sticks with little circles at the ends
+			calculateSticksEndsPosition();
+			g.setColor(Color.green);
+			g.drawLine((int) starboardStickX, (int) starboardStickY, (int)getX(), (int)getY());
+			g.drawOval((int) starboardStickX -5, (int) starboardStickY-5, 10, 10);
+			g.setColor(Color.red);
+			g.drawLine((int) portStickX, (int) portStickY, (int)getX(), (int)getY());
+			g.drawOval((int) portStickX-5, (int) portStickY-5, 10, 10);
 
-		//draw possible shortest turn radius paths
-		g.setColor(Color.green);
-		g.drawOval((int) (starboardStickX - shortestTurnRadiusVsSpeed()), (int) (starboardStickY - shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()));
-
-		g.setColor(Color.red);
-		g.drawOval((int) (portStickX - shortestTurnRadiusVsSpeed()), (int) (portStickY - shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()));
+			//draw possible shortest turn radius paths
+			g.setColor(Color.green);
+			g.drawOval((int) (starboardStickX - shortestTurnRadiusVsSpeed()), (int) (starboardStickY - shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()));
+			g.setColor(Color.red);
+			g.drawOval((int) (portStickX - shortestTurnRadiusVsSpeed()), (int) (portStickY - shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()));
+		}
 
 	}
 
