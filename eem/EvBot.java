@@ -651,7 +651,7 @@ public class EvBot extends AdvancedRobot
 				}
 				dbg(dbg_rutine, "moving to the closest corner with rotation by " + angle );
 			}
-			if ( haveTarget && (getOthers() >= 1) && (Math.random() < 0.95) ) {
+			if ( haveTarget && (getOthers() <= 1) && (Math.random() < 0.95) ) {
 				// last enemy standing lets spiral in
 				angle = shortest_arc( -90 + (angle2enemy - getHeading() ) );
 				if ( Math.abs(angle) > 90 ) {
@@ -673,10 +673,22 @@ public class EvBot extends AdvancedRobot
 					dist = getDistanceRemaining();
 				}
 				dbg(dbg_noise, "circle around last enemy by rotating = " + angle );
+			} 
+
+			if ( getOthers() > 1 && (Math.random() < 0.95) ) {
+					dist = getDistanceRemaining();
+					angle = getTurnRemaining();
+				if ( Math.abs(dist) > 20 ) {
+					dbg(dbg_noise, "continue previous motion" );
+				} else {
+					angleRandDeviation=45*sign(0.5-Math.random());
+					dist=100*sign(0.6-Math.random());
+					angle =  angleRandDeviation;
+				}
 			} else {
 				// make preemptive evasive motion
 				angleRandDeviation=25*sign(0.5-Math.random());
-				dist=100*sign(0.5-Math.random());
+				dist=150*sign(0.5-Math.random());
 				angle =  angleRandDeviation;
 				dbg(dbg_rutine, "Random evasive motion");
 			}
