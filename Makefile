@@ -1,17 +1,22 @@
 # -*- make -*-
 # FILE: "/home/evmik/src/my_src/robocode/Makefile"
-# LAST MODIFICATION: "Sun, 12 Aug 2012 01:00:13 -0400 (evmik)"
+# LAST MODIFICATION: "Sun, 12 Aug 2012 16:36:54 -0400 (evmik)"
 # (C) 2012 by Eugeniy Mikhailov, <evgmik@gmail.com>
 # $Id:$
 
 OUTDIR=out
 SUPERPACKADE=eem
-JFLAGS=-d $(OUTDIR) -classpath /usr/share/java/robocode.jar:
+
+#ROBOTS_DIR=~/.robocode/robots/
+ROBOTS_DIR= ~/misc/rumble-1.7.3.0/robots/
+# ROBOCODEJAR=/usr/share/java/robocode.jar
+ROBOCODEJAR=~/misc/rumble-1.7.3.0/libs/robocode.jar
+
+JFLAGS=-d $(OUTDIR) -classpath $(ROBOCODEJAR):
 
 VERSION:=$(shell git describe --tags --abbrev=0)
 UUID:=$(shell uuid)
 
-ROBOTS_DIR=~/.robocode/robots/
 TESTJAR=EvBot_vtest.jar 
 RELEASEJAR=$(SUPERPACKADE).EvBot_$(VERSION).jar
 
