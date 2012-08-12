@@ -500,23 +500,26 @@ public class EvBot extends AdvancedRobot
 		dbg(dbg_noise, "Estimated time to hit = " + timeToHit);
 
 
-		// random choice of future target velocity
-		rnd=Math.random();
-		if ( rnd > .2 ) {
+		if (getOthers() < 3 ) {
+			// only survivors are smart and we had to do random gun
 			rnd=Math.random();
-			// assume that target will change speed
-			if ( rnd > .6) {
-				// k in -1..1
-				k = 2*(Math.random()-1); 
-			} else {
-				// often smart bots have only small displacements
-				// k in -0.25..0.25
-				k = 0.5*(Math.random()-1); 
+			// random choice of future target velocity
+			if ( rnd > .2 ) {
+				rnd=Math.random();
+				// assume that target will change speed
+				if ( rnd > .6) {
+					// k in -1..1
+					k = 2*(Math.random()-1); 
+				} else {
+					// often smart bots have only small displacements
+					// k in -0.25..0.25
+					k = 0.5*(Math.random()-1); 
+				}
+				// we keep the same target heading
+				vTx =k*8*vTx/vT; // 8 is maximum speed
+				vTy =k*8*vTy/vT;
+				vT = k*8;
 			}
-			// we keep the same target heading
-			vTx =k*8*vTx/vT; // 8 is maximum speed
-			vTy =k*8*vTy/vT;
-			vT = k*8;
 		}
 		
 
