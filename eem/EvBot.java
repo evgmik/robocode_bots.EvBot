@@ -523,6 +523,10 @@ public class EvBot extends AdvancedRobot
 					k = 0.5*(Math.random()-1); 
 				}
 				// we keep the same target heading
+				if ( vT == 0 ) {
+					// to avoid division by zero
+				       	vT=0.01; 
+				}
 				vTx =k*8*vTx/vT; // 8 is maximum speed
 				vTy =k*8*vTy/vT;
 				vT = k*8;
