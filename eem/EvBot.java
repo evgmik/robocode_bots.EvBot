@@ -2,6 +2,7 @@ package eem;
 import eem.misc.*;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Point2D;
 import java.util.Arrays;
 import robocode.*;
 import robocode.util.*;
@@ -29,6 +30,8 @@ public class EvBot extends AdvancedRobot
 	double portStickX = nonexisting_coord;
 	double portStickY = nonexisting_coord;
 
+
+	private Point2D.Double myCoord;
 	int targetPrevX = nonexisting_coord;
 	int targetPrevY = nonexisting_coord;
 	int targetFutureX = nonexisting_coord;
@@ -66,14 +69,18 @@ public class EvBot extends AdvancedRobot
 	int dbg_noise=10;
 	int verbosity_level=6; // current level, smaller is less noisy
 
+	public void initTic() {
+		myCoord= new Point2D.Double(getX(), getY());
+	}
+
 	public void calculateSticksEndsPosition() {
 		double r=shortestTurnRadiusVsSpeed();
 		double a=getHeadingRadians();
-		starboardStickX = getX() + r*Math.sin(a+Math.PI/2);
-		starboardStickY = getY() + r*Math.cos(a+Math.PI/2);
+		starboardStickX = myCoord.x + r*Math.sin(a+Math.PI/2);
+		starboardStickY = myCoord.y + r*Math.cos(a+Math.PI/2);
 
-		portStickX = getX() + r*Math.sin(a-Math.PI/2);
-		portStickY = getY() + r*Math.cos(a-Math.PI/2);
+		portStickX = myCoord.x + r*Math.sin(a-Math.PI/2);
+		portStickY = myCoord.y + r*Math.cos(a-Math.PI/2);
 	}
 
 	public double cortesian2game_angles(double angle) {
@@ -137,8 +144,8 @@ public class EvBot extends AdvancedRobot
 	public String whichWallAhead() {
 		double angle=getHeadingRadians(); 
 		double velocity=getVelocity();
-		double x = getX();
-		double y = getY();
+		double x = myCoord.x;
+		double y = myCoord.y;
 
 		String wallName="";
 
@@ -182,16 +189,16 @@ public class EvBot extends AdvancedRobot
 		String wallName = whichWallAhead();
 
 		if ( wallName.equals("left") ) {
-				dist = getX();
+				dist = myCoord.x;
 		}	
 		if ( wallName.equals("right") ) {
-				dist = getBattleFieldWidth() - getX();
+				dist = getBattleFieldWidth() - myCoord.x;
 		}
 		if ( wallName.equals("bottom") ) {
-				dist = getY();
+				dist = myCoord.y;
 		}
 		if ( wallName.equals("top") ) {
-				dist = getBattleFieldHeight() - getY();
+				dist = getBattleFieldHeight() - myCoord.y;
 		}
 		dist = dist - robotHalfSize;
 		dist = Math.max(dist,0);
@@ -207,8 +214,8 @@ public class EvBot extends AdvancedRobot
 		if ( getVelocity() < 0 ) 
 			angle += 180; // we are moving backwards
 		angle = shortest_arc(angle);
-	        double x = getX();
-	        double y = getY();
+	        double x = myCoord.x;
+	        double y = myCoord.y;
 		int rotDir = 1;
 		double retAngle=0;
 
@@ -255,8 +262,8 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public double distTo(double x, double y) {
-		double dx=x-getX();
-		double dy=y-getY();
+		double dx=x-myCoord.x;
+		double dy=y-myCoord.y;
 
 		return Math.sqrt(dx*dx + dy*dy);
 	}
@@ -286,8 +293,8 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public boolean isBotMovingClockWiseWithRespectToPoint (double px, double py) {
-		double x=getX();
-		double y=getY();
+		double x=myCoord.x;
+		double y=myCoord.y;
 		double a=getHeadingRadians();
 		double vx=getVelocity()*Math.sin(a);
 		double vy=getVelocity()*Math.cos(a);
@@ -490,8 +497,8 @@ public class EvBot extends AdvancedRobot
 		dbg(dbg_noise, "Target estimated current position Tx = " + Tx + " Ty = " + Ty);
 
 		// radius vector to target
-		dx = Tx-getX();
-		dy = Ty-getY();
+		dx = Tx-myCoord.x;
+		dy = Ty-myCoord.y;
 		dist = Math.sqrt(dx*dx + dy*dy);
 
 		// rough estimate
@@ -550,8 +557,8 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public double angleToClosestCorner() {
-		double x=getX();
-		double y=getY();
+		double x=myCoord.x;
+		double y=myCoord.y;
 		// corner coordinates
 		double cX=0; 
 		double cY=0; 
@@ -576,9 +583,9 @@ public class EvBot extends AdvancedRobot
 
 	public double bearingTo( double ptx, double pty ) {
 		return shortest_arc(
-				cortesian2game_angles( Math.atan2( pty-getY(), ptx-getX() )*180/Math.PI )
+				cortesian2game_angles( Math.atan2( pty-myCoord.y, ptx-myCoord.x )*180/Math.PI )
 				);
-		//return shortest_arc ( Math.atan2( pty-getY(), ptx-getX() )*180/Math.PI );
+		//return shortest_arc ( Math.atan2( pty-myCoord.y, ptx-myCoord.x )*180/Math.PI );
 	}
 
 	public void run() {
@@ -594,7 +601,9 @@ public class EvBot extends AdvancedRobot
 		double angleRandDeviation = nonexisting_coord;
 
 		setColors(Color.red,Color.blue,Color.green);
+
 		while(true) {
+			initTic() ;
 			// Replace the next 4 lines with any behavior you would like
 			dbg(dbg_rutine, "----------- Next run " + getTime() + " -------------");
 			dbg(dbg_noise, "Game time: " + getTime());
@@ -610,8 +619,8 @@ public class EvBot extends AdvancedRobot
 
 			if (haveTarget) {
 				//angle to enemy
-				dx=targetLastX - (int)(getX());
-				dy=targetLastY - (int)(getY());
+				dx=targetLastX - (int)(myCoord.x);
+				dy=targetLastY - (int)(myCoord.y);
 				targetDistance = Math.sqrt( dx*dx + dy*dy);
 				dbg(dbg_noise, "Last known target X coordinate = " + targetLastX );
 				dbg(dbg_noise, "Last known target Y coordinate = " + targetLastY );
@@ -629,8 +638,8 @@ public class EvBot extends AdvancedRobot
 				dbg(dbg_noise, "Predicted target X coordinate = " + targetFutureX );
 				dbg(dbg_noise, "Predicted target Y coordinate = " + targetFutureY );
 
-				dx=targetFutureX - (int)(getX());
-				dy=targetFutureY - (int)(getY());
+				dx=targetFutureX - (int)(myCoord.x);
+				dy=targetFutureY - (int)(myCoord.y);
 
 				angle2enemyInFutire=Math.atan2(dy,dx);
 				angle2enemyInFutire=cortesian2game_angles(angle2enemyInFutire*180/Math.PI);
@@ -780,8 +789,8 @@ public class EvBot extends AdvancedRobot
 		targetPrevSeenTime = targetLastSeenTime;
 
 		// Calculate the coordinates of the robot
-		targetLastX = (int)(getX() + Math.sin(angle) * e.getDistance());
-		targetLastY = (int)(getY() + Math.cos(angle) * e.getDistance());
+		targetLastX = (int)(myCoord.x + Math.sin(angle) * e.getDistance());
+		targetLastY = (int)(myCoord.y + Math.cos(angle) * e.getDistance());
 		targetDistance = e.getDistance();
 		targetLastSeenTime = getTime();
 
@@ -859,39 +868,39 @@ public class EvBot extends AdvancedRobot
 		// Set the paint color to a red half transparent color
 		if (haveTarget ) {
 			// show our own path
-			PaintRobotPath.onPaint(g, getName(), getTime(), getX(), getY(), Color.GREEN);
+			PaintRobotPath.onPaint(g, getName(), getTime(), myCoord.x, myCoord.y, Color.GREEN);
 
 			g.setColor(new Color(0xff, 0x00, 0x00, 0x80));
 
 			// Draw a line from our robot to the scanned robot
-			g.drawLine(targetLastX, targetLastY, (int)getX(), (int)getY());
+			g.drawLine(targetLastX, targetLastY, (int)myCoord.x, (int)myCoord.y);
 
 			// Draw a filled square on top of the scanned robot that covers it
 			g.fillRect(targetLastX - 20, targetLastY - 20, 40, 40);
 
 			// show estimated future position
-			g.drawLine(targetFutureX, targetFutureY, (int)getX(), (int)getY());
+			g.drawLine(targetFutureX, targetFutureY, (int)myCoord.x, (int)myCoord.y);
 			g.fillRect(targetFutureX - 20, targetFutureY - 20, 40, 40);
 		}
 
 		dbg(dbg_noise, "targetUnlocked = " + targetUnlocked);
 		if ( haveTarget && targetUnlocked ) {
 			g.setColor(Color.yellow);
-			g.drawOval((int) (getX() - 50), (int) (getY() - 50), 100, 100);
+			g.drawOval((int) (myCoord.x - 50), (int) (myCoord.y - 50), 100, 100);
 		}
 		if ( haveTarget && !targetUnlocked ) {
 			g.setColor(Color.red);
-			g.drawOval((int) (getX() - 50), (int) (getY() - 50), 100, 100);
+			g.drawOval((int) (myCoord.x - 50), (int) (myCoord.y - 50), 100, 100);
 		}
 		// draw starboard and port side sticks
 		if (false) {
 			// show starboard and port sticks with little circles at the ends
 			calculateSticksEndsPosition();
 			g.setColor(Color.green);
-			g.drawLine((int) starboardStickX, (int) starboardStickY, (int)getX(), (int)getY());
+			g.drawLine((int) starboardStickX, (int) starboardStickY, (int)myCoord.x, (int)myCoord.y);
 			g.drawOval((int) starboardStickX -5, (int) starboardStickY-5, 10, 10);
 			g.setColor(Color.red);
-			g.drawLine((int) portStickX, (int) portStickY, (int)getX(), (int)getY());
+			g.drawLine((int) portStickX, (int) portStickY, (int)myCoord.x, (int)myCoord.y);
 			g.drawOval((int) portStickX-5, (int) portStickY-5, 10, 10);
 
 			//draw possible shortest turn radius paths
