@@ -584,12 +584,14 @@ public class EvBot extends AdvancedRobot
 	public void run() {
 		int dx=0;
 		int dy=0;
-		double angle;
+		double angle = nonexisting_coord;
 		double firePower=0;
 		double bulletFlyTimeEstimate;
 		double moveLength;
 		double targetDistance = absurdly_huge;
 		double radarBearingToEnemy=0;
+		double dist = nonexisting_coord;
+		double angleRandDeviation = nonexisting_coord;
 
 		setColors(Color.red,Color.blue,Color.green);
 		while(true) {
@@ -635,8 +637,6 @@ public class EvBot extends AdvancedRobot
 
 			}
 
-			double dist = 100;
-			double angleRandDeviation=45*sign(0.5-Math.random());
 			dbg(dbg_noise, "Normal motion algorithm");
 			if (getOthers()>=5 && Math.random() < 0.2 ) { 
 				//move to the closest corner as long as there are a lot of bots
@@ -685,7 +685,9 @@ public class EvBot extends AdvancedRobot
 					dist=100*sign(0.6-Math.random());
 					angle =  angleRandDeviation;
 				}
-			} else {
+			} 
+			
+			if ( dist == nonexisting_coord && angle == nonexisting_coord ) {
 				// make preemptive evasive motion
 				angleRandDeviation=25*sign(0.5-Math.random());
 				dist=150*sign(0.5-Math.random());
