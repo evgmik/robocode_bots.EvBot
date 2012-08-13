@@ -31,7 +31,7 @@ public class EvBot extends AdvancedRobot
 	double portStickY = nonexisting_coord;
 
 
-	private Point2D.Double myCoord;
+	private Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
 	int targetPrevX = nonexisting_coord;
 	int targetPrevY = nonexisting_coord;
 	int targetFutureX = nonexisting_coord;
@@ -70,7 +70,9 @@ public class EvBot extends AdvancedRobot
 	int verbosity_level=6; // current level, smaller is less noisy
 
 	public void initTic() {
-		myCoord= new Point2D.Double(getX(), getY());
+		//myCoord= new Point2D.Double(getX(), getY());
+		myCoord.x = getX();
+	       	myCoord.y = getY();
 	}
 
 	public void calculateSticksEndsPosition() {
