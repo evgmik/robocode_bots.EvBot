@@ -1,6 +1,6 @@
 # -*- make -*-
 # FILE: "/home/evmik/src/my_src/robocode/Makefile"
-# LAST MODIFICATION: "Mon, 13 Aug 2012 14:16:27 -0400 (evmik)"
+# LAST MODIFICATION: "Mon, 13 Aug 2012 15:54:47 -0400 (evmik)"
 # (C) 2012 by Eugeniy Mikhailov, <evgmik@gmail.com>
 # $Id:$
 
@@ -26,6 +26,9 @@ CLASSES=$(SRC:%.java=$(OUTDIR)/%.class)
 .SUFFIXES: .java .class 
 
 all: $(CLASSES) $(TESTJAR) copy-jar-test
+
+release: $(RELEASEJAR)
+	cp $(RELEASEJAR) $(ROBOTS_DIR)/$(RELEASEJAR)
 
 upload: $(RELEASEJAR)
 	 rsync -rvze ssh $(RELEASEJAR) beamhome.dyndns.org:public_html/robocode/	
