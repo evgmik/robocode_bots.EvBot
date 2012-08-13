@@ -1,9 +1,0 @@
-#Robot Properties
-#Sat Aug 11 01:30:45 EDT 2012
-robot.description=Simple predictor for fire and naive evasion
-robocode.version=1.6.2
-robot.java.source.included=true
-robot.version=vtest
-robot.author.name=beaming
-uuid=55ff1c5b-0c40-432d-adb5-a5f7658a4aed
-robot.classname=eem.EvBot
