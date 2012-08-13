@@ -57,6 +57,8 @@ public class EvBot extends AdvancedRobot
 	double angle2enemyInFutire= 0;
 	double desiredBodyRotationDirection = 0; // our robot body desired angle
 	boolean gameJustStarted = true;
+	boolean gunFired = false;
+	String gunChoice = "none";
 	int countFullSweepDelay=0;
 	int radarSpinDirection =1;
 	String targetName="";
@@ -482,15 +484,23 @@ public class EvBot extends AdvancedRobot
 
 	public void  setFutureTargetPosition( double firePower ) {
 		double Tx, Ty, vTx, vTy, vT,  dx, dy, dist;
+		double sin_vT, cos_vT;
 		double timeToHit;
 		double a, b, c;
 		double rnd,k;
 		double bSpeed=bulletSpeed( firePower );
 
+		if ( gunChoice.equals("random") && !gunFired ) {
+			// no need to update future coordinates before gun fire
+			return;
+		}
+
 		// target velocity
 		vTx = (targetLastX - targetPrevX)/(targetLastSeenTime - targetPrevSeenTime);
 		vTy = (targetLastY - targetPrevY)/(targetLastSeenTime - targetPrevSeenTime);
 		vT = Math.sqrt(vTx*vTx + vTy*vTy);
+		cos_vT=vTx/vT;
+		sin_vT=vTy/vT;
 		dbg(dbg_noise, "Target velocity vTx = " + vTx + " vTy = " + vTy);
 
 		// estimated current target position
@@ -510,6 +520,8 @@ public class EvBot extends AdvancedRobot
 
 
 		if (getOthers() < 3 ) {
+			gunChoice = "random";
+			gunFired = false;
 			// only survivors are smart and we had to do random gun
 			rnd=Math.random();
 			// random choice of future target velocity
@@ -518,20 +530,24 @@ public class EvBot extends AdvancedRobot
 				// assume that target will change speed
 				if ( rnd > .6) {
 					// k in -1..1
-					k = 2*(Math.random()-1); 
+					k = 2*(Math.random()-0.5); 
 				} else {
 					// often smart bots have only small displacements
 					// k in -0.25..0.25
-					k = 0.5*(Math.random()-1); 
+					k = 0.5*(Math.random()-0.5); 
 				}
 				// we keep the same target heading
 				if ( vT == 0 ) {
 					// to avoid division by zero
 				       	vT=0.01; 
 				}
-				vTx =k*8*vTx/vT; // 8 is maximum speed
-				vTy =k*8*vTy/vT;
-				vT = k*8;
+				vT=(1+k*8)*vT; // we change speed +/- to old values
+				// check that we are with in game limits
+				// 8 is maximum speed
+				vT = Math.max(-8,vT);
+				vT = Math.min( 8,vT);
+				vTx = cos_vT*vT; 
+				vTy = sin_vT*vT;
 			}
 		}
 		
@@ -756,6 +772,7 @@ public class EvBot extends AdvancedRobot
 				    Math.abs(predictedBulletDeviation) < Math.min( getHeight(), getWidth())/2 ) {
 					dbg(dbg_noise, "Firing the gun with power = " + firePower);
 					setFire(firePower);
+					gunFired = true;
 				}
 
 
