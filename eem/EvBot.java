@@ -44,7 +44,7 @@ public class EvBot extends AdvancedRobot
 	boolean movingRadarToLastKnownTargetLocation = false;
 	boolean executingWallEvadingTurn = false;
 	int radarMotionMultiplier = 1;
-	int fullSweepDelay = 10;
+	int fullSweepDelay = 200;
 	double radarSweepSubAngle=game_rules.RADAR_TURN_RATE ;
 	double radarSmallestRockingMotion = game_rules.RADAR_TURN_RATE/4;
 	int numberOfSmallRadarSweeps =(int) Math.ceil(360 / radarSweepSubAngle);
@@ -772,6 +772,7 @@ public class EvBot extends AdvancedRobot
 				    Math.abs(predictedBulletDeviation) < Math.min( getHeight(), getWidth())/2 ) {
 					dbg(dbg_noise, "Firing the gun with power = " + firePower);
 					setFire(firePower);
+					countFullSweepDelay = -1; // we can sweep do full radar sweep
 					gunFired = true;
 				}
 
