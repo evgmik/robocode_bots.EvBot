@@ -631,6 +631,71 @@ public class EvBot extends AdvancedRobot
 		//return shortest_arc ( Math.atan2( pty-myCoord.y, ptx-myCoord.x )*180/Math.PI );
 	}
 
+	public void makeMove() {
+		double angle = nonexisting_coord;
+		double angleRandDeviation = nonexisting_coord;
+		double dist = nonexisting_coord;
+		dbg(dbg_noise, "Normal motion algorithm");
+		if (getOthers()>=5 && Math.random() < 0.2 ) { 
+			//move to the closest corner as long as there are a lot of bots
+			double angle2corner = angleToClosestCorner();
+			dbg(dbg_noise, "angle to the closest corner = " + angle2corner );
+			angle = shortest_arc( angle2corner - getHeading());
+			dist = 50;
+			if ( Math.abs(angle) > 90 ) {
+				// moving backwards is faster sometimes
+				angle = shortest_arc(angle - 180);
+				dist = -dist;
+			}
+			dbg(dbg_rutine, "moving to the closest corner with rotation by " + angle );
+		}
+		if ( haveTarget && (getOthers() <= 1) && (Math.random() < 0.95) ) {
+			// last enemy standing lets spiral in
+			angle = shortest_arc( -90 + (angle2enemy - getHeading() ) );
+			if ( Math.abs(angle) > 90 ) {
+				if (angle > 0) {
+					angle = angle - 180;
+				} else {
+					angle = angle + 180;
+				}
+			}
+			if ( (Math.random() < 0.10) ) {
+				dbg(dbg_rutine, "setting a new motion" );
+				dist=200*sign(0.5-Math.random());
+				// but we need to move at least a half bot body
+				if (Math.abs(dist) < 50) {
+					dist += 50*sign(dist);
+				}
+			} else {
+				dbg(dbg_noise, "continue previous motion" );
+				dist = getDistanceRemaining();
+			}
+			dbg(dbg_noise, "circle around last enemy by rotating = " + angle );
+		} 
+
+		if ( getOthers() > 1 && (Math.random() < 0.95) ) {
+			dist = getDistanceRemaining();
+			angle = getTurnRemaining();
+			if ( Math.abs(dist) > 20 ) {
+				dbg(dbg_noise, "continue previous motion" );
+			} else {
+				angleRandDeviation=45*sign(0.5-Math.random());
+				dist=100*sign(0.6-Math.random());
+				angle =  angleRandDeviation;
+			}
+		} 
+
+		if ( dist == nonexisting_coord && angle == nonexisting_coord ) {
+			// make preemptive evasive motion
+			angleRandDeviation=25*sign(0.5-Math.random());
+			dist=100*sign(0.6-Math.random());
+			angle =  angleRandDeviation;
+			dbg(dbg_rutine, "Random evasive motion");
+		}
+
+		moveOrTurn(dist, angle);
+	}
+
 	public void run() {
 		int dx=0;
 		int dy=0;
@@ -689,65 +754,7 @@ public class EvBot extends AdvancedRobot
 
 			}
 
-			dbg(dbg_noise, "Normal motion algorithm");
-			if (getOthers()>=5 && Math.random() < 0.2 ) { 
-				//move to the closest corner as long as there are a lot of bots
-				double angle2corner = angleToClosestCorner();
-				dbg(dbg_noise, "angle to the closest corner = " + angle2corner );
-				angle = shortest_arc( angle2corner - getHeading());
-				dist = 50;
-				if ( Math.abs(angle) > 90 ) {
-					// moving backwards is faster sometimes
-					angle = shortest_arc(angle - 180);
-					dist = -dist;
-				}
-				dbg(dbg_rutine, "moving to the closest corner with rotation by " + angle );
-			}
-			if ( haveTarget && (getOthers() <= 1) && (Math.random() < 0.95) ) {
-				// last enemy standing lets spiral in
-				angle = shortest_arc( -90 + (angle2enemy - getHeading() ) );
-				if ( Math.abs(angle) > 90 ) {
-					if (angle > 0) {
-						angle = angle - 180;
-					} else {
-						angle = angle + 180;
-					}
-				}
-				if ( (Math.random() < 0.10) ) {
-					dbg(dbg_rutine, "setting a new motion" );
-					dist=180*sign(0.5-Math.random());
-					// but we need to move at least a half bot body
-					if (Math.abs(dist) < 25) {
-						dist += 25*sign(dist);
-					}
-				} else {
-					dbg(dbg_noise, "continue previous motion" );
-					dist = getDistanceRemaining();
-				}
-				dbg(dbg_noise, "circle around last enemy by rotating = " + angle );
-			} 
-
-			if ( getOthers() > 1 && (Math.random() < 0.95) ) {
-					dist = getDistanceRemaining();
-					angle = getTurnRemaining();
-				if ( Math.abs(dist) > 20 ) {
-					dbg(dbg_noise, "continue previous motion" );
-				} else {
-					angleRandDeviation=45*sign(0.5-Math.random());
-					dist=100*sign(0.6-Math.random());
-					angle =  angleRandDeviation;
-				}
-			} 
-			
-			if ( dist == nonexisting_coord && angle == nonexisting_coord ) {
-				// make preemptive evasive motion
-				angleRandDeviation=25*sign(0.5-Math.random());
-				dist=150*sign(0.5-Math.random());
-				angle =  angleRandDeviation;
-				dbg(dbg_rutine, "Random evasive motion");
-			}
-
-			moveOrTurn(dist, angle);
+			makeMove();
 
 
 			dbg(dbg_noise, "haveTarget = " + haveTarget);
