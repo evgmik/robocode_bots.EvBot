@@ -494,13 +494,23 @@ public class EvBot extends AdvancedRobot
 			// no need to update future coordinates before gun fire
 			return;
 		}
+		gunChoice = "linear"; //default gun
 
 		// target velocity
 		vTx = (targetLastX - targetPrevX)/(targetLastSeenTime - targetPrevSeenTime);
 		vTy = (targetLastY - targetPrevY)/(targetLastSeenTime - targetPrevSeenTime);
 		vT = Math.sqrt(vTx*vTx + vTy*vTy);
-		cos_vT=vTx/vT;
-		sin_vT=vTy/vT;
+		if ( !Utils.isNear(vT, 0) ) {
+			cos_vT=vTx/vT;
+			sin_vT=vTy/vT;
+		} else {
+			// target is stationary
+			// assign small speed in random direction
+			vT=0.001;
+			double rand_angle=2*Math.PI*Math.random();
+			cos_vT=Math.cos(rand_angle);
+			sin_vT=Math.sin(rand_angle);
+		}
 		dbg(dbg_noise, "Target velocity vTx = " + vTx + " vTy = " + vTy);
 
 		// estimated current target position
@@ -551,6 +561,8 @@ public class EvBot extends AdvancedRobot
 			}
 		}
 		
+		dbg(dbg_noise, "Gun choice = " + gunChoice);
+		dbg(dbg_noise, "Projected target velocity vTx = " + vTx + " vTy = " + vTy);
 
 		// back of envelope calculations
 		// for the case of linear target motion with no acceleration
@@ -568,6 +580,8 @@ public class EvBot extends AdvancedRobot
 		targetFutureX = (int)Math.min(targetFutureX, getBattleFieldWidth() );
 		targetFutureY = (int)Math.max(targetFutureY, 0);
 		targetFutureY = (int)Math.min(targetFutureY, getBattleFieldHeight() );
+
+		dbg(dbg_rutine, "Predicted target position " + targetFutureX +", " + targetFutureY);
 
 	}
 	
