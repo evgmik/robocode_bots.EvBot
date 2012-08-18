@@ -537,15 +537,15 @@ public class EvBot extends AdvancedRobot
 
 
 		if (getOthers() < 3 ) {
-			gunChoice = "random";
-			gunFired = false;
 			// only survivors are smart and we had to do random gun
 			rnd=Math.random();
-			// random choice of future target velocity
 			if ( rnd > .2 ) {
+				// random choice of future target velocity
+				gunChoice = "random";
+				gunFired = false;
 				rnd=Math.random();
 				// assume that target will change speed
-				if ( rnd > .6) {
+				if ( rnd > .8) {
 					// k in -1..1
 					k = 2*(Math.random()-0.5); 
 				} else {
