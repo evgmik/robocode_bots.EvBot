@@ -32,6 +32,7 @@ public class EvBot extends AdvancedRobot
 
 
 	private Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
+	private Point2D.Double BattleField = new Point2D.Double(nonexisting_coord, nonexisting_coord);
 	int targetPrevX = nonexisting_coord;
 	int targetPrevY = nonexisting_coord;
 	int targetFutureX = nonexisting_coord;
@@ -71,8 +72,14 @@ public class EvBot extends AdvancedRobot
 	int dbg_noise=10;
 	int verbosity_level=6; // current level, smaller is less noisy
 
+	public void initBattle() {
+		BattleField.x = getBattleFieldWidth();
+		BattleField.y = getBattleFieldHeight();
+
+		setColors(Color.red,Color.blue,Color.green);
+	}
+
 	public void initTic() {
-		//myCoord= new Point2D.Double(getX(), getY());
 		myCoord.x = getX();
 	       	myCoord.y = getY();
 	}
@@ -110,7 +117,7 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public double distanceToTheClosestWallFrom( double px, double py ) {
-		double[] d={px, getBattleFieldWidth() -px, py, getBattleFieldHeight()-py};
+		double[] d={px, BattleField.x -px, py, BattleField.y-py};
 		Arrays.sort(d);
 		return d[0];
 	}
@@ -173,10 +180,10 @@ public class EvBot extends AdvancedRobot
 			if ( y-robotHalfSize <= 0 ) {
 				wallName = "bottom";
 			}
-			if ( x >= getBattleFieldWidth()-robotHalfSize ) {
+			if ( x >= BattleField.x-robotHalfSize ) {
 				wallName = "right";
 			}
-			if ( y >= getBattleFieldHeight()-robotHalfSize ) {
+			if ( y >= BattleField.y-robotHalfSize ) {
 				wallName = "top";
 			}
 		}
@@ -196,13 +203,13 @@ public class EvBot extends AdvancedRobot
 				dist = myCoord.x;
 		}	
 		if ( wallName.equals("right") ) {
-				dist = getBattleFieldWidth() - myCoord.x;
+				dist = BattleField.x - myCoord.x;
 		}
 		if ( wallName.equals("bottom") ) {
 				dist = myCoord.y;
 		}
 		if ( wallName.equals("top") ) {
-				dist = getBattleFieldHeight() - myCoord.y;
+				dist = BattleField.y - myCoord.y;
 		}
 		dist = dist - robotHalfSize;
 		dist = Math.max(dist,0);
@@ -577,9 +584,9 @@ public class EvBot extends AdvancedRobot
 
 		// check that future target position within the battle field
 		targetFutureX = (int)Math.max(targetFutureX, 0);
-		targetFutureX = (int)Math.min(targetFutureX, getBattleFieldWidth() );
+		targetFutureX = (int)Math.min(targetFutureX, BattleField.x );
 		targetFutureY = (int)Math.max(targetFutureY, 0);
-		targetFutureY = (int)Math.min(targetFutureY, getBattleFieldHeight() );
+		targetFutureY = (int)Math.min(targetFutureY, BattleField.y );
 
 		dbg(dbg_rutine, "Predicted target position " + targetFutureX +", " + targetFutureY);
 
@@ -599,19 +606,19 @@ public class EvBot extends AdvancedRobot
 		double cX=0; 
 		double cY=0; 
 		
-		if (x <= getBattleFieldWidth()/2) {
+		if (x <= BattleField.x/2) {
 			// left corner is closer
 			cX=0;
 		} else {
 			// left corner is closer
-			cX=getBattleFieldWidth();
+			cX=BattleField.x;
 		}
-		if (y <= getBattleFieldHeight()/2) {
+		if (y <= BattleField.y/2) {
 			// lower corner is closer
 			cY=0;
 		} else {
 			// upper corner is closer
-			cY=getBattleFieldHeight();
+			cY=BattleField.y;
 		}
 		dbg(dbg_rutine, "the closest corner is at " + cX + ", " + cY);
 		return bearingTo(cX,cY);
@@ -636,7 +643,7 @@ public class EvBot extends AdvancedRobot
 		double dist = nonexisting_coord;
 		double angleRandDeviation = nonexisting_coord;
 
-		setColors(Color.red,Color.blue,Color.green);
+		initBattle();
 
 		while(true) {
 			initTic() ;
