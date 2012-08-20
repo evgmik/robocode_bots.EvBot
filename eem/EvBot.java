@@ -662,7 +662,7 @@ public class EvBot extends AdvancedRobot
 			}
 			if ( (Math.random() < 0.10) ) {
 				dbg(dbg_rutine, "setting a new motion" );
-				dist=200*sign(0.5-Math.random());
+				dist=200*(0.5-Math.random());
 				// but we need to move at least a half bot body
 				if (Math.abs(dist) < 50) {
 					dist += 50*sign(dist);
