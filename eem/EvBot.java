@@ -1,5 +1,6 @@
 package eem;
 import eem.misc.*;
+import eem.botVersion.*;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -699,6 +700,7 @@ public class EvBot extends AdvancedRobot
 	public void run() {
 		int dx=0;
 		int dy=0;
+		botVersion botVer = new botVersion();
 		double angle = nonexisting_coord;
 		double firePower=0;
 		double bulletFlyTimeEstimate;
@@ -713,7 +715,7 @@ public class EvBot extends AdvancedRobot
 		while(true) {
 			initTic() ;
 			// Replace the next 4 lines with any behavior you would like
-			dbg(dbg_rutine, "----------- Next run " + getTime() + " -------------");
+			dbg(dbg_rutine, "----------- Bot version: " + botVer.getVersion() + "------- Tic # " + getTime() + " -------------");
 			dbg(dbg_noise, "Game time: " + getTime());
 			dbg(dbg_noise, "Number of other bots = " + getOthers());
 
