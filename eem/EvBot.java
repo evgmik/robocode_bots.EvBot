@@ -21,8 +21,8 @@ public class EvBot extends AdvancedRobot
 	Rules game_rules;
 	double BodyTurnRate = 10;
 	int robotHalfSize = 18;
-	int targetLastX = Integer.MIN_VALUE;
-	int targetLastY = Integer.MIN_VALUE;
+	double targetLastX = Integer.MIN_VALUE;
+	double targetLastY = Integer.MIN_VALUE;
 	int nonexisting_coord = -10000;
 	// bot tangent position at the starboard/port (right/left) 
 	// at minimal turning radius at the current speed
@@ -34,10 +34,10 @@ public class EvBot extends AdvancedRobot
 
 	private Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
 	private Point2D.Double BattleField = new Point2D.Double(nonexisting_coord, nonexisting_coord);
-	int targetPrevX = nonexisting_coord;
-	int targetPrevY = nonexisting_coord;
-	int targetFutureX = nonexisting_coord;
-	int targetFutureY = nonexisting_coord;
+	double targetPrevX = nonexisting_coord;
+	double targetPrevY = nonexisting_coord;
+	double targetFutureX = nonexisting_coord;
+	double targetFutureY = nonexisting_coord;
 	long targetLastSeenTime = - 10; // in far past
 	long targetPrevSeenTime = - 10; // in far past
 	boolean haveTarget = false; 
@@ -498,6 +498,7 @@ public class EvBot extends AdvancedRobot
 		double rnd,k;
 		double bSpeed=bulletSpeed( firePower );
 
+gunChoice = "linear"; //default gun //dbg
 		if ( gunChoice.equals("random") && !gunFired ) {
 			// no need to update future coordinates before gun fire
 			return;
@@ -514,7 +515,7 @@ public class EvBot extends AdvancedRobot
 		} else {
 			// target is stationary
 			// assign small speed in random direction
-			vT=0.001;
+			vT=0.00001;
 			double rand_angle=2*Math.PI*Math.random();
 			cos_vT=Math.cos(rand_angle);
 			sin_vT=Math.sin(rand_angle);
@@ -524,7 +525,7 @@ public class EvBot extends AdvancedRobot
 		// estimated current target position
 		Tx = targetLastX + vTx*(getTime()-targetLastSeenTime);
 		Ty = targetLastY + vTy*(getTime()-targetLastSeenTime);
-		dbg(dbg_noise, "Target estimated current position Tx = " + Tx + " Ty = " + Ty);
+		dbg(dbg_debuging, "Target estimated current position Tx = " + Tx + " Ty = " + Ty);
 
 		// radius vector to target
 		dx = Tx-myCoord.x;
@@ -537,6 +538,7 @@ public class EvBot extends AdvancedRobot
 		dbg(dbg_noise, "Estimated time to hit = " + timeToHit);
 
 
+		if (false) { //dbg
 		if (getOthers() < 3 ) {
 			// only survivors are smart and we had to do random gun
 			rnd=Math.random();
@@ -568,9 +570,10 @@ public class EvBot extends AdvancedRobot
 				vTy = sin_vT*vT;
 			}
 		}
+		}
 		
-		dbg(dbg_noise, "Gun choice = " + gunChoice);
-		dbg(dbg_noise, "Projected target velocity vTx = " + vTx + " vTy = " + vTy);
+		dbg(dbg_debuging, "Gun choice = " + gunChoice);
+		dbg(dbg_debuging, "Projected target velocity vTx = " + vTx + " vTy = " + vTy);
 
 		// back of envelope calculations
 		// for the case of linear target motion with no acceleration
@@ -698,8 +701,8 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void run() {
-		int dx=0;
-		int dy=0;
+		double dx=0;
+		double dy=0;
 		botVersion botVer = new botVersion();
 		double angle = nonexisting_coord;
 		double firePower=0;
@@ -729,8 +732,8 @@ public class EvBot extends AdvancedRobot
 
 			if (haveTarget) {
 				//angle to enemy
-				dx=targetLastX - (int)(myCoord.x);
-				dy=targetLastY - (int)(myCoord.y);
+				dx=targetLastX - (myCoord.x);
+				dy=targetLastY - (myCoord.y);
 				targetDistance = Math.sqrt( dx*dx + dy*dy);
 				dbg(dbg_noise, "Last known target X coordinate = " + targetLastX );
 				dbg(dbg_noise, "Last known target Y coordinate = " + targetLastY );
@@ -828,6 +831,9 @@ public class EvBot extends AdvancedRobot
 	 * onScannedRobot: What to do when you see another robot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
+		myCoord.x = getX();
+	       	myCoord.y = getY();
+
 		if ( !e.getName().equals(targetName) && (targetDistance < e.getDistance()) ) {
 			//new target is further then old one
 			//we will not switch to it
@@ -835,7 +841,7 @@ public class EvBot extends AdvancedRobot
 		}
 
 		// Calculate the angle to the scanned robot
-		double angle = (getHeading()+ e.getBearing())/360*2*Math.PI;
+		double angle = (getHeading()+ e.getBearing())/360.*2.*Math.PI;
 
 		// recording previously known position and time
 		targetPrevX = targetLastX;
@@ -843,8 +849,8 @@ public class EvBot extends AdvancedRobot
 		targetPrevSeenTime = targetLastSeenTime;
 
 		// Calculate the coordinates of the robot
-		targetLastX = (int)(myCoord.x + Math.sin(angle) * e.getDistance());
-		targetLastY = (int)(myCoord.y + Math.cos(angle) * e.getDistance());
+		targetLastX = (myCoord.x + Math.sin(angle) * e.getDistance());
+		targetLastY = (myCoord.y + Math.cos(angle) * e.getDistance());
 		targetDistance = e.getDistance();
 		targetLastSeenTime = getTime();
 
@@ -927,15 +933,15 @@ public class EvBot extends AdvancedRobot
 			g.setColor(new Color(0xff, 0x00, 0x00, 0x80));
 
 			// Draw a line from our robot to the scanned robot
-			g.drawLine(targetLastX, targetLastY, (int)myCoord.x, (int)myCoord.y);
+			g.drawLine((int)targetLastX, (int)targetLastY, (int)myCoord.x, (int)myCoord.y);
 
 			// Draw a filled square on top of the scanned robot that covers it
-			g.fillRect(targetLastX - 20, targetLastY - 20, 40, 40);
+			g.fillRect((int)targetLastX - 20, (int)targetLastY - 20, 40, 40);
 
 			g.setColor(new Color(0xff, 0xff, 0x00, 0x80));
 			// show estimated future position
-			g.drawLine(targetFutureX, targetFutureY, (int)myCoord.x, (int)myCoord.y);
-			g.fillRect(targetFutureX - 20, targetFutureY - 20, 40, 40);
+			g.drawLine((int)targetFutureX, (int)targetFutureY, (int)myCoord.x, (int)myCoord.y);
+			g.fillRect((int)targetFutureX - 20, (int)targetFutureY - 20, 40, 40);
 		}
 
 		dbg(dbg_noise, "targetUnlocked = " + targetUnlocked);
