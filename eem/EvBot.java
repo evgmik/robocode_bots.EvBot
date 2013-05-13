@@ -854,6 +854,13 @@ gunChoice = "linear"; //default gun //dbg
 		targetDistance = e.getDistance();
 		targetLastSeenTime = getTime();
 
+		if ( !e.getName().equals(targetName) ) { // this new target so let's put rough estimate of previous position and time
+			// assuming target is stationary
+			targetPrevX = targetLastX;
+			targetPrevY = targetLastY;
+			targetPrevSeenTime = targetLastSeenTime-1;
+		}
+
 		// show scanned bot path
 		PaintRobotPath.onPaint(getGraphics(), e.getName(), getTime(), targetLastX, targetLastY, Color.YELLOW);
 
