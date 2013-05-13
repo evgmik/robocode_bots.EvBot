@@ -932,6 +932,7 @@ public class EvBot extends AdvancedRobot
 			// Draw a filled square on top of the scanned robot that covers it
 			g.fillRect(targetLastX - 20, targetLastY - 20, 40, 40);
 
+			g.setColor(new Color(0xff, 0xff, 0x00, 0x80));
 			// show estimated future position
 			g.drawLine(targetFutureX, targetFutureY, (int)myCoord.x, (int)myCoord.y);
 			g.fillRect(targetFutureX - 20, targetFutureY - 20, 40, 40);
