@@ -1,6 +1,6 @@
 # -*- make -*-
 # FILE: "/home/evmik/src/my_src/robocode/Makefile"
-# LAST MODIFICATION: "Sun, 19 Aug 2012 23:41:48 -0400 (evmik)"
+# LAST MODIFICATION: "Sun, 12 May 2013 21:46:57 -0400 (evmik)"
 # (C) 2012 by Eugeniy Mikhailov, <evgmik@gmail.com>
 # $Id:$
 
@@ -10,7 +10,7 @@ SUPERPACKADE=eem
 #ROBOTS_DIR=~/.robocode/robots/
 ROBOTS_DIR= ~/misc/rumble-1.7.3.0/robots/
 # ROBOCODEJAR=/usr/share/java/robocode.jar
-ROBOCODEJAR=~/misc/rumble-1.7.3.0/libs/robocode.jar
+ROBOCODEJAR=~/misc/robocode-1.8.1/libs/robocode.jar
 
 JFLAGS=-d $(OUTDIR) -classpath $(ROBOCODEJAR):
 
