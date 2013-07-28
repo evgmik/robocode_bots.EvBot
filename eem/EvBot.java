@@ -498,7 +498,7 @@ public class EvBot extends AdvancedRobot
 		double rnd,k;
 		double bSpeed=bulletSpeed( firePower );
 
-gunChoice = "linear"; //default gun //dbg
+//gunChoice = "linear"; //default gun //dbg
 		if ( gunChoice.equals("random") && !gunFired ) {
 			// no need to update future coordinates before gun fire
 			return;
