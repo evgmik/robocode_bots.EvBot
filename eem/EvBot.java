@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
+import java.util.Random;
 import robocode.*;
 import robocode.util.*;
 import robocode.Rules.*;
@@ -32,6 +33,7 @@ public class EvBot extends AdvancedRobot
 	double portStickY = nonexisting_coord;
 
 
+	private static Random gun_rand = new Random();
 	private Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
 	private Point2D.Double BattleField = new Point2D.Double(nonexisting_coord, nonexisting_coord);
 	double targetPrevX = nonexisting_coord;
@@ -604,20 +606,21 @@ public class EvBot extends AdvancedRobot
 
 		rnd=Math.random();
 		// assume that target will change speed
-		if ( rnd > .8) {
+		if ( rnd > .99) {
 			// k in -1..1
 			k = 2*(Math.random()-0.5); 
+			vT=(1+k*8)*vT; // we change speed +/- to old values
 		} else {
 			// often smart bots have only small displacements
-			// k in -0.25..0.25
-			k = 0.5*(Math.random()-0.5); 
+			k = 2*(gun_rand.nextGaussian()); 
+			vT=k; // no memory of previous motion
 		}
+		dbg(dbg_debuging, "guessed speed coefficient = " + k);
 		// we keep the same target heading
 		if ( vT == 0 ) {
 			// to avoid division by zero
-			vT=0.01; 
+			vT=0.1; 
 		}
-		vT=(1+k*8)*vT; // we change speed +/- to old values
 		// check that we are with in game limits
 		// 8 is maximum speed
 		vT = Math.max(-8,vT);
@@ -648,7 +651,7 @@ public class EvBot extends AdvancedRobot
 			if (getOthers() < 3 ) {
 				// only survivors are smart and we had to do random gun
 				rnd=Math.random();
-				if ( rnd > 0.2 ) { 
+				if ( rnd > 0.4 ) { 
 					// random choice of future target velocity
 					gunChoice = "random";
 				}
