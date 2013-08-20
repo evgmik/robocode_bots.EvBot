@@ -41,10 +41,6 @@ public class EvBot extends AdvancedRobot
 	private static Random gun_rand = new Random();
 	private Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
 	private Point2D.Double BattleField = new Point2D.Double(nonexisting_coord, nonexisting_coord);
-	double targetPrevX = nonexisting_coord;
-	double targetPrevY = nonexisting_coord;
-	double targetFutureX = nonexisting_coord;
-	double targetFutureY = nonexisting_coord;
 	long targetLastSeenTime = - 10; // in far past
 	long targetPrevSeenTime = - 10; // in far past
 	boolean haveTarget = false; 
@@ -59,7 +55,6 @@ public class EvBot extends AdvancedRobot
 	int numberOfSmallRadarSweeps =(int) Math.ceil(360 / radarSweepSubAngle);
 	int countForNumberOfSmallRadarSweeps=numberOfSmallRadarSweeps;
 	double absurdly_huge=1e6; // something huge
-	double targetDistance = absurdly_huge;
 	//firing with this deviation will bring bullet to the same point
 	double angle_resolution = 1; 
 	double angle2enemy= 0;
@@ -69,7 +64,6 @@ public class EvBot extends AdvancedRobot
 	boolean gunFired = true;
 	int countFullSweepDelay=0;
 	int radarSpinDirection =1;
-	String targetName="";
 	String previoslyHeadedWall = "none";
 	// logger staff
 	// debug levels
@@ -475,171 +469,6 @@ public class EvBot extends AdvancedRobot
 			return -1;
 	}
 
-	public double quadraticSolverMinPosRoot(double a, double b, double c) {
-		// we are solving for time in ballistic calculation
-		// and interested only in positive solutions
-		// hopefully determinant is always >= 0 since we solve real problems
-		dbg(dbg_noise, "quadratic equation coefficient a = " + a);
-		dbg(dbg_noise, "quadratic equation coefficient b = " + b);
-		dbg(dbg_noise, "quadratic equation coefficient c = " + c);
-		double d = Math.sqrt(b*b - 4*a*c);
-		double x1= (-b + d)/(2*a);
-		double x2= (-b - d)/(2*a);
-
-		double root=Math.min(x1,x2);
-		if (root < 0) {
-			// if min gave as wrong root max should do better
-			root=Math.max(x1,x2);
-		}
-
-		dbg(dbg_noise, "quadratic equation min positive root = " + root);
-		return root;
-	}
-
-	public Point2D.Double  findTargetVelocityEstimate() {
-		double vTx, vTy;
-		// target velocity
-		vTx = (targetLastX - targetPrevX)/(targetLastSeenTime - targetPrevSeenTime);
-		vTy = (targetLastY - targetPrevY)/(targetLastSeenTime - targetPrevSeenTime);
-		dbg(dbg_noise, "Target velocity vTx = " + vTx + " vTy = " + vTy);
-		return new Point2D.Double(vTx, vTy);
-	}
-
-	public Point2D.Double  findTargetHitPositionWithLinearPredictor(double firePower, Point2D.Double vTvec) {
-		double Tx, Ty, vT,  dx, dy, dist;
-		double tFX, tFY; // target future position
-		double sin_vT, cos_vT;
-		double timeToHit;
-		double a, b, c;
-		double bSpeed=bulletSpeed( firePower );
-
-		dbg(dbg_noise, "Bullet speed " + bSpeed );
-		dbg(dbg_noise, "Predicted target velocity " + vTvec.x +", " + vTvec.y);
-		vT = Math.sqrt(vTvec.x*vTvec.x + vTvec.y*vTvec.y);
-		if ( !Utils.isNear(vT, 0) ) {
-			cos_vT=vTvec.x/vT;
-			sin_vT=vTvec.y/vT;
-		} else {
-			// target is stationary
-			// assign small speed in random direction
-			vT=0.00001;
-			double rand_angle=2*Math.PI*Math.random();
-			cos_vT=Math.cos(rand_angle);
-			sin_vT=Math.sin(rand_angle);
-		}
-
-		// estimated current target position
-		Tx = targetLastX + vTvec.x*(getTime()-targetLastSeenTime);
-		Ty = targetLastY + vTvec.y*(getTime()-targetLastSeenTime);
-		dbg(dbg_noise, "Target estimated current position Tx = " + Tx + " Ty = " + Ty);
-
-		// radius vector to target
-		dx = Tx-myCoord.x;
-		dy = Ty-myCoord.y;
-		dist = Math.sqrt(dx*dx + dy*dy);
-		dbg(dbg_noise, "Distance to target " + dist );
-
-		// rough estimate
-		// use it for better estimate of possible target future velocity
-		timeToHit = dist/bSpeed;
-		dbg(dbg_noise, "Rough estimate time to hit = " + timeToHit);
-
-
-		// back of envelope calculations
-		// for the case of linear target motion with no acceleration
-		// lead to quadratic equation for time of flight to target hit
-		a = vT*vT - bSpeed*bSpeed;
-		b = 2*( dx*vTvec.x + dy*vTvec.y);
-		c = dist*dist;
-
-		timeToHit = quadraticSolverMinPosRoot( a, b, c);
-		dbg(dbg_noise, "Precise estimate time to hit = " + timeToHit);
-		tFX = (int) ( Tx + vTvec.x*timeToHit );
-		tFY = (int) ( Ty + vTvec.y*timeToHit );
-		dbg(dbg_noise, "Predicted target position " + tFX +", " + tFY);
-
-		// check that future target position within the battle field
-		tFX = (int)Math.max(tFX, 0);
-		tFX = (int)Math.min(tFX, BattleField.x );
-		tFY = (int)Math.max(tFY, 0);
-		tFY = (int)Math.min(tFY, BattleField.y );
-
-		dbg(dbg_noise, "Predicted and boxed target position " + tFX +", " + tFY);
-		
-		return new Point2D.Double( tFX, tFY );
-	}
-
-
-	public void  setLinearGunFutureTargetPosition( double firePower ) {
-		Point2D.Double vTvec, targetFuturePosVec;
-
-		// target velocity
-		vTvec=findTargetVelocityEstimate();
-
-		targetFuturePosVec=findTargetHitPositionWithLinearPredictor( firePower,  vTvec) ;
-		targetFutureX=targetFuturePosVec.x;
-		targetFutureY=targetFuturePosVec.y;
-
-		dbg(dbg_noise, "Predicted target position " + targetFutureX +", " + targetFutureY);
-	}
-
-	public void  setRandomGunFutureTargetPosition( double firePower ) {
-		Point2D.Double vTvec, targetFuturePosVec;
-		double vT;
-		double sin_vT, cos_vT;
-		double timeToHit;
-		double a, b, c;
-		double rnd,k;
-		double bSpeed=bulletSpeed( firePower );
-
-		// estimate target velocity
-		vTvec=findTargetVelocityEstimate();
-		vT = Math.sqrt(vTvec.x*vTvec.x + vTvec.y*vTvec.y);
-		if ( !Utils.isNear(vT, 0) ) {
-			cos_vT=vTvec.x/vT;
-			sin_vT=vTvec.y/vT;
-		} else {
-			// target is stationary
-			// assign small speed in random direction
-			vT=0.00001;
-			double rand_angle=2*Math.PI*Math.random();
-			cos_vT=Math.cos(rand_angle);
-			sin_vT=Math.sin(rand_angle);
-		}
-
-
-		rnd=Math.random();
-		// assume that target will change speed
-		if ( rnd > .99) {
-			// k in -1..1
-			k = 2*(Math.random()-0.5); 
-			vT=(1+k*8)*vT; // we change speed +/- to old values
-		} else {
-			// often smart bots have only small displacements
-			k = 2*(gun_rand.nextGaussian()); 
-			vT=k; // no memory of previous motion
-		}
-		dbg(dbg_debuging, "guessed speed coefficient = " + k);
-		// we keep the same target heading
-		if ( vT == 0 ) {
-			// to avoid division by zero
-			vT=0.1; 
-		}
-		// check that we are with in game limits
-		// 8 is maximum speed
-		vT = Math.max(-8,vT);
-		vT = Math.min( 8,vT);
-
-		// use randomized target velocity vector
-		vTvec.x = cos_vT*vT; 
-		vTvec.y = sin_vT*vT;
-
-		targetFuturePosVec=findTargetHitPositionWithLinearPredictor( firePower,  vTvec) ;
-		targetFutureX=targetFuturePosVec.x;
-		targetFutureY=targetFuturePosVec.y;
-
-		dbg(dbg_noise, "Predicted target position " + targetFutureX +", " + targetFutureY);
-	}
 
 	public void  setFutureTargetPosition( double firePower ) {
 		double Tx, Ty, vTx, vTy, vT,  dx, dy, dist;
@@ -663,13 +492,13 @@ public class EvBot extends AdvancedRobot
 		}
 
 		if ( _gun.getName().equals("linear") ) {
-			setLinearGunFutureTargetPosition( firePower );
+			_gun.setTargetFuturePosition(_trgt);
 		}
 
 		if ( _gun.getName().equals("random") ) {
 			if ( _gun.isGunFired() ) {
 				gunFired = false;
-				setRandomGunFutureTargetPosition( firePower );
+				_gun.setTargetFuturePosition(_trgt);
 			} else {
 				// no need to update future coordinates before gun fire
 			}
@@ -792,7 +621,6 @@ public class EvBot extends AdvancedRobot
 		double firePower=0;
 		double bulletFlyTimeEstimate;
 		double moveLength;
-		double targetDistance = absurdly_huge;
 		double radarBearingToEnemy=0;
 		double dist = nonexisting_coord;
 		double angleRandDeviation = nonexisting_coord;
@@ -818,7 +646,6 @@ public class EvBot extends AdvancedRobot
 				//angle to enemy
 				dx=targetLastX - (myCoord.x);
 				dy=targetLastY - (myCoord.y);
-				targetDistance = Math.sqrt( dx*dx + dy*dy);
 				dbg(dbg_noise, "Last known target X coordinate = " + targetLastX );
 				dbg(dbg_noise, "Last known target Y coordinate = " + targetLastY );
 
@@ -827,16 +654,16 @@ public class EvBot extends AdvancedRobot
 				dbg(dbg_noise, "angle to enemy = " + angle2enemy );
 
 				// calculate firepower based on distance
-				firePower = firePoverVsDistance( targetDistance );
+				firePower = firePoverVsDistance( _trgt.getLastDistance(myCoord));
 
 				// estimate future enemy location
 				setFutureTargetPosition( firePower );
 
-				dbg(dbg_noise, "Predicted target X coordinate = " + targetFutureX );
-				dbg(dbg_noise, "Predicted target Y coordinate = " + targetFutureY );
+				dbg(dbg_noise, "Predicted target X coordinate = " + _gun.getTargetFuturePosition().x );
+				dbg(dbg_noise, "Predicted target Y coordinate = " + _gun.getTargetFuturePosition().y );
 
-				dx=targetFutureX - (int)(myCoord.x);
-				dy=targetFutureY - (int)(myCoord.y);
+				dx=_gun.getTargetFuturePosition().x - (int)(myCoord.x);
+				dy=_gun.getTargetFuturePosition().y - (int)(myCoord.y);
 
 				angle2enemyInFutire=Math.atan2(dy,dx);
 				angle2enemyInFutire=cortesian2game_angles(angle2enemyInFutire*180/Math.PI);
@@ -880,7 +707,7 @@ public class EvBot extends AdvancedRobot
 				setAdjustRadarForGunTurn(true);
 				setTurnGunRight(angle);
 
-				double predictedBulletDeviation=angle*Math.PI/180*targetDistance;
+				double predictedBulletDeviation=angle*Math.PI/180*_trgt.getLastDistance(myCoord);
 
 				dbg(dbg_noise, "Gun heat = " + getGunHeat() );
 				// if gun is called and
@@ -935,7 +762,6 @@ public class EvBot extends AdvancedRobot
 		PaintRobotPath.onPaint(getGraphics(), e.getName(), getTime(), _trgt.getX(), _trgt.getY(), Color.YELLOW);
 
 		// need to go away
-		targetName=e.getName();
 		targetLastX = _trgt.getX();
 		targetLastY = _trgt.getY();
 
@@ -963,8 +789,7 @@ public class EvBot extends AdvancedRobot
 		if (e.getName().equals(_trgt.getName())) {
 			haveTarget = false;
 			targetUnlocked = false;
-			targetDistance = absurdly_huge;
-			targetName = ""; // something non existing
+			_trgt = new target();
 		}
 	}
 
@@ -1020,8 +845,8 @@ public class EvBot extends AdvancedRobot
 			if ( _gun.getName().equals("linear") ) {
 				g.setColor(new Color(0xff, 0x00, 0x00, 0x80));
 			}
-			g.drawLine((int)targetFutureX, (int)targetFutureY, (int)myCoord.x, (int)myCoord.y);
-			g.fillRect((int)targetFutureX - 20, (int)targetFutureY - 20, 40, 40);
+			g.drawLine((int)_gun.getTargetFuturePosition().x, (int)_gun.getTargetFuturePosition().y, (int)myCoord.x, (int)myCoord.y);
+			g.fillRect((int)_gun.getTargetFuturePosition().x - 20, (int)_gun.getTargetFuturePosition().y - 20, 40, 40);
 		}
 
 		dbg(dbg_noise, "targetUnlocked = " + targetUnlocked);
