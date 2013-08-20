@@ -1,6 +1,6 @@
 # -*- make -*-
 # FILE: "/home/evmik/src/my_src/robocode/Makefile"
-# LAST MODIFICATION: "Sat, 27 Jul 2013 19:32:26 +0400 (evmik)"
+# LAST MODIFICATION: "Tue, 20 Aug 2013 00:02:00 -0400 (evmik)"
 # (C) 2012 by Eugeniy Mikhailov, <evgmik@gmail.com>
 # $Id:$
 
@@ -22,7 +22,7 @@ UUID:=$(shell uuid)
 TESTJAR=EvBot_vtest.jar 
 RELEASEJAR=$(SUPERPACKADE).EvBot_$(VERSION).jar
 
-SRC=eem/EvBot.java eem/botVersion.java eem/misc/PaintRobotPath.java 
+SRC=eem/EvBot.java eem/botVersion.java eem/misc/PaintRobotPath.java  $(wildcard eem/gun/*.java)
 CLASSES=$(SRC:%.java=$(OUTDIR)/%.class)
 
 .SUFFIXES: .java .class 
