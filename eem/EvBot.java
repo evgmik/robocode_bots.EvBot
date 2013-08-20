@@ -2,6 +2,7 @@ package eem;
 import eem.misc.*;
 import eem.botVersion.*;
 import eem.gun.*;
+import eem.target.*;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -23,6 +24,7 @@ public class EvBot extends AdvancedRobot
 	Rules game_rules;
 	double BodyTurnRate = 10;
 	int robotHalfSize = 18;
+	private target _trgt = new target();
 	double targetLastX = Integer.MIN_VALUE;
 	double targetLastY = Integer.MIN_VALUE;
 	int nonexisting_coord = -10000;
@@ -804,7 +806,7 @@ public class EvBot extends AdvancedRobot
 			dbg(dbg_noise, "Game time: " + getTime());
 			dbg(dbg_noise, "Number of other bots = " + getOthers());
 
-			if ( ( getTime() - targetLastSeenTime ) > 2) 
+			if ( ( getTime() - _trgt.getLastSeenTime() ) > 2) 
 				targetUnlocked = true;
 			else
 				targetUnlocked = false;
@@ -916,7 +918,7 @@ public class EvBot extends AdvancedRobot
 		myCoord.x = getX();
 	       	myCoord.y = getY();
 
-		if ( !e.getName().equals(targetName) && (targetDistance < e.getDistance()) ) {
+		if ( !e.getName().equals(_trgt.getName()) && (_trgt.getLastDistance(myCoord) < e.getDistance()) ) {
 			//new target is further then old one
 			//we will not switch to it
 			return; 
@@ -925,36 +927,18 @@ public class EvBot extends AdvancedRobot
 		// Calculate the angle to the scanned robot
 		double angle = (getHeading()+ e.getBearing())/360.*2.*Math.PI;
 
-		// recording previously known position and time
-		targetPrevX = targetLastX;
-		targetPrevY = targetLastY;
-		targetPrevSeenTime = targetLastSeenTime;
-
-		// Calculate the coordinates of the robot
-		targetLastX = (myCoord.x + Math.sin(angle) * e.getDistance());
-		targetLastY = (myCoord.y + Math.cos(angle) * e.getDistance());
-		targetDistance = e.getDistance();
-		targetLastSeenTime = getTime();
-
-		if ( !e.getName().equals(targetName) ) { // this new target so let's put rough estimate of previous position and time
-			// assuming target is stationary
-			targetPrevX = targetLastX;
-			targetPrevY = targetLastY;
-			targetPrevSeenTime = targetLastSeenTime-1;
-		}
+		_trgt.setName(e.getName());
+		_trgt = _trgt.update( new botStatPoint(this, e));
+		dbg(dbg_debuging, _trgt.format());
 
 		// show scanned bot path
-		PaintRobotPath.onPaint(getGraphics(), e.getName(), getTime(), targetLastX, targetLastY, Color.YELLOW);
+		PaintRobotPath.onPaint(getGraphics(), e.getName(), getTime(), _trgt.getX(), _trgt.getY(), Color.YELLOW);
 
-		if ( targetPrevY == nonexisting_coord ) {
-			// put same coordinate for unknown previous position
-			targetPrevX = targetLastX;
-			targetPrevY = targetLastY;
-			// but time we put with offset to avoid division by zero
-			targetPrevSeenTime = targetLastSeenTime-1;
-		}
-
+		// need to go away
 		targetName=e.getName();
+		targetLastX = _trgt.getX();
+		targetLastY = _trgt.getY();
+
 		movingRadarToLastKnownTargetLocation = false;
 		//radarSpinDirection=1;
 		haveTarget = true;
@@ -976,7 +960,7 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void onRobotDeath(RobotDeathEvent e) {
-		if (e.getName().equals(targetName)) {
+		if (e.getName().equals(_trgt.getName())) {
 			haveTarget = false;
 			targetUnlocked = false;
 			targetDistance = absurdly_huge;
