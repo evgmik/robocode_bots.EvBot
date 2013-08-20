@@ -38,6 +38,14 @@ public class target {
 		return  statLast.getDistance(p);
 	}
 
+	public double getX() {
+		return  statLast.getX();
+	}
+
+	public double getY() {
+		return  statLast.getY();
+	}
+
 	public String getName() {
 		return name;
 	}

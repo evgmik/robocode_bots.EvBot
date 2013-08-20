@@ -44,4 +44,12 @@ public class botStatPoint {
 		str = str + "position = " + pos + ", tStamp = " + tStamp;
 		return str;
 	}
+
+	public double getX() {
+		return pos.x;
+	}
+
+	public double getY() {
+		return pos.y;
+	}
 }
