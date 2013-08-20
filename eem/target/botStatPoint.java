@@ -45,6 +45,10 @@ public class botStatPoint {
 		return str;
 	}
 
+	public long getTimeStamp() {
+		return tStamp;
+	}
+
 	public double getX() {
 		return pos.x;
 	}

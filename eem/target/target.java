@@ -46,6 +46,11 @@ public class target {
 		return  statLast.getY();
 	}
 
+	public long getLastSeenTime() {
+		return  statLast.getTimeStamp();
+	}
+
+
 	public String getName() {
 		return name;
 	}
