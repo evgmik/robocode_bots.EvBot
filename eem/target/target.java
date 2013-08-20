@@ -34,8 +34,8 @@ public class target {
 		name = n;
 	}
 
-	public double getLastDistance(String n) {
-		return  statLast.getDistance();
+	public double getLastDistance(Point2D.Double p) {
+		return  statLast.getDistance(p);
 	}
 
 	public String getName() {
