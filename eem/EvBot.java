@@ -1,6 +1,7 @@
 package eem;
 import eem.misc.*;
 import eem.botVersion.*;
+import eem.gun.*;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -32,6 +33,8 @@ public class EvBot extends AdvancedRobot
 	double portStickX = nonexisting_coord;
 	double portStickY = nonexisting_coord;
 
+	private baseGun _gun = new baseGun();
+
 
 	private static Random gun_rand = new Random();
 	private Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
@@ -62,7 +65,6 @@ public class EvBot extends AdvancedRobot
 	double desiredBodyRotationDirection = 0; // our robot body desired angle
 	boolean gameJustStarted = true;
 	boolean gunFired = true;
-	String gunChoice = "none";
 	int countFullSweepDelay=0;
 	int radarSpinDirection =1;
 	String targetName="";
@@ -646,25 +648,24 @@ public class EvBot extends AdvancedRobot
 		double bSpeed=bulletSpeed( firePower );
 
 		// let's choose the gun if gun is fired
-		if ( gunFired ) {
-			gunChoice = "linear"; //default gun
+		if ( _gun.isGunFired() ) {
+			_gun = new linearGun(); //default gun
 			if (getOthers() < 3 ) {
 				// only survivors are smart and we had to do random gun
 				rnd=Math.random();
 				if ( rnd > 0.4 ) { 
 					// random choice of future target velocity
-					gunChoice = "random";
+					_gun = new randomGun(); //default gun
 				}
 			}
 		}
 
-		if ( gunChoice.equals("linear") ) {
-			gunFired = false;
+		if ( _gun.getName().equals("linear") ) {
 			setLinearGunFutureTargetPosition( firePower );
 		}
 
-		if ( gunChoice.equals("random") ) {
-			if ( gunFired ) {
+		if ( _gun.getName().equals("random") ) {
+			if ( _gun.isGunFired() ) {
 				gunFired = false;
 				setRandomGunFutureTargetPosition( firePower );
 			} else {
@@ -673,7 +674,7 @@ public class EvBot extends AdvancedRobot
 		}
 
 
-		dbg(dbg_rutine, "Gun choice = " + gunChoice);
+		dbg(dbg_rutine, "Gun choice = " + _gun.getName());
 
 	}
 	
@@ -1027,10 +1028,12 @@ public class EvBot extends AdvancedRobot
 			g.fillRect((int)targetLastX - 20, (int)targetLastY - 20, 40, 40);
 
 			// show estimated future position to be fired
-			if ( gunChoice.equals("random") ) {
+			dbg(dbg_debuging, "Gun choice = " + _gun.getName() );
+			_gun.onPaint(g);
+			if ( _gun.getName().equals("random") ) {
 				g.setColor(new Color(0xff, 0xff, 0xff, 0x80));
 			}
-			if ( gunChoice.equals("linear") ) {
+			if ( _gun.getName().equals("linear") ) {
 				g.setColor(new Color(0xff, 0x00, 0x00, 0x80));
 			}
 			g.drawLine((int)targetFutureX, (int)targetFutureY, (int)myCoord.x, (int)myCoord.y);
