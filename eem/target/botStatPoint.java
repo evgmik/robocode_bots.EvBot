@@ -10,7 +10,6 @@ import java.awt.geom.Point2D;
 public class botStatPoint {
 	private Point2D.Double pos;
 	private long tStamp;
-	private double distance;
 	private double velocity;
 	private double headingDegrees;
 	private double energy;
@@ -20,10 +19,10 @@ public class botStatPoint {
 		myCoord.x = bot.getX();
 	       	myCoord.y = bot.getY();
 		double angle = (bot.getHeading()+ e.getBearing())/360.*2.*Math.PI;
-		pos = new Point2D.Double( (myCoord.x + Math.sin(angle) * e.getDistance()),
-				(myCoord.y + Math.cos(angle) * e.getDistance()) );
+		double distance = e.getDistance();
+		pos = new Point2D.Double( (myCoord.x + Math.sin(angle) * distance),
+				(myCoord.y + Math.cos(angle) * distance) );
 		tStamp = bot.getTime();
-		distance = e.getDistance();
 		velocity = e.getVelocity();
 		headingDegrees = e.getHeading();
 		energy = e.getEnergy();
@@ -34,8 +33,8 @@ public class botStatPoint {
 		pos = p;
 	}
 
-	public Double getDistance() {
-		return distance;
+	public Double getDistance(Point2D.Double p) {
+		return p.distance(pos);
 	}
 
 	public String format() {
