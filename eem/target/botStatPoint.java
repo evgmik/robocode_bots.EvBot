@@ -11,6 +11,9 @@ public class botStatPoint {
 	private Point2D.Double pos;
 	private long tStamp;
 	private double distance;
+	private double velocity;
+	private double headingDegrees;
+	private double energy;
 
 	public botStatPoint(AdvancedRobot bot, ScannedRobotEvent e ) {
 		Point2D.Double myCoord = new Point2D.Double();
@@ -21,6 +24,9 @@ public class botStatPoint {
 				(myCoord.y + Math.cos(angle) * e.getDistance()) );
 		tStamp = bot.getTime();
 		distance = e.getDistance();
+		velocity = e.getVelocity();
+		headingDegrees = e.getHeading();
+		energy = e.getEnergy();
 	}
 
 	public botStatPoint(Point2D.Double p, long t ) {
@@ -33,8 +39,10 @@ public class botStatPoint {
 	}
 
 	public String format() {
-		String str;
-		str = "position = " + pos + ", tStamp = " + tStamp;
+		String str = "";
+		str = str + "energy = " + energy + ", velocity = " + velocity + ", heading = " + headingDegrees;
+		str = str + "\n";
+		str = str + "position = " + pos + ", tStamp = " + tStamp;
 		return str;
 	}
 }
