@@ -56,4 +56,8 @@ public class botStatPoint {
 	public double getY() {
 		return pos.y;
 	}
+	
+	public Point2D.Double getPosition() {
+		return  pos;
+	}
 }

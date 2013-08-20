@@ -46,6 +46,10 @@ public class target {
 		return  statLast.getY();
 	}
 
+	public Point2D.Double getPosition() {
+		return  statLast.getPosition();
+	}
+
 	public long getLastSeenTime() {
 		return  statLast.getTimeStamp();
 	}
