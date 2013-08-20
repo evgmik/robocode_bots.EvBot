@@ -2,6 +2,7 @@
 
 package eem.gun;
 
+import eem.target.*;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -30,6 +31,14 @@ public class baseGun {
 
 	public boolean isGunFired() {
 		return gunFired;
+	}
+
+	public Point2D.Double getTargetFuturePosition() {
+		return targetFuturePosition;
+	}
+
+	public void setTargetFuturePosition(target tgt) {
+		targetFuturePosition = tgt.getPosition();
 	}
 
 	private void drawTargetFuturePosition(Graphics2D g) {
