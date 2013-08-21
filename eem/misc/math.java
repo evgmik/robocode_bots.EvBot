@@ -3,8 +3,9 @@ package eem.misc;
 
 
 public class math {
-	private int dbg_level = 10; // noise
 	logger l;
+	private int dbg_level = l.dbg_noise; // noise
+
 	public double quadraticSolverMinPosRoot(double a, double b, double c) {
 		// we are solving for time in ballistic calculation
 		// and interested only in positive solutions
