@@ -24,7 +24,7 @@ public class EvBot extends AdvancedRobot
 	Rules game_rules;
 	double BodyTurnRate = 10;
 	int robotHalfSize = 18;
-	private target _trgt = new target();
+	public target _trgt = new target();
 	double targetLastX = Integer.MIN_VALUE;
 	double targetLastY = Integer.MIN_VALUE;
 	int nonexisting_coord = -10000;
@@ -35,11 +35,11 @@ public class EvBot extends AdvancedRobot
 	double portStickX = nonexisting_coord;
 	double portStickY = nonexisting_coord;
 
-	private baseGun _gun = new baseGun();
+	private baseGun _gun = new baseGun(this);
 
 
 	private static Random gun_rand = new Random();
-	private Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
+	public Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
 	private Point2D.Double BattleField = new Point2D.Double(nonexisting_coord, nonexisting_coord);
 	long targetLastSeenTime = - 10; // in far past
 	long targetPrevSeenTime = - 10; // in far past
@@ -67,11 +67,11 @@ public class EvBot extends AdvancedRobot
 	String previoslyHeadedWall = "none";
 	// logger staff
 	// debug levels
-	int dbg_important=0;
-	int dbg_rutine=5;
-	int dbg_debuging=6;
-	int dbg_noise=10;
-	int verbosity_level=6; // current level, smaller is less noisy
+	public int dbg_important=0;
+	public int dbg_rutine=5;
+	public int dbg_debuging=6;
+	public int dbg_noise=10;
+	public int verbosity_level=6; // current level, smaller is less noisy
 
 	public void initBattle() {
 		BattleField.x = getBattleFieldWidth();
@@ -470,23 +470,17 @@ public class EvBot extends AdvancedRobot
 	}
 
 
-	public void  setFutureTargetPosition( double firePower ) {
-		double Tx, Ty, vTx, vTy, vT,  dx, dy, dist;
-		double sin_vT, cos_vT;
-		double timeToHit;
-		double a, b, c;
-		double rnd,k;
-		double bSpeed=bulletSpeed( firePower );
-
+	public void  choseGun( ) {
+		double rnd;
 		// let's choose the gun if gun is fired
 		if ( _gun.isGunFired() ) {
-			_gun = new linearGun(); //default gun
+			_gun = new linearGun(this); //default gun
 			if (getOthers() < 3 ) {
 				// only survivors are smart and we had to do random gun
 				rnd=Math.random();
-				if ( rnd > 0.4 ) { 
+				if ( rnd > 0.5 ) { 
 					// random choice of future target velocity
-					_gun = new randomGun(); //default gun
+					_gun = new randomGun(this); //default gun
 				}
 			}
 		}
@@ -509,13 +503,6 @@ public class EvBot extends AdvancedRobot
 
 	}
 	
-	public double firePoverVsDistance( double targetDistance ) {
-		// calculate firepower based on distance
-		double firePower;
-		firePower = Math.min(500 / targetDistance, 3);
-		return firePower;
-	}
-
 	public double angleToClosestCorner() {
 		double x=myCoord.x;
 		double y=myCoord.y;
@@ -653,11 +640,10 @@ public class EvBot extends AdvancedRobot
 				angle2enemy=cortesian2game_angles(angle2enemy*180/Math.PI);
 				dbg(dbg_noise, "angle to enemy = " + angle2enemy );
 
-				// calculate firepower based on distance
-				firePower = firePoverVsDistance( _trgt.getLastDistance(myCoord));
 
 				// estimate future enemy location
-				setFutureTargetPosition( firePower );
+				choseGun();
+				_gun.calcGunSettings();
 
 				dbg(dbg_noise, "Predicted target X coordinate = " + _gun.getTargetFuturePosition().x );
 				dbg(dbg_noise, "Predicted target Y coordinate = " + _gun.getTargetFuturePosition().y );
@@ -715,7 +701,7 @@ public class EvBot extends AdvancedRobot
 				if (getGunHeat() == 0 && 
 				    Math.abs(predictedBulletDeviation) < Math.min( getHeight(), getWidth())/2 ) {
 					dbg(dbg_noise, "Firing the gun with power = " + firePower);
-					setFire(firePower);
+					_gun.fireGun();
 					countFullSweepDelay = -1; // we can sweep do full radar sweep
 					gunFired = true;
 				}
@@ -756,7 +742,7 @@ public class EvBot extends AdvancedRobot
 
 		_trgt.setName(e.getName());
 		_trgt = _trgt.update( new botStatPoint(this, e));
-		dbg(dbg_debuging, _trgt.format());
+		dbg(dbg_noise, _trgt.format());
 
 		// show scanned bot path
 		PaintRobotPath.onPaint(getGraphics(), e.getName(), getTime(), _trgt.getX(), _trgt.getY(), Color.YELLOW);
@@ -837,16 +823,8 @@ public class EvBot extends AdvancedRobot
 			g.fillRect((int)targetLastX - 20, (int)targetLastY - 20, 40, 40);
 
 			// show estimated future position to be fired
-			dbg(dbg_debuging, "Gun choice = " + _gun.getName() );
+			dbg(dbg_noise, "Gun choice = " + _gun.getName() );
 			_gun.onPaint(g);
-			if ( _gun.getName().equals("random") ) {
-				g.setColor(new Color(0xff, 0xff, 0xff, 0x80));
-			}
-			if ( _gun.getName().equals("linear") ) {
-				g.setColor(new Color(0xff, 0x00, 0x00, 0x80));
-			}
-			g.drawLine((int)_gun.getTargetFuturePosition().x, (int)_gun.getTargetFuturePosition().y, (int)myCoord.x, (int)myCoord.y);
-			g.fillRect((int)_gun.getTargetFuturePosition().x - 20, (int)_gun.getTargetFuturePosition().y - 20, 40, 40);
 		}
 
 		dbg(dbg_noise, "targetUnlocked = " + targetUnlocked);
