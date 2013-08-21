@@ -40,7 +40,7 @@ public class EvBot extends AdvancedRobot
 
 	private static Random gun_rand = new Random();
 	public Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
-	private Point2D.Double BattleField = new Point2D.Double(nonexisting_coord, nonexisting_coord);
+	public Point2D.Double BattleField = new Point2D.Double(nonexisting_coord, nonexisting_coord);
 	long targetLastSeenTime = - 10; // in far past
 	long targetPrevSeenTime = - 10; // in far past
 	boolean haveTarget = false; 
