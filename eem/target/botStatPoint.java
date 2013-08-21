@@ -10,11 +10,12 @@ import java.awt.geom.Point2D;
 public class botStatPoint {
 	private Point2D.Double pos;
 	private long tStamp;
-	private double velocity;
+	private Point2D.Double velocity;
 	private double headingDegrees;
 	private double energy;
 
 	public botStatPoint(AdvancedRobot bot, ScannedRobotEvent e ) {
+		double speed;
 		Point2D.Double myCoord = new Point2D.Double();
 		myCoord.x = bot.getX();
 	       	myCoord.y = bot.getY();
@@ -23,8 +24,9 @@ public class botStatPoint {
 		pos = new Point2D.Double( (myCoord.x + Math.sin(angle) * distance),
 				(myCoord.y + Math.cos(angle) * distance) );
 		tStamp = bot.getTime();
-		velocity = e.getVelocity();
 		headingDegrees = e.getHeading();
+		speed = e.getVelocity();
+		velocity = new Point2D.Double( speed*Math.sin(headingDegrees/360.*2.*Math.PI), speed*Math.cos(headingDegrees/360.*2.*Math.PI) );
 		energy = e.getEnergy();
 	}
 
@@ -57,6 +59,10 @@ public class botStatPoint {
 		return pos.y;
 	}
 	
+	public Point2D.Double getVelocity() {
+		return velocity;
+	}
+
 	public Point2D.Double getPosition() {
 		return  pos;
 	}

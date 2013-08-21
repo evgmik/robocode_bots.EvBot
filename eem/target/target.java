@@ -29,6 +29,9 @@ public class target {
 		return this;
 	}
 
+	public Point2D.Double getVelocity() {
+		return statLast.getVelocity();
+	}
 
 	public void setName(String n) {
 		name = n;
