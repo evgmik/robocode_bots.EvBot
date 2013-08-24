@@ -5,6 +5,7 @@ package eem.gun;
 import eem.EvBot;
 import eem.target.*;
 import eem.misc.*;
+import eem.gun.misc;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import robocode.util.*;
@@ -23,6 +24,7 @@ public class linearGun extends baseGun {
 
 	public Point2D.Double  findTargetHitPositionWithLinearPredictor(double firePower, target tgt) {
 		Point2D.Double vTvec;
+		Point2D.Double tF;
 		double Tx, Ty, vT,  dx, dy, dist;
 		double tFX, tFY; // target future position
 		double sin_vT, cos_vT;
@@ -34,6 +36,7 @@ public class linearGun extends baseGun {
 
 		vTvec = tgt.getVelocity();
 		myBot.dbg(myBot.dbg_noise, "Target velocity " + vTvec.x +", " + vTvec.y);
+
 
 		vT = Math.sqrt(vTvec.x*vTvec.x + vTvec.y*vTvec.y);
 		if ( !Utils.isNear(vT, 0) ) {
@@ -53,39 +56,11 @@ public class linearGun extends baseGun {
 		Ty = tgt.getY() + vTvec.y*(myBot.getTime()-tgt.getLastSeenTime());
 		myBot.dbg(myBot.dbg_noise, "Target estimated current position Tx = " + Tx + " Ty = " + Ty);
 
-		// radius vector to target
-		dx = Tx-myBot.myCoord.x;
-		dy = Ty-myBot.myCoord.y;
-		dist = Math.sqrt(dx*dx + dy*dy);
-		myBot.dbg(myBot.dbg_noise, "Distance to target " + dist );
+		tF=misc.linear_predictor( bSpeed, new Point2D.Double(Tx, Ty), 
+				vTvec,  myBot.myCoord);
 
-		// rough estimate
-		// use it for better estimate of possible target future velocity
-		timeToHit = dist/bSpeed;
-		myBot.dbg(myBot.dbg_noise, "Rough estimate time to hit = " + timeToHit);
-
-
-		// back of envelope calculations
-		// for the case of linear target motion with no acceleration
-		// lead to quadratic equation for time of flight to target hit
-		a = vT*vT - bSpeed*bSpeed;
-		b = 2*( dx*vTvec.x + dy*vTvec.y);
-		c = dist*dist;
-
-		timeToHit = math.quadraticSolverMinPosRoot( a, b, c);
-		myBot.dbg(myBot.dbg_noise, "Precise estimate time to hit = " + timeToHit);
-		tFX = (int) ( Tx + vTvec.x*timeToHit );
-		tFY = (int) ( Ty + vTvec.y*timeToHit );
-		myBot.dbg(myBot.dbg_noise, "Predicted target position " + tFX +", " + tFY);
-
-		// check that future target position within the battle field
-		tFX = (int)Math.max(tFX, 0);
-		tFX = (int)Math.min(tFX, myBot.BattleField.x );
-		tFY = (int)Math.max(tFY, 0);
-		tFY = (int)Math.min(tFY, myBot.BattleField.y );
-
-		myBot.dbg(myBot.dbg_noise, "Predicted and boxed target position " + tFX +", " + tFY);
+		myBot.dbg(myBot.dbg_noise, "Predicted and boxed target position " + tF.x +", " + tF.y);
 		
-		return new Point2D.Double( tFX, tFY );
+		return tF;
 	}
 }	
