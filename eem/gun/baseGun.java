@@ -4,6 +4,7 @@ package eem.gun;
 
 import eem.EvBot;
 import eem.target.*;
+import java.util.Random;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -13,6 +14,8 @@ public class baseGun {
 	protected EvBot myBot;
 	protected String gunName = "base";
 	protected boolean  gunFired = false;
+	protected boolean  gunHasTargetPoint = false;
+	protected Random gun_rand = new Random();
 	protected Color gunColor = Color.black;;
 	protected Point2D.Double targetFuturePosition;
 	protected double firePower;
@@ -27,6 +30,7 @@ public class baseGun {
 	public void fireGun() {
 		myBot.setFire(firePower);
 		gunFired = true;
+		gunHasTargetPoint = false;
 	}
 
 	public void setTargetFuturePosition( Point2D.Double target ) {
