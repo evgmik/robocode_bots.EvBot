@@ -25,8 +25,6 @@ public class EvBot extends AdvancedRobot
 	double BodyTurnRate = 10;
 	int robotHalfSize = 18;
 	public target _trgt = new target();
-	double targetLastX = Integer.MIN_VALUE;
-	double targetLastY = Integer.MIN_VALUE;
 	int nonexisting_coord = -10000;
 	// bot tangent position at the starboard/port (right/left) 
 	// at minimal turning radius at the current speed
@@ -38,7 +36,6 @@ public class EvBot extends AdvancedRobot
 	private baseGun _gun = new linearGun(this);
 
 
-	private static Random gun_rand = new Random();
 	public Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
 	public Point2D.Double BattleField = new Point2D.Double(nonexisting_coord, nonexisting_coord);
 	long targetLastSeenTime = - 10; // in far past
@@ -61,7 +58,6 @@ public class EvBot extends AdvancedRobot
 	double angle2enemyInFutire= 0;
 	double desiredBodyRotationDirection = 0; // our robot body desired angle
 	boolean gameJustStarted = true;
-	boolean gunFired = true;
 	int countFullSweepDelay=0;
 	int radarSpinDirection =1;
 	String previoslyHeadedWall = "none";
@@ -491,7 +487,6 @@ public class EvBot extends AdvancedRobot
 
 		if ( _gun.getName().equals("random") ) {
 			if ( _gun.isGunFired() ) {
-				gunFired = false;
 				_gun.setTargetFuturePosition(_trgt);
 			} else {
 				// no need to update future coordinates before gun fire
@@ -631,10 +626,10 @@ public class EvBot extends AdvancedRobot
 
 			if (haveTarget) {
 				//angle to enemy
-				dx=targetLastX - (myCoord.x);
-				dy=targetLastY - (myCoord.y);
-				dbg(dbg_noise, "Last known target X coordinate = " + targetLastX );
-				dbg(dbg_noise, "Last known target Y coordinate = " + targetLastY );
+				dx=_trgt.getX() - (myCoord.x);
+				dy=_trgt.getY() - (myCoord.y);
+				dbg(dbg_noise, "Last known target X coordinate = " + _trgt.getX() );
+				dbg(dbg_noise, "Last known target Y coordinate = " + _trgt.getY() );
 
 				angle2enemy=Math.atan2(dy,dx);
 				angle2enemy=cortesian2game_angles(angle2enemy*180/Math.PI);
@@ -703,7 +698,6 @@ public class EvBot extends AdvancedRobot
 					dbg(dbg_noise, "Firing the gun with power = " + firePower);
 					_gun.fireGun();
 					countFullSweepDelay = -1; // we can sweep do full radar sweep
-					gunFired = true;
 				}
 
 
@@ -747,9 +741,6 @@ public class EvBot extends AdvancedRobot
 		// show scanned bot path
 		PaintRobotPath.onPaint(getGraphics(), e.getName(), getTime(), _trgt.getX(), _trgt.getY(), Color.YELLOW);
 
-		// need to go away
-		targetLastX = _trgt.getX();
-		targetLastY = _trgt.getY();
 
 		movingRadarToLastKnownTargetLocation = false;
 		//radarSpinDirection=1;
