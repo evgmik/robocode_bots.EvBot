@@ -35,7 +35,7 @@ public class EvBot extends AdvancedRobot
 	double portStickX = nonexisting_coord;
 	double portStickY = nonexisting_coord;
 
-	private baseGun _gun = new baseGun(this);
+	private baseGun _gun = new linearGun(this);
 
 
 	private static Random gun_rand = new Random();
