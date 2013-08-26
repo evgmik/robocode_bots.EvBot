@@ -33,7 +33,7 @@ public class randomGun extends baseGun {
 		double timeToHit;
 		double a, b, c;
 		double k, rnd;
-		double bSpeed=myBot.bulletSpeed( firePower );
+		double bSpeed=bulletSpeed( firePower );
 
 		myBot.dbg(myBot.dbg_noise, "Bullet speed " + bSpeed );
 

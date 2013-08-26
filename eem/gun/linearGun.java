@@ -30,7 +30,7 @@ public class linearGun extends baseGun {
 		double sin_vT, cos_vT;
 		double timeToHit;
 		double a, b, c;
-		double bSpeed=myBot.bulletSpeed( firePower );
+		double bSpeed=bulletSpeed( firePower );
 
 		myBot.dbg(myBot.dbg_noise, "Bullet speed " + bSpeed );
 

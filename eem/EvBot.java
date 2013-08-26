@@ -449,13 +449,6 @@ public class EvBot extends AdvancedRobot
 			}
 	}
 
-	public double  bulletSpeed( double firePower ) {
-		double bSpeed;
-		bSpeed = ( 20 - firePower * 3 );
-		dbg(dbg_noise, "bullet speed = " + bSpeed + " for firePower = " + firePower);
-		return bSpeed;
-	}
-
 	public int sign( double n) {
 		if (n==0) 
 			return 0;
@@ -464,7 +457,6 @@ public class EvBot extends AdvancedRobot
 		else
 			return -1;
 	}
-
 
 	public void  choseGun( ) {
 		double rnd;

@@ -71,6 +71,13 @@ public class baseGun {
 		firePower = firePoverVsDistance(myBot._trgt.getLastDistance(myBot.myCoord));
 	}
 
+	public double  bulletSpeed( double firePower ) {
+		double bSpeed;
+		bSpeed = ( 20 - firePower * 3 );
+		myBot.dbg(myBot.dbg_noise, "bullet speed = " + bSpeed + " for firePower = " + firePower);
+		return bSpeed;
+	}
+
 	public double getFirePower() {
 		return firePower;
 	}
