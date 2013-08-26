@@ -813,15 +813,6 @@ public class EvBot extends AdvancedRobot
 		if (haveTarget ) {
 			// show our own path
 			PaintRobotPath.onPaint(g, getName(), getTime(), myCoord.x, myCoord.y, Color.GREEN);
-
-			g.setColor(new Color(0xff, 0x00, 0x00, 0x80));
-
-			// Draw a line from our robot to the scanned robot
-			g.drawLine((int)targetLastX, (int)targetLastY, (int)myCoord.x, (int)myCoord.y);
-
-			// Draw a filled square on top of the scanned robot that covers it
-			g.fillRect((int)targetLastX - 20, (int)targetLastY - 20, 40, 40);
-
 			// show estimated future position to be fired
 			dbg(dbg_noise, "Gun choice = " + _gun.getName() );
 			_gun.onPaint(g);

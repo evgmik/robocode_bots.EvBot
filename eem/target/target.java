@@ -2,8 +2,10 @@
 
 package eem.target;
 
-import java.awt.geom.Point2D;
 import eem.target.botStatPoint;
+import java.awt.geom.Point2D;
+import java.awt.Color;
+import java.awt.Graphics2D;
 
 public class target {
 	private int nonexisting_coord = -10000;
@@ -67,6 +69,13 @@ public class target {
 		str = "Target bot name: " + getName() + "\n";
 		str = str + "Last: " + statLast.format() + "\n" + "Prev: " + statPrev.format();
 		return str;
+	}
+
+	public void onPaint(Graphics2D g) {
+			g.setColor(new Color(0xff, 0x00, 0x00, 0x80));
+
+			// Draw a filled square on top of the scanned robot that covers it
+			g.fillRect((int)statLast.getX() - 20, (int)statLast.getY() - 20, 40, 40);
 	}
 
 }

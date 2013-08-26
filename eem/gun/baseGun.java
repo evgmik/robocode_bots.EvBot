@@ -81,8 +81,7 @@ public class baseGun {
 	}
 
 	private void drawTargetLastPosition(Graphics2D g) {
-		g.setColor(gunColor);
-		g.fillRect((int)myBot._trgt.getX() - 20, (int)myBot._trgt.getY() - 20, 40, 40);
+		myBot._trgt.onPaint(g);
 	}
 
 	private void drawLineToTargetFuturePosition(Graphics2D g) {
