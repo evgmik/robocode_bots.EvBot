@@ -3,6 +3,7 @@ import eem.misc.*;
 import eem.botVersion.*;
 import eem.gun.*;
 import eem.target.*;
+import eem.radar.*;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -34,6 +35,7 @@ public class EvBot extends AdvancedRobot
 	double portStickY = nonexisting_coord;
 
 	private baseGun _gun = new linearGun(this);
+	private radar _radar = new radar(this);
 
 
 	public Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
