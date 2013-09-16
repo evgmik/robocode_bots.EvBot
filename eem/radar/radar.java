@@ -14,13 +14,14 @@ import java.awt.geom.Point2D;
 public class radar {
 	protected EvBot myBot;
 
+	protected double angle2rotate = 0;
 	protected int countFullSweepDelay=0;
 	protected int radarSpinDirection =1;
 	protected int radarMotionMultiplier = 1;
-	protected int fullSweepDelay = 200;
-	protected double radarSweepSubAngle;
-	protected double radarSmallestRockingMotion;
-	protected int numberOfSmallRadarSweeps;
+	protected static int fullSweepDelay = 200;
+	protected static double radarSweepSubAngle;
+	protected static double radarSmallestRockingMotion;
+	protected static int numberOfSmallRadarSweeps;
 	protected int countForNumberOfSmallRadarSweeps;
 	protected boolean searchForClosestTarget = true;
 	protected boolean movingRadarToLastKnownTargetLocation = false;
@@ -29,7 +30,7 @@ public class radar {
 	public radar(EvBot bot) {
 		myBot = bot;
 		radarSweepSubAngle = myBot.game_rules.RADAR_TURN_RATE ;
-		radarSmallestRockingMotion = myBot.game_rules.RADAR_TURN_RATE/4;
+		radarSmallestRockingMotion = myBot.game_rules.RADAR_TURN_RATE/2;
 		numberOfSmallRadarSweeps =(int) Math.ceil(360 / radarSweepSubAngle);
 		countForNumberOfSmallRadarSweeps=numberOfSmallRadarSweeps;
 
@@ -42,7 +43,7 @@ public class radar {
 	}
 
 	public void setMovingRadarToLastKnownTargetLocation(boolean val) {
-		movingRadarToLastKnownTargetLocation = false;
+		movingRadarToLastKnownTargetLocation = val;
 	}
 
 	public void setFullSweepAllowed() {
@@ -60,8 +61,8 @@ public class radar {
 		if ( !searchForClosestTarget && myBot._trgt.targetUnlocked && movingRadarToLastKnownTargetLocation) {
 			myBot.dbg(myBot.dbg_debuging, "Moving radar to old target position");
 			angle = radarSpinDirection*myBot.game_rules.RADAR_TURN_RATE;
-			myBot.dbg(myBot.dbg_debuging, "Pointing radar to the old target location and potentially over sweeping by angle = " + angle);
-			myBot.setTurnRadarRight(angle);
+			myBot.dbg(myBot.dbg_debuging, "Spinning radar to the old target location");
+			setTurnRadarRight(angle);
 		}
 	}
 
@@ -82,8 +83,8 @@ public class radar {
 
 		if ( searchForClosestTarget ) {
 			angle = radarSweepSubAngle;
-			myBot.dbg(myBot.dbg_debuging, "Search sweep  by angle = " + angle);
-			myBot.setTurnRadarRight(angle);
+			myBot.dbg(myBot.dbg_debuging, "Search sweep");
+			setTurnRadarRight(angle);
 			myBot._trgt.setUnLockedStatus(true);
 		}
 
@@ -104,8 +105,8 @@ public class radar {
 				radarSpinDirection=-1;
 				angle = -myBot.game_rules.RADAR_TURN_RATE;
 			}
-			myBot.dbg(myBot.dbg_debuging, "Full sweep radar motion angle = " + angle);
-			myBot.setTurnRadarRight(angle);
+			myBot.dbg(myBot.dbg_debuging, "Full sweep radar motion");
+			setTurnRadarRight(angle);
 		}
 	}
 
@@ -121,19 +122,32 @@ public class radar {
 				myBot.dbg(myBot.dbg_debuging, "Radar motion multiplier = " + radarMotionMultiplier);
 				radarBearingToEnemy=0; //unknown
 				angle=(radarBearingToEnemy + radarSpinDirection*radarMotionMultiplier*radarSmallestRockingMotion);
+				if ( Math.abs(angle) > radarSweepSubAngle ) {
+					myBot.dbg(myBot.dbg_debuging, "Radar sweep angle is too big decreasing it");
+					angle = math.sign(angle)*radarSweepSubAngle;
+					radarMotionMultiplier = ((int)  Math.ceil(radarSweepSubAngle/radarSmallestRockingMotion) );
+					myBot.dbg(myBot.dbg_debuging, "Radar motion multiplier = " + radarMotionMultiplier);
+				}
 			} else {
 				myBot.dbg(myBot.dbg_debuging, "Target scanned last time");
 				radarMotionMultiplier = 1;
-				radarBearingToEnemy = myBot.angle2target()-myBot.getRadarHeading();
-				angle=(radarBearingToEnemy + radarSpinDirection*radarMotionMultiplier*radarSmallestRockingMotion/2);
+				radarBearingToEnemy = math.shortest_arc( myBot.angle2target()-myBot.getRadarHeading() );
+				radarSpinDirection = math.sign(radarBearingToEnemy);
+				angle=(radarBearingToEnemy + radarSpinDirection*radarMotionMultiplier*radarSmallestRockingMotion);
 			}
 
 
-			myBot.dbg(myBot.dbg_debuging, "Trying to relock on target with radar move by angle = " + angle);
-			myBot.setTurnRadarRight(angle);
+			myBot.dbg(myBot.dbg_debuging, "Trying to relock on target with radar motion");
+			setTurnRadarRight(angle);
 			//myBot._trgt.targetUnlocked = true;
 		}
 
+	}
+
+	protected void setTurnRadarRight(double angle) {
+		angle2rotate = angle;
+		myBot.dbg(myBot.dbg_debuging, "Radar rotation angle = " + angle2rotate);
+		myBot.setTurnRadarRight(angle2rotate);
 	}
 }
 

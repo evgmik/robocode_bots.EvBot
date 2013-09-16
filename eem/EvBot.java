@@ -611,7 +611,7 @@ public class EvBot extends AdvancedRobot
 		_radar.setMovingRadarToLastKnownTargetLocation(false);
 		//radarSpinDirection=1;
 		//_trgt.targetUnlocked = true;
-		dbg(dbg_noise, "Found target");
+		dbg(dbg_debuging, "Target seen during radar sweep");
 	}
 
 	/**
