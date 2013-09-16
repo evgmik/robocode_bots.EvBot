@@ -13,21 +13,30 @@ public class target {
 	private botStatPoint statLast;
 	private botStatPoint statPrev;
 	private String name = "";
+	public boolean haveTarget=false;
+	public boolean targetUnlocked = false; 
 
 	public target() {
 		statPrev = new botStatPoint( new Point2D.Double( nonexisting_coord, nonexisting_coord), far_ago);
 		statLast = new botStatPoint( new Point2D.Double( nonexisting_coord, nonexisting_coord), far_ago);
+		haveTarget=false;
+	}
+	
+	public void setUnLockedStatus(boolean val) {
+		targetUnlocked = val;
 	}
 
 	public target update(Point2D.Double pos, long tStamp) {
 		statPrev = statLast;
 		statLast = new botStatPoint(pos, tStamp);
+		haveTarget = true;
 		return this;
 	}
 
 	public target update(botStatPoint statPnt) {
 		statPrev = statLast;
 		statLast = statPnt;
+		haveTarget = true;
 		return this;
 	}
 
