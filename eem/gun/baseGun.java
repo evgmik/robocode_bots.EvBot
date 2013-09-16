@@ -4,6 +4,7 @@ package eem.gun;
 
 import eem.EvBot;
 import eem.target.*;
+import eem.misc.*;
 import java.util.Random;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -34,7 +35,7 @@ public class baseGun {
 	}
 
 	public void setTargetFuturePosition( Point2D.Double target ) {
-		targetFuturePosition = target;
+		targetFuturePosition = math.putWithinBorders( target, myBot.BattleField);
 	};
 
 	public String getName() {

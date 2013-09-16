@@ -19,7 +19,10 @@ public class randomGun extends baseGun {
 
 	public void setTargetFuturePosition(target tgt) {
 		if ( !gunHasTargetPoint ) {
-			targetFuturePosition = findTargetHitPositionWithRandomPredictor( firePower, tgt);
+			targetFuturePosition = math.putWithinBorders(
+				findTargetHitPositionWithRandomPredictor( firePower, tgt),
+				myBot.BattleField
+				);
 			gunHasTargetPoint = true;
 		}
 	}

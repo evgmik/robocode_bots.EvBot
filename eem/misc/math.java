@@ -55,6 +55,13 @@ public class math {
 		return angle;
 	}
 
+	public static Point2D.Double putWithinBorders( Point2D.Double pnt, Point2D.Double brdr) {
+		Point2D.Double npnt= pnt;
+		npnt.x = putWithinRange( npnt.x, 0, brdr.x);
+		npnt.y = putWithinRange( npnt.y, 0, brdr.y);
+		return npnt;
+	}
+
 	public static double putWithinRange( double x, double lBound, double uBound) {
 		double val;
 		val = x;
