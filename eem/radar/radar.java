@@ -19,7 +19,7 @@ public class radar {
 	protected int radarSpinDirection =1;
 	protected int radarMotionMultiplier = 1;
 	protected static int fullSweepDelay = 200;
-	protected static double radarSweepSubAngle;
+	protected static double radarMaxRotationAngle;
 	protected static double radarSmallestRockingMotion;
 	protected static int numberOfSmallRadarSweeps;
 	protected int countForNumberOfSmallRadarSweeps;
@@ -29,9 +29,9 @@ public class radar {
 
 	public radar(EvBot bot) {
 		myBot = bot;
-		radarSweepSubAngle = myBot.game_rules.RADAR_TURN_RATE ;
+		radarMaxRotationAngle = myBot.game_rules.RADAR_TURN_RATE ;
 		radarSmallestRockingMotion = myBot.game_rules.RADAR_TURN_RATE/2;
-		numberOfSmallRadarSweeps =(int) Math.ceil(360 / radarSweepSubAngle);
+		numberOfSmallRadarSweeps =(int) Math.ceil(360 / radarMaxRotationAngle);
 		countForNumberOfSmallRadarSweeps=numberOfSmallRadarSweeps;
 
 	}
@@ -59,13 +59,17 @@ public class radar {
 		double angle;
 		// moving radar to or over old target position
 		if ( !searchForClosestTarget && myBot._trgt.targetUnlocked && movingRadarToLastKnownTargetLocation) {
-			myBot.dbg(myBot.dbg_debuging, "Moving radar to old target position");
-			angle = radarSpinDirection*myBot.game_rules.RADAR_TURN_RATE;
-			myBot.dbg(myBot.dbg_debuging, "Spinning radar to the old target location");
-			setTurnRadarRight(angle);
+			myBot.dbg(myBot.dbg_noise, "Spinning radar to the old target location");
+			spinInTheSameDirection(radarSpinDirection);
 		}
 	}
 
+	public void spinInTheSameDirection(int direction) {
+		double angle;
+		radarSpinDirection = direction;
+		angle = radarSpinDirection*radarMaxRotationAngle;
+		setTurnRadarRight(angle);
+	}
 
 	public void performFullSweepIfNeded() {
 		double angle=0;
@@ -75,15 +79,15 @@ public class radar {
 		countForNumberOfSmallRadarSweeps--;
 		// full sweep for the closest enemy
 		if ( (countFullSweepDelay<0) && !searchForClosestTarget && (myBot.getOthers() > 1) || !myBot._trgt.haveTarget) {
-			myBot.dbg(myBot.dbg_debuging, "Begin new cycle for closest enemy search");
-			myBot.dbg(myBot.dbg_debuging, "We have target = " + myBot._trgt.haveTarget);
+			myBot.dbg(myBot.dbg_noise, "Begin new cycle for closest enemy search");
+			myBot.dbg(myBot.dbg_noise, "We have target = " + myBot._trgt.haveTarget);
 			searchForClosestTarget = true;
 			countForNumberOfSmallRadarSweeps = numberOfSmallRadarSweeps;
 		}
 
 		if ( searchForClosestTarget ) {
-			angle = radarSweepSubAngle;
-			myBot.dbg(myBot.dbg_debuging, "Search sweep");
+			angle = radarMaxRotationAngle;
+			myBot.dbg(myBot.dbg_noise, "Search sweep");
 			setTurnRadarRight(angle);
 			myBot._trgt.setUnLockedStatus(true);
 		}
@@ -92,7 +96,7 @@ public class radar {
 		if ( countForNumberOfSmallRadarSweeps <= 0 && searchForClosestTarget ) {
 			searchForClosestTarget = false;
 			countFullSweepDelay = fullSweepDelay;
-			myBot.dbg(myBot.dbg_debuging, "Full sweep for closest enemy is completed");
+			myBot.dbg(myBot.dbg_noise, "Full sweep for closest enemy is completed");
 			movingRadarToLastKnownTargetLocation = true;
 
 			double radar_angle = myBot.getRadarHeading();
@@ -105,7 +109,7 @@ public class radar {
 				radarSpinDirection=-1;
 				angle = -myBot.game_rules.RADAR_TURN_RATE;
 			}
-			myBot.dbg(myBot.dbg_debuging, "Full sweep radar motion");
+			myBot.dbg(myBot.dbg_noise, "Full sweep radar motion");
 			setTurnRadarRight(angle);
 		}
 	}
@@ -114,39 +118,28 @@ public class radar {
 		double angle;
 		// radar rocking motion to relock target
 		if (myBot._trgt.haveTarget && !searchForClosestTarget && !movingRadarToLastKnownTargetLocation) {
-			myBot.dbg(myBot.dbg_debuging, "Doing radar rocking motion");
-			radarSpinDirection*=-1;
-			if (myBot._trgt.targetUnlocked) {
-				myBot.dbg(myBot.dbg_debuging, "Target lost!");
-				radarMotionMultiplier *= 2;
-				myBot.dbg(myBot.dbg_debuging, "Radar motion multiplier = " + radarMotionMultiplier);
-				radarBearingToEnemy=0; //unknown
-				angle=(radarBearingToEnemy + radarSpinDirection*radarMotionMultiplier*radarSmallestRockingMotion);
-				if ( Math.abs(angle) > radarSweepSubAngle ) {
-					myBot.dbg(myBot.dbg_debuging, "Radar sweep angle is too big decreasing it");
-					angle = math.sign(angle)*radarSweepSubAngle;
-					radarMotionMultiplier = ((int)  Math.ceil(radarSweepSubAngle/radarSmallestRockingMotion) );
-					myBot.dbg(myBot.dbg_debuging, "Radar motion multiplier = " + radarMotionMultiplier);
-				}
-			} else {
-				myBot.dbg(myBot.dbg_debuging, "Target scanned last time");
-				radarMotionMultiplier = 1;
+			myBot.dbg(myBot.dbg_noise, "Doing radar rocking motion");
+			if (!myBot._trgt.targetUnlocked) {
+				myBot.dbg(myBot.dbg_noise, "Target scanned last time");
 				radarBearingToEnemy = math.shortest_arc( myBot.angle2target()-myBot.getRadarHeading() );
-				radarSpinDirection = math.sign(radarBearingToEnemy);
-				angle=(radarBearingToEnemy + radarSpinDirection*radarMotionMultiplier*radarSmallestRockingMotion);
+				myBot.dbg(myBot.dbg_noise, "Bearing to the target = " + radarBearingToEnemy);
+				radarSpinDirection = math.signNoZero(radarBearingToEnemy);
+				angle = radarBearingToEnemy + radarSpinDirection*radarMaxRotationAngle/2;
+				// we will need to know opposite to made direction if on scan we missed target
+				// then unlocked condition will kick in with opposite rotation
+				radarSpinDirection*=-1; 
+			} else {
+				myBot.dbg(myBot.dbg_noise, "Target unlocked, long sweep to catch it");
+				angle = radarSpinDirection*radarMaxRotationAngle;
 			}
-
-
-			myBot.dbg(myBot.dbg_debuging, "Trying to relock on target with radar motion");
+			myBot.dbg(myBot.dbg_noise, "Trying to relock on target with radar motion");
 			setTurnRadarRight(angle);
-			//myBot._trgt.targetUnlocked = true;
 		}
-
 	}
 
 	protected void setTurnRadarRight(double angle) {
-		angle2rotate = angle;
-		myBot.dbg(myBot.dbg_debuging, "Radar rotation angle = " + angle2rotate);
+		angle2rotate = math.putWithinRange(angle, -radarMaxRotationAngle, radarMaxRotationAngle);
+		myBot.dbg(myBot.dbg_noise, "Radar rotation angle = " + angle2rotate);
 		myBot.setTurnRadarRight(angle2rotate);
 	}
 }

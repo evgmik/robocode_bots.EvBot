@@ -55,6 +55,27 @@ public class math {
 		return angle;
 	}
 
+	public static double putWithinRange( double x, double lBound, double uBound) {
+		double val;
+		val = x;
+		if ( val < lBound ) {
+			val = lBound;
+		}
+		if ( val > uBound ) {
+			val =uBound;
+		}
+		return val;
+	}
+
+	public static int signNoZero( double n) {
+		int val;
+		val = sign(n);
+		if (0 == val) {
+			val = 1;
+		}
+		return val;
+	}
+
 	public static int sign( double n) {
 		if (n==0) 
 			return 0;
