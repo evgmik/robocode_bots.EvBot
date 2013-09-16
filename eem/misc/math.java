@@ -29,7 +29,7 @@ public class math {
 		double angle;
 		double dx, dy;
 		// angle from one point to another
-		dx=to_pnt.x - from_pnt.y;
+		dx=to_pnt.x - from_pnt.x;
 		dy=to_pnt.y - from_pnt.y;
 
 		angle = Math.atan2(dy,dx);
