@@ -14,8 +14,15 @@ import java.awt.geom.Point2D;
 public class basicMotion {
 	protected EvBot myBot;
 
+	public basicMotion() {
+	}
+
 	public basicMotion(EvBot bot) {
 		myBot = bot;
-	};
+	}
+
+	public void makeMove() {
+		// for basic motion we do nothing
+	}
 
 }
