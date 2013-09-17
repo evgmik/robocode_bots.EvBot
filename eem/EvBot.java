@@ -68,6 +68,7 @@ public class EvBot extends AdvancedRobot
 	public void initTic() {
 		myCoord.x = getX();
 	       	myCoord.y = getY();
+		_radar.initTic();
 	}
 
 	public void calculateSticksEndsPosition() {
@@ -549,14 +550,12 @@ public class EvBot extends AdvancedRobot
 
 			makeMove();
 
-			_radar.performRockingSweepIfNeded();
 
 			if (_trgt.haveTarget && !_trgt.targetUnlocked ) {
 				//gun angle	
 				double gun_angle =getGunHeading();
 				angle = math.shortest_arc(angle2enemyInFutire-gun_angle);
 				dbg(dbg_noise, "Pointing gun to enemy by rotating by angle = " + angle);
-				setAdjustRadarForGunTurn(true);
 				setTurnGunRight(angle);
 
 				double predictedBulletDeviation=angle*Math.PI/180*_trgt.getLastDistance(myCoord);
@@ -574,7 +573,7 @@ public class EvBot extends AdvancedRobot
 
 			}
 
-			_radar.sweep();
+			_radar.manage();
 
 			execute();
 		}

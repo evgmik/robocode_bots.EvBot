@@ -36,7 +36,12 @@ public class radar {
 
 	}
 
-	public void sweep() {
+	public void initTic() {
+		myBot.setAdjustRadarForGunTurn(true); // decouple gun and radar
+	}
+
+	public void manage() {
+			this.performRockingSweepIfNeded();
 			this.moveToOrOverOldTargetPositionIfNeeded();
 			this.decreaseFullSweepDelay();
 			this.performFullSweepIfNeded();
