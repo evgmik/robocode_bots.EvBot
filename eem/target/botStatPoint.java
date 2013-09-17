@@ -51,6 +51,9 @@ public class botStatPoint {
 		return tStamp;
 	}
 
+	public double getEnergy() {
+		return energy;
+	}
 	public double getX() {
 		return pos.x;
 	}
