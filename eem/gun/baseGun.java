@@ -28,6 +28,42 @@ public class baseGun {
 		myBot = bot;
 	};
 
+	public void initTic() {
+	}
+
+	public void manage() {
+		double angle;
+		double angle2enemyInFutire;
+
+		if (myBot._trgt.haveTarget) {
+			//calculate the gun settings
+			this.calcGunSettings();
+
+			myBot.dbg(myBot.dbg_noise, "Predicted target X coordinate = " + this.getTargetFuturePosition().x );
+			myBot.dbg(myBot.dbg_noise, "Predicted target Y coordinate = " + this.getTargetFuturePosition().y );
+
+			angle2enemyInFutire=math.angle2pt(myBot.myCoord, this.getTargetFuturePosition());
+
+			// rotate gun dirictives and settings
+			double gun_angle =myBot.getGunHeading();
+			angle = math.shortest_arc(angle2enemyInFutire-gun_angle);
+			myBot.dbg(myBot.dbg_noise, "Pointing gun to enemy by rotating by angle = " + angle);
+			myBot.setTurnGunRight(angle);
+
+			double predictedBulletDeviation=angle*Math.PI/180*myBot._trgt.getLastDistance(myBot.myCoord);
+
+			myBot.dbg(myBot.dbg_noise, "Gun heat = " + myBot.getGunHeat() );
+			// if gun is called and
+			// predicted bullet deviation within half a body size of the robot
+			if (myBot.getGunHeat() == 0 && 
+					Math.abs(predictedBulletDeviation) < Math.min( myBot.getHeight(), myBot.getWidth())/2 ) {
+				myBot.dbg(myBot.dbg_noise, "Firing the gun with power = " + firePower);
+				this.fireGun();
+				myBot._radar.setFullSweepAllowed(); // we can sweep do full radar sweep
+			}
+		}
+	}
+
 	public void fireGun() {
 		myBot.dbg(myBot.dbg_noise, "Gun fire power = " + firePower);
 		myBot.setFire(firePower);

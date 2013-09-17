@@ -36,7 +36,7 @@ public class EvBot extends AdvancedRobot
 	double portStickY = nonexisting_coord;
 
 	private baseGun _gun = new linearGun(this);
-	private radar _radar = new radar(this);
+	public radar _radar = new radar(this);
 
 
 	public Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
@@ -538,41 +538,13 @@ public class EvBot extends AdvancedRobot
 
 
 			if (_trgt.haveTarget) {
-				// estimate future enemy location
 				choseGun();
-				_gun.calcGunSettings();
-
-				dbg(dbg_noise, "Predicted target X coordinate = " + _gun.getTargetFuturePosition().x );
-				dbg(dbg_noise, "Predicted target Y coordinate = " + _gun.getTargetFuturePosition().y );
-
-				angle2enemyInFutire=math.angle2pt(myCoord, _gun.getTargetFuturePosition());
 			}
 
 			makeMove();
 
 
-			if (_trgt.haveTarget && !_trgt.targetUnlocked ) {
-				//gun angle	
-				double gun_angle =getGunHeading();
-				angle = math.shortest_arc(angle2enemyInFutire-gun_angle);
-				dbg(dbg_noise, "Pointing gun to enemy by rotating by angle = " + angle);
-				setTurnGunRight(angle);
-
-				double predictedBulletDeviation=angle*Math.PI/180*_trgt.getLastDistance(myCoord);
-
-				dbg(dbg_noise, "Gun heat = " + getGunHeat() );
-				// if gun is called and
-				// predicted bullet deviation within half a body size of the robot
-				if (getGunHeat() == 0 && 
-				    Math.abs(predictedBulletDeviation) < Math.min( getHeight(), getWidth())/2 ) {
-					dbg(dbg_noise, "Firing the gun with power = " + firePower);
-					_gun.fireGun();
-					_radar.setFullSweepAllowed(); // we can sweep do full radar sweep
-				}
-
-
-			}
-
+			_gun.manage();
 			_radar.manage();
 
 			execute();
