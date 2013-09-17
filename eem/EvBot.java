@@ -37,6 +37,7 @@ public class EvBot extends AdvancedRobot
 
 	private baseGun _gun = new linearGun(this);
 	public radar _radar = new radar(this);
+	private botVersion botVer;
 
 
 	public Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
@@ -64,10 +65,16 @@ public class EvBot extends AdvancedRobot
 		BattleField.y = getBattleFieldHeight();
 
 		setColors(Color.red,Color.blue,Color.green);
+		botVer = new botVersion();
 	}
 
 	public void initTic() {
 		ticTime = getTime();
+
+		dbg(dbg_rutine, "----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
+		dbg(dbg_noise, "Game time: " + ticTime);
+		dbg(dbg_noise, "Number of other bots = " + getOthers());
+
 		myCoord.x = getX();
 	       	myCoord.y = getY();
 		_trgt.initTic(ticTime);
@@ -516,34 +523,16 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void run() {
-		double dx=0;
-		double dy=0;
-		botVersion botVer = new botVersion();
-		double angle = nonexisting_coord;
-		double firePower=0;
-		double bulletFlyTimeEstimate;
-		double moveLength;
-		double dist = nonexisting_coord;
-		double angleRandDeviation = nonexisting_coord;
-
 		initBattle();
 
 		while(true) {
 			initTic() ;
-			// Replace the next 4 lines with any behavior you would like
-			dbg(dbg_rutine, "----------- Bot version: " + botVer.getVersion() + "------- Tic # " + getTime() + " -------------");
-			dbg(dbg_noise, "Game time: " + getTime());
-			dbg(dbg_noise, "Number of other bots = " + getOthers());
-
-
 
 			if (_trgt.haveTarget) {
 				choseGun();
 			}
 
 			makeMove();
-
-
 			_gun.manage();
 			_radar.manage();
 
