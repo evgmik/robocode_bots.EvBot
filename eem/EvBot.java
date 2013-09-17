@@ -29,12 +29,6 @@ public class EvBot extends AdvancedRobot
 	public long ticTime;
 	public target _trgt = new target();
 	int nonexisting_coord = -10000;
-	// bot tangent position at the starboard/port (right/left) 
-	// at minimal turning radius at the current speed
-	double starboardStickX = nonexisting_coord;
-	double starboardStickY = nonexisting_coord;
-	double portStickX = nonexisting_coord;
-	double portStickY = nonexisting_coord;
 
 	private baseGun _gun = new linearGun(this);
 	public radar _radar = new radar(this);
@@ -44,16 +38,8 @@ public class EvBot extends AdvancedRobot
 
 	public Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
 	public Point2D.Double BattleField = new Point2D.Double(nonexisting_coord, nonexisting_coord);
-	long targetLastSeenTime = - 10; // in far past
-	long targetPrevSeenTime = - 10; // in far past
-	boolean executingWallEvadingTurn = false;
 	double absurdly_huge=1e6; // something huge
-	//firing with this deviation will bring bullet to the same point
-	double angle_resolution = 1; 
-	double angle2enemyInFutire= 0;
 	double desiredBodyRotationDirection = 0; // our robot body desired angle
-	boolean gameJustStarted = true;
-	String previoslyHeadedWall = "none";
 	// logger staff
 	// debug levels
 	public int dbg_important=0;
