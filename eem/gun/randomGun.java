@@ -72,7 +72,7 @@ public class randomGun extends baseGun {
 			k = 2*(gun_rand.nextGaussian()); 
 			vT=k; // no memory of previous motion
 		}
-		myBot.dbg(myBot.dbg_debuging, "guessed speed coefficient = " + k);
+		myBot.dbg(myBot.dbg_noise, "guessed speed coefficient = " + k);
 		// we keep the same target heading
 		if ( vT == 0 ) {
 			// to avoid division by zero
