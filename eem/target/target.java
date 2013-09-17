@@ -22,6 +22,14 @@ public class target {
 		haveTarget=false;
 	}
 	
+	public void initTic(long ticTime) {
+		// updating UnLocked status
+		if ( ( ticTime - this.getLastSeenTime() ) > 2) 
+			this.setUnLockedStatus(true);
+		else
+			this.setUnLockedStatus(false);
+	}
+
 	public void setUnLockedStatus(boolean val) {
 		targetUnlocked = val;
 	}

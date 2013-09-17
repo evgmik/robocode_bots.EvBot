@@ -25,6 +25,7 @@ public class EvBot extends AdvancedRobot
 	public Rules game_rules;
 	double BodyTurnRate = 10;
 	int robotHalfSize = 18;
+	public long ticTime;
 	public target _trgt = new target();
 	int nonexisting_coord = -10000;
 	// bot tangent position at the starboard/port (right/left) 
@@ -66,8 +67,11 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void initTic() {
+		ticTime = getTime();
 		myCoord.x = getX();
 	       	myCoord.y = getY();
+		_trgt.initTic(ticTime);
+		_gun.initTic();
 		_radar.initTic();
 	}
 
@@ -532,10 +536,6 @@ public class EvBot extends AdvancedRobot
 			dbg(dbg_noise, "Number of other bots = " + getOthers());
 
 
-			if ( ( getTime() - _trgt.getLastSeenTime() ) > 2) 
-				_trgt.setUnLockedStatus(true);
-			else
-				_trgt.setUnLockedStatus(false);
 
 			if (_trgt.haveTarget) {
 				// estimate future enemy location
