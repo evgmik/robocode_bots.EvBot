@@ -29,6 +29,7 @@ public class baseGun {
 	};
 
 	public void fireGun() {
+		myBot.dbg(myBot.dbg_noise, "Gun fire power = " + firePower);
 		myBot.setFire(firePower);
 		gunFired = true;
 		gunHasTargetPoint = false;
@@ -70,6 +71,9 @@ public class baseGun {
 
 	public void setFirePower() {
 		firePower = firePoverVsDistance(myBot._trgt.getLastDistance(myBot.myCoord));
+		// no point to fire bullets more energetic than enemy bot energy level
+		// fixme replace magic minimal energy bullet = 0.1  with a named var
+		firePower = math.putWithinRange( firePower, 0.1, misc.minReqBulEnergyToKillTarget(myBot._trgt.getEnergy()) );
 	}
 
 	public double  bulletSpeed( double firePower ) {

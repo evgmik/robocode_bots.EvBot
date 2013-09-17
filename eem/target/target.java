@@ -40,6 +40,10 @@ public class target {
 		return this;
 	}
 
+	public double getEnergy() {
+		return statLast.getEnergy();
+	}
+
 	public Point2D.Double getVelocity() {
 		return statLast.getVelocity();
 	}

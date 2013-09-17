@@ -40,4 +40,15 @@ public class misc  {
 		return new Point2D.Double( tFX, tFY );
 	}
 
+	public static double minReqBulEnergyToKillTarget(double target_energy) {
+		double tinyBity = 0.1;
+		target_energy = target_energy + tinyBity;
+		// Bullet_damage = 4 * bullet_power + 2 * max(bullet_power - 1 , 0) see wiki
+		double bPower = target_energy/4;
+	       	if ( bPower > 1) {
+			// Bullet_damage = 4 * bullet_power + 2 * (bullet_power - 1)
+			bPower = (target_energy +2) / 6;
+		}
+		return bPower;
+	}
 }
