@@ -12,7 +12,7 @@ import java.awt.geom.Point2D;
 
 
 public class baseGun {
-	protected EvBot myBot;
+	protected static EvBot myBot;
 	protected String gunName = "base";
 	protected boolean  gunFired = false;
 	protected boolean  gunHasTargetPoint = false;

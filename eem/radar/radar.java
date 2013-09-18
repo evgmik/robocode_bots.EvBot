@@ -12,7 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
 public class radar {
-	protected EvBot myBot;
+	protected static EvBot myBot;
 
 	protected double angle2rotate = 0;
 	protected int countFullSweepDelay=0;
