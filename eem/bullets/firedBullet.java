@@ -57,12 +57,13 @@ public class firedBullet {
 		g.drawOval( (int)(targetPosition.x - ovalSize/2), (int)(targetPosition.y-ovalSize/2), ovalSize, ovalSize);
 
 		// draw line from firing point to target
-		double long_length = 1000;
-		Point2D.Double lEnd = targetPosition;
+		double long_length = firingPosition.distance(targetPosition);
+		Point2D.Double lEnd = (Point2D.Double) targetPosition.clone();
 		//fixme truncation to border works incorrectly
-		//lEnd.x = firingPosition.x + Math.sin(firingAngle)*long_length;
-		//lEnd.y = firingPosition.y + Math.cos(firingAngle)*long_length;
+		lEnd.x = firingPosition.x + Math.sin(firingAngle)*long_length;
+		lEnd.y = firingPosition.y + Math.cos(firingAngle)*long_length;
 		//lEnd = math.putWithinBorders(lEnd, myBot.BattleField);
+		
 		myBot.dbg(myBot.dbg_debuging, "end of bullet path = " + lEnd);
 
 		g.drawLine((int) firingPosition.x, (int) firingPosition.y, (int)lEnd.x, (int)lEnd.y);
