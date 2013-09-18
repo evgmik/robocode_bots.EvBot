@@ -1,6 +1,6 @@
 # -*- make -*-
 # FILE: "/home/evmik/src/my_src/robocode/Makefile"
-# LAST MODIFICATION: "Mon, 16 Sep 2013 22:20:24 -0400 (evmik)"
+# LAST MODIFICATION: "Tue, 17 Sep 2013 21:20:44 -0400 (evmik)"
 # (C) 2012 by Eugeniy Mikhailov, <evgmik@gmail.com>
 # $Id:$
 
@@ -26,6 +26,7 @@ SRC=eem/EvBot.java eem/botVersion.java \
     $(wildcard eem/misc/*.java) \
     $(wildcard eem/radar/*.java) \
     $(wildcard eem/motion/*.java) \
+    $(wildcard eem/bullets/*.java) \
     $(wildcard eem/gun/*.java) \
     $(wildcard eem/target/*.java)
 
