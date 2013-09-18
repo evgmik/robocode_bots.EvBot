@@ -267,23 +267,8 @@ public class EvBot extends AdvancedRobot
 			g.setColor(Color.red);
 			g.drawOval((int) (myCoord.x - 50), (int) (myCoord.y - 50), 100, 100);
 		}
-		// draw starboard and port side sticks
-		if (false) {
-			// show starboard and port sticks with little circles at the ends
-			//calculateSticksEndsPosition();
-			//g.setColor(Color.green);
-			//g.drawLine((int) starboardStickX, (int) starboardStickY, (int)myCoord.x, (int)myCoord.y);
-			//g.drawOval((int) starboardStickX -5, (int) starboardStickY-5, 10, 10);
-			//g.setColor(Color.red);
-			//g.drawLine((int) portStickX, (int) portStickY, (int)myCoord.x, (int)myCoord.y);
-			//g.drawOval((int) portStickX-5, (int) portStickY-5, 10, 10);
 
-			//draw possible shortest turn radius paths
-			//g.setColor(Color.green);
-			//g.drawOval((int) (starboardStickX - shortestTurnRadiusVsSpeed()), (int) (starboardStickY - shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()));
-			//g.setColor(Color.red);
-			//g.drawOval((int) (portStickX - shortestTurnRadiusVsSpeed()), (int) (portStickY - shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()));
-		}
+		_motion.onPaint(g);
 
 	}
 

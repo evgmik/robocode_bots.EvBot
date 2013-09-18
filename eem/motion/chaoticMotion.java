@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import robocode.util.*;
+import java.awt.Color;
 
 
 public class chaoticMotion extends basicMotion {
@@ -399,6 +400,26 @@ public class chaoticMotion extends basicMotion {
 		double[] d={px, myBot.BattleField.x -px, py, myBot.BattleField.y-py};
 		Arrays.sort(d);
 		return d[0];
+	}
+
+	public void onPaint(Graphics2D g) {
+		// draw starboard and port side sticks
+		if (false) {
+			// show starboard and port sticks with little circles at the ends
+			calculateSticksEndsPosition();
+			g.setColor(Color.green);
+			g.drawLine((int) starboardStickX, (int) starboardStickY, (int)myBot.myCoord.x, (int)myBot.myCoord.y);
+			g.drawOval((int) starboardStickX -5, (int) starboardStickY-5, 10, 10);
+			g.setColor(Color.red);
+			g.drawLine((int) portStickX, (int) portStickY, (int)myBot.myCoord.x, (int)myBot.myCoord.y);
+			g.drawOval((int) portStickX-5, (int) portStickY-5, 10, 10);
+
+			//draw possible shortest turn radius paths
+			g.setColor(Color.green);
+			g.drawOval((int) (starboardStickX - shortestTurnRadiusVsSpeed()), (int) (starboardStickY - shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()));
+			g.setColor(Color.red);
+			g.drawOval((int) (portStickX - shortestTurnRadiusVsSpeed()), (int) (portStickY - shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()), (int) (2*shortestTurnRadiusVsSpeed()));
+		}
 	}
 
 }

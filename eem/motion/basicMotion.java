@@ -9,6 +9,7 @@ import java.util.Random;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import java.awt.Color;
 
 
 public class basicMotion {
@@ -25,4 +26,6 @@ public class basicMotion {
 		// for basic motion we do nothing
 	}
 
+	public void onPaint(Graphics2D g) {
+	}
 }
