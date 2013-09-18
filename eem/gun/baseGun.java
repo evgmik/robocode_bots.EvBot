@@ -4,11 +4,13 @@ package eem.gun;
 
 import eem.EvBot;
 import eem.target.*;
+import eem.bullets.*;
 import eem.misc.*;
 import java.util.Random;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import robocode.Bullet;
 
 
 public class baseGun {
@@ -17,7 +19,7 @@ public class baseGun {
 	protected boolean  gunFired = false;
 	protected boolean  gunHasTargetPoint = false;
 	protected Random gun_rand = new Random();
-	protected Color gunColor = Color.black;;
+	public    Color gunColor = Color.black;;
 	protected Point2D.Double targetFuturePosition;
 	protected double firePower;
 
@@ -65,8 +67,11 @@ public class baseGun {
 	}
 
 	public void fireGun() {
+		Bullet b;
 		myBot.dbg(myBot.dbg_noise, "Gun fire power = " + firePower);
-		myBot.setFire(firePower);
+		b=myBot.setFireBullet(firePower);
+		myBot.dbg(myBot.dbg_noise, "fired bullet  = " + b);
+		myBot._bmanager.add( new firedBullet( myBot, b, this) );
 		gunFired = true;
 		gunHasTargetPoint = false;
 	}

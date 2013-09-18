@@ -5,6 +5,7 @@ import eem.gun.*;
 import eem.target.*;
 import eem.radar.*;
 import eem.motion.*;
+import eem.bullets.*;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -34,6 +35,7 @@ public class EvBot extends AdvancedRobot
 	public radar _radar = new radar(this);
 	private botVersion botVer;
 	private basicMotion _motion = new basicMotion(this);
+	public bulletsManager _bmanager = new bulletsManager();
 
 
 	public Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
@@ -269,6 +271,7 @@ public class EvBot extends AdvancedRobot
 		}
 
 		_motion.onPaint(g);
+		_bmanager.onPaint(g);
 
 	}
 
