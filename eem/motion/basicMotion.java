@@ -13,7 +13,7 @@ import java.awt.Color;
 
 
 public class basicMotion {
-	protected EvBot myBot;
+	protected static EvBot myBot;
 
 	public basicMotion() {
 	}
