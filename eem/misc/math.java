@@ -55,8 +55,9 @@ public class math {
 		return angle;
 	}
 
+	//fixme truncation to border works incorrectly
 	public static Point2D.Double putWithinBorders( Point2D.Double pnt, Point2D.Double brdr) {
-		Point2D.Double npnt= pnt;
+		Point2D.Double npnt= new Point2D.Double( pnt.x, pnt.y );
 		npnt.x = putWithinRange( npnt.x, 0, brdr.x);
 		npnt.y = putWithinRange( npnt.y, 0, brdr.y);
 		return npnt;
