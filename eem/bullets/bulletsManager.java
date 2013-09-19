@@ -49,18 +49,10 @@ public class  bulletsManager {
 
 	public void onPaint(Graphics2D g) {
 		for ( firedBullet b : bullets ) {
-			if (b.isItMine) {
-				if ( b.robocodeBullet.isActive() ) {
-					b.onPaint(g);
-				} else {
-					bullets.remove(b);
-				}
+			if ( b.isActive() ) {
+				b.onPaint(g);
 			} else {
-				if ( math.isItOutOfBorders(b.getPosition(), myBot.BattleField) ) {
-					bullets.remove(b);
-				} else {
-					b.onPaint(g);
-				}
+				bullets.remove(b);
 			}
 		}
 	}
