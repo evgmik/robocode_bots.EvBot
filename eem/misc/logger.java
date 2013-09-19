@@ -29,5 +29,9 @@ public class logger {
 	public static void dbg(String s) {
 		log_message(dbg_debuging, s);
 	}
+
+	public static void rutine(String s) {
+		log_message(dbg_rutine, s);
+	}
 }
 
