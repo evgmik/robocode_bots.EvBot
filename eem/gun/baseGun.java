@@ -19,7 +19,7 @@ public class baseGun {
 	protected boolean  gunFired = false;
 	protected boolean  gunHasTargetPoint = false;
 	protected Random gun_rand = new Random();
-	public    Color gunColor = Color.black;;
+	public    Color gunColor = Color.black;
 	protected Point2D.Double targetFuturePosition;
 	protected double firePower;
 
