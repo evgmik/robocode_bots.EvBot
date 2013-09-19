@@ -14,7 +14,7 @@ public class enemyGun extends baseGun {
 
 	public enemyGun() {
 		gunName = "enemy";
-		gunColor = new Color(0x00, 0x00, 0xff, 0x80);
+		gunColor = Color.pink;
 	}
 
 }
