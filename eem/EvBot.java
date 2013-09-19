@@ -35,7 +35,7 @@ public class EvBot extends AdvancedRobot
 	public radar _radar = new radar(this);
 	private botVersion botVer;
 	private basicMotion _motion = new basicMotion(this);
-	public bulletsManager _bmanager = new bulletsManager();
+	public bulletsManager _bmanager = new bulletsManager(this);
 
 
 	public Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
@@ -68,6 +68,7 @@ public class EvBot extends AdvancedRobot
 		myCoord.x = getX();
 	       	myCoord.y = getY();
 		_trgt.initTic(ticTime);
+		_bmanager.initTic();
 		_gun.initTic();
 		_radar.initTic();
 	}

@@ -55,6 +55,14 @@ public class math {
 		return angle;
 	}
 
+	public static boolean isItOutOfBorders( Point2D.Double pnt, Point2D.Double brdr) {
+		if ( pnt.x < 0 ) return true;
+		if ( pnt.y < 0 ) return true;
+		if ( pnt.x > brdr.x ) return true;
+		if ( pnt.y > brdr.y ) return true;
+		return false;
+	}
+
 	public static Point2D.Double putWithinBorders( Point2D.Double pnt, Point2D.Double brdr) {
 		Point2D.Double npnt= new Point2D.Double( pnt.x, pnt.y );
 		npnt.x = putWithinRange( npnt.x, 0, brdr.x);

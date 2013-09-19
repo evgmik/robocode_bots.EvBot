@@ -16,10 +16,31 @@ import java.util.List;
 
 
 public class  bulletsManager {
+	protected static EvBot myBot;
+
 	private LinkedList<firedBullet> bullets;
 	
 	public bulletsManager() {
 		bullets = new LinkedList<firedBullet>();
+	}
+
+	public bulletsManager(EvBot bot) {
+		myBot = bot;
+		bullets = new LinkedList<firedBullet>();
+	}
+
+	public void initTic() {
+		if (myBot._trgt.didItFireABullet() ) {
+			double dummy =1;
+			double bulletSpeed = dummy;
+			this.add_enemy_bullet();
+		}
+	}
+
+	public void add_enemy_bullet() {
+		firedBullet b = new firedBullet(myBot, new enemyGun());
+		bullets.add(b);
+
 	}
 
 	public void add( firedBullet b) {
@@ -28,10 +49,18 @@ public class  bulletsManager {
 
 	public void onPaint(Graphics2D g) {
 		for ( firedBullet b : bullets ) {
-			if ( b.robocodeBullet.isActive() ) {
-				b.onPaint(g);
+			if (b.isItMine) {
+				if ( b.robocodeBullet.isActive() ) {
+					b.onPaint(g);
+				} else {
+					bullets.remove(b);
+				}
 			} else {
-				bullets.remove(b);
+				if ( math.isItOutOfBorders(b.getPosition(), myBot.BattleField) ) {
+					bullets.remove(b);
+				} else {
+					b.onPaint(g);
+				}
 			}
 		}
 	}

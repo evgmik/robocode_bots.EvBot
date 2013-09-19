@@ -3,6 +3,7 @@
 package eem.target;
 
 import eem.target.botStatPoint;
+import eem.misc.*;
 import java.awt.geom.Point2D;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -28,6 +29,10 @@ public class target {
 			this.setUnLockedStatus(true);
 		else
 			this.setUnLockedStatus(false);
+
+		if ( didItFireABullet() ) {
+
+		}
 	}
 
 	public void setUnLockedStatus(boolean val) {
@@ -78,6 +83,21 @@ public class target {
 
 	public long getLastSeenTime() {
 		return  statLast.getTimeStamp();
+	}
+
+
+	public double energyDrop() {
+		return  statPrev.getEnergy() - statLast.getEnergy();
+	}
+
+	public boolean didItFireABullet() {
+		boolean stat = true;
+		double eDrop = energyDrop();
+		if ( (eDrop < .1) || (3 < eDrop) ) {
+			stat=false;
+			logger.noise("enemy did not fired a bullet");
+		}
+		return stat;
 	}
 
 
