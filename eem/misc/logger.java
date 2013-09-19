@@ -5,7 +5,7 @@ public class logger {
 	// logger staff
 	// debug levels
 	public final static int dbg_important=0;
-	public final static int dbg_rutine=5;
+	public final static int dbg_routine=5;
 	public final static int dbg_debuging=6;
 	public final static int dbg_noise=10;
 	static int verbosity_level=6; // current level, smaller is less noisy
@@ -30,8 +30,8 @@ public class logger {
 		log_message(dbg_debuging, s);
 	}
 
-	public static void rutine(String s) {
-		log_message(dbg_rutine, s);
+	public static void routine(String s) {
+		log_message(dbg_routine, s);
 	}
 }
 
