@@ -33,5 +33,9 @@ public class logger {
 	public static void routine(String s) {
 		log_message(log_routine, s);
 	}
+
+	public static void important(String s) {
+		log_message(log_important, s);
+	}
 }
 
