@@ -61,9 +61,9 @@ public class EvBot extends AdvancedRobot
 	public void initTic() {
 		ticTime = getTime();
 
-		dbg(dbg_rutine, "----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
-		dbg(dbg_noise, "Game time: " + ticTime);
-		dbg(dbg_noise, "Number of other bots = " + getOthers());
+		logger.rutine("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
+		logger.noise("Game time: " + ticTime);
+		logger.noise("Number of other bots = " + getOthers());
 
 		myCoord.x = getX();
 	       	myCoord.y = getY();
@@ -143,7 +143,7 @@ public class EvBot extends AdvancedRobot
 		}
 
 
-		dbg(dbg_rutine, "Gun choice = " + _gun.getName());
+		logger.rutine("Gun choice = " + _gun.getName());
 
 	}
 	
@@ -190,7 +190,7 @@ public class EvBot extends AdvancedRobot
 
 		_trgt.setName(e.getName());
 		_trgt = _trgt.update( new botStatPoint(this, e));
-		dbg(dbg_noise, _trgt.format());
+		logger.noise(_trgt.format());
 
 		// show scanned bot path
 		PaintRobotPath.onPaint(getGraphics(), e.getName(), getTime(), _trgt.getX(), _trgt.getY(), Color.YELLOW);
@@ -199,7 +199,7 @@ public class EvBot extends AdvancedRobot
 		_radar.setMovingRadarToLastKnownTargetLocation(false);
 		//radarSpinDirection=1;
 		//_trgt.targetUnlocked = true;
-		dbg(dbg_noise, "Target seen during radar sweep");
+		logger.noise("Target seen during radar sweep");
 	}
 
 	/**
@@ -207,8 +207,8 @@ public class EvBot extends AdvancedRobot
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
 		//double angle = math.shortest_arc( 90 - e.getBearing() );
-		//dbg(dbg_noise, "Evasion maneuver after a hit by rotating body by angle = " + angle);
-		//dbg(dbg_noise, "Attempting to move ahead for bullet evasion");
+		//logger.noise("Evasion maneuver after a hit by rotating body by angle = " + angle);
+		//logger.noise("Attempting to move ahead for bullet evasion");
 		//setTurnLeft(angle);
 		//moveOrTurn(100,angle);
 		//_trgt.targetUnlocked=true;
@@ -225,7 +225,7 @@ public class EvBot extends AdvancedRobot
 
 	public void onHitWall(HitWallEvent e) {
 		// turn and move along the hit wall
-		dbg(dbg_noise, "ROBOT HIT A WALL");
+		logger.noise("ROBOT HIT A WALL");
 		/*
 		double angle = whichWayToRotateAwayFromWall();
 		if ( _trgt.haveTarget ) {
@@ -239,7 +239,7 @@ public class EvBot extends AdvancedRobot
 			setAdjustRadarForRobotTurn(false); 
 			setAdjustGunForRobotTurn(false);
 		}
-		dbg(dbg_noise, "Changing course after wall is hit  by angle = " + angle);
+		logger.noise("Changing course after wall is hit  by angle = " + angle);
 		setTurnRight (angle);
 		setBodyRotationDirection( math.sign(angle) );
 		*/
@@ -257,11 +257,11 @@ public class EvBot extends AdvancedRobot
 			// show our own path
 			PaintRobotPath.onPaint(g, getName(), getTime(), myCoord.x, myCoord.y, Color.GREEN);
 			// show estimated future position to be fired
-			dbg(dbg_noise, "Gun choice = " + _gun.getName() );
+			logger.noise("Gun choice = " + _gun.getName() );
 			_gun.onPaint(g);
 		}
 
-		dbg(dbg_noise, "targetUnlocked = " + _trgt.targetUnlocked);
+		logger.noise("targetUnlocked = " + _trgt.targetUnlocked);
 		if ( _trgt.haveTarget && _trgt.targetUnlocked ) {
 			g.setColor(Color.yellow);
 			g.drawOval((int) (myCoord.x - 50), (int) (myCoord.y - 50), 100, 100);

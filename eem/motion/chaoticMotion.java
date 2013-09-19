@@ -34,11 +34,11 @@ public class chaoticMotion extends basicMotion {
 		double angle = nonexisting_coord;
 		double angleRandDeviation = nonexisting_coord;
 		double dist = nonexisting_coord;
-		myBot.dbg(myBot.dbg_noise, "Normal motion algorithm");
+		logger.noise("Normal motion algorithm");
 		if (myBot.getOthers()>=5 && Math.random() < 0.2 ) { 
 			//move to the closest corner as long as there are a lot of bots
 			double angle2corner = angleToClosestCorner();
-			myBot.dbg(myBot.dbg_noise, "angle to the closest corner = " + angle2corner );
+			logger.noise("angle to the closest corner = " + angle2corner );
 			angle = math.shortest_arc( angle2corner - myBot.getHeading());
 			dist = 50;
 			if ( Math.abs(angle) > 90 ) {
@@ -46,7 +46,7 @@ public class chaoticMotion extends basicMotion {
 				angle = math.shortest_arc(angle - 180);
 				dist = -dist;
 			}
-			myBot.dbg(myBot.dbg_noise, "moving to the closest corner with rotation by " + angle );
+			logger.noise("moving to the closest corner with rotation by " + angle );
 		}
 		if ( myBot._trgt.haveTarget && (myBot.getOthers() <= 1) && (Math.random() < 0.95) ) {
 			// last enemy standing lets spiral in
@@ -59,24 +59,24 @@ public class chaoticMotion extends basicMotion {
 				}
 			}
 			if ( (Math.random() < 0.10) ) {
-				myBot.dbg(myBot.dbg_noise, "setting a new motion" );
+				logger.noise("setting a new motion" );
 				dist=200*(0.5-Math.random());
 				// but we need to move at least a half bot body
 				if (Math.abs(dist) < 50) {
 					dist += 50*math.sign(dist);
 				}
 			} else {
-				myBot.dbg(myBot.dbg_noise, "continue previous motion" );
+				logger.noise("continue previous motion" );
 				dist = myBot.getDistanceRemaining();
 			}
-			myBot.dbg(myBot.dbg_noise, "circle around last enemy by rotating = " + angle );
+			logger.noise("circle around last enemy by rotating = " + angle );
 		} 
 
 		if ( myBot.getOthers() > 1 && (Math.random() < 0.95) ) {
 			dist = myBot.getDistanceRemaining();
 			angle = myBot.getTurnRemaining();
 			if ( Math.abs(dist) > 20 ) {
-				myBot.dbg(myBot.dbg_noise, "continue previous motion" );
+				logger.noise("continue previous motion" );
 			} else {
 				angleRandDeviation=45*math.sign(0.5-Math.random());
 				dist=100*math.sign(0.6-Math.random());
@@ -89,7 +89,7 @@ public class chaoticMotion extends basicMotion {
 			angleRandDeviation=25*math.sign(0.5-Math.random());
 			dist=100*math.sign(0.6-Math.random());
 			angle =  angleRandDeviation;
-			myBot.dbg(myBot.dbg_noise, "Random evasive motion");
+			logger.noise("Random evasive motion");
 		}
 
 		moveOrTurn(dist, angle);
@@ -117,7 +117,7 @@ public class chaoticMotion extends basicMotion {
 			// upper corner is closer
 			cY=myBot.BattleField.y;
 		}
-		myBot.dbg(myBot.dbg_noise, "the closest corner is at " + cX + ", " + cY);
+		logger.noise("the closest corner is at " + cX + ", " + cY);
 		return bearingTo(cX,cY);
 	}
 
@@ -136,31 +136,31 @@ public class chaoticMotion extends basicMotion {
 		String wallAhead = whichWallAhead();
 		String furtherestStick = whichStickIsFurtherFromWalls();
 		double distFromStickEndToWall = distToTheClosestWallFromStick(furtherestStick);
-		myBot.dbg(myBot.dbg_noise, "furtherestStick = " + furtherestStick );
+		logger.noise("furtherestStick = " + furtherestStick );
 
 		double evadeWallDist = shortestTurnRadius+45;
 		double wallAheadDist;
 		wallAheadDist = distanceToWallAhead();
-		myBot.dbg(myBot.dbg_noise, "moveOrTurn suggested dist =  " + dist + ", angle =" + suggestedAngle);
-		myBot.dbg(myBot.dbg_noise, "hardStopDistance =  " + hardStopDistance);
-		myBot.dbg(myBot.dbg_noise, "Wall ahead is " + wallAhead );
-		myBot.dbg(myBot.dbg_noise, "wallAheadDist =  " + wallAheadDist);
-		myBot.dbg(myBot.dbg_noise, "getDistanceRemaining =  " + myBot.getDistanceRemaining());
-		myBot.dbg(myBot.dbg_noise, "rotate away from a wall by " + whichWayToRotateAwayFromWall() );
-		myBot.dbg(myBot.dbg_noise, "Robot velocity =  " + myBot.getVelocity());
+		logger.noise("moveOrTurn suggested dist =  " + dist + ", angle =" + suggestedAngle);
+		logger.noise("hardStopDistance =  " + hardStopDistance);
+		logger.noise("Wall ahead is " + wallAhead );
+		logger.noise("wallAheadDist =  " + wallAheadDist);
+		logger.noise("getDistanceRemaining =  " + myBot.getDistanceRemaining());
+		logger.noise("rotate away from a wall by " + whichWayToRotateAwayFromWall() );
+		logger.noise("Robot velocity =  " + myBot.getVelocity());
 		if (wallAheadDist < hardStopDistance ) {
 			// wall is close trying to stop
-			myBot.dbg(myBot.dbg_noise, "Wall ahead is " + wallAhead );
+			logger.noise("Wall ahead is " + wallAhead );
 			angle = whichWayToRotateAwayFromWall();
 			executingWallEvadingTurn=true;
 			if ( Utils.isNear(myBot.getVelocity(),0) ) {
-					myBot.dbg(myBot.dbg_noise, "Wall is too close, backward is faster");
+					logger.noise("Wall is too close, backward is faster");
 					dist = -41;
 					myBot.setTurnRight(0);
 			} else {
 				dist = stopDistance(myBot.getVelocity());
-				myBot.dbg(myBot.dbg_noise, "Robot velocity =  " + myBot.getVelocity());
-				myBot.dbg(myBot.dbg_noise, "Trying to stop by setting distance = " + dist);
+				logger.noise("Robot velocity =  " + myBot.getVelocity());
+				logger.noise("Trying to stop by setting distance = " + dist);
 			}
 			myBot.setAhead(dist); // this is emergency stop or hit a wall
 			return;
@@ -171,7 +171,7 @@ public class chaoticMotion extends basicMotion {
 		} 
 		if (  distFromStickEndToWall <= evadeWallDist && wallAheadDist <= evadeWallDist ){
 				// make hard turn
-				myBot.dbg(myBot.dbg_noise, "Trying to turn away from walls" );
+				logger.noise("Trying to turn away from walls" );
 				executingWallEvadingTurn = true;
 				if ( furtherestStick.equals("starboard") ) {
 					angle = 20*math.sign( myBot.getVelocity() );
@@ -193,19 +193,19 @@ public class chaoticMotion extends basicMotion {
 		//if ( distFromStickEndToWall > evadeWallDist) {
 			executingWallEvadingTurn = false;
 			previoslyHeadedWall = "none";
-			myBot.dbg(myBot.dbg_noise, "getDistanceRemaining = " + myBot.getDistanceRemaining());
+			logger.noise("getDistanceRemaining = " + myBot.getDistanceRemaining());
 			//if (  Math.abs(myBot.getDistanceRemaining()) <=  0 ) {
-				myBot.dbg(myBot.dbg_noise, "Proceeding with suggested motion");
+				logger.noise("Proceeding with suggested motion");
 				angle = suggestedAngle;
 				dist = dist;
 			//} else {
-				//myBot.dbg(myBot.dbg_noise, "Continue previous turn motion");
+				//logger.noise("Continue previous turn motion");
 				//dist =myBot.getDistanceRemaining();
 				//angle = 0;
 			//}
 		//}
-		myBot.dbg(myBot.dbg_noise, "Moving by " + dist);
-		myBot.dbg(myBot.dbg_noise, "Turning by " + angle);
+		logger.noise("Moving by " + dist);
+		logger.noise("Turning by " + angle);
 		myBot.setTurnRight(angle);
 		myBot.setBodyRotationDirection( math.sign(angle) );
 		myBot.setAhead(dist);
@@ -236,7 +236,7 @@ public class chaoticMotion extends basicMotion {
 		while (  wallName.equals("") ) {
 			x+= dx;
 			y+= dy;
-			myBot.dbg(myBot.dbg_noise, "Projected position = " + x + ", " + y);
+			logger.noise("Projected position = " + x + ", " + y);
 
 			if ( x-myBot.robotHalfSize <= 0 ) {
 				wallName = "left";
@@ -251,14 +251,14 @@ public class chaoticMotion extends basicMotion {
 				wallName = "top";
 			}
 		}
-		myBot.dbg(myBot.dbg_noise, "Wall name = " + wallName);
+		logger.noise("Wall name = " + wallName);
 		return wallName;
 	}
 
 	public double distanceToWallAhead() {
 		double angle=myBot.getHeading(); 
 		double velocity=myBot.getVelocity();
-		myBot.dbg(myBot.dbg_noise, "Our velocity = " + velocity);
+		logger.noise("Our velocity = " + velocity);
 		double dist=0;
 
 		String wallName = whichWallAhead();
@@ -278,7 +278,7 @@ public class chaoticMotion extends basicMotion {
 		dist = dist - myBot.robotHalfSize;
 		dist = Math.max(dist,0);
 		if (dist < 1) dist = 0 ;
-		myBot.dbg(myBot.dbg_noise, "distance to closest wall ahead " + dist);
+		logger.noise("distance to closest wall ahead " + dist);
 		return dist;
 	}
 
@@ -294,7 +294,7 @@ public class chaoticMotion extends basicMotion {
 		int rotDir = 1;
 		double retAngle=0;
 
-		myBot.dbg(myBot.dbg_noise, "heading angle = " + angle);
+		logger.noise("heading angle = " + angle);
 
 		if ( wallName.equals("left") ) {
 			if ( -90 <= angle && angle <= 0 ) {
@@ -326,8 +326,8 @@ public class chaoticMotion extends basicMotion {
 		}
 
 		//retAngle += 20*desiredBodyRotationDirection; // add a bit of momentum
-		myBot.dbg(myBot.dbg_noise, "body heading = " + angle);
-		myBot.dbg(myBot.dbg_noise, "rotation from wall is " + retAngle);
+		logger.noise("body heading = " + angle);
+		logger.noise("rotation from wall is " + retAngle);
 		return retAngle;
 	}
 

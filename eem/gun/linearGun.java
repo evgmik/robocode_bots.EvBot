@@ -32,10 +32,10 @@ public class linearGun extends baseGun {
 		double a, b, c;
 		double bSpeed=bulletSpeed( firePower );
 
-		myBot.dbg(myBot.dbg_noise, "Bullet speed " + bSpeed );
+		logger.noise("Bullet speed " + bSpeed );
 
 		vTvec = tgt.getVelocity();
-		myBot.dbg(myBot.dbg_noise, "Target velocity " + vTvec.x +", " + vTvec.y);
+		logger.noise("Target velocity " + vTvec.x +", " + vTvec.y);
 
 
 		vT = Math.sqrt(vTvec.x*vTvec.x + vTvec.y*vTvec.y);
@@ -54,13 +54,13 @@ public class linearGun extends baseGun {
 		// estimated current target position
 		Tx = tgt.getX() + vTvec.x*(myBot.getTime()-tgt.getLastSeenTime());
 		Ty = tgt.getY() + vTvec.y*(myBot.getTime()-tgt.getLastSeenTime());
-		myBot.dbg(myBot.dbg_noise, "Target estimated current position Tx = " + Tx + " Ty = " + Ty);
+		logger.noise("Target estimated current position Tx = " + Tx + " Ty = " + Ty);
 
 		tF=misc.linear_predictor( bSpeed, new Point2D.Double(Tx, Ty), 
 				vTvec,  myBot.myCoord);
 		tF = math.putWithinBorders(tF, myBot.BattleField);
 
-		myBot.dbg(myBot.dbg_noise, "Predicted and boxed target position " + tF.x +", " + tF.y);
+		logger.noise("Predicted and boxed target position " + tF.x +", " + tF.y);
 		
 		return tF;
 	}

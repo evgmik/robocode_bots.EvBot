@@ -38,10 +38,10 @@ public class randomGun extends baseGun {
 		double k, rnd;
 		double bSpeed=bulletSpeed( firePower );
 
-		myBot.dbg(myBot.dbg_noise, "Bullet speed " + bSpeed );
+		logger.noise("Bullet speed " + bSpeed );
 
 		vTvec = tgt.getVelocity();
-		myBot.dbg(myBot.dbg_noise, "Target velocity " + vTvec.x +", " + vTvec.y);
+		logger.noise("Target velocity " + vTvec.x +", " + vTvec.y);
 
 		vT = Math.sqrt(vTvec.x*vTvec.x + vTvec.y*vTvec.y);
 		if ( !Utils.isNear(vT, 0) ) {
@@ -59,7 +59,7 @@ public class randomGun extends baseGun {
 		// estimated current target position
 		Tx = tgt.getX() + vTvec.x*(myBot.getTime()-tgt.getLastSeenTime());
 		Ty = tgt.getY() + vTvec.y*(myBot.getTime()-tgt.getLastSeenTime());
-		myBot.dbg(myBot.dbg_noise, "Target estimated current position Tx = " + Tx + " Ty = " + Ty);
+		logger.noise("Target estimated current position Tx = " + Tx + " Ty = " + Ty);
 
 		rnd=Math.random();
 		// assume that target will change speed
@@ -72,7 +72,7 @@ public class randomGun extends baseGun {
 			k = 2*(gun_rand.nextGaussian()); 
 			vT=k; // no memory of previous motion
 		}
-		myBot.dbg(myBot.dbg_noise, "guessed speed coefficient = " + k);
+		logger.noise("guessed speed coefficient = " + k);
 		// we keep the same target heading
 		if ( vT == 0 ) {
 			// to avoid division by zero
@@ -90,7 +90,7 @@ public class randomGun extends baseGun {
 		tF=misc.linear_predictor( bSpeed, new Point2D.Double(Tx, Ty), 
 				vTvec,  myBot.myCoord);
 
-		myBot.dbg(myBot.dbg_noise, "Predicted and boxed target position " + tF.x +", " + tF.y);
+		logger.noise("Predicted and boxed target position " + tF.x +", " + tF.y);
 		
 		return tF;
 	}

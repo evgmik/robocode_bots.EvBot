@@ -41,25 +41,25 @@ public class baseGun {
 			//calculate the gun settings
 			this.calcGunSettings();
 
-			myBot.dbg(myBot.dbg_noise, "Predicted target X coordinate = " + this.getTargetFuturePosition().x );
-			myBot.dbg(myBot.dbg_noise, "Predicted target Y coordinate = " + this.getTargetFuturePosition().y );
+			logger.noise("Predicted target X coordinate = " + this.getTargetFuturePosition().x );
+			logger.noise("Predicted target Y coordinate = " + this.getTargetFuturePosition().y );
 
 			angle2enemyInFutire=math.angle2pt(myBot.myCoord, this.getTargetFuturePosition());
 
 			// rotate gun dirictives and settings
 			double gun_angle =myBot.getGunHeading();
 			angle = math.shortest_arc(angle2enemyInFutire-gun_angle);
-			myBot.dbg(myBot.dbg_noise, "Pointing gun to enemy by rotating by angle = " + angle);
+			logger.noise("Pointing gun to enemy by rotating by angle = " + angle);
 			myBot.setTurnGunRight(angle);
 
 			double predictedBulletDeviation=angle*Math.PI/180*myBot._trgt.getLastDistance(myBot.myCoord);
 
-			myBot.dbg(myBot.dbg_noise, "Gun heat = " + myBot.getGunHeat() );
+			logger.noise("Gun heat = " + myBot.getGunHeat() );
 			// if gun is called and
 			// predicted bullet deviation within half a body size of the robot
 			if (myBot.getGunHeat() == 0 && 
 					Math.abs(predictedBulletDeviation) < Math.min( myBot.getHeight(), myBot.getWidth())/2 ) {
-				myBot.dbg(myBot.dbg_noise, "Firing the gun with power = " + firePower);
+				logger.noise("Firing the gun with power = " + firePower);
 				this.fireGun();
 				myBot._radar.setFullSweepAllowed(); // we can sweep do full radar sweep
 			}
@@ -68,9 +68,9 @@ public class baseGun {
 
 	public void fireGun() {
 		Bullet b;
-		myBot.dbg(myBot.dbg_noise, "Gun fire power = " + firePower);
+		logger.noise("Gun fire power = " + firePower);
 		b=myBot.setFireBullet(firePower);
-		myBot.dbg(myBot.dbg_noise, "fired bullet  = " + b);
+		logger.noise("fired bullet  = " + b);
 		myBot._bmanager.add( new firedBullet( myBot, b, this) );
 		gunFired = true;
 		gunHasTargetPoint = false;
@@ -98,10 +98,10 @@ public class baseGun {
 
         public double firePoverVsDistance( double targetDistance ) {
                 // calculate firepower based on distance
-		myBot.dbg(myBot.dbg_noise, "Target distance = " + targetDistance);
+		logger.noise("Target distance = " + targetDistance);
                 double firePower;
                 firePower = Math.min(500 / targetDistance, 3);
-		myBot.dbg(myBot.dbg_noise, "Fire power = " + firePower);
+		logger.noise("Fire power = " + firePower);
                 return firePower;
         }
 
@@ -120,7 +120,7 @@ public class baseGun {
 	public double  bulletSpeed( double firePower ) {
 		double bSpeed;
 		bSpeed = ( 20 - firePower * 3 );
-		myBot.dbg(myBot.dbg_noise, "bullet speed = " + bSpeed + " for firePower = " + firePower);
+		logger.noise("bullet speed = " + bSpeed + " for firePower = " + firePower);
 		return bSpeed;
 	}
 

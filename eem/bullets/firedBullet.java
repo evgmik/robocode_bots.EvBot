@@ -39,13 +39,13 @@ public class firedBullet {
 		firedGun = gun;
 		isItMine = true;
 		targetPosition = firedGun.getTargetFuturePosition();
-		myBot.dbg(myBot.dbg_noise, "fired bullet target position = " + targetPosition);
+		logger.noise("fired bullet target position = " + targetPosition);
 		firingPosition = new Point2D.Double( b.getX(), b.getY() );
-		myBot.dbg(myBot.dbg_debuging, "bullet firing position = " + firingPosition);
+		logger.noise("bullet firing position = " + firingPosition);
 		firedTime = myBot.ticTime;
 		firingAngle = b.getHeadingRadians();
 		bulletSpeed = b.getVelocity();
-		myBot.dbg(myBot.dbg_noise, "fired bullet speed = " + bulletSpeed);
+		logger.noise("fired bullet speed = " + bulletSpeed);
 		bulletColor = firedGun.gunColor;
 	}
 
