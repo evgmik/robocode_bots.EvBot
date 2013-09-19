@@ -97,4 +97,37 @@ public class math {
 			return -1;
 	}
 
+	public static Point2D.Double vecCrossesBorder(Point2D.Double start_pnt, double heading, Point2D.Double brdr) {
+		Point2D.Double hit_pnt = (Point2D.Double) start_pnt.clone();
+		heading = Math.PI/180*shortest_arc(heading*180/Math.PI);
+		double vx = Math.sin(heading);
+		double vy = Math.cos(heading);
+		double dist=0;
+		if (vx == 0) {
+			// putting small fictional number to avoid division by 0
+			vx = 1e-5;
+		}
+		if (vx > 0) {
+			// moving right
+			dist = brdr.x - start_pnt.x;
+		} else {
+			// moving left
+			dist = 0 - start_pnt.x;
+		}
+		hit_pnt.x = start_pnt.x + dist;
+		hit_pnt.y = start_pnt.y + dist*vy/vx;
+
+		dist = 0;
+		if ( hit_pnt.y > brdr.y ) {
+			// above border
+			dist =  brdr.y - hit_pnt.y;
+		}
+		if ( hit_pnt.y < 0 ) {
+			// below border
+			dist = hit_pnt.y - 0;
+		}
+		hit_pnt.y = hit_pnt.y + dist;
+		hit_pnt.x = hit_pnt.x + dist/vy*vx;
+		return hit_pnt;
+	}
 }
