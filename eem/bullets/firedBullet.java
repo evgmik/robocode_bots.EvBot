@@ -88,6 +88,7 @@ public class firedBullet {
 		lEnd.y = firingPosition.y + Math.cos(firingAngle)*long_length;
 		//fixme truncation to border works incorrectly
 		//lEnd = math.putWithinBorders(lEnd, myBot.BattleField);
+		lEnd = math.vecCrossesBorder( firingPosition, firingAngle, myBot.BattleField);
 		
 		logger.noise("end of bullet path = " + lEnd);
 
