@@ -74,6 +74,14 @@ public class firedBullet {
 		return pos;
 	}
 
+	public boolean isActive() {
+		if (isItMine) {
+			return robocodeBullet.isActive();
+		} else {
+			return !math.isItOutOfBorders(getPosition(), myBot.BattleField) ;
+		}
+	}
+
 	public void onPaint(Graphics2D g) {
 		g.setColor(bulletColor);
 		// draw target position
