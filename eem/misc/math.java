@@ -5,9 +5,6 @@ import java.awt.geom.Point2D;
 import robocode.util.*;
 
 public class math {
-	logger l;
-	private int dbg_level = l.dbg_noise; // noise
-
 	public static double quadraticSolverMinPosRoot(double a, double b, double c) {
 		// we are solving for time in ballistic calculation
 		// and interested only in positive solutions

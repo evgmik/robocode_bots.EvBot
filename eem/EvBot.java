@@ -42,13 +42,11 @@ public class EvBot extends AdvancedRobot
 	public Point2D.Double BattleField = new Point2D.Double(nonexisting_coord, nonexisting_coord);
 	double absurdly_huge=1e6; // something huge
 	double desiredBodyRotationDirection = 0; // our robot body desired angle
+
 	// logger staff
-	// debug levels
-	public int dbg_important=0;
-	public int dbg_rutine=5;
-	public int dbg_debuging=6;
-	public int dbg_noise=10;
-	public int verbosity_level=6; // current level, smaller is less noisy
+	public int verbosity_level=logger.log_debuging; // current level, smaller is less noisy
+	public logger _log = new logger(verbosity_level);
+
 
 	public void initBattle() {
 		BattleField.x = getBattleFieldWidth();
