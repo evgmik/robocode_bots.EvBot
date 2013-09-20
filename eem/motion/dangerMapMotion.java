@@ -158,18 +158,18 @@ public class dangerMapMotion extends basicMotion {
 		int i = offsets_index_min + (int)(Math.random() * ((offsets_index_max - offsets_index_min) + 1));
 		ngrid[0]  = grid[0] + offsets[i][0];
 		ngrid[1]  = grid[1] + offsets[i][1];
-		logger.dbg("grid x = " + grid[0]);
-		logger.dbg("grid y = " + grid[1]);
-		logger.dbg("ngrid x = " + ngrid[0]);
-		logger.dbg("ngrid y = " + ngrid[1]);
-		if ( (ngrid[0] < 0) || (ngrid[0] > dMapSizeX) ) return;
-		if ( (ngrid[1] < 0) || (ngrid[1] > dMapSizeY) ) return;
+		logger.noise("grid x = " + grid[0]);
+		logger.noise("grid y = " + grid[1]);
+		logger.noise("ngrid x = " + ngrid[0]);
+		logger.noise("ngrid y = " + ngrid[1]);
+		if ( (ngrid[0] < 0) || (ngrid[0] >= dMapSizeX) ) return;
+		if ( (ngrid[1] < 0) || (ngrid[1] >= dMapSizeY) ) return;
 
 		double nDanger = grid2dangerLevel(ngrid); // danger in new cell
 
 		if ( nDanger <= cDanger) {
 			DestinationPoint = cellCenter( ngrid[0], ngrid[1] );
-			logger.dbg("Destination point " + DestinationPoint);
+			logger.noise("Destination point " + DestinationPoint);
 		}
 		// fixme add some mechanism to probe other cells
 	}
