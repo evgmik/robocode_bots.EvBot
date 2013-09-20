@@ -110,7 +110,8 @@ public class EvBot extends AdvancedRobot
 
 	public void  choseMotion( ) {
 		//_motion = new basicMotion(this);
-		_motion = new chaoticMotion(this);
+		//_motion = new chaoticMotion(this);
+		_motion = new dangerMapMotion(this);
 	}
 
 	public void  choseGun( ) {
