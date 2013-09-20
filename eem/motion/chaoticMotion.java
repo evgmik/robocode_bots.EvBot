@@ -118,13 +118,7 @@ public class chaoticMotion extends basicMotion {
 			cY=myBot.BattleField.y;
 		}
 		logger.noise("the closest corner is at " + cX + ", " + cY);
-		return bearingTo(cX,cY);
-	}
-
-	public double bearingTo( double ptx, double pty ) {
-		return math.shortest_arc(
-			math.cortesian2game_angles( Math.atan2( pty-myBot.myCoord.y, ptx-myBot.myCoord.x )*180/Math.PI )
-			);
+		return bearingTo(new Point2D.Double(cX,cY) );
 	}
 
 	public void moveOrTurn(double dist, double suggestedAngle) {

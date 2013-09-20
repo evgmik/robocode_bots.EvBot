@@ -22,6 +22,16 @@ public class basicMotion {
 		myBot = bot;
 	}
 
+	public double bearingTo( Point2D.Double  pt) {
+		return math.shortest_arc(
+			math.cortesian2game_angles( Math.atan2( pt.y-myBot.myCoord.y, pt.x-myBot.myCoord.x )*180/Math.PI )
+			);
+	}
+
+	public void moveToPoint( Point2D.Double pnt ) {
+
+	}
+
 	public void makeMove() {
 		// for basic motion we do nothing
 	}
