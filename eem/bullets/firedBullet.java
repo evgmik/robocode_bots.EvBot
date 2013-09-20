@@ -17,8 +17,8 @@ public class firedBullet {
 
 	protected Bullet robocodeBullet;
 	protected baseGun firedGun;
-	protected boolean isItMine = false;
-	protected Point2D.Double targetPosition;
+	public boolean isItMine = false;
+	public Point2D.Double targetPosition;
 	protected Point2D.Double firingPosition;
 	protected long   firedTime;
 	protected double firingAngle;

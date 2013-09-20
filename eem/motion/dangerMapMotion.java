@@ -5,6 +5,7 @@ package eem.motion;
 import eem.EvBot;
 import eem.target.*;
 import eem.misc.*;
+import eem.bullets.*;
 import java.util.Random;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -24,9 +25,11 @@ public class dangerMapMotion extends basicMotion {
 
 	double safe_distance_from_wall;
 	double safe_distance_from_bot;
+	double safe_distance_from_bullet;
 
 	double dangerLevelWall = 50;
 	double dangerLevelEnemyBot = 50;
+	double dangerLevelBullet = 50;
 	
 	public dangerMapMotion(EvBot bot) {
 		myBot = bot;
@@ -36,6 +39,7 @@ public class dangerMapMotion extends basicMotion {
 
 		safe_distance_from_wall = myBot.robotHalfSize + 2;
 		safe_distance_from_bot =  myBot.robotHalfSize + 2;
+		safe_distance_from_bullet =  myBot.robotHalfSize + 2;
 	}
 
 	public void resetDangerMap() {
@@ -100,20 +104,44 @@ public class dangerMapMotion extends basicMotion {
 	
 	public void otherBots2DangerMap() {
 		int[] grid = new int[2];  
-		double safe_distance =safe_distance_from_bot;
+		Point2D.Double c;
+		Point2D.Double tPos;
+		if ( myBot._trgt.haveTarget ) {
+			tPos = myBot._trgt.getPosition();
+			markAreaArounDangerPoint(tPos, safe_distance_from_bot, dangerLevelEnemyBot);
+		}
+	}
+
+	public void markAreaArounDangerPoint(Point2D.Double pnt, double safe_distance, double dangerLevel) {
+		int[] grid = new int[2];  
 		safe_distance =  Math.max( dMapCellSize.x, safe_distance );
 		safe_distance =  Math.max( dMapCellSize.y, safe_distance );
 		Point2D.Double c;
-		if ( myBot._trgt.haveTarget ) {
-			for (int i=0; i < dMapSizeX; i++) {
-				for (int j=0; j < dMapSizeY; j++) {
-					c = cellCenter(i,j);
-					if ( c.distance(myBot._trgt.getPosition()) <= safe_distance) {
-						grid[0] = i; grid[1] = j;
-						addDangerLevelToCell( grid, dangerLevelEnemyBot);
-					}
+
+		for (int i=0; i < dMapSizeX; i++) {
+			for (int j=0; j < dMapSizeY; j++) {
+				c = cellCenter(i,j);
+				if ( c.distance(pnt) <= safe_distance) {
+					grid[0] = i; grid[1] = j;
+					addDangerLevelToCell( grid, dangerLevel);
 				}
 			}
+		}
+	}
+	public void bullet_path2DangerMap(firedBullet b) {
+		Point2D.Double bPos, bEnd;
+		bPos = b.getPosition();
+		bEnd = (Point2D.Double) b.targetPosition.clone();
+		if ( b.isActive() && !b.isItMine ) {
+			markAreaArounDangerPoint(bPos, safe_distance_from_bullet, dangerLevelBullet);
+			markAreaArounDangerPoint(bEnd, safe_distance_from_bullet, dangerLevelBullet);
+		}
+	}
+
+	public void bullets2DangerMap() {
+		bulletsManager  bm = myBot._bmanager;
+		for ( firedBullet b : bm.bullets ) {
+			bullet_path2DangerMap(b);
 		}
 	}
 
@@ -121,6 +149,7 @@ public class dangerMapMotion extends basicMotion {
 		resetDangerMap();
 		borders2DangerMap();
 		otherBots2DangerMap();
+		bullets2DangerMap();
 	}
 	
 	public void choseNewDestinationPoint() {

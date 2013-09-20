@@ -16,9 +16,9 @@ import java.util.List;
 
 
 public class  bulletsManager {
-	protected static EvBot myBot;
+	public static EvBot myBot;
 
-	private LinkedList<firedBullet> bullets;
+	public LinkedList<firedBullet> bullets;
 	
 	public bulletsManager() {
 		bullets = new LinkedList<firedBullet>();
@@ -40,7 +40,6 @@ public class  bulletsManager {
 	public void add_enemy_bullet() {
 		firedBullet b = new firedBullet(myBot, new enemyGun());
 		bullets.add(b);
-
 	}
 
 	public void add( firedBullet b) {
