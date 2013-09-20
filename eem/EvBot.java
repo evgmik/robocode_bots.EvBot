@@ -31,15 +31,15 @@ public class EvBot extends AdvancedRobot
 	public target _trgt = new target();
 	int nonexisting_coord = -10000;
 
-	private baseGun _gun = new linearGun(this);
-	public radar _radar = new radar(this);
 	private botVersion botVer;
-	private basicMotion _motion = new basicMotion(this);
-	public bulletsManager _bmanager = new bulletsManager(this);
+	private baseGun _gun;
+	public radar _radar;
+	private basicMotion _motion;
+	public bulletsManager _bmanager;
 
 
-	public Point2D.Double myCoord = new Point2D.Double(nonexisting_coord, nonexisting_coord);
-	public Point2D.Double BattleField = new Point2D.Double(nonexisting_coord, nonexisting_coord);
+	public Point2D.Double myCoord;
+	public Point2D.Double BattleField;
 	double absurdly_huge=1e6; // something huge
 	double desiredBodyRotationDirection = 0; // our robot body desired angle
 
@@ -49,11 +49,16 @@ public class EvBot extends AdvancedRobot
 
 
 	public void initBattle() {
-		BattleField.x = getBattleFieldWidth();
-		BattleField.y = getBattleFieldHeight();
+		BattleField = new Point2D.Double(getBattleFieldWidth(), getBattleFieldHeight());
+		myCoord = new Point2D.Double( getX(), getY() );
 
 		setColors(Color.red,Color.blue,Color.green);
 		botVer = new botVersion();
+
+		_gun = new linearGun(this);
+		_radar = new radar(this);
+		_motion = new dangerMapMotion(this);
+		_bmanager = new bulletsManager(this);
 	}
 
 	public void initTic() {
@@ -109,9 +114,12 @@ public class EvBot extends AdvancedRobot
 
 
 	public void  choseMotion( ) {
-		//_motion = new basicMotion(this);
-		//_motion = new chaoticMotion(this);
-		_motion = new dangerMapMotion(this);
+		boolean choseNewMotion = false;
+		if (choseNewMotion) {
+			//_motion = new basicMotion(this);
+			//_motion = new chaoticMotion(this);
+			_motion = new dangerMapMotion(this);
+		}
 	}
 
 	public void  choseGun( ) {
