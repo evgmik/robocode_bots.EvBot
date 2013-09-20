@@ -29,7 +29,20 @@ public class basicMotion {
 	}
 
 	public void moveToPoint( Point2D.Double pnt ) {
-
+		double angle = math.shortest_arc( bearingTo(pnt) - myBot.getHeading() );
+		logger.dbg("Rotation angle = " + angle);
+		double dist = myBot.myCoord.distance(pnt);
+		logger.dbg("Distance to desired point = " + dist);
+		if ( Math.abs(angle ) > 90 ) {
+			if (angle > 90 ) {
+				angle = angle - 180;
+			} else {
+				angle = angle + 180;
+			}
+			dist = -dist;
+		}
+		myBot.setTurnRight(angle);
+		myBot.setAhead (dist);
 	}
 
 	public void makeMove() {
