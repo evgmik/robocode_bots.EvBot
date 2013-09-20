@@ -140,8 +140,10 @@ public class dangerMapMotion extends basicMotion {
 		offsets[6][0] =  0;  offsets[6][1] =-1;
 		offsets[7][0] =  1;  offsets[7][1] =-1;
 
-			logger.dbg("Destination point " + DestinationPoint);
+		logger.noise("Destination point " + DestinationPoint);
+		logger.noise("My coordinates " + myBot.myCoord);
 		double dist2dest = myBot.myCoord.distance(DestinationPoint);
+		logger.noise("Distance to destination point = " + dist2dest);
 		double largestCellSize = Math.max ( dMapCellSize.x, dMapCellSize.y);
 
 		if (dist2dest >= largestCellSize/4) {
@@ -151,12 +153,18 @@ public class dangerMapMotion extends basicMotion {
 		grid = point2grid(myBot.myCoord);
 		double cDanger = grid2dangerLevel(grid); // danger of the current cell
 
-		ngrid[0] = grid[0] + 1;
-		ngrid[1] = grid[1] + 0;
+		int offsets_index_min = 0;
+		int offsets_index_max = 7;
+		int i = offsets_index_min + (int)(Math.random() * ((offsets_index_max - offsets_index_min) + 1));
+		ngrid[0]  = grid[0] + offsets[i][0];
+		ngrid[1]  = grid[1] + offsets[i][1];
 		logger.dbg("grid x = " + grid[0]);
 		logger.dbg("grid y = " + grid[1]);
 		logger.dbg("ngrid x = " + ngrid[0]);
 		logger.dbg("ngrid y = " + ngrid[1]);
+		if ( (ngrid[0] < 0) || (ngrid[0] > dMapSizeX) ) return;
+		if ( (ngrid[1] < 0) || (ngrid[1] > dMapSizeY) ) return;
+
 		double nDanger = grid2dangerLevel(ngrid); // danger in new cell
 
 		if ( nDanger <= cDanger) {
