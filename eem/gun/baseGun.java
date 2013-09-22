@@ -28,6 +28,7 @@ public class baseGun {
 
 	public baseGun(EvBot bot) {
 		myBot = bot;
+		calcGunSettings();
 	};
 
 	public void initTic() {
@@ -106,15 +107,21 @@ public class baseGun {
         }
 
 	public void calcGunSettings() {
-		setFirePower();
-		setTargetFuturePosition(myBot._trgt);
+		if ( myBot._trgt.haveTarget ) {
+			setFirePower();
+			setTargetFuturePosition(myBot._trgt);
+		}
 	}
 
 	public void setFirePower() {
+		if ( myBot._trgt.haveTarget ) {
 		firePower = firePoverVsDistance(myBot._trgt.getLastDistance(myBot.myCoord));
 		// no point to fire bullets more energetic than enemy bot energy level
 		// fixme replace magic minimal energy bullet = 0.1  with a named var
 		firePower = math.putWithinRange( firePower, 0.1, misc.minReqBulEnergyToKillTarget(myBot._trgt.getEnergy()) );
+		} else {
+			firePower = 0;
+		}
 	}
 
 	public double  bulletSpeed( double firePower ) {
@@ -129,8 +136,10 @@ public class baseGun {
 	}
 
 	private void drawTargetFuturePosition(Graphics2D g) {
-		g.setColor(gunColor);
-		g.fillRect((int)targetFuturePosition.x - 20, (int)targetFuturePosition.y - 20, 40, 40);
+		if ( null != targetFuturePosition ) {
+			g.setColor(gunColor);
+			g.fillRect((int)targetFuturePosition.x - 20, (int)targetFuturePosition.y - 20, 40, 40);
+		}
 	}
 
 	private void drawTargetLastPosition(Graphics2D g) {
@@ -138,8 +147,10 @@ public class baseGun {
 	}
 
 	private void drawLineToTargetFuturePosition(Graphics2D g) {
-		g.setColor(gunColor);
-		g.drawLine((int)getTargetFuturePosition().x, (int)getTargetFuturePosition().y, (int)myBot.myCoord.x, (int)myBot.myCoord.y);
+		if ( null != targetFuturePosition ) {
+			g.setColor(gunColor);
+			g.drawLine((int)getTargetFuturePosition().x, (int)getTargetFuturePosition().y, (int)myBot.myCoord.x, (int)myBot.myCoord.y);
+		}
 	}
 
 	private void drawLineToTarget(Graphics2D g) {
@@ -148,9 +159,11 @@ public class baseGun {
 	}
 
 	public void onPaint(Graphics2D g) {
-		drawTargetFuturePosition(g);
-		drawTargetLastPosition(g);
-		drawLineToTarget(g);
-		drawLineToTargetFuturePosition(g);
+		if ( myBot._trgt.haveTarget ) {
+			drawTargetFuturePosition(g);
+			drawTargetLastPosition(g);
+			drawLineToTarget(g);
+			drawLineToTargetFuturePosition(g);
+		}
 	}
 }

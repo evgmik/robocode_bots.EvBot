@@ -16,6 +16,7 @@ public class linearGun extends baseGun {
 		myBot = bot;
 		gunName = "linear";
 		gunColor = new Color(0xff, 0x00, 0x00, 0x80);
+		calcGunSettings();
 	}
 
 	public void setTargetFuturePosition(target tgt) {
@@ -31,6 +32,7 @@ public class linearGun extends baseGun {
 		double timeToHit;
 		double a, b, c;
 		double bSpeed=bulletSpeed( firePower );
+
 
 		logger.noise("Bullet speed " + bSpeed );
 

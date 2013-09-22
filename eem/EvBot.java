@@ -28,10 +28,10 @@ public class EvBot extends AdvancedRobot
 	double BodyTurnRate = 10;
 	public int robotHalfSize = 18;
 	public long ticTime;
-	public target _trgt = new target();
 	int nonexisting_coord = -10000;
 
 	private botVersion botVer;
+	public target _trgt;
 	private baseGun _gun;
 	public radar _radar;
 	private basicMotion _motion;
@@ -55,6 +55,7 @@ public class EvBot extends AdvancedRobot
 		setColors(Color.red,Color.blue,Color.green);
 		botVer = new botVersion();
 
+		_trgt = new target();
 		_gun = new linearGun(this);
 		_radar = new radar(this);
 		_motion = new dangerMapMotion(this);

@@ -15,6 +15,7 @@ public class randomGun extends baseGun {
 		myBot = bot;
 		gunName = "random";
 		gunColor = new Color(0xff, 0xff, 0xff, 0x80);
+		calcGunSettings();
 	}
 
 	public void setTargetFuturePosition(target tgt) {
