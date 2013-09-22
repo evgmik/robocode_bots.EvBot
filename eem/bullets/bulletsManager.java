@@ -13,6 +13,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.*;
 
 
 public class  bulletsManager {
@@ -35,6 +36,7 @@ public class  bulletsManager {
 			double bulletSpeed = dummy;
 			this.add_enemy_bullet();
 		}
+		removeInactiveBullets();
 	}
 
 	public void add_enemy_bullet() {
@@ -46,13 +48,19 @@ public class  bulletsManager {
 		bullets.add(b);
 	}
 
-	public void onPaint(Graphics2D g) {
-		for ( firedBullet b : bullets ) {
-			if ( b.isActive() ) {
-				b.onPaint(g);
-			} else {
-				bullets.remove(b);
+	public void removeInactiveBullets() {
+		ListIterator<firedBullet> bLIter = bullets.listIterator();
+		while (bLIter.hasNext()) {
+			if (!bLIter.next().isActive() ) {
+				bLIter.remove();
 			}
+		} 
+	}
+
+	public void onPaint(Graphics2D g) {
+		removeInactiveBullets();
+		for ( firedBullet b : bullets ) {
+			b.onPaint(g);
 		}
 	}
 }
