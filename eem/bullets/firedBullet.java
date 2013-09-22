@@ -82,6 +82,10 @@ public class firedBullet {
 		}
 	}
 
+	public Point2D.Double endPositionAtBorder() {
+		return math.vecCrossesBorder( firingPosition, firingAngle, myBot.BattleField);
+	}
+
 	public void onPaint(Graphics2D g) {
 		g.setColor(bulletColor);
 		// draw target position
@@ -90,19 +94,11 @@ public class firedBullet {
 		g.drawOval( (int)(targetPosition.x - ovalSize/2), (int)(targetPosition.y-ovalSize/2), ovalSize, ovalSize);
 
 		// draw line from firing point to target
-		double long_length = firingPosition.distance(targetPosition);
-		Point2D.Double lEnd = (Point2D.Double) targetPosition.clone();
-		lEnd.x = firingPosition.x + Math.sin(firingAngle)*long_length;
-		lEnd.y = firingPosition.y + Math.cos(firingAngle)*long_length;
-		//fixme truncation to border works incorrectly
-		//lEnd = math.putWithinBorders(lEnd, myBot.BattleField);
-		lEnd = math.vecCrossesBorder( firingPosition, firingAngle, myBot.BattleField);
-		
+		Point2D.Double lEnd = endPositionAtBorder();
 		logger.noise("end of bullet path = " + lEnd);
-
 		g.drawLine((int) firingPosition.x, (int) firingPosition.y, (int)lEnd.x, (int)lEnd.y);
 
-		// draw bullet position
+		// draw current bullet position
 		int bSize = 10;
 		Point2D.Double bPos = getPosition();
 
