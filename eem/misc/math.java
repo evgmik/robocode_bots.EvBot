@@ -124,7 +124,7 @@ public class math {
 		}
 		if ( hit_pnt.y < 0 ) {
 			// below border
-			dist = hit_pnt.y - 0;
+			dist = 0 - hit_pnt.y;
 		}
 		hit_pnt.y = hit_pnt.y + dist;
 		hit_pnt.x = hit_pnt.x + dist/vy*vx;
