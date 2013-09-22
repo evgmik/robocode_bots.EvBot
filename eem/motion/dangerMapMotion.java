@@ -18,8 +18,8 @@ import java.awt.Color;
 public class dangerMapMotion extends basicMotion {
 	Point2D.Double DestinationPoint = new Point2D.Double(0,0);
 
-	int dMapSizeX = 10;
-	int dMapSizeY = 10;
+	int dMapSizeX = 15;
+	int dMapSizeY = 15;
 	Point2D.Double dMapCellSize;
 	double dMap[][];
 
@@ -112,29 +112,53 @@ public class dangerMapMotion extends basicMotion {
 		}
 	}
 
-	public void markAreaArounDangerPoint(Point2D.Double pnt, double safe_distance, double dangerLevel) {
+	public void markAreaArounDangerPoint(Point2D.Double pnt, double safe_distance_for_dangeer, double dangerLevel) {
 		int[] grid = new int[2];  
+		double safe_distance = safe_distance_for_dangeer;
 		safe_distance =  Math.max( dMapCellSize.x, safe_distance );
 		safe_distance =  Math.max( dMapCellSize.y, safe_distance );
 		Point2D.Double c;
+		double dist;
 
 		for (int i=0; i < dMapSizeX; i++) {
 			for (int j=0; j < dMapSizeY; j++) {
 				c = cellCenter(i,j);
-				if ( c.distance(pnt) <= safe_distance) {
+				dist = c.distance(pnt);
+				//if ( dist <= safe_distance) {
 					grid[0] = i; grid[1] = j;
-					addDangerLevelToCell( grid, dangerLevel);
-				}
+					addDangerLevelToCell( grid, dangerLevel*Math.exp(-dist*dist/(safe_distance_for_dangeer*safe_distance_for_dangeer)));
+				//}
 			}
 		}
 	}
+
 	public void bullet_path2DangerMap(firedBullet b) {
 		Point2D.Double bPos, bEnd;
-		bPos = b.getPosition();
-		bEnd = (Point2D.Double) b.targetPosition.clone();
 		if ( b.isActive() && !b.isItMine ) {
-			markAreaArounDangerPoint(bPos, safe_distance_from_bullet, dangerLevelBullet);
-			markAreaArounDangerPoint(bEnd, safe_distance_from_bullet, dangerLevelBullet);
+			bPos = b.getPosition();
+			bEnd = b.endPositionAtBorder();
+			double dx, dy;
+			dx = bEnd.x - bPos.x;
+			dy = bEnd.y - bPos.y;
+			if( dx == 0 ) dx = 1e-8;
+			if( dy == 0 ) dy = 1e-8;
+			// rescale step to be <= cell size
+			double scale = 1;
+			if (Math.abs(dx) > Math.abs(dy) ) {
+				scale = Math. abs(dx/dMapCellSize.x);
+			} else {
+				scale = Math. abs(dy/dMapCellSize.y);
+			}
+			dx = dx/scale;
+			dy = dy/scale;
+			int nSteps = (int) (bPos.distance(bEnd)/Math.sqrt(dx*dx+dy*dy));
+			for( int i=0; i <= nSteps; i++) {
+				markAreaArounDangerPoint(
+						new Point2D.Double(bPos.x+i*dx, bPos.y+i*dy),
+						safe_distance_from_bullet, dangerLevelBullet
+						);
+
+			}
 		}
 	}
 
@@ -157,9 +181,11 @@ public class dangerMapMotion extends basicMotion {
 		int[] ngrid = new int[2];  
 		// possible moves and its offsets
 		// \  |  /
-		// - j,kr-
-		// /  | \
-		int offsets[][] = new int[8][2];
+		// - j,k -  there is also stay still
+		// /  |  \
+		int offsets_index_min = 0;
+		int offsets_index_max = 8;
+		int offsets[][] = new int[offsets_index_max+1][2];
 		offsets[0][0] = -1;  offsets[0][1] = 1;
 		offsets[1][0] =  0;  offsets[1][1] = 1;
 		offsets[2][0] =  1;  offsets[2][1] = 1;
@@ -168,6 +194,7 @@ public class dangerMapMotion extends basicMotion {
 		offsets[5][0] = -1;  offsets[5][1] =-1;
 		offsets[6][0] =  0;  offsets[6][1] =-1;
 		offsets[7][0] =  1;  offsets[7][1] =-1;
+		offsets[8][0] =  0;  offsets[8][1] = 0;
 
 		logger.noise("Destination point " + DestinationPoint);
 		logger.noise("My coordinates " + myBot.myCoord);
@@ -175,32 +202,37 @@ public class dangerMapMotion extends basicMotion {
 		logger.noise("Distance to destination point = " + dist2dest);
 		double largestCellSize = Math.max ( dMapCellSize.x, dMapCellSize.y);
 
-		if (dist2dest >= largestCellSize/4) {
+		//if (dist2dest >= largestCellSize/4) {
 			// still moving to the preset position
-			return;
-		}
-		grid = point2grid(myBot.myCoord);
+			//return;
+		//}
+		grid = point2grid(DestinationPoint);
 		double cDanger = grid2dangerLevel(grid); // danger of the current cell
+		grid = point2grid(myBot.myCoord);
 
-		int offsets_index_min = 0;
-		int offsets_index_max = 7;
-		int i = offsets_index_min + (int)(Math.random() * ((offsets_index_max - offsets_index_min) + 1));
-		ngrid[0]  = grid[0] + offsets[i][0];
-		ngrid[1]  = grid[1] + offsets[i][1];
-		logger.noise("grid x = " + grid[0]);
-		logger.noise("grid y = " + grid[1]);
-		logger.noise("ngrid x = " + ngrid[0]);
-		logger.noise("ngrid y = " + ngrid[1]);
-		if ( (ngrid[0] < 0) || (ngrid[0] >= dMapSizeX) ) return;
-		if ( (ngrid[1] < 0) || (ngrid[1] >= dMapSizeY) ) return;
+		int iRand = offsets_index_min + (int)(Math.random() * ((offsets_index_max - offsets_index_min) + 1));
+		int i = iRand;
 
-		double nDanger = grid2dangerLevel(ngrid); // danger in new cell
+		// lets find the safest cell starting from random offset
+		do {
+			ngrid[0]  = grid[0] + offsets[i][0];
+			ngrid[1]  = grid[1] + offsets[i][1];
+			i = i + 1;
+			i = i % (offsets_index_max + 1);
+			logger.noise("grid x = " + grid[0]);
+			logger.noise("grid y = " + grid[1]);
+			logger.noise("ngrid x = " + ngrid[0]);
+			logger.noise("ngrid y = " + ngrid[1]);
+			if ( (ngrid[0] < 0) || (ngrid[0] >= dMapSizeX) ) continue;
+			if ( (ngrid[1] < 0) || (ngrid[1] >= dMapSizeY) ) continue;
 
-		if ( nDanger <= cDanger) {
-			DestinationPoint = cellCenter( ngrid[0], ngrid[1] );
-			logger.noise("Destination point " + DestinationPoint);
-		}
-		// fixme add some mechanism to probe other cells
+			double nDanger = grid2dangerLevel(ngrid); // danger in new cell
+
+			if ( nDanger < cDanger) {
+				DestinationPoint = cellCenter( ngrid[0], ngrid[1] );
+				logger.noise("Destination point " + DestinationPoint);
+			}
+		} while  (i != iRand);
 	}
 
 	public void makeMove() {
