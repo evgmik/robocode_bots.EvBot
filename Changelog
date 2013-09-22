@@ -1,0 +1,16 @@
+= Version  3.0 =
+Movements are handled with danger map
+
+= Version  2.1 =
+Added a bullet manager to visualize all known bullets
+
+= Version  2.0 =
+Gun, radar, bullets, and motion moved to separate classes
+
+Otherwise operational logic is the same as in v1.7
+
+= Version  1.7 =
+Quite good robot with almost all methods in one body
+
+= Version < 1.0 =
+Very naive robot with changes lost in history
