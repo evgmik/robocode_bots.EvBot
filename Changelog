@@ -1,3 +1,10 @@
+= Version  3.1 =
+
+Bug fix: choice of new destination point
+
+Now we chose among several cell with about the same danger level, no switch
+to new destination if it is still reasonably low in danger level.
+
 = Version  3.0 =
 Movements are handled with danger map
 
