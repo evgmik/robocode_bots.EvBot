@@ -18,10 +18,11 @@ import java.awt.Color;
 public class dangerMapMotion extends basicMotion {
 	Point2D.Double DestinationPoint = new Point2D.Double(0,0);
 
-	int dMapSizeX = 15;
-	int dMapSizeY = 15;
+	int dMapSizeX = 20;
+	int dMapSizeY = 20;
 	Point2D.Double dMapCellSize;
 	double dMap[][];
+	double kT = 1; // characteristic temperature for Metropolis algorithm
 
 	double safe_distance_from_wall;
 	double safe_distance_from_bot;
@@ -40,6 +41,7 @@ public class dangerMapMotion extends basicMotion {
 		safe_distance_from_wall = myBot.robotHalfSize + 2;
 		safe_distance_from_bot =  myBot.robotHalfSize + 2;
 		safe_distance_from_bullet =  myBot.robotHalfSize + 2;
+		kT = .1;
 	}
 
 	public void resetDangerMap() {
@@ -124,10 +126,8 @@ public class dangerMapMotion extends basicMotion {
 			for (int j=0; j < dMapSizeY; j++) {
 				c = cellCenter(i,j);
 				dist = c.distance(pnt);
-				//if ( dist <= safe_distance) {
-					grid[0] = i; grid[1] = j;
-					addDangerLevelToCell( grid, dangerLevel*Math.exp(-dist*dist/(safe_distance_for_dangeer*safe_distance_for_dangeer)));
-				//}
+				grid[0] = i; grid[1] = j;
+				addDangerLevelToCell( grid, dangerLevel*Math.exp(-dist*dist/(safe_distance_for_dangeer*safe_distance)));
 			}
 		}
 	}
@@ -177,6 +177,7 @@ public class dangerMapMotion extends basicMotion {
 	}
 	
 	public void choseNewDestinationPoint() {
+		double cDanger;
 		int[] grid = new int[2];  
 		int[] ngrid = new int[2];  
 		// possible moves and its offsets
@@ -206,33 +207,69 @@ public class dangerMapMotion extends basicMotion {
 			// still moving to the preset position
 			//return;
 		//}
+		
+		// current coordinates danger for debugging
+		//grid = point2grid(myBot.myCoord);
+		//cDanger = grid2dangerLevel(grid); // danger of the current cell
+		//logger.noise("Current  grid x = " + grid[0] + ", y = " + grid[1] + "; danger level = " + cDanger);
+
+		// current destination danger for referencing
 		grid = point2grid(DestinationPoint);
-		double cDanger = grid2dangerLevel(grid); // danger of the current cell
+		Point2D.Double oDestinationPoint = (Point2D.Double) DestinationPoint.clone();
+		double oDanger = grid2dangerLevel(grid); // danger of the current cell
+		cDanger = oDanger;
+		logger.noise("Old destination point grid x = " + grid[0] + ", y = " + grid[1] + "; danger level = " + oDanger);
+
+		// if we close to target search for new before complete stop
+		if (myBot.myCoord.distance(DestinationPoint) < Math.min( dMapCellSize.x, dMapCellSize.y) ) {
+			oDanger = 1000; // very high
+		}
 		grid = point2grid(myBot.myCoord);
+
 
 		int iRand = offsets_index_min + (int)(Math.random() * ((offsets_index_max - offsets_index_min) + 1));
 		int i = iRand;
 
+		double nDanger;
+		boolean validCellIndex = true;
+		double dEDanger; // change of danger which we treat as energy in Metropolis algorithm
+		double prob;
 		// lets find the safest cell starting from random offset
 		do {
+			validCellIndex = true;
+			// iterate over possible offsets from current bot position
 			ngrid[0]  = grid[0] + offsets[i][0];
 			ngrid[1]  = grid[1] + offsets[i][1];
+
+			// check if new grid indeses are within limits
+			if ( (ngrid[0] < 0) || (ngrid[0] >= dMapSizeX) ) validCellIndex = false;
+			if ( (ngrid[1] < 0) || (ngrid[1] >= dMapSizeY) ) validCellIndex = false;
+
+			if ( validCellIndex) {
+				nDanger = grid2dangerLevel(ngrid); // danger in new cell
+				logger.noise("ngrid x = " + ngrid[0] + ", y = " + ngrid[1] + "; danger level = " + nDanger);
+
+				// Metropolis algorith choice
+				// otherwise new poit locks itself in a shallo min
+				// which often lead to linear motion of a bot
+				dEDanger= nDanger - cDanger;
+				prob = Math.random();
+				if ( (dEDanger < 0) || ( prob < Math.exp(-dEDanger/kT) ) ) {
+					DestinationPoint = cellCenter( ngrid[0], ngrid[1] );
+					cDanger = nDanger;
+					logger.noise("New destination suggestion point grid x = " + ngrid[0] + ", y = " + ngrid[1] + "; danger level = " + cDanger);
+				}
+			}
 			i = i + 1;
 			i = i % (offsets_index_max + 1);
-			logger.noise("grid x = " + grid[0]);
-			logger.noise("grid y = " + grid[1]);
-			logger.noise("ngrid x = " + ngrid[0]);
-			logger.noise("ngrid y = " + ngrid[1]);
-			if ( (ngrid[0] < 0) || (ngrid[0] >= dMapSizeX) ) continue;
-			if ( (ngrid[1] < 0) || (ngrid[1] >= dMapSizeY) ) continue;
-
-			double nDanger = grid2dangerLevel(ngrid); // danger in new cell
-
-			if ( nDanger < cDanger) {
-				DestinationPoint = cellCenter( ngrid[0], ngrid[1] );
-				logger.noise("Destination point " + DestinationPoint);
-			}
 		} while  (i != iRand);
+		double dangerThreshold = 10;
+		if ( oDanger < (cDanger + dangerThreshold) ) {
+			// keep the old destination point
+			DestinationPoint = oDestinationPoint;
+		}
+		grid = point2grid(DestinationPoint);
+		logger.noise("Final estination point grid x = " + grid[0] + ", y = " + grid[1] + "; danger level = " + cDanger);
 	}
 
 	public void makeMove() {
