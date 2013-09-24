@@ -17,7 +17,7 @@ import java.util.*;
 
 
 public class  bulletsManager {
-	public static EvBot myBot;
+	public EvBot myBot;
 
 	public LinkedList<firedBullet> bullets;
 	

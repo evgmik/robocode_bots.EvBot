@@ -14,7 +14,7 @@ import robocode.Bullet;
 
 
 public class baseGun {
-	protected static EvBot myBot;
+	protected EvBot myBot;
 	protected String gunName = "base";
 	protected boolean  gunFired = false;
 	protected boolean  gunHasTargetPoint = false;
