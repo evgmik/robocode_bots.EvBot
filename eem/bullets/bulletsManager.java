@@ -57,6 +57,23 @@ public class  bulletsManager {
 		} 
 	}
 
+	public baseGun whichGunFiredBullet(Bullet b) {
+		ListIterator<firedBullet> bLIter = bullets.listIterator();
+		firedBullet  fB;
+		baseGun  gun = null;
+		while (bLIter.hasNext()) {
+			fB = bLIter.next();
+			if ( fB.isItMine ) {
+				if (( fB.robocodeBullet.getX() == b.getX() ) && (fB.robocodeBullet.getY() == b.getY() ) ) {
+					gun = fB.firedGun;
+					logger.dbg("This bullet was fired by gun = " + gun.getName() );
+					break;
+				}
+			}
+		} 
+		return  gun;
+	}
+
 	public void onPaint(Graphics2D g) {
 		removeInactiveBullets();
 		for ( firedBullet b : bullets ) {

@@ -223,6 +223,16 @@ public class EvBot extends AdvancedRobot
 
 	}
 
+	public void  onBulletHit(BulletHitEvent e) {
+		logger.dbg("Yey, we hit someone");
+		_bmanager.whichGunFiredBullet(e.getBullet());
+	}
+
+	public void  onBulletMissed(BulletMissedEvent e) {
+		logger.dbg("Ups, our bullet missed");
+		_bmanager.whichGunFiredBullet(e.getBullet());
+	}
+
 	public void onRobotDeath(RobotDeathEvent e) {
 		if (e.getName().equals(_trgt.getName())) {
 			_trgt.targetUnlocked = false;
