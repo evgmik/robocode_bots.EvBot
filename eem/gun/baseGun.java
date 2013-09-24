@@ -22,6 +22,29 @@ public class baseGun {
 	public    Color gunColor = Color.black;
 	protected Point2D.Double targetFuturePosition;
 	protected double firePower;
+	private static int bulletHitCount = 0;
+	private static int bulletMissedCount = 0;
+	private static int bulletFiredCount = 0;
+
+	public int getBulletFiredCount() {
+		return this.bulletFiredCount;
+	}
+
+	public int getBulletHitCount() {
+		return this.bulletHitCount;
+	}
+
+	public int getBulletMissedCount() {
+		return this.bulletFiredCount - this.bulletHitCount;
+	}
+
+	protected void incBulletFiredCount() {
+		this.bulletFiredCount++;
+	}
+
+	public void incBulletHitCount() {
+		this.bulletHitCount++;
+	}
 
 	public baseGun() {
 	}
@@ -75,6 +98,7 @@ public class baseGun {
 		myBot._bmanager.add( new firedBullet( myBot, b, this) );
 		gunFired = true;
 		gunHasTargetPoint = false;
+		this.incBulletFiredCount();
 	}
 
 	public void setTargetFuturePosition( Point2D.Double target ) {

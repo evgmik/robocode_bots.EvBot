@@ -224,13 +224,18 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void  onBulletHit(BulletHitEvent e) {
-		logger.dbg("Yey, we hit someone");
-		_bmanager.whichGunFiredBullet(e.getBullet());
+		baseGun tmp_gun;
+		logger.noise("Yey, we hit someone");
+		tmp_gun = _bmanager.whichGunFiredBullet(e.getBullet());
+		logger.noise("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
+		tmp_gun.incBulletHitCount();
 	}
 
 	public void  onBulletMissed(BulletMissedEvent e) {
-		logger.dbg("Ups, our bullet missed");
-		_bmanager.whichGunFiredBullet(e.getBullet());
+		baseGun tmp_gun;
+		logger.noise("Ups, our bullet missed");
+		tmp_gun = _bmanager.whichGunFiredBullet(e.getBullet());
+		logger.noise("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
 	}
 
 	public void onRobotDeath(RobotDeathEvent e) {
@@ -294,4 +299,21 @@ public class EvBot extends AdvancedRobot
 
 	}
 
+	public void onRoundEnded(RoundEndedEvent e) {
+		baseGun tmp_gun;
+		tmp_gun = new baseGun(this);
+		logger.dbg("Statistics for gun " + tmp_gun.getName() );
+		logger.dbg("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
+		logger.dbg("This gun hit " + tmp_gun.getBulletHitCount() + " times" );
+
+		tmp_gun = new linearGun(this);
+		logger.dbg("Statistics for gun " + tmp_gun.getName() );
+		logger.dbg("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
+		logger.dbg("This gun hit " + tmp_gun.getBulletHitCount() + " times" );
+
+		tmp_gun = new randomGun(this);
+		logger.dbg("Statistics for gun " + tmp_gun.getName() );
+		logger.dbg("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
+		logger.dbg("This gun hit " + tmp_gun.getBulletHitCount() + " times" );
+	}
 }

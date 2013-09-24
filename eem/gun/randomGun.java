@@ -11,6 +11,31 @@ import java.util.Random;
 import robocode.util.*;
 
 public class randomGun extends baseGun {
+	private static int bulletHitCount = 0;
+	private static int bulletMissedCount = 0;
+	private static int bulletFiredCount = 0;
+
+	public int getBulletFiredCount() {
+		return this.bulletFiredCount;
+	}
+
+	public int getBulletHitCount() {
+		return this.bulletHitCount;
+	}
+
+	public int getBulletMissedCount() {
+		return this.bulletFiredCount - this.bulletHitCount;
+	}
+
+	protected void incBulletFiredCount() {
+		this.bulletFiredCount++;
+	}
+
+	public void incBulletHitCount() {
+		this.bulletHitCount++;
+	}
+
+
 	public randomGun(EvBot bot) {
 		myBot = bot;
 		gunName = "random";
