@@ -39,7 +39,7 @@ public class dangerMapMotion extends basicMotion {
 		dMap = new double[dMapSizeX][dMapSizeY];
 
 		safe_distance_from_wall = myBot.robotHalfSize + 2;
-		safe_distance_from_bot =  myBot.robotHalfSize + 2;
+		safe_distance_from_bot =  2*myBot.robotHalfSize + 2;
 		safe_distance_from_bullet =  myBot.robotHalfSize + 2;
 		kT = .1;
 	}
