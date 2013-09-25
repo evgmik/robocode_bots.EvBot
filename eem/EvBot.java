@@ -36,6 +36,7 @@ public class EvBot extends AdvancedRobot
 	public radar _radar;
 	private basicMotion _motion;
 	public bulletsManager _bmanager;
+	public gunManager _gmanager;
 
 
 	public Point2D.Double myCoord;
@@ -60,6 +61,7 @@ public class EvBot extends AdvancedRobot
 		_radar = new radar(this);
 		_motion = new dangerMapMotion(this);
 		_bmanager = new bulletsManager(this);
+		_gmanager = new gunManager(this);
 	}
 
 	public void initTic() {
@@ -123,39 +125,6 @@ public class EvBot extends AdvancedRobot
 		}
 	}
 
-	public void  choseGun( ) {
-		double rnd;
-		// let's choose the gun if gun is fired
-		if ( _gun.isGunFired() ) {
-			_gun = new linearGun(this); //default gun
-			if (getOthers() < 3 ) {
-				// only survivors are smart and we had to do random gun
-				rnd=Math.random();
-				if ( rnd > 0.5 ) { 
-					// random choice of future target velocity
-					_gun = new randomGun(this); //default gun
-				}
-			}
-		}
-
-		if ( _gun.getName().equals("linear") ) {
-			_gun.setTargetFuturePosition(_trgt);
-		}
-
-		if ( _gun.getName().equals("random") ) {
-			if ( _gun.isGunFired() ) {
-				_gun.setTargetFuturePosition(_trgt);
-			} else {
-				// no need to update future coordinates before gun fire
-			}
-		}
-
-
-		logger.routine("Gun choice = " + _gun.getName());
-
-	}
-	
-
 	public void run() {
 		initBattle();
 
@@ -163,7 +132,7 @@ public class EvBot extends AdvancedRobot
 			initTic() ;
 
 			if (_trgt.haveTarget) {
-				choseGun();
+				_gun=_gmanager.choseGun();
 			}
 
 			choseMotion();
@@ -300,20 +269,11 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void onRoundEnded(RoundEndedEvent e) {
-		baseGun tmp_gun;
-		tmp_gun = new baseGun(this);
-		logger.dbg("Statistics for gun " + tmp_gun.getName() );
-		logger.dbg("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
-		logger.dbg("This gun hit " + tmp_gun.getBulletHitCount() + " times" );
-
-		tmp_gun = new linearGun(this);
-		logger.dbg("Statistics for gun " + tmp_gun.getName() );
-		logger.dbg("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
-		logger.dbg("This gun hit " + tmp_gun.getBulletHitCount() + " times" );
-
-		tmp_gun = new randomGun(this);
-		logger.dbg("Statistics for gun " + tmp_gun.getName() );
-		logger.dbg("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
-		logger.dbg("This gun hit " + tmp_gun.getBulletHitCount() + " times" );
+		_gmanager.printGunsStats();
 	}
+
+	public baseGun getGun() {
+		return this._gun;
+	}
+
 }

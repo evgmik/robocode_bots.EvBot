@@ -66,7 +66,7 @@ public class  bulletsManager {
 			if ( fB.isItMine ) {
 				if (( fB.robocodeBullet.getX() == b.getX() ) && (fB.robocodeBullet.getY() == b.getY() ) ) {
 					gun = fB.firedGun;
-					logger.dbg("This bullet was fired by gun = " + gun.getName() );
+					logger.noise("This bullet was fired by gun = " + gun.getName() );
 					break;
 				}
 			}
