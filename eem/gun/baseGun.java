@@ -94,6 +94,10 @@ public class baseGun {
 		Bullet b;
 		logger.noise("Gun fire power = " + firePower);
 		b=myBot.setFireBullet(firePower);
+		if ( b == null ) {
+			logger.error("Gun did not fire  = " + b);
+			return;
+		}
 		logger.noise("fired bullet  = " + b);
 		myBot._bmanager.add( new firedBullet( myBot, b, this) );
 		gunFired = true;

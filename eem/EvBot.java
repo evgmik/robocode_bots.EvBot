@@ -190,15 +190,32 @@ public class EvBot extends AdvancedRobot
 	public void  onBulletHit(BulletHitEvent e) {
 		baseGun tmp_gun;
 		logger.noise("Yey, we hit someone");
+		if ( e.getBullet() == null ) {
+			logger.dbg("Weird, our hit bullet is not known to event");
+			return;
+		}
 		tmp_gun = _bmanager.whichGunFiredBullet(e.getBullet());
+		if ( tmp_gun == null ) {
 		logger.noise("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
+			logger.dbg("Weird, hit bullet does not known its gun");
+			return;
+		}
 		tmp_gun.incBulletHitCount();
 	}
 
 	public void  onBulletMissed(BulletMissedEvent e) {
 		baseGun tmp_gun;
 		logger.noise("Ups, our bullet missed");
+		if ( e.getBullet() == null ) {
+			logger.dbg("Weird, our missed bullet is not known to event");
+			return;
+		}
 		tmp_gun = _bmanager.whichGunFiredBullet(e.getBullet());
+		if ( tmp_gun == null ) {
+		logger.noise("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
+			logger.dbg("Weird, missed bullet does not known its gun");
+			return;
+		}
 		logger.noise("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
 	}
 
