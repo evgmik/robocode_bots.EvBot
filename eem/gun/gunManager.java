@@ -120,7 +120,7 @@ public class gunManager {
 		ListIterator<baseGun> gLIter = guns.listIterator();
 		while (gLIter.hasNext()) {
 			tmp_gun = gLIter.next();
-			logger.dbg("Gun[ " + tmp_gun.getName()+"\t] was fired \t" + tmp_gun.getBulletFiredCount() + "\t times and hit target \t" + tmp_gun.getBulletHitCount() );
+			logger.dbg("Gun[ " + tmp_gun.getName()+"\t] hit target \t" + tmp_gun.getBulletHitCount() + "\t and was fired \t" + tmp_gun.getBulletFiredCount() );
 		}
 	}
 
