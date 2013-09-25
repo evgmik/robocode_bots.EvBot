@@ -17,7 +17,7 @@ import java.util.*;
 
 
 public class  bulletsManager {
-	public static EvBot myBot;
+	public EvBot myBot;
 
 	public LinkedList<firedBullet> bullets;
 	
@@ -55,6 +55,23 @@ public class  bulletsManager {
 				bLIter.remove();
 			}
 		} 
+	}
+
+	public baseGun whichGunFiredBullet(Bullet b) {
+		ListIterator<firedBullet> bLIter = bullets.listIterator();
+		firedBullet  fB;
+		baseGun  gun = null;
+		while (bLIter.hasNext()) {
+			fB = bLIter.next();
+			if ( fB.isItMine ) {
+				if (( fB.robocodeBullet.getX() == b.getX() ) && (fB.robocodeBullet.getY() == b.getY() ) ) {
+					gun = fB.firedGun;
+					logger.noise("This bullet was fired by gun = " + gun.getName() );
+					break;
+				}
+			}
+		} 
+		return  gun;
 	}
 
 	public void onPaint(Graphics2D g) {

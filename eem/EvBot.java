@@ -36,6 +36,7 @@ public class EvBot extends AdvancedRobot
 	public radar _radar;
 	private basicMotion _motion;
 	public bulletsManager _bmanager;
+	public gunManager _gmanager;
 
 
 	public Point2D.Double myCoord;
@@ -60,6 +61,7 @@ public class EvBot extends AdvancedRobot
 		_radar = new radar(this);
 		_motion = new dangerMapMotion(this);
 		_bmanager = new bulletsManager(this);
+		_gmanager = new gunManager(this);
 	}
 
 	public void initTic() {
@@ -75,11 +77,6 @@ public class EvBot extends AdvancedRobot
 		_bmanager.initTic();
 		_gun.initTic();
 		_radar.initTic();
-	}
-
-	public void dbg(int level, String s) {
-		if (level <= verbosity_level)
-			System.out.println(s);
 	}
 
 	public double distTo(double x, double y) {
@@ -123,39 +120,6 @@ public class EvBot extends AdvancedRobot
 		}
 	}
 
-	public void  choseGun( ) {
-		double rnd;
-		// let's choose the gun if gun is fired
-		if ( _gun.isGunFired() ) {
-			_gun = new linearGun(this); //default gun
-			if (getOthers() < 3 ) {
-				// only survivors are smart and we had to do random gun
-				rnd=Math.random();
-				if ( rnd > 0.5 ) { 
-					// random choice of future target velocity
-					_gun = new randomGun(this); //default gun
-				}
-			}
-		}
-
-		if ( _gun.getName().equals("linear") ) {
-			_gun.setTargetFuturePosition(_trgt);
-		}
-
-		if ( _gun.getName().equals("random") ) {
-			if ( _gun.isGunFired() ) {
-				_gun.setTargetFuturePosition(_trgt);
-			} else {
-				// no need to update future coordinates before gun fire
-			}
-		}
-
-
-		logger.routine("Gun choice = " + _gun.getName());
-
-	}
-	
-
 	public void run() {
 		initBattle();
 
@@ -163,7 +127,7 @@ public class EvBot extends AdvancedRobot
 			initTic() ;
 
 			if (_trgt.haveTarget) {
-				choseGun();
+				_gun=_gmanager.choseGun();
 			}
 
 			choseMotion();
@@ -221,6 +185,38 @@ public class EvBot extends AdvancedRobot
 		//moveOrTurn(100,angle);
 		//_trgt.targetUnlocked=true;
 
+	}
+
+	public void  onBulletHit(BulletHitEvent e) {
+		baseGun tmp_gun;
+		logger.noise("Yey, we hit someone");
+		if ( e.getBullet() == null ) {
+			logger.dbg("Weird, our hit bullet is not known to event");
+			return;
+		}
+		tmp_gun = _bmanager.whichGunFiredBullet(e.getBullet());
+		if ( tmp_gun == null ) {
+		logger.noise("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
+			logger.dbg("Weird, hit bullet does not known its gun");
+			return;
+		}
+		tmp_gun.incBulletHitCount();
+	}
+
+	public void  onBulletMissed(BulletMissedEvent e) {
+		baseGun tmp_gun;
+		logger.noise("Ups, our bullet missed");
+		if ( e.getBullet() == null ) {
+			logger.dbg("Weird, our missed bullet is not known to event");
+			return;
+		}
+		tmp_gun = _bmanager.whichGunFiredBullet(e.getBullet());
+		if ( tmp_gun == null ) {
+		logger.noise("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
+			logger.dbg("Weird, missed bullet does not known its gun");
+			return;
+		}
+		logger.noise("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
 	}
 
 	public void onRobotDeath(RobotDeathEvent e) {
@@ -282,6 +278,14 @@ public class EvBot extends AdvancedRobot
 		_motion.onPaint(g);
 		_bmanager.onPaint(g);
 
+	}
+
+	public void onRoundEnded(RoundEndedEvent e) {
+		_gmanager.printGunsStats();
+	}
+
+	public baseGun getGun() {
+		return this._gun;
 	}
 
 }

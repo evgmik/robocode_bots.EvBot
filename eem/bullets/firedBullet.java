@@ -13,7 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
 public class firedBullet {
-	protected static EvBot myBot;
+	protected EvBot myBot;
 
 	protected Bullet robocodeBullet;
 	protected baseGun firedGun;
