@@ -79,11 +79,6 @@ public class EvBot extends AdvancedRobot
 		_radar.initTic();
 	}
 
-	public void dbg(int level, String s) {
-		if (level <= verbosity_level)
-			System.out.println(s);
-	}
-
 	public double distTo(double x, double y) {
 		double dx=x-myCoord.x;
 		double dy=y-myCoord.y;
