@@ -67,7 +67,7 @@ public class EvBot extends AdvancedRobot
 	public void initTic() {
 		ticTime = getTime();
 
-		logger.routine("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
+		logger.noise("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
 		logger.noise("Game time: " + ticTime);
 		logger.noise("Number of other bots = " + getOthers());
 
