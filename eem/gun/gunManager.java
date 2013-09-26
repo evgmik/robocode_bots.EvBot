@@ -118,9 +118,17 @@ public class gunManager {
 	public void printGunsStats() {
 		baseGun  tmp_gun = null;
 		ListIterator<baseGun> gLIter = guns.listIterator();
-		while (gLIter.hasNext()) {
-			tmp_gun = gLIter.next();
-			logger.dbg("Gun[ " + tmp_gun.getName()+"\t] hit target \t" + tmp_gun.getBulletHitCount() + "\t and was fired \t" + tmp_gun.getBulletFiredCount() );
+		updateGunsWeight();
+		int gunsFiringTotal=0;
+
+		for ( int i =0; i < nGuns; i++ ) {
+			tmp_gun = guns.get(i);
+			gunsFiringTotal += tmp_gun.getBulletFiredCount();
+		}
+
+		for ( int i =0; i < nGuns; i++ ) {
+			tmp_gun = guns.get(i);
+			logger.dbg("Gun[ " + tmp_gun.getName()+"\t] hit target \t" + tmp_gun.getBulletHitCount() + "\t and was fired \t" + tmp_gun.getBulletFiredCount() +"\t gun weight is \t" + gunsPerformance[i] + " \t firing rate is \t" + (double)tmp_gun.getBulletFiredCount()/gunsFiringTotal);
 		}
 	}
 
