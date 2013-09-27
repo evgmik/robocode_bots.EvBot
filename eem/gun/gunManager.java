@@ -32,7 +32,7 @@ public class gunManager {
 		guns.add(new randomGun(myBot));
 
 		nGuns = guns.size();
-		logger.dbg("Number of guns = " + nGuns);
+		logger.noise("Number of guns = " + nGuns);
 		gunsPerformance = new double[nGuns];
 
 	}
