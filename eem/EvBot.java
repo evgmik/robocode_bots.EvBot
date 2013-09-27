@@ -189,17 +189,25 @@ public class EvBot extends AdvancedRobot
 
 	public void  onBulletHit(BulletHitEvent e) {
 		baseGun tmp_gun;
+		Bullet b;	
 		logger.noise("Yey, we hit someone");
-		if ( e.getBullet() == null ) {
+		b = e.getBullet();
+		if ( b == null ) {
 			logger.dbg("Weird, our hit bullet is not known to event");
 			return;
 		}
-		tmp_gun = _bmanager.whichGunFiredBullet(e.getBullet());
+		logger.noise("event bullet " + b);
+		logger.noise("Bullet activity status is " + b.isActive() );
+		if ( b == null ) {
+			logger.dbg("Weird, hit bullet does not exists");
+			return;
+		}
+		tmp_gun = _bmanager.whichGunFiredBullet(b);
 		if ( tmp_gun == null ) {
-		logger.noise("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
 			logger.dbg("Weird, hit bullet does not known its gun");
 			return;
 		}
+		logger.noise("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
 		tmp_gun.incBulletHitCount();
 	}
 
