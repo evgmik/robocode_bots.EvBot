@@ -61,10 +61,23 @@ public class  bulletsManager {
 		ListIterator<firedBullet> bLIter = bullets.listIterator();
 		firedBullet  fB;
 		baseGun  gun = null;
+		double bx = b.getX();
+		double by = b.getY();
+		double bfBx, bfBy, dx, dy, dist;
 		while (bLIter.hasNext()) {
 			fB = bLIter.next();
 			if ( fB.isItMine ) {
-				if (( fB.robocodeBullet.getX() == b.getX() ) && (fB.robocodeBullet.getY() == b.getY() ) ) {
+				bfBx = fB.robocodeBullet.getX();
+				bfBy = fB.robocodeBullet.getY();
+				dx = Math.abs(bx - bfBx);
+				dy = Math.abs(by - bfBy);
+				//dist = Math.sqrt( dx*dx + dy*dy );
+				//logger.noise("Fired bullet known coordinates " + bfBx + ", " + bfBy + " \t bullet reported " + bx + ", " + by + "dist = " + dist );
+				// below is dirty hack since robocode seems to miss report
+				// bullet position from time to time
+				// and actual bullet has diffrent coordinates
+				// from reported by onBulletHit method
+				if (( dx <= myBot.robotHalfSize ) && ( dy <= myBot.robotHalfSize ) ) {
 					gun = fB.firedGun;
 					logger.noise("This bullet was fired by gun = " + gun.getName() );
 					break;
