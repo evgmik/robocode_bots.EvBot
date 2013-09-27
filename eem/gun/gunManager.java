@@ -95,21 +95,7 @@ public class gunManager {
 		}
 
 
-		if ( _gun.getName().equals("linear") ) {
-			_gun.setTargetFuturePosition(myBot._trgt);
-		}
-
-		if ( _gun.getName().equals("base") ) {
-			_gun.setTargetFuturePosition(myBot._trgt);
-		}
-
-		if ( _gun.getName().equals("random") ) {
-			if ( _gun.isGunFired() ) {
-				_gun.setTargetFuturePosition(myBot._trgt);
-			} else {
-				// no need to update future coordinates before gun fire
-			}
-		}
+		_gun.setTargetFuturePosition(myBot._trgt);
 
 		return _gun;
 

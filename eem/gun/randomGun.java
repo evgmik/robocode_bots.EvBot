@@ -15,6 +15,8 @@ public class randomGun extends baseGun {
 	private static int bulletMissedCount = 0;
 	private static int bulletFiredCount = 0;
 
+	protected Point2D.Double randOffset;
+
 	public int getBulletFiredCount() {
 		return this.bulletFiredCount;
 	}
@@ -40,6 +42,7 @@ public class randomGun extends baseGun {
 		myBot = bot;
 		gunName = "random";
 		gunColor = new Color(0xff, 0xff, 0xff, 0x80);
+		randOffset = new Point2D.Double(0,0);
 		calcGunSettings();
 	}
 
@@ -49,7 +52,12 @@ public class randomGun extends baseGun {
 				findTargetHitPositionWithRandomPredictor( firePower, tgt),
 				myBot.BattleField
 				);
+			randOffset.x = targetFuturePosition.x - tgt.getX();
+			randOffset.y = targetFuturePosition.y - tgt.getY();
 			gunHasTargetPoint = true;
+		} else {
+			targetFuturePosition.x = tgt.getX() + randOffset.x;
+			targetFuturePosition.y = tgt.getY() + randOffset.y;
 		}
 	}
 
