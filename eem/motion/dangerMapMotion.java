@@ -29,7 +29,7 @@ public class dangerMapMotion extends basicMotion {
 	double safe_distance_from_bullet;
 
 	double dangerLevelWall = 50;
-	double dangerLevelEnemyBot = 50;
+	double dangerLevelEnemyBot = 100;
 	double dangerLevelBullet = 50;
 	
 	public dangerMapMotion(EvBot bot) {
@@ -39,7 +39,7 @@ public class dangerMapMotion extends basicMotion {
 		dMap = new double[dMapSizeX][dMapSizeY];
 
 		safe_distance_from_wall = myBot.robotHalfSize + 2;
-		safe_distance_from_bot =  2*myBot.robotHalfSize + 2;
+		safe_distance_from_bot =  4*myBot.robotHalfSize + 2;
 		safe_distance_from_bullet =  myBot.robotHalfSize + 2;
 		kT = .1;
 	}
