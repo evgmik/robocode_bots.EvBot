@@ -71,35 +71,12 @@ public class dangerMapMotion extends basicMotion {
 		return d;
 	}
 
-	public void borders2DangerMap() {
-		int[] grid = new int[2];  
-		Point2D.Double c;
-		double safe_distance = safe_distance_from_wall;
-		safe_distance =  Math.max( dMapCellSize.x, safe_distance );
-		safe_distance =  Math.max( dMapCellSize.y, safe_distance );
-		for (int i=0; i < dMapSizeX; i++) {
-			for (int j=0; j < dMapSizeY; j++) {
-				c = cellCenter(i,j);
-				if (dist2wall(c) <= safe_distance ) {
-					grid[0] = i; grid[1] = j;
-					addDangerLevelToCell( grid, dangerLevelWall);
-				}
-			}
-		}
-	}
-
 	public int[] point2grid(Point2D.Double pnt) {
 		int[] grid = new int[2];  
 		grid[0] = (int) Math.floor( pnt.x / dMapCellSize.x );
 		grid[1] = (int) Math.floor( pnt.y / dMapCellSize.y );
 
 		return grid;
-	}
-
-	public void addDangerLevelToCell(int grid[], double dangerLevel ) {
-		int i = grid[0];
-		int j = grid[1];
-		dMap[i][j] = dMap[i][j] + dangerLevel;
 	}
 	
 	public double grid2dangerLevel(int grid[]) {
@@ -108,76 +85,89 @@ public class dangerMapMotion extends basicMotion {
 		return dMap[i][j];
 	}
 	
-	public void otherBots2DangerMap() {
-		int[] grid = new int[2];  
-		Point2D.Double c;
-		Point2D.Double tPos;
-		if ( myBot._trgt.haveTarget ) {
-			tPos = myBot._trgt.getPosition();
-			markAreaAroundDangerPoint(tPos, safe_distance_from_bot, dangerLevelEnemyBot);
-		}
+	public double pointDangerFromWalls( Point2D.Double p ) {
+		double danger = 0;
+		double dist = dist2wall(p);
+		danger = math.gaussian( dist, dangerLevelWall, safe_distance_from_wall );
+		return danger;
 	}
 
-	public void markAreaAroundDangerPoint(Point2D.Double pnt, double safe_distance_for_dangeer, double dangerLevel) {
-		int[] grid = new int[2];  
-		double safe_distance = safe_distance_for_dangeer;
-		safe_distance =  Math.max( dMapCellSize.x, safe_distance );
-		safe_distance =  Math.max( dMapCellSize.y, safe_distance );
-		Point2D.Double c;
+	public double pointDangerFromAllBots( Point2D.Double p ) {
+		double danger = 0;
 		double dist;
-
-		for (int i=0; i < dMapSizeX; i++) {
-			for (int j=0; j < dMapSizeY; j++) {
-				c = cellCenter(i,j);
-				dist = c.distance(pnt);
-				grid[0] = i; grid[1] = j;
-				addDangerLevelToCell( grid, dangerLevel*Math.exp(-dist*dist/(safe_distance_for_dangeer*safe_distance)));
-			}
+		Point2D.Double bPos;
+		if ( myBot._trgt.haveTarget ) {
+			bPos = myBot._trgt.getPosition();
+			dist = p.distance(bPos);
+			danger = math.gaussian( dist, dangerLevelEnemyBot, safe_distance_from_bot );
 		}
+		return danger;
 	}
 
-	public void bullet_path2DangerMap(firedBullet b) {
+	public double pointDangerFromBullet( Point2D.Double p, firedBullet b ) {
+		double danger = 0;
+		double dist;
 		Point2D.Double bPos, bEnd;
 		if ( b.isActive() && !b.isItMine ) {
 			bPos = b.getPosition();
 			bEnd = b.endPositionAtBorder();
-			double dx, dy;
-			dx = bEnd.x - bPos.x;
-			dy = bEnd.y - bPos.y;
-			if( dx == 0 ) dx = 1e-8;
-			if( dy == 0 ) dy = 1e-8;
-			// rescale step to be <= cell size
-			double scale = 1;
-			if (Math.abs(dx) > Math.abs(dy) ) {
-				scale = Math. abs(dx/dMapCellSize.x);
-			} else {
-				scale = Math. abs(dy/dMapCellSize.y);
-			}
-			dx = dx/scale;
-			dy = dy/scale;
-			int nSteps = (int) (bPos.distance(bEnd)/Math.sqrt(dx*dx+dy*dy));
-			for( int i=0; i <= nSteps; i++) {
-				markAreaAroundDangerPoint(
-						new Point2D.Double(bPos.x+i*dx, bPos.y+i*dy),
-						safe_distance_from_bullet, dangerLevelBullet
-						);
+			double dBx, dBy;
+			double dPx, dPy;
+			double dP, dB;
+			// bullet path vector
+			dBx = bEnd.x - bPos.x;
+			dBy = bEnd.y - bPos.y;
+			dB = Math.sqrt(dBx*dBx + dBy*dBy);
+			if( dBx == 0 ) dBx = 1e-8;
+			if( dBy == 0 ) dBy = 1e-8;
+			// vector to point from bullet present location
+			dPx = p.x - bPos.x;
+			dPy = p.y - bPos.y;
+			dP = Math.sqrt(dPx*dPx + dPy*dPy);
 
+			// if cos between dP and dB vectors positive
+			// the point is in front of bullet
+			double cos_val = (dPx*dBx + dPy*dBy)/(dP*dB); // normalized scalar product
+			if ( cos_val > 0 ) {
+				// distance to the bullet path from point
+				dist = dP*Math.sqrt(1-cos_val*cos_val);
+				danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet );
 			}
 		}
+		return danger;
 	}
 
-	public void bullets2DangerMap() {
+	public double pointDangerFromAllBullets( Point2D.Double p ) {
+		double danger = 0;
 		bulletsManager  bm = myBot._bmanager;
 		for ( firedBullet b : bm.bullets ) {
-			bullet_path2DangerMap(b);
+			danger += pointDangerFromBullet( p, b );
 		}
+		return danger;
+	}
+
+	public double pointDanger( Point2D.Double p ) {
+		double danger = 0;
+		danger += pointDangerFromWalls( p );
+		danger += pointDangerFromAllBots( p );
+		danger += pointDangerFromAllBullets( p );
+		return danger;
+	}
+
+	public double cellDanger( int[] grid ) {
+		Point2D.Double p = cellCenter( grid[0], grid[1] );
+		return pointDanger( p );
 	}
 
 	public void rebuildDangerMap() {
-		resetDangerMap();
-		borders2DangerMap();
-		otherBots2DangerMap();
-		bullets2DangerMap();
+		//resetDangerMap();
+		int[] grid = new int[2];  
+		for (int i=0; i < dMapSizeX; i++) {
+			for (int j=0; j < dMapSizeY; j++) {
+				grid[0] = i; grid[1] = j;
+				dMap[i][j] = cellDanger( grid );
+			}
+		}
 	}
 	
 	public void choseNewDestinationPoint() {
