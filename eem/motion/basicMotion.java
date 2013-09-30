@@ -15,6 +15,9 @@ import java.awt.Color;
 public class basicMotion {
 	protected EvBot myBot;
 
+	public void initTic() {
+	}
+
 	public basicMotion() {
 	}
 

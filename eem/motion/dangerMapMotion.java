@@ -32,6 +32,10 @@ public class dangerMapMotion extends basicMotion {
 	double dangerLevelEnemyBot = 100;
 	double dangerLevelBullet = 50;
 	
+	public void initTic() {
+		rebuildDangerMap();
+	}
+
 	public dangerMapMotion(EvBot bot) {
 		myBot = bot;
 		DestinationPoint = (Point2D.Double) myBot.myCoord.clone();
@@ -273,8 +277,6 @@ public class dangerMapMotion extends basicMotion {
 	}
 
 	public void makeMove() {
-		rebuildDangerMap();
-
 		choseNewDestinationPoint();
 		moveToPoint( DestinationPoint );
 	}
