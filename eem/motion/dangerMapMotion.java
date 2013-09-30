@@ -114,11 +114,11 @@ public class dangerMapMotion extends basicMotion {
 		Point2D.Double tPos;
 		if ( myBot._trgt.haveTarget ) {
 			tPos = myBot._trgt.getPosition();
-			markAreaArounDangerPoint(tPos, safe_distance_from_bot, dangerLevelEnemyBot);
+			markAreaAroundDangerPoint(tPos, safe_distance_from_bot, dangerLevelEnemyBot);
 		}
 	}
 
-	public void markAreaArounDangerPoint(Point2D.Double pnt, double safe_distance_for_dangeer, double dangerLevel) {
+	public void markAreaAroundDangerPoint(Point2D.Double pnt, double safe_distance_for_dangeer, double dangerLevel) {
 		int[] grid = new int[2];  
 		double safe_distance = safe_distance_for_dangeer;
 		safe_distance =  Math.max( dMapCellSize.x, safe_distance );
@@ -157,7 +157,7 @@ public class dangerMapMotion extends basicMotion {
 			dy = dy/scale;
 			int nSteps = (int) (bPos.distance(bEnd)/Math.sqrt(dx*dx+dy*dy));
 			for( int i=0; i <= nSteps; i++) {
-				markAreaArounDangerPoint(
+				markAreaAroundDangerPoint(
 						new Point2D.Double(bPos.x+i*dx, bPos.y+i*dy),
 						safe_distance_from_bullet, dangerLevelBullet
 						);
