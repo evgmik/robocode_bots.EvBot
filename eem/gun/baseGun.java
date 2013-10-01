@@ -134,6 +134,63 @@ public class baseGun {
                 return firePower;
         }
 
+	public Point2D.Double futureTargetWithinPhysicalLimitsBasedOnVelocity( Point2D.Double ftPos, Point2D.Double tVel ) {
+		// robot center cannot approach walls closer than robotHalfSize
+		// so we take it in account for future target calculation
+		double robotHalfSize = myBot.robotHalfSize;
+		Point2D.Double reducedBattleFieldSize = (Point2D.Double) myBot.BattleField.clone();
+		Point2D.Double new_ftPos = (Point2D.Double) ftPos.clone();
+
+		// calculate available space for robot center
+		reducedBattleFieldSize.x = reducedBattleFieldSize.x - 2*robotHalfSize;
+		reducedBattleFieldSize.y = reducedBattleFieldSize.y - 2*robotHalfSize;
+
+		// shift coordinates by robotHalfSize
+		new_ftPos.x = new_ftPos.x - robotHalfSize;
+		new_ftPos.y = new_ftPos.y - robotHalfSize;
+		if ( !math.isItOutOfBorders( new_ftPos, reducedBattleFieldSize ) ) {
+			return ftPos;
+		}
+
+		if ( tVel.x == 0 ) {
+			tVel.x = 1e-6;
+		}
+		double dist;
+		double roundOffError = 2; // small placement error usually due to round off
+		// outside left border?
+		dist = new_ftPos.x;
+		if ( dist < -roundOffError ) {
+			new_ftPos.x = new_ftPos.x - dist;
+			new_ftPos.y = new_ftPos.y - dist/tVel.x*tVel.y;
+		}
+		// outside right border?
+		dist = new_ftPos.x - reducedBattleFieldSize.x;
+		if ( dist > roundOffError ) {
+			new_ftPos.x = new_ftPos.x - dist;
+			new_ftPos.y = new_ftPos.y - dist/tVel.x*tVel.y;
+		}
+		if ( tVel.y == 0 ) {
+			tVel.y = 1e-6;
+		}
+		// outside bottom border?
+		dist = new_ftPos.y;
+		if ( dist < -roundOffError ) {
+			new_ftPos.y = new_ftPos.y - dist;
+			new_ftPos.x = new_ftPos.x - dist/tVel.y*tVel.x;
+		}
+		// outside top border?
+		dist = new_ftPos.y - reducedBattleFieldSize.y;
+		if ( dist > roundOffError) {
+			new_ftPos.y = new_ftPos.y - dist;
+			new_ftPos.x = new_ftPos.x - dist/tVel.y*tVel.x;
+		}
+
+		// shift back coordinates by robotHalfSize
+		new_ftPos.x = new_ftPos.x + robotHalfSize;
+		new_ftPos.y = new_ftPos.y + robotHalfSize;
+		return new_ftPos;
+	}
+
 	public void calcGunSettings() {
 		if ( myBot._trgt.haveTarget ) {
 			setFirePower();

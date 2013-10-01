@@ -124,6 +124,7 @@ public class randomGun extends baseGun {
 		tF=misc.linear_predictor( bSpeed, new Point2D.Double(Tx, Ty), 
 				vTvec,  myBot.myCoord);
 
+		tF = futureTargetWithinPhysicalLimitsBasedOnVelocity( tF, vTvec );
 		logger.noise("Predicted and boxed target position " + tF.x +", " + tF.y);
 		
 		return tF;

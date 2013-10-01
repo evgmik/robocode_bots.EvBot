@@ -83,9 +83,11 @@ public class linearGun extends baseGun {
 
 		tF=misc.linear_predictor( bSpeed, new Point2D.Double(Tx, Ty), 
 				vTvec,  myBot.myCoord);
-		tF = math.putWithinBorders(tF, myBot.BattleField);
+		// tF = math.putWithinBorders(tF, myBot.BattleField);
+		logger.noise("Predicted target position " + tF.x +", " + tF.y);
+		tF = futureTargetWithinPhysicalLimitsBasedOnVelocity( tF, vTvec );
 
-		logger.noise("Predicted and boxed target position " + tF.x +", " + tF.y);
+		logger.noise("boxed target position " + tF.x +", " + tF.y);
 		
 		return tF;
 	}
