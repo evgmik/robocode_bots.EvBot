@@ -44,7 +44,7 @@ public class dangerMapMotion extends basicMotion {
 
 		safe_distance_from_wall = myBot.robotHalfSize + 2;
 		safe_distance_from_bot =  12*myBot.robotHalfSize + 2;
-		safe_distance_from_bullet =  myBot.robotHalfSize + 2;
+		safe_distance_from_bullet =  2*myBot.robotHalfSize + 2;
 		kT = .1;
 	}
 
@@ -52,22 +52,30 @@ public class dangerMapMotion extends basicMotion {
 		dMap = new double[dMapSizeX][dMapSizeY];
 	}
 	
-	public double dist2wall( Point2D.Double p ) {
+	public double dist2LeftOrRightWall( Point2D.Double p ) {
 		double d = p.x; // left wall distance
 		double dTest;
-
 		dTest = myBot.BattleField.x - p.x; // right wall distance
 		if (dTest < d) {
 			d = dTest;
 		}
+		return d;
+	}
+
+	public double dist2BottomOrTopWall( Point2D.Double p ) {
+		double d = p.y; // bottom wall distance
+		double dTest;
 		dTest = myBot.BattleField.y - p.y; // top wall distance
 		if (dTest < d) {
 			d = dTest;
 		}
-		dTest =  p.y; // bottom wall distance
-		if (dTest < d) {
-			d = dTest;
-		}
+		return d;
+	}
+
+	public double shortestDist2wall( Point2D.Double p ) {
+		double dx = dist2LeftOrRightWall( p );
+		double dy = dist2BottomOrTopWall( p );
+		double d = Math.min( dist2LeftOrRightWall( p ), dist2BottomOrTopWall( p ) );
 		return d;
 	}
 
@@ -75,7 +83,6 @@ public class dangerMapMotion extends basicMotion {
 		int[] grid = new int[2];  
 		grid[0] = (int) Math.floor( pnt.x / dMapCellSize.x );
 		grid[1] = (int) Math.floor( pnt.y / dMapCellSize.y );
-
 		return grid;
 	}
 	
@@ -87,8 +94,10 @@ public class dangerMapMotion extends basicMotion {
 	
 	public double pointDangerFromWalls( Point2D.Double p ) {
 		double danger = 0;
-		double dist = dist2wall(p);
-		danger = math.gaussian( dist, dangerLevelWall, safe_distance_from_wall );
+		double dx = dist2LeftOrRightWall( p );
+		double dy = dist2BottomOrTopWall( p );
+		danger += math.gaussian( dx, dangerLevelWall, safe_distance_from_wall );
+		danger += math.gaussian( dy, dangerLevelWall, safe_distance_from_wall );
 		return danger;
 	}
 
