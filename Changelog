@@ -1,3 +1,7 @@
+= Version  3.7 =
+
+Bug fix: when we are in mêlée reset dynamic distance calculation
+
 = Version  3.6 =
 
 Ramming weak opponents, and dynamic choice of distance in 1 vs 1
