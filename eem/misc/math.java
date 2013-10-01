@@ -130,6 +130,10 @@ public class math {
 			// below border
 			dist = 0 - hit_pnt.y;
 		}
+		if (vy == 0) {
+			// putting small fictional number to avoid division by 0
+			vy = 1e-5;
+		}
 		hit_pnt.y = hit_pnt.y + dist;
 		hit_pnt.x = hit_pnt.x + dist/vy*vx;
 		return hit_pnt;
