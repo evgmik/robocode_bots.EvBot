@@ -31,9 +31,39 @@ public class dangerMapMotion extends basicMotion {
 	double dangerLevelWall = 50;
 	double dangerLevelEnemyBot = 100;
 	double dangerLevelBullet = 50;
+
+	boolean rammingCondition = false;
+	private static double reducedBotDistanceCoef = 1;
 	
 	public void initTic() {
+		setRammingCondition();
+		setOptimalDistanceFromBot();
+		if (rammingCondition) {
+			logger.routine("Ramming condition= " + rammingCondition);
+		}
 		rebuildDangerMap();
+	}
+
+	public void setRammingCondition() {
+		rammingCondition = calcRammingCondition();
+	}
+
+	public boolean calcRammingCondition() {
+		double energyAdvantage = 20;
+		// are we on 1 vs 1 and more energetic
+		if ( myBot._trgt.haveTarget && ( myBot.getOthers() == 1 ) ) {
+			double energyAdvantageHysteresis;
+			if ( rammingCondition ) {
+				// if we already engaged keep pressing 
+				energyAdvantageHysteresis = 0;
+			} else {
+				energyAdvantageHysteresis = energyAdvantage;
+			}
+			if ( myBot.getEnergy() > ( myBot._trgt.getEnergy() + energyAdvantageHysteresis ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public dangerMapMotion(EvBot bot) {
@@ -46,6 +76,24 @@ public class dangerMapMotion extends basicMotion {
 		safe_distance_from_bot =  12*myBot.robotHalfSize + 2;
 		safe_distance_from_bullet =  2*myBot.robotHalfSize + 2;
 		kT = .1;
+
+		rammingCondition = false;
+	}
+
+	void setOptimalDistanceFromBot() {
+		double hitRateTreshHold = 0.3;
+		double hitRateDisbalance = ( myBot._gmanager.overallGunsHitRate() - hitRateTreshHold );
+		// if not ramming
+		// and on 1 vs 1
+		// and we miss too badly let's close in
+		// at least we will make some damage
+		if ( !rammingCondition &&  myBot._trgt.haveTarget && ( myBot.getOthers() == 1 ) ) {
+			reducedBotDistanceCoef += 0.1*hitRateDisbalance; // simple negative feedback
+			if ( reducedBotDistanceCoef < 0 ) {
+				reducedBotDistanceCoef = 0;
+			}
+		}
+		reducedBotDistanceCoef = math.putWithinRange( reducedBotDistanceCoef, 0, 1.0);
 	}
 
 	public void resetDangerMap() {
@@ -104,11 +152,20 @@ public class dangerMapMotion extends basicMotion {
 	public double pointDangerFromAllBots( Point2D.Double p ) {
 		double danger = 0;
 		double dist;
+		double danger_coef = 1.0; // by default bots repel us
 		Point2D.Double bPos;
 		if ( myBot._trgt.haveTarget ) {
 			bPos = myBot._trgt.getPosition();
 			dist = p.distance(bPos);
-			danger = math.gaussian( dist, dangerLevelEnemyBot, safe_distance_from_bot );
+			if ( rammingCondition ) {
+				danger_coef = -10.0; // we want to ram so it is attractive potential
+			}
+			if ( reducedBotDistanceCoef < 1.0 ) {
+				if (dist > reducedBotDistanceCoef * safe_distance_from_bot ) {
+					danger += math.gaussian( dist, -2*dangerLevelEnemyBot,  safe_distance_from_bot );
+				}
+			}
+			danger += math.gaussian( dist, danger_coef*dangerLevelEnemyBot, safe_distance_from_bot );
 		}
 		return danger;
 	}
@@ -281,14 +338,21 @@ public class dangerMapMotion extends basicMotion {
 	}
 
 	Color dangerLevel2mapColor(double dLevel) {
-		int opacity = (int) dLevel; // 0 - 255 but good values below 100
+		int opacity = (int) Math.abs(dLevel); // 0 - 255 but good values below 100
 		int opacityTreshold = 100;
+		Color c;
 
 		if (opacity > opacityTreshold) opacity = opacityTreshold;
 		if (opacity < 0 ) opacity = 0;
 
-		return new Color(0xff, 0x00, 0x00, opacity);
-		
+		if ( dLevel >= 0 ) {
+			// red
+			c = new Color(0xff, 0x00, 0x00, opacity);
+		} else {
+			// green
+			c = new Color(0x00, 0xff, 0x00, opacity);
+		}
+		return c;
 	}
 
 	public  Point2D.Double cellCenter( int i, int j) {
