@@ -38,9 +38,6 @@ public class dangerMapMotion extends basicMotion {
 	public void initTic() {
 		setRammingCondition();
 		setOptimalDistanceFromBot();
-		if (rammingCondition) {
-			logger.routine("Ramming condition= " + rammingCondition);
-		}
 		rebuildDangerMap();
 	}
 
