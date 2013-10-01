@@ -37,6 +37,24 @@ public class gunManager {
 
 	}
 
+	public double gunHitRate( baseGun g ) {
+		return (g.getBulletHitCount() + 1.0) / (g.getBulletFiredCount() + 1.0);
+	}
+
+	public double overallGunsHitRate(){
+		double hitRate;
+		double firedCount=0;
+		double hitCount=0;
+		baseGun g;
+		for ( int i =0; i < nGuns; i++ ) {
+			g = guns.get(i);
+			firedCount += g.getBulletFiredCount();
+			hitCount   += g.getBulletHitCount();
+		} 
+		hitRate = (hitCount + 1) / (firedCount + 1);
+		return hitRate;
+	}
+
 	public void updateGunsWeight() {
 		baseGun  tmp_gun;
 		double perfNormilizer = 0;
@@ -44,7 +62,7 @@ public class gunManager {
 		// calculate each gun weight/performance
 		for ( int i =0; i < nGuns; i++ ) {
 			tmp_gun = guns.get(i);
-			perfTmp = (tmp_gun.getBulletHitCount() + 1.0) / (tmp_gun.getBulletFiredCount() + 1.0);
+			perfTmp = gunHitRate( tmp_gun );
 			gunsPerformance[i] = perfTmp;
 			logger.noise("Gun[" + guns.get(i).getName() + " ] performance = " + gunsPerformance[i]);
 			perfNormilizer += perfTmp;
@@ -116,6 +134,7 @@ public class gunManager {
 			tmp_gun = guns.get(i);
 			logger.dbg("Gun[ " + tmp_gun.getName()+"\t] hit target \t" + tmp_gun.getBulletHitCount() + "\t and was fired \t" + tmp_gun.getBulletFiredCount() +"\t gun weight is \t" + gunsPerformance[i] + " \t firing rate is \t" + (double)tmp_gun.getBulletFiredCount()/gunsFiringTotal);
 		}
+		logger.dbg("Overall guns hit rate = " + overallGunsHitRate() );
 	}
 
 }
