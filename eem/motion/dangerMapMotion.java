@@ -301,7 +301,7 @@ public class dangerMapMotion extends basicMotion {
 			ngrid[0]  = grid[0] + offsets[i][0];
 			ngrid[1]  = grid[1] + offsets[i][1];
 
-			// check if new grid indeses are within limits
+			// check if new grid indexes are within limits
 			if ( (ngrid[0] < 0) || (ngrid[0] >= dMapSizeX) ) validCellIndex = false;
 			if ( (ngrid[1] < 0) || (ngrid[1] >= dMapSizeY) ) validCellIndex = false;
 
@@ -309,8 +309,8 @@ public class dangerMapMotion extends basicMotion {
 				nDanger = grid2dangerLevel(ngrid); // danger in new cell
 				logger.noise("ngrid x = " + ngrid[0] + ", y = " + ngrid[1] + "; danger level = " + nDanger);
 
-				// Metropolis algorith choice
-				// otherwise new poit locks itself in a shallo min
+				// Metropolis algorithm choice
+				// otherwise new point locks itself in a shallow min
 				// which often lead to linear motion of a bot
 				dEDanger= nDanger - cDanger;
 				prob = Math.random();
@@ -329,7 +329,7 @@ public class dangerMapMotion extends basicMotion {
 			DestinationPoint = oDestinationPoint;
 		}
 		grid = point2grid(DestinationPoint);
-		logger.noise("Final estination point grid x = " + grid[0] + ", y = " + grid[1] + "; danger level = " + cDanger);
+		logger.noise("Final estimation point grid x = " + grid[0] + ", y = " + grid[1] + "; danger level = " + cDanger);
 	}
 
 	public void makeMove() {
