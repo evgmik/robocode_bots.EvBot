@@ -1,3 +1,10 @@
+= Version  3.5 =
+
+- Improved linear predictor to place target within bot physical limitations.
+- Simplify and speed up danger map calculations.
+- Increase danger distances from bot and bullets.
+
+
 = Version  3.4 =
 
 Bug fix of the random gun.
