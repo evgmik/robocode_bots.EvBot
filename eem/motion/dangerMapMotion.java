@@ -80,6 +80,11 @@ public class dangerMapMotion extends basicMotion {
 	void setOptimalDistanceFromBot() {
 		double hitRateTreshHold = 0.3;
 		double hitRateDisbalance = ( myBot._gmanager.overallGunsHitRate() - hitRateTreshHold );
+		if ( myBot.getOthers() >= 1 ) {
+			reducedBotDistanceCoef = 1;
+			return;
+		}
+
 		// if not ramming
 		// and on 1 vs 1
 		// and we miss too badly let's close in
