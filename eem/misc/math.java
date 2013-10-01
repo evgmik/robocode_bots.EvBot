@@ -5,6 +5,10 @@ import java.awt.geom.Point2D;
 import robocode.util.*;
 
 public class math {
+	public static double gaussian( double dist, double ampl, double width ) {
+		return ampl*Math.exp(-dist*dist/(width*width) );
+	}
+
 	public static double quadraticSolverMinPosRoot(double a, double b, double c) {
 		// we are solving for time in ballistic calculation
 		// and interested only in positive solutions
