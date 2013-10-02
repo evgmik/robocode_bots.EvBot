@@ -46,6 +46,7 @@ public class dangerMapMotion extends basicMotion {
 		if (rammingCondition ) {
 			logger.dbg("Ramming!");
 		}
+		rammingCondition = false; //dbg
 	}
 
 	public boolean calcRammingCondition() {
