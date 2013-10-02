@@ -1,3 +1,8 @@
+= Version  3.9 =
+
+- Track enemy target hit rate.
+- Optimize distance to increase mine/enemy hitRate ratio.
+
 = Version  3.8 =
 
 Increased threshold for ramming. Bug fixes in dynamic distance calculation.
