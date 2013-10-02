@@ -95,18 +95,22 @@ public class baseGun {
 	}
 
 	public void fireGun() {
-		Bullet b;
-		logger.noise("Gun fire power = " + firePower);
-		b=myBot.setFireBullet(firePower);
-		if ( b == null ) {
-			logger.error("Gun did not fire  = " + b);
-			return;
+		if ( firePower != 0 ) {
+			// other algorithms decided not to fire
+			// for example if we low on energy
+			Bullet b;
+			logger.noise("Gun fire power = " + firePower);
+			b=myBot.setFireBullet(firePower);
+			if ( b == null ) {
+				logger.error("Gun did not fire  = " + b);
+				return;
+			}
+			logger.noise("fired bullet  = " + b);
+			myBot._bmanager.add( new firedBullet( myBot, b, this) );
+			gunFired = true;
+			gunHasTargetPoint = false;
+			this.incBulletFiredCount();
 		}
-		logger.noise("fired bullet  = " + b);
-		myBot._bmanager.add( new firedBullet( myBot, b, this) );
-		gunFired = true;
-		gunHasTargetPoint = false;
-		this.incBulletFiredCount();
 	}
 
 	public void setTargetFuturePosition( Point2D.Double target ) {
@@ -204,10 +208,15 @@ public class baseGun {
 
 	public void setFirePower() {
 		if ( myBot._trgt.haveTarget ) {
-		firePower = firePoverVsDistance(myBot._trgt.getLastDistance(myBot.myCoord));
-		// no point to fire bullets more energetic than enemy bot energy level
-		// fixme replace magic minimal energy bullet = 0.1  with a named var
-		firePower = math.putWithinRange( firePower, 0.1, misc.minReqBulEnergyToKillTarget(myBot._trgt.getEnergy()) );
+			firePower = firePoverVsDistance(myBot._trgt.getLastDistance(myBot.myCoord));
+			// no point to fire bullets more energetic than enemy bot energy level
+			// fixme replace magic minimal energy bullet = 0.1  with a named var
+			firePower = math.putWithinRange( firePower, 0.1, misc.minReqBulEnergyToKillTarget(myBot._trgt.getEnergy()) );
+
+			// do not fire to get yourself disabled
+			if (myBot.getEnergy() <= firePower + 1e-4 ) {
+				firePower = 0;
+			}
 		} else {
 			firePower = 0;
 		}
