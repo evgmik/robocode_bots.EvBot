@@ -43,10 +43,13 @@ public class dangerMapMotion extends basicMotion {
 
 	public void setRammingCondition() {
 		rammingCondition = calcRammingCondition();
+		if (rammingCondition ) {
+			logger.dbg("Ramming!");
+		}
 	}
 
 	public boolean calcRammingCondition() {
-		double energyAdvantage = 20;
+		double energyAdvantage = 30;
 		// are we on 1 vs 1 and more energetic
 		if ( myBot._trgt.haveTarget && ( myBot.getOthers() == 1 ) ) {
 			double energyAdvantageHysteresis;
@@ -158,6 +161,8 @@ public class dangerMapMotion extends basicMotion {
 			dist = p.distance(bPos);
 			if ( rammingCondition ) {
 				danger_coef = -10.0; // we want to ram so it is attractive potential
+				// make enemy bot place extra attractive for ramming
+				danger += math.gaussian( dist, -2*dangerLevelEnemyBot,  2*myBot.robotHalfSize );
 			}
 			if ( reducedBotDistanceCoef < 1.0 ) {
 				if (dist > reducedBotDistanceCoef * safe_distance_from_bot ) {
@@ -197,6 +202,9 @@ public class dangerMapMotion extends basicMotion {
 				// distance to the bullet path from point
 				dist = dP*Math.sqrt(1-cos_val*cos_val);
 				danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet );
+				if (rammingCondition) {
+					danger *= 1-Math.exp( -Math.max(0, dist - 2*myBot.robotHalfSize)/50 );
+				}
 			}
 		}
 		return danger;
