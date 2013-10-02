@@ -46,6 +46,10 @@ public class baseGun {
 		this.bulletHitCount++;
 	}
 
+	public double getGunHitRate() {
+		return (this.getBulletHitCount() + 1.0) / (this.getBulletFiredCount() + 1.0);
+	}
+
 	public baseGun() {
 	}
 

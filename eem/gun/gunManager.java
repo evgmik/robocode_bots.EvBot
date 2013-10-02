@@ -38,7 +38,7 @@ public class gunManager {
 	}
 
 	public double gunHitRate( baseGun g ) {
-		return (g.getBulletHitCount() + 1.0) / (g.getBulletFiredCount() + 1.0);
+		return g.getGunHitRate();
 	}
 
 	public double overallGunsHitRate(){

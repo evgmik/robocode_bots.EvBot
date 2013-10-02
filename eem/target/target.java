@@ -17,12 +17,39 @@ public class target {
 	public boolean haveTarget=false;
 	public boolean targetUnlocked = false; 
 
+	private static int bulletHitCount = 0;
+	private static int bulletFiredCount = 0;
+
 	public target() {
 		statPrev = new botStatPoint( new Point2D.Double( nonexisting_coord, nonexisting_coord), far_ago);
 		statLast = new botStatPoint( new Point2D.Double( nonexisting_coord, nonexisting_coord), far_ago);
 		haveTarget=false;
 	}
 	
+	public int getBulletFiredCount() {
+		return this.bulletFiredCount;
+	}
+
+	public int getBulletHitCount() {
+		return this.bulletHitCount;
+	}
+
+	protected void incBulletFiredCount() {
+		this.bulletFiredCount++;
+	}
+
+	public void incBulletHitCount() {
+		this.bulletHitCount++;
+	}
+
+	public double getGunHitRate() {
+		return (this.getBulletHitCount() ) / (this.getBulletFiredCount() + 1.0);
+	}
+
+	public void printGunsStats() {
+		logger.routine("Enemy gun hit rate = " + this.getGunHitRate() );
+	}
+
 	public void initTic(long ticTime) {
 		// updating UnLocked status
 		if ( ( ticTime - this.getLastSeenTime() ) > 2) 
@@ -31,7 +58,7 @@ public class target {
 			this.setUnLockedStatus(false);
 
 		if ( didItFireABullet() ) {
-
+			this.incBulletFiredCount();
 		}
 	}
 
