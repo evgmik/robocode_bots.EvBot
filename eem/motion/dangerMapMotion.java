@@ -82,7 +82,7 @@ public class dangerMapMotion extends basicMotion {
 
 	void setOptimalDistanceFromBot() {
 		double hitRateTreshHold = 0.3;
-		double hitRateDisbalance = ( myBot._gmanager.overallGunsHitRate() - hitRateTreshHold );
+		double hitRateDisbalance = ( myBot._gmanager.overallGunsHitRate() - myBot._trgt.getGunHitRate() );
 		if ( myBot.getOthers() > 1 ) {
 			reducedBotDistanceCoef = 1;
 			return;
@@ -93,7 +93,8 @@ public class dangerMapMotion extends basicMotion {
 		// and we miss too badly let's close in
 		// at least we will make some damage
 		if ( !rammingCondition &&  myBot._trgt.haveTarget && ( myBot.getOthers() == 1 ) ) {
-			reducedBotDistanceCoef += 0.1*hitRateDisbalance; // simple negative feedback
+			//reducedBotDistanceCoef += 0.1*hitRateDisbalance; // simple negative feedback
+			reducedBotDistanceCoef = myBot._gmanager.overallGunsHitRate()/(myBot._trgt.getGunHitRate()+1e-4); // try to maintain > 1 hit ration
 			reducedBotDistanceCoef = math.putWithinRange( reducedBotDistanceCoef, 0, 1.0);
 		}
 	}
