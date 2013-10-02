@@ -1,6 +1,6 @@
 # -*- make -*-
 # FILE: "/home/evmik/src/my_src/robocode/Makefile"
-# LAST MODIFICATION: "Tue, 17 Sep 2013 21:20:44 -0400 (evmik)"
+# LAST MODIFICATION: "Wed, 02 Oct 2013 11:39:34 -0400 (evmik)"
 # (C) 2012 by Eugeniy Mikhailov, <evgmik@gmail.com>
 # $Id:$
 
@@ -15,11 +15,11 @@ ROBOCODEJAR=~/misc/rumble-1.7.3.0/libs/robocode.jar
 
 JFLAGS=-d $(OUTDIR) -classpath $(ROBOCODEJAR):
 
-TESTVERSION:=$(shell date +%H:%M)
+TESTVERSION:=vtest
 VERSION:=$(shell git describe --tags --abbrev=0)
 UUID:=$(shell uuid)
 
-TESTJAR=EvBot_vtest.jar 
+TESTJAR=$(SUPERPACKADE).EvBot_$(TESTVERSION).jar 
 RELEASEJAR=$(SUPERPACKADE).EvBot_$(VERSION).jar
 
 SRC=eem/EvBot.java eem/botVersion.java \
@@ -48,9 +48,10 @@ $(ROBOTS_DIR)/$(TESTJAR): $(TESTJAR)
 	cp $(TESTJAR) $(ROBOTS_DIR)/$(TESTJAR)
 
 $(TESTJAR): $(CLASSES)
+	echo $(TESTVERSION)
 	cat EvBot.properties.template \
 		| sed s'/^uuid=.*$$'/uuid=$(UUID)/ \
-		| sed s'/^robot.version=.*$$'/robot.version=vtest_$(TESTVERSION)/ \
+		| sed s'/^robot.version=.*$$'/robot.version=$(TESTVERSION)/ \
 		> $(OUTDIR)/$(SUPERPACKADE)/EvBot.properties
 	cd $(OUTDIR); jar cvfM  ../$@  `find $(SUPERPACKADE) -type f`
 
