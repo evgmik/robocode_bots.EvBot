@@ -1,3 +1,13 @@
+= Version  3.9.4 =
+
+Bug fixes:
+- when ramming was pulled into the enemy bullet path
+- do not fire when low on energy
+
+Disable ramming. It seems to decrease my score against low end bots
+
+Makefile done differently for test version of bot
+
 = Version  3.9 =
 
 - Track enemy target hit rate.
