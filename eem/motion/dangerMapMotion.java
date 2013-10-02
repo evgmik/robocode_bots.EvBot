@@ -49,7 +49,10 @@ public class dangerMapMotion extends basicMotion {
 	}
 
 	public boolean calcRammingCondition() {
-		return false; // for now looks like ramming is bad idea even against weak bots
+		if ( true ){
+			// for now looks like ramming is bad idea even against weak bots
+			return false; 
+		}
 		double energyAdvantage = 30;
 		// are we on 1 vs 1 and more energetic
 		if ( myBot._trgt.haveTarget && ( myBot.getOthers() == 1 ) ) {
