@@ -1,3 +1,7 @@
+= Version  3.8 =
+
+Increased threshold for ramming. Bug fixes in dynamic distance calculation.
+
 = Version  3.7 =
 
 Bug fix: when we are in mêlée reset dynamic distance calculation
