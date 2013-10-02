@@ -204,7 +204,10 @@ public class dangerMapMotion extends basicMotion {
 				dist = dP*Math.sqrt(1-cos_val*cos_val);
 				danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet );
 				if (rammingCondition) {
-					danger *= 1-Math.exp( -Math.max(0, dist - 2*myBot.robotHalfSize)/50 );
+					// if we close to target during ramming
+					// reduce bullet danger
+					double dist2target = p.distance( myBot._trgt.getPosition() );
+					danger *= 1-Math.exp( -Math.max(0, dist2target - 2*myBot.robotHalfSize)/50 );
 				}
 			}
 		}
