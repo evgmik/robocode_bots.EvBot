@@ -255,6 +255,8 @@ public class dangerMapMotion extends basicMotion {
 		double cDanger;
 		int[] grid = new int[2];  
 		int[] ngrid = new int[2];  
+		Point2D.Double oDestinationPoint = (Point2D.Double) DestinationPoint.clone();
+		Point2D.Double testDestinationPoint;
 		// possible moves and its offsets
 		// \  |  /
 		// - j,k -  there is also stay still
@@ -290,8 +292,7 @@ public class dangerMapMotion extends basicMotion {
 
 		// current destination danger for referencing
 		grid = point2grid(DestinationPoint);
-		Point2D.Double oDestinationPoint = (Point2D.Double) DestinationPoint.clone();
-		double oDanger = grid2dangerLevel(grid); // danger of the current cell
+		double oDanger = pointDanger(oDestinationPoint); // danger of the current cell
 		cDanger = oDanger;
 		logger.noise("Old destination point grid x = " + grid[0] + ", y = " + grid[1] + "; danger level = " + oDanger);
 
@@ -321,7 +322,8 @@ public class dangerMapMotion extends basicMotion {
 			if ( (ngrid[1] < 0) || (ngrid[1] >= dMapSizeY) ) validCellIndex = false;
 
 			if ( validCellIndex) {
-				nDanger = grid2dangerLevel(ngrid); // danger in new cell
+				testDestinationPoint = cellCenter( ngrid[0], ngrid[1] );
+				nDanger = pointDanger(testDestinationPoint); // danger in new cell
 				logger.noise("ngrid x = " + ngrid[0] + ", y = " + ngrid[1] + "; danger level = " + nDanger);
 
 				// Metropolis algorithm choice
@@ -330,7 +332,7 @@ public class dangerMapMotion extends basicMotion {
 				dEDanger= nDanger - cDanger;
 				prob = Math.random();
 				if ( (dEDanger < 0) || ( prob < Math.exp(-dEDanger/kT) ) ) {
-					DestinationPoint = cellCenter( ngrid[0], ngrid[1] );
+					DestinationPoint = (Point2D.Double) testDestinationPoint.clone() ;
 					cDanger = nDanger;
 					logger.noise("New destination suggestion point grid x = " + ngrid[0] + ", y = " + ngrid[1] + "; danger level = " + cDanger);
 				}
