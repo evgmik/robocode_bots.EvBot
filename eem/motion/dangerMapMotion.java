@@ -13,16 +13,24 @@ import java.awt.geom.Point2D;
 import java.util.Arrays;
 import robocode.util.*;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.*;
+import java.util.Collections;
 
 
 public class dangerMapMotion extends basicMotion {
 	Point2D.Double DestinationPoint = new Point2D.Double(0,0);
+	int nPointsToCheckForNewDestination = 50;
+	double distToProbe = 50;
+
 
 	int dMapSizeX = 20;
 	int dMapSizeY = 20;
 	Point2D.Double dMapCellSize;
 	double dMap[][];
-	double kT = 1; // characteristic temperature for Metropolis algorithm
+	double kT; // characteristic temperature for Metropolis algorithm
 
 	double safe_distance_from_wall;
 	double safe_distance_from_bot;
@@ -34,6 +42,8 @@ public class dangerMapMotion extends basicMotion {
 
 	boolean rammingCondition = false;
 	private static double reducedBotDistanceCoef = 1;
+
+	public LinkedList<dangerPoint> dangerPoints;
 	
 	public void initTic() {
 		setRammingCondition();
@@ -79,7 +89,7 @@ public class dangerMapMotion extends basicMotion {
 		safe_distance_from_wall = myBot.robotHalfSize + 2;
 		safe_distance_from_bot =  12*myBot.robotHalfSize + 2;
 		safe_distance_from_bullet =  2*myBot.robotHalfSize + 2;
-		kT = .1;
+		kT = 0.1;
 
 		rammingCondition = false;
 	}
@@ -206,12 +216,17 @@ public class dangerMapMotion extends basicMotion {
 			if ( cos_val > 0 ) {
 				// distance to the bullet path from point
 				dist = dP*Math.sqrt(1-cos_val*cos_val);
-				danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet );
-				if (rammingCondition) {
-					// if we close to target during ramming
-					// reduce bullet danger
-					double dist2target = p.distance( myBot._trgt.getPosition() );
-					danger *= 1-Math.exp( -Math.max(0, dist2target - 2*myBot.robotHalfSize)/50 );
+				double distAlongBulletPath = dP*cos_val;
+				// bullet is dangerous only when we are close to it
+				double escapeDistance = 2000; // very large
+				if ( distAlongBulletPath < escapeDistance ) {
+					danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet );
+					if (rammingCondition) {
+						// if we close to target during ramming
+						// reduce bullet danger
+						double dist2target = p.distance( myBot._trgt.getPosition() );
+						danger *= 1-Math.exp( -Math.max(0, dist2target - 2*myBot.robotHalfSize)/50 );
+					}
 				}
 			}
 		}
@@ -251,102 +266,77 @@ public class dangerMapMotion extends basicMotion {
 		}
 	}
 	
+	private void buildListOfDestinationsToTest() {
+		dangerPoints = new LinkedList<dangerPoint>();
+		int nPoints = 9;
+		Point2D.Double nP;
+		double distRand;
+		double angleRand;
+		double dL;
+		int cnt = 0;
+		while ( cnt < nPointsToCheckForNewDestination ) {
+			distRand = distToProbe*Math.random();
+			angleRand = 2*Math.PI*Math.random();
+			nP = new Point2D.Double( 
+					myBot.myCoord.x + distRand*Math.sin(angleRand) ,
+					myBot.myCoord.y + distRand*Math.cos(angleRand) );
+			dL = pointDanger(nP);
+			if ( !math.isItOutOfBorders( nP, myBot.BattleField ) ) {
+				dangerPoints.add(new dangerPoint( nP, dL) );
+				cnt++;
+			}
+		}
+
+	}
+
+	private void sortDangerPoints() {
+		Collections.sort(dangerPoints);
+	}
+
+	private dangerPoint pickDestinationCandidate() {
+		sortDangerPoints();
+		ListIterator<dangerPoint> iter = dangerPoints.listIterator();
+		double dEnergy, prob;
+		dangerPoint pOptimal = dangerPoints.getFirst();
+		dangerPoint pTry;
+		double dangerMin = pOptimal.dangerLevel;
+		while (iter.hasNext()) {
+			pTry = iter.next();
+			dEnergy = pTry.dangerLevel - dangerMin;
+			if ( dEnergy < 0 ) {
+				// should never happen since we sorted already
+				pOptimal = pTry;
+			} else { 
+				prob = Math.random();
+				if ( prob < Math.exp ( - dEnergy / kT ) ) {
+					pOptimal = pTry;
+				}
+			}
+		}
+		return pOptimal;
+	}
+
 	public void choseNewDestinationPoint() {
-		double cDanger;
-		int[] grid = new int[2];  
-		int[] ngrid = new int[2];  
-		Point2D.Double oDestinationPoint = (Point2D.Double) DestinationPoint.clone();
-		Point2D.Double testDestinationPoint;
-		// possible moves and its offsets
-		// \  |  /
-		// - j,k -  there is also stay still
-		// /  |  \
-		int offsets_index_min = 0;
-		int offsets_index_max = 8;
-		int offsets[][] = new int[offsets_index_max+1][2];
-		offsets[0][0] = -1;  offsets[0][1] = 1;
-		offsets[1][0] =  0;  offsets[1][1] = 1;
-		offsets[2][0] =  1;  offsets[2][1] = 1;
-		offsets[3][0] = -1;  offsets[3][1] = 0;
-		offsets[4][0] =  1;  offsets[4][1] = 0;
-		offsets[5][0] = -1;  offsets[5][1] =-1;
-		offsets[6][0] =  0;  offsets[6][1] =-1;
-		offsets[7][0] =  1;  offsets[7][1] =-1;
-		offsets[8][0] =  0;  offsets[8][1] = 0;
 
-		logger.noise("Destination point " + DestinationPoint);
-		logger.noise("My coordinates " + myBot.myCoord);
-		double dist2dest = myBot.myCoord.distance(DestinationPoint);
-		logger.noise("Distance to destination point = " + dist2dest);
-		double largestCellSize = Math.max ( dMapCellSize.x, dMapCellSize.y);
+		buildListOfDestinationsToTest();
+		sortDangerPoints();
 
-		//if (dist2dest >= largestCellSize/4) {
-			// still moving to the preset position
-			//return;
-		//}
-		
-		// current coordinates danger for debugging
-		//grid = point2grid(myBot.myCoord);
-		//cDanger = grid2dangerLevel(grid); // danger of the current cell
-		//logger.noise("Current  grid x = " + grid[0] + ", y = " + grid[1] + "; danger level = " + cDanger);
-
-		// current destination danger for referencing
-		grid = point2grid(DestinationPoint);
-		double oDanger = pointDanger(oDestinationPoint); // danger of the current cell
-		cDanger = oDanger;
-		logger.noise("Old destination point grid x = " + grid[0] + ", y = " + grid[1] + "; danger level = " + oDanger);
+		dangerPoint oldP = new dangerPoint ( DestinationPoint, pointDanger(DestinationPoint) );
 
 		// if we close to target search for new before complete stop
 		if (myBot.myCoord.distance(DestinationPoint) < Math.min( dMapCellSize.x, dMapCellSize.y) ) {
-			oDanger = 1000; // very high
+			oldP.dangerLevel = 1000; // very high to ensure new choice
 		}
-		grid = point2grid(myBot.myCoord);
 
+		//printDangerPoints();
+		dangerPoint newP = pickDestinationCandidate();
+		//newP.print();
 
-		int iRand = offsets_index_min + (int)(Math.random() * ((offsets_index_max - offsets_index_min) + 1));
-		int i = iRand;
-
-		double nDanger;
-		boolean validCellIndex = true;
-		double dEDanger; // change of danger which we treat as energy in Metropolis algorithm
-		double prob;
-		// lets find the safest cell starting from random offset
-		do {
-			validCellIndex = true;
-			// iterate over possible offsets from current bot position
-			ngrid[0]  = grid[0] + offsets[i][0];
-			ngrid[1]  = grid[1] + offsets[i][1];
-
-			// check if new grid indexes are within limits
-			if ( (ngrid[0] < 0) || (ngrid[0] >= dMapSizeX) ) validCellIndex = false;
-			if ( (ngrid[1] < 0) || (ngrid[1] >= dMapSizeY) ) validCellIndex = false;
-
-			if ( validCellIndex) {
-				testDestinationPoint = cellCenter( ngrid[0], ngrid[1] );
-				nDanger = pointDanger(testDestinationPoint); // danger in new cell
-				logger.noise("ngrid x = " + ngrid[0] + ", y = " + ngrid[1] + "; danger level = " + nDanger);
-
-				// Metropolis algorithm choice
-				// otherwise new point locks itself in a shallow min
-				// which often lead to linear motion of a bot
-				dEDanger= nDanger - cDanger;
-				prob = Math.random();
-				if ( (dEDanger < 0) || ( prob < Math.exp(-dEDanger/kT) ) ) {
-					DestinationPoint = (Point2D.Double) testDestinationPoint.clone() ;
-					cDanger = nDanger;
-					logger.noise("New destination suggestion point grid x = " + ngrid[0] + ", y = " + ngrid[1] + "; danger level = " + cDanger);
-				}
-			}
-			i = i + 1;
-			i = i % (offsets_index_max + 1);
-		} while  (i != iRand);
 		double dangerThreshold = 10;
-		if ( oDanger < (cDanger + dangerThreshold) ) {
+		if ( oldP.dangerLevel > (newP.dangerLevel + dangerThreshold) ) {
 			// keep the old destination point
-			DestinationPoint = oDestinationPoint;
+			DestinationPoint = newP.position;
 		}
-		grid = point2grid(DestinationPoint);
-		logger.noise("Final estimation point grid x = " + grid[0] + ", y = " + grid[1] + "; danger level = " + cDanger);
 	}
 
 	public void makeMove() {
@@ -399,8 +389,64 @@ public class dangerMapMotion extends basicMotion {
 	}
 
 	public void onPaint(Graphics2D g) {
-		drawMotionDestination(g);
 		drawDangerMap(g);
+		drawMotionDestination(g);
+		drawDangerPoints(g);
 	}
 
+	public void drawDangerPoints(Graphics2D g) {
+		ListIterator<dangerPoint> iter = dangerPoints.listIterator();
+		Point2D.Double p;
+		dangerPoint  dP;
+		double dL;
+		while (iter.hasNext()) {
+			dP = iter.next();
+			p = dP.position;
+			dL = dP.dangerLevel;
+			g.setColor( dangerLevel2mapColor( dL ) );
+			g.drawOval((int) p.x-5, (int) p.y-5, 10, 10);
+			// put dot in the middle
+			g.setColor( new Color(0x00, 0x00, 0xaa, 0xff) );
+			g.drawOval((int) p.x-2, (int) p.y-2, 2, 2);
+		}
+	}
+
+	public void printDangerPoints() {
+		ListIterator<dangerPoint> iter = dangerPoints.listIterator();
+		while (iter.hasNext()) {
+			iter.next().print();
+		}
+	}
+
+	public class dangerPoint implements Comparable<dangerPoint> {
+		public Point2D.Double position;
+		public double dangerLevel;
+
+		public dangerPoint() {
+			position  = new Point2D.Double(0,0);
+			dangerLevel = 0;
+		}
+
+		public dangerPoint( Point2D.Double p, double dL ) {
+			position = (Point2D.Double) p.clone();
+			dangerLevel = dL;
+		}
+
+		public int compare(dangerPoint p1, dangerPoint p2) {
+			double dL1 = p1.dangerLevel;
+			double dL2 = p2.dangerLevel;
+			if ( dL1 == dL2 ) return 0;
+			if ( dL1 >  dL2 ) return 1;
+			return -1;
+		}
+
+		public int compareTo( dangerPoint p2) {
+			return compare( this, p2);
+		}
+
+		public void print() {
+			logger.dbg("Point [" + position.x + ", " + position.y + "]" + " has danger level = " + dangerLevel);
+		}
+	}
 }
+
