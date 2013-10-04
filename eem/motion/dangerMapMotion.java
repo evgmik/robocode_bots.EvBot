@@ -273,13 +273,21 @@ public class dangerMapMotion extends basicMotion {
 		double distRand;
 		double angleRand;
 		double dL;
+		Point2D.Double centerPoint = (Point2D.Double) myBot.myCoord.clone();
+		//centerPoint = (Point2D.Double) DestinationPoint.clone();
+		double dist;
 		int cnt = 0;
+		double probLongStep = Math.random();
 		while ( cnt < nPointsToCheckForNewDestination ) {
 			distRand = distToProbe*Math.random();
+			if ( probLongStep < 0.01 ) {
+				// sometimes we build points with larger spread
+				distRand += distToProbe;
+			}
 			angleRand = 2*Math.PI*Math.random();
 			nP = new Point2D.Double( 
-					myBot.myCoord.x + distRand*Math.sin(angleRand) ,
-					myBot.myCoord.y + distRand*Math.cos(angleRand) );
+					centerPoint.x + distRand*Math.sin(angleRand) ,
+					centerPoint.y + distRand*Math.cos(angleRand) );
 			dL = pointDanger(nP);
 			if ( !math.isItOutOfBorders( nP, myBot.BattleField ) ) {
 				dangerPoints.add(new dangerPoint( nP, dL) );
