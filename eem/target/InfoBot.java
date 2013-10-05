@@ -2,7 +2,8 @@
 
 package eem.target;
 
-import eem.target.botStatPoint;
+import eem.EvBot;
+import eem.target.*;
 import eem.misc.*;
 import java.awt.geom.Point2D;
 import java.awt.Color;
@@ -22,6 +23,12 @@ public class InfoBot {
 		statPrev = new botStatPoint( new Point2D.Double( nonexisting_coord, nonexisting_coord), far_ago);
 		statLast = new botStatPoint( new Point2D.Double( nonexisting_coord, nonexisting_coord), far_ago);
 	}
+
+	public InfoBot(String botName) {
+		this();
+		setName(botName);
+	}
+
 	
 	public int getBulletFiredCount() {
 		return this.bulletFiredCount;
@@ -124,11 +131,20 @@ public class InfoBot {
 		return str;
 	}
 
-	public void onPaint(Graphics2D g) {
-			g.setColor(new Color(0xff, 0x00, 0x00, 0x80));
+	public void drawLastKnownBotPosition(Graphics2D g) {
+		g.setColor(new Color(0xff, 0xff, 0x00, 0x80));
+		int ovalSize = 50;
+		g.drawOval( (int)(statLast.getX()- ovalSize/2), (int)(statLast.getY()-ovalSize/2), ovalSize, ovalSize);
+	}
 
-			// Draw a filled square on top of the scanned robot that covers it
-			g.fillRect((int)statLast.getX() - 20, (int)statLast.getY() - 20, 40, 40);
+	public void drawBotPath(Graphics2D g) {
+		g.setColor(new Color(0xff, 0xff, 0x00, 0x80));
+		g.drawLine((int)statLast.getX(), (int)statLast.getY(), (int)statPrev.getX(), (int)statPrev.getY());
+	}
+
+	public void onPaint(Graphics2D g) {
+		drawLastKnownBotPosition(g);
+		drawBotPath(g);
 	}
 
 }

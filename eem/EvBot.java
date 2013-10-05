@@ -37,6 +37,7 @@ public class EvBot extends AdvancedRobot
 	private basicMotion _motion;
 	public bulletsManager _bmanager;
 	public gunManager _gmanager;
+	public botsManager _botsmanager;
 
 
 	public Point2D.Double myCoord;
@@ -62,6 +63,7 @@ public class EvBot extends AdvancedRobot
 		_motion = new dangerMapMotion(this);
 		_bmanager = new bulletsManager(this);
 		_gmanager = new gunManager(this);
+		_botsmanager = new botsManager(this);
 	}
 
 	public void initTic() {
@@ -151,6 +153,8 @@ public class EvBot extends AdvancedRobot
 	public void onScannedRobot(ScannedRobotEvent e) {
 		myCoord.x = getX();
 	       	myCoord.y = getY();
+
+		_botsmanager.onScannedRobot(e);
 
 		if ( !e.getName().equals(_trgt.getName()) && (_trgt.getLastDistance(myCoord) < e.getDistance()) ) {
 			//new target is further then old one
@@ -289,6 +293,7 @@ public class EvBot extends AdvancedRobot
 
 		_motion.onPaint(g);
 		_bmanager.onPaint(g);
+		_botsmanager.onPaint(g);
 
 	}
 
