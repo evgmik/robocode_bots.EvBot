@@ -47,7 +47,6 @@ public class  botsManager {
 		String botName = e.getName();
 		InfoBot iBot = bots.get(botName);
 		if ( iBot == null ) {
-			logger.dbg("See new bot " + botName);
 		       	// this is newly discovered bot
 			iBot = new InfoBot(botName);
 		}
