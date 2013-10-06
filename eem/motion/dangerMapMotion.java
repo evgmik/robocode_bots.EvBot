@@ -23,7 +23,7 @@ import java.util.Collections;
 public class dangerMapMotion extends basicMotion {
 	Point2D.Double DestinationPoint = new Point2D.Double(0,0);
 	int nPointsToCheckForNewDestination = 50;
-	double distToProbe = 50;
+	double distToProbe = 100;
 
 
 	int dMapSizeX = 20;
@@ -167,6 +167,27 @@ public class dangerMapMotion extends basicMotion {
 	}
 
 	public double pointDangerFromAllBots( Point2D.Double p ) {
+		double danger = 0;
+		danger += pointDangerFromNonTargetBots(p);
+		danger += pointDangerFromTargetBot(p);
+		return danger;
+	}
+
+	public double pointDangerFromNonTargetBots( Point2D.Double p ) {
+		double danger = 0;
+		double dist;
+		double danger_coef = 1.0; // by default bots repel us
+		Point2D.Double bPos;
+		for (InfoBot bot : myBot._botsmanager.bots.values()) 
+		{
+			bPos = bot.getPosition();
+			dist = p.distance(bPos);
+			danger += math.gaussian( dist, danger_coef*dangerLevelEnemyBot, safe_distance_from_bot );
+		}
+		return danger;
+	}
+
+	public double pointDangerFromTargetBot( Point2D.Double p ) {
 		double danger = 0;
 		double dist;
 		double danger_coef = 1.0; // by default bots repel us
