@@ -34,6 +34,11 @@ public class  botsManager {
 		}
 	}
 
+	public void onRobotDeath(RobotDeathEvent e) {
+		String botName = e.getName();
+		bots.remove(botName);
+	}
+
 	public void add(InfoBot bot) {
 		bots.put( bot.getName(), bot );
 	}

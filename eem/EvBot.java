@@ -242,6 +242,7 @@ public class EvBot extends AdvancedRobot
 			_trgt.targetUnlocked = false;
 			_trgt = new target();
 		}
+		_botsmanager.onRobotDeath(e);
 	}
 
 
