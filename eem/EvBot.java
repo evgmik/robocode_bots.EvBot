@@ -75,6 +75,8 @@ public class EvBot extends AdvancedRobot
 
 		myCoord.x = getX();
 	       	myCoord.y = getY();
+
+		_botsmanager.initTic(ticTime);
 		_trgt.initTic(ticTime);
 		_bmanager.initTic();
 		_motion.initTic();

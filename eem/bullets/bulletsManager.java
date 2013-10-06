@@ -28,12 +28,12 @@ public class  bulletsManager {
 	}
 
 	public void initTic() {
-		if (myBot._trgt.didItFireABullet() ) {
-			double dummy =1;
-			double bulletSpeed = dummy;
-			this.add_enemy_bullet();
-		}
 		removeInactiveBullets();
+	}
+
+	public void add_enemy_bullet(InfoBot firedBot) {
+		firedBullet b = new firedBullet( myBot, firedBot,  new enemyGun(), firedBot.energyDrop() );
+		bullets.add(b);
 	}
 
 	public void add_enemy_bullet() {

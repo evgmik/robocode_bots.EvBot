@@ -11,16 +11,16 @@ import java.awt.Graphics2D;
 import java.util.*;
 
 public class InfoBot {
-	private int nonexisting_coord = -10000;
-	private long far_ago  = -10000;
 	protected String name = "";
 	protected LinkedList<botStatPoint> botStats;
+	public boolean targetUnlocked = true; 
 
-	protected static int bulletHitCount = 0;
-	protected static int bulletFiredCount = 0;
+	protected int bulletHitCount = 0;
+	protected int bulletFiredCount = 0;
 
 	public InfoBot() {
 		botStats = new LinkedList<botStatPoint>();
+		targetUnlocked = true;
 	}
 
 	public InfoBot(String botName) {
@@ -54,7 +54,14 @@ public class InfoBot {
 	}
 
 	public void initTic(long ticTime) {
-		if ( didItFireABullet() ) {
+		// updating UnLocked status
+		if ( ( ticTime - this.getLastSeenTime() ) > 2) 
+			this.setUnLockedStatus(true);
+		else
+			this.setUnLockedStatus(false);
+
+		// firing status
+		if ( didItFireABullet(ticTime) ) {
 			this.incBulletFiredCount();
 		}
 	}
@@ -101,6 +108,7 @@ public class InfoBot {
 
 	public InfoBot update(botStatPoint statPnt) {
 		botStats.add(statPnt);
+		targetUnlocked = false;
 		return this;
 	}
 
@@ -173,12 +181,16 @@ public class InfoBot {
 		}
 	}
 
-	public boolean didItFireABullet() {
+	public boolean didItFireABullet(long ticTime) {
+		if ( ( ticTime - this.getLastSeenTime() ) >= 2) {
+			// our info is too old to be reliable
+			return false;
+		}
 		boolean stat = true;
 		double eDrop = energyDrop();
 		if ( (eDrop < .1) || (3 < eDrop) ) {
 			stat=false;
-			logger.noise("enemy did not fired a bullet");
+			logger.noise(getName() + " did not fired a bullet");
 		}
 		return stat;
 	}
@@ -186,6 +198,10 @@ public class InfoBot {
 
 	public String getName() {
 		return name;
+	}
+
+	public void setUnLockedStatus(boolean val) {
+		targetUnlocked = val;
 	}
 
 	public String format() {

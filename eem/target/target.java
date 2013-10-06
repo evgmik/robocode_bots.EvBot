@@ -10,20 +10,12 @@ import java.awt.Graphics2D;
 
 public class target extends InfoBot {
 	public boolean haveTarget=false;
-	public boolean targetUnlocked = false; 
 
 	public target() {
 		haveTarget = false;
-		targetUnlocked = false;
 	}
 	
 	public void initTic(long ticTime) {
-		// updating UnLocked status
-		if ( ( ticTime - this.getLastSeenTime() ) > 2) 
-			this.setUnLockedStatus(true);
-		else
-			this.setUnLockedStatus(false);
-
 		super.initTic(ticTime);
 	}
 
@@ -37,10 +29,6 @@ public class target extends InfoBot {
 		super.update( statPnt );
 		haveTarget = true;
 		return this;
-	}
-
-	public void setUnLockedStatus(boolean val) {
-		targetUnlocked = val;
 	}
 
 	public void onPaint(Graphics2D g) {

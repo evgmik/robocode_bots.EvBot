@@ -23,7 +23,15 @@ public class  botsManager {
 		bots = new HashMap<String, InfoBot>();
 	}
 
-	public void initTic() {
+	public void initTic(long ticTime) {
+		for (InfoBot bot : bots.values()) 
+		{
+			bot.initTic(ticTime);
+			// firing status
+			if ( bot.didItFireABullet(ticTime) ) {
+				myBot._bmanager.add_enemy_bullet( bot );
+			}
+		}
 	}
 
 	public void add(InfoBot bot) {
