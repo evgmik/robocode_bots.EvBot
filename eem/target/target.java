@@ -46,7 +46,7 @@ public class target extends InfoBot {
 	public void onPaint(Graphics2D g) {
 		g.setColor(new Color(0xff, 0x00, 0x00, 0x80));
 		double R = 36;
-		graphics.drawCircle( g, statLast.getPosition(), R );
+		graphics.drawCircle( g, getLast().getPosition(), R );
 		//drawBotPath(g);
 		//drawLastKnownBotPosition(g);
 	}

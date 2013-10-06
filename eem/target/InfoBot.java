@@ -8,20 +8,19 @@ import eem.misc.*;
 import java.awt.geom.Point2D;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.*;
 
 public class InfoBot {
 	private int nonexisting_coord = -10000;
 	private long far_ago  = -10000;
-	protected botStatPoint statLast;
-	protected botStatPoint statPrev;
 	protected String name = "";
+	protected LinkedList<botStatPoint> botStats;
 
 	protected static int bulletHitCount = 0;
 	protected static int bulletFiredCount = 0;
 
 	public InfoBot() {
-		statPrev = new botStatPoint( new Point2D.Double( nonexisting_coord, nonexisting_coord), far_ago);
-		statLast = new botStatPoint( new Point2D.Double( nonexisting_coord, nonexisting_coord), far_ago);
+		botStats = new LinkedList<botStatPoint>();
 	}
 
 	public InfoBot(String botName) {
@@ -60,24 +59,65 @@ public class InfoBot {
 		}
 	}
 
+	public boolean hasLast() {
+		int n = botStats.size();
+		if ( n >= 1 ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean hasPrev() {
+		int n = botStats.size();
+		if ( n >= 2 ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public botStatPoint getLast() {
+		if ( hasLast() ) {
+			return botStats.getLast();
+		} else {
+			return null;
+		}
+	}
+
+	public botStatPoint getPrev() {
+		int n = botStats.size();
+		if ( hasPrev() ) {
+			return botStats.get(n-2); // last is n-1 thus prev  is n-2
+		} else {
+			return null;
+		}
+	}
+
 	public InfoBot update(Point2D.Double pos, long tStamp) {
-		statPrev = statLast;
-		statLast = new botStatPoint(pos, tStamp);
+		botStats.add( new botStatPoint(pos, tStamp) );
 		return this;
 	}
 
 	public InfoBot update(botStatPoint statPnt) {
-		statPrev = statLast;
-		statLast = statPnt;
+		botStats.add(statPnt);
 		return this;
 	}
 
 	public double getEnergy() {
-		return statLast.getEnergy();
+		if ( hasLast() ) {
+			return getLast().getEnergy();
+		} else {
+			return 0;
+		}
 	}
 
 	public Point2D.Double getVelocity() {
-		return statLast.getVelocity();
+		if ( hasLast() ) {
+			return getLast().getVelocity();
+		} else {
+			return new Point2D.Double(0,0);
+		}
 	}
 
 	public void setName(String n) {
@@ -85,28 +125,52 @@ public class InfoBot {
 	}
 
 	public double getLastDistance(Point2D.Double p) {
-		return  statLast.getDistance(p);
+		if ( hasLast() ) {
+			return  getLast().getDistance(p);
+		} else {
+			return 1000000; // very large
+		}
 	}
 
 	public double getX() {
-		return  statLast.getX();
+		if ( hasLast() ) {
+			return  getLast().getX();
+		} else {
+			return 0;
+		}
 	}
 
 	public double getY() {
-		return  statLast.getY();
+		if ( hasLast() ) {
+			return  getLast().getY();
+		} else {
+			return 0;
+		}
 	}
 
 	public Point2D.Double getPosition() {
-		return  statLast.getPosition();
+		if ( hasLast() ) {
+			return  getLast().getPosition();
+		} else {
+			return new Point2D.Double(0,0);
+		}
 	}
 
 	public long getLastSeenTime() {
-		return  statLast.getTimeStamp();
+		if ( hasLast() ) {
+			return  getLast().getTimeStamp();
+		} else {
+			return  -1000; // far far ago
+		}
 	}
 
 
 	public double energyDrop() {
-		return  statPrev.getEnergy() - statLast.getEnergy();
+		if ( hasPrev() ) {
+			return  getPrev().getEnergy() - getLast().getEnergy();
+		} else {
+			return 0;
+		}
 	}
 
 	public boolean didItFireABullet() {
@@ -126,18 +190,44 @@ public class InfoBot {
 
 	public String format() {
 		String str;
-		str = "Target bot name: " + getName() + "\n";
-		str = str + "Last: " + statLast.format() + "\n" + "Prev: " + statPrev.format();
+		String strL;
+		String strP;
+		if ( hasPrev() )  {
+			strP ="Prev: " + getPrev().format();
+		} else {
+			strP = "Prev: unknown";
+		}
+		if ( hasLast() )  {
+			strL = "Last: " + getLast().format();
+		} else {
+			strL = "Last: unknown";
+		}
+		str = "Target bot name: " + getName() + "\n" + strL + "\n" + strP;
 		return str;
 	}
 
 	public void drawLastKnownBotPosition(Graphics2D g) {
-		double size = 50;
-		graphics.drawSquare( g, statLast.getPosition(), size );
+		if ( hasLast() ) {
+			double size = 50;
+			graphics.drawSquare( g, getLast().getPosition(), size );
+		}
 	}
 
 	public void drawBotPath(Graphics2D g) {
-		graphics.drawLine( g, statLast.getPosition(), statPrev.getPosition() );
+		Point2D.Double pLast;
+		Point2D.Double pPrev;
+		ListIterator<botStatPoint> bLIter = botStats.listIterator(botStats.size());
+		if (bLIter.hasPrevious()) {
+			pLast = bLIter.previous().getPosition();
+		} else {
+			return;
+		}
+		while (bLIter.hasPrevious()) {
+			pPrev = bLIter.previous().getPosition();
+			graphics.drawLine( g, pLast, pPrev );
+			pLast = pPrev;
+		}
+
 	}
 
 	public void onPaint(Graphics2D g) {
