@@ -12,12 +12,12 @@ import java.awt.Graphics2D;
 public class InfoBot {
 	private int nonexisting_coord = -10000;
 	private long far_ago  = -10000;
-	private botStatPoint statLast;
-	private botStatPoint statPrev;
-	private String name = "";
+	protected botStatPoint statLast;
+	protected botStatPoint statPrev;
+	protected String name = "";
 
-	private static int bulletHitCount = 0;
-	private static int bulletFiredCount = 0;
+	protected static int bulletHitCount = 0;
+	protected static int bulletFiredCount = 0;
 
 	public InfoBot() {
 		statPrev = new botStatPoint( new Point2D.Double( nonexisting_coord, nonexisting_coord), far_ago);
@@ -132,19 +132,18 @@ public class InfoBot {
 	}
 
 	public void drawLastKnownBotPosition(Graphics2D g) {
-		g.setColor(new Color(0xff, 0xff, 0x00, 0x80));
-		int ovalSize = 50;
-		g.drawOval( (int)(statLast.getX()- ovalSize/2), (int)(statLast.getY()-ovalSize/2), ovalSize, ovalSize);
+		double size = 50;
+		graphics.drawSquare( g, statLast.getPosition(), size );
 	}
 
 	public void drawBotPath(Graphics2D g) {
-		g.setColor(new Color(0xff, 0xff, 0x00, 0x80));
-		g.drawLine((int)statLast.getX(), (int)statLast.getY(), (int)statPrev.getX(), (int)statPrev.getY());
+		graphics.drawLine( g, statLast.getPosition(), statPrev.getPosition() );
 	}
 
 	public void onPaint(Graphics2D g) {
-		drawLastKnownBotPosition(g);
+		g.setColor(new Color(0xff, 0xff, 0x00, 0x80));
 		drawBotPath(g);
+		drawLastKnownBotPosition(g);
 	}
 
 }

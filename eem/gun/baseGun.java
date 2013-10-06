@@ -236,7 +236,8 @@ public class baseGun {
 	private void drawTargetFuturePosition(Graphics2D g) {
 		if ( null != targetFuturePosition ) {
 			g.setColor(gunColor);
-			g.fillRect((int)targetFuturePosition.x - 20, (int)targetFuturePosition.y - 20, 40, 40);
+			//g.fillRect((int)targetFuturePosition.x - 20, (int)targetFuturePosition.y - 20, 40, 40);
+			graphics.fillSquare( g,  targetFuturePosition, 40);
 		}
 	}
 
@@ -247,7 +248,7 @@ public class baseGun {
 	private void drawLineToTargetFuturePosition(Graphics2D g) {
 		if ( null != targetFuturePosition ) {
 			g.setColor(gunColor);
-			g.drawLine((int)getTargetFuturePosition().x, (int)getTargetFuturePosition().y, (int)myBot.myCoord.x, (int)myBot.myCoord.y);
+			graphics.drawLine( g, getTargetFuturePosition(), myBot.myCoord );
 		}
 	}
 

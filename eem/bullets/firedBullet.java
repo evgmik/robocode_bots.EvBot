@@ -89,14 +89,14 @@ public class firedBullet {
 	public void onPaint(Graphics2D g) {
 		g.setColor(bulletColor);
 		// draw target position
-		int ovalSize = 10;
+		double R = 10;
 		logger.noise("draw target at position = " + targetPosition);
-		g.drawOval( (int)(targetPosition.x - ovalSize/2), (int)(targetPosition.y-ovalSize/2), ovalSize, ovalSize);
+		graphics.drawCircle(g, targetPosition, R);
 
 		// draw line from firing point to target
 		Point2D.Double lEnd = endPositionAtBorder();
 		logger.noise("end of bullet path = " + lEnd);
-		g.drawLine((int) firingPosition.x, (int) firingPosition.y, (int)lEnd.x, (int)lEnd.y);
+		graphics.drawLine(g, firingPosition, lEnd );
 
 		// draw current bullet position
 		int bSize = 10;
