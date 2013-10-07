@@ -38,6 +38,7 @@ public class EvBot extends AdvancedRobot
 	public bulletsManager _bmanager;
 	public gunManager _gmanager;
 	public botsManager _botsmanager;
+	public InfoBot _tracker; // track my own status
 
 
 	public Point2D.Double myCoord;
@@ -64,6 +65,7 @@ public class EvBot extends AdvancedRobot
 		_bmanager = new bulletsManager(this);
 		_gmanager = new gunManager(this);
 		_botsmanager = new botsManager(this);
+		_tracker = new InfoBot(getName());
 	}
 
 	public void initTic() {
@@ -76,6 +78,7 @@ public class EvBot extends AdvancedRobot
 		myCoord.x = getX();
 	       	myCoord.y = getY();
 
+		_tracker.update( new botStatPoint( this ) );
 		_botsmanager.initTic(ticTime);
 		_trgt.initTic(ticTime);
 		_bmanager.initTic();

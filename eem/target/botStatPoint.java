@@ -14,7 +14,16 @@ public class botStatPoint {
 	private double headingDegrees;
 	private double energy;
 
+	public botStatPoint() {
+		pos = new Point2D.Double(0,0);
+		tStamp = 0;
+		velocity = new  Point2D.Double(0,0);
+		headingDegrees = 0;
+		energy =0;
+	}
+
 	public botStatPoint(AdvancedRobot bot, ScannedRobotEvent e ) {
+		this();
 		double speed;
 		Point2D.Double myCoord = new Point2D.Double();
 		myCoord.x = bot.getX();
@@ -30,7 +39,20 @@ public class botStatPoint {
 		energy = e.getEnergy();
 	}
 
+	public botStatPoint(EvBot bot) {
+		this();
+		double speed;
+		pos.x = bot.getX();
+	       	pos.y = bot.getY();
+		tStamp = bot.getTime();
+		headingDegrees = bot.getHeading();
+		speed = bot.getVelocity();
+		velocity = new Point2D.Double( speed*Math.sin(headingDegrees/360.*2.*Math.PI), speed*Math.cos(headingDegrees/360.*2.*Math.PI) );
+		energy = bot.getEnergy();
+	}
+
 	public botStatPoint(Point2D.Double p, long t ) {
+		this();
 		tStamp = t;
 		pos = p;
 	}
