@@ -35,15 +35,20 @@ public class linearGun extends baseGun {
 		this.bulletHitCount++;
 	}
 
-	public linearGun(EvBot bot) {
-		myBot = bot;
+	public linearGun() {
 		gunName = "linear";
 		gunColor = new Color(0xff, 0x00, 0x00, 0x80);
+	}
+
+	public linearGun(EvBot bot) {
+		this();
+		myBot = bot;
 		calcGunSettings();
 	}
 
 	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
-		return findTargetHitPositionWithLinearPredictor( firingPosition, firePower, tgt);
+		Point2D.Double p = findTargetHitPositionWithLinearPredictor( firingPosition, firePower, tgt);
+		return p;
 	}
 
 
@@ -78,6 +83,8 @@ public class linearGun extends baseGun {
 		}
 
 		// estimated current target position
+		logger.noise("Round time = " + myBot.getTime());
+		logger.noise("target time = " + tgt.getLastSeenTime());
 		Tx = tgt.getX() + vTvec.x*(myBot.getTime()-tgt.getLastSeenTime());
 		Ty = tgt.getY() + vTvec.y*(myBot.getTime()-tgt.getLastSeenTime());
 		logger.noise("Target estimated current position Tx = " + Tx + " Ty = " + Ty);

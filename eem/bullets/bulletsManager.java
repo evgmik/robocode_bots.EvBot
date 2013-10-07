@@ -32,7 +32,13 @@ public class  bulletsManager {
 	}
 
 	public void add_enemy_bullet(InfoBot firedBot) {
-		firedBullet b = new firedBullet( myBot, firedBot,  new enemyGun(), firedBot.energyDrop() );
+		firedBullet b;
+		// baseGun (head on)
+		b = new firedBullet( myBot, firedBot,  new baseGun(myBot), firedBot.energyDrop() );
+		bullets.add(b);
+
+		// linearGun
+		b = new firedBullet( myBot, firedBot,  new linearGun(myBot), firedBot.energyDrop() );
 		bullets.add(b);
 	}
 
