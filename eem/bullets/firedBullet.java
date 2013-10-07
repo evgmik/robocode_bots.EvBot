@@ -75,13 +75,18 @@ public class firedBullet {
 		bulletColor = firedGun.gunColor;
 	}
 
-	public Point2D.Double getPosition() {
-		Point2D.Double pos =  (Point2D.Double) firingPosition.clone();
+	public double getDistanceTraveled() {
 		double timeInFlight = myBot.ticTime - firedTime + 1;
 		if ( !isItMine ) {
 			timeInFlight = timeInFlight + 1;
 		}
 		double distTraveled = timeInFlight * bulletSpeed;
+		return distTraveled;
+	}
+
+	public Point2D.Double getPosition() {
+		Point2D.Double pos =  (Point2D.Double) firingPosition.clone();
+		double distTraveled = getDistanceTraveled();
 		pos.x = pos.x + distTraveled*Math.sin(firingAngle);
 		pos.y = pos.y + distTraveled*Math.cos(firingAngle);
 		return pos;
@@ -102,21 +107,25 @@ public class firedBullet {
 	public void onPaint(Graphics2D g) {
 		g.setColor(bulletColor);
 		// draw target position
-		double R = 10;
+		double R = 18;
 		logger.noise("draw target at position = " + targetPosition);
 		graphics.drawCircle(g, targetPosition, R);
 
 		// draw line from firing point to target
-		Point2D.Double lEnd = endPositionAtBorder();
-		logger.noise("end of bullet path = " + lEnd);
-		graphics.drawLine(g, firingPosition, lEnd );
+		//Point2D.Double lEnd = endPositionAtBorder();
+		//logger.noise("end of bullet path = " + lEnd);
+		//graphics.drawLine(g, firingPosition, lEnd );
 
-		// draw current bullet position
+
+		// draw current/presumed bullet position
 		int bSize = 10;
 		Point2D.Double bPos = getPosition();
-
 		logger.noise("draw bullet at position = " + bPos);
-		g.drawOval( (int)(bPos.x - bSize/2), (int)(bPos.y-bSize/2), bSize, bSize);
+		graphics.drawCircle(g, bPos, bSize/2);
+
+		// draw overall bullet wave
+		double distTraveled = getDistanceTraveled();
+		graphics.drawCircle(g, firingPosition, distTraveled);
 
 		
 	}
