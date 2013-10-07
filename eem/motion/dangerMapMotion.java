@@ -289,7 +289,6 @@ public class dangerMapMotion extends basicMotion {
 	
 	private void buildListOfDestinationsToTest() {
 		dangerPoints = new LinkedList<dangerPoint>();
-		int nPoints = 9;
 		Point2D.Double nP;
 		double distRand;
 		double angleRand;
