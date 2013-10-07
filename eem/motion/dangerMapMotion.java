@@ -37,7 +37,7 @@ public class dangerMapMotion extends basicMotion {
 	double safe_distance_from_bullet;
 
 	double dangerLevelWall = 50;
-	double dangerLevelEnemyBot = 30;
+	double dangerLevelEnemyBot = 100;
 	double dangerLevelBullet = 50;
 
 	boolean rammingCondition = false;
