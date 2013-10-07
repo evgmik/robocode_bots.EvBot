@@ -130,7 +130,7 @@ public class baseGun {
 	}
 
 	public void setTargetFuturePosition(target tgt) {
-		targetFuturePosition = tgt.getPosition();
+		targetFuturePosition = calcTargetFuturePosition( myBot.myCoord, firePower, tgt);
 	}
 
         public double firePoverVsDistance( double targetDistance ) {
@@ -197,6 +197,10 @@ public class baseGun {
 		new_ftPos.x = new_ftPos.x + robotHalfSize;
 		new_ftPos.y = new_ftPos.y + robotHalfSize;
 		return new_ftPos;
+	}
+
+	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
+		return  tgt.getPosition();
 	}
 
 	public void calcGunSettings() {

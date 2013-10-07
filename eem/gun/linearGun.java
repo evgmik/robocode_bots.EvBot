@@ -42,11 +42,12 @@ public class linearGun extends baseGun {
 		calcGunSettings();
 	}
 
-	public void setTargetFuturePosition(target tgt) {
-		targetFuturePosition = findTargetHitPositionWithLinearPredictor( firePower, tgt);
+	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
+		return findTargetHitPositionWithLinearPredictor( firingPosition, firePower, tgt);
 	}
 
-	public Point2D.Double  findTargetHitPositionWithLinearPredictor(double firePower, target tgt) {
+
+	public Point2D.Double  findTargetHitPositionWithLinearPredictor( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
 		Point2D.Double vTvec;
 		Point2D.Double tF;
 		double Tx, Ty, vT,  dx, dy, dist;
@@ -82,7 +83,7 @@ public class linearGun extends baseGun {
 		logger.noise("Target estimated current position Tx = " + Tx + " Ty = " + Ty);
 
 		tF=misc.linear_predictor( bSpeed, new Point2D.Double(Tx, Ty), 
-				vTvec,  myBot.myCoord);
+				vTvec,  firingPosition);
 		// tF = math.putWithinBorders(tF, myBot.BattleField);
 		logger.noise("Predicted target position " + tF.x +", " + tF.y);
 		tF = futureTargetWithinPhysicalLimitsBasedOnVelocity( tF, vTvec );

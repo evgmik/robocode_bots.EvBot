@@ -46,7 +46,7 @@ public class randomGun extends baseGun {
 		calcGunSettings();
 	}
 
-	public void setTargetFuturePosition(target tgt) {
+	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
 		if ( !gunHasTargetPoint ) {
 			targetFuturePosition = math.putWithinBorders(
 				findTargetHitPositionWithRandomPredictor( firePower, tgt),
@@ -59,9 +59,10 @@ public class randomGun extends baseGun {
 			targetFuturePosition.x = tgt.getX() + randOffset.x;
 			targetFuturePosition.y = tgt.getY() + randOffset.y;
 		}
+		return targetFuturePosition;
 	}
 
-	public Point2D.Double  findTargetHitPositionWithRandomPredictor(double firePower, target tgt) {
+	public Point2D.Double  findTargetHitPositionWithRandomPredictor(double firePower, InfoBot tgt) {
 		Point2D.Double vTvec;
 		Point2D.Double tF;
 		double Tx, Ty, vT,  dx, dy, dist;
