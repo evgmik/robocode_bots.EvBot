@@ -373,7 +373,7 @@ public class dangerMapMotion extends basicMotion {
 	}
 
 	Color dangerLevel2mapColor(double dLevel) {
-		int opacity = (int) Math.abs(dLevel); // 0 - 255 but good values below 100
+		int opacity = (int) Math.abs(dLevel/3.0); // 0 - 255 but good values below 100
 		int opacityTreshold = 100;
 		Color c;
 
