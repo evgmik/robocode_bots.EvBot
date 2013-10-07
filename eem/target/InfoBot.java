@@ -182,7 +182,7 @@ public class InfoBot {
 	}
 
 	public boolean didItFireABullet(long ticTime) {
-		if ( ( ticTime - this.getLastSeenTime() ) >= 2) {
+		if ( ( ticTime - this.getLastSeenTime() ) >= 1 ) {
 			// our info is too old to be reliable
 			return false;
 		}
@@ -190,9 +190,11 @@ public class InfoBot {
 		double eDrop = energyDrop();
 		if ( (eDrop < .1) || (3 < eDrop) ) {
 			stat=false;
-			logger.noise(getName() + " did not fired a bullet");
+			return stat;
+		} else {
+			stat = true;
+			return stat;
 		}
-		return stat;
 	}
 
 
