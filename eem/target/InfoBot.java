@@ -230,8 +230,8 @@ public class InfoBot {
 		// and finds matched segments of length = refLength 
 		// with respect to the end of the track
 		LinkedList<Integer> endsOfMAtchedSegmentsIndexes = new LinkedList<Integer>();
-		double speedDist = 1;
-		double angleDist = 20;
+		double speedDist = 0.5;
+		double angleDist = 5;
 
 		long trackN = botStats.size();
 		int cntMatches = 0;
