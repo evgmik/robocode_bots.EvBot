@@ -51,16 +51,31 @@ public class pifGun extends baseGun {
 	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
 		Point2D.Double p = new Point2D.Double(0,0);
 
-		long afterTime = 10;
-		long refLength  = 3;
+		long refLength  = 5;
 
-		LinkedList<Point2D.Double> posList = tgt.possiblePositionsAfterTime(afterTime, refLength);
-		//logger.dbg("Match list size = " + posList.size() );
-		if ( posList.size() < 1 ) {
-			p = tgt.getPosition();
-		} else {
-			p = posList.getLast();
-		}
+		double bSpeed = bulletSpeed ( calcFirePower() );
+		p = tgt.getPosition();
+
+		double dist = p.distance(myBot.myCoord);
+		int afterTime = (int) (dist/bSpeed);
+		int oldAfterTime;
+		int iterCnt = 1;
+		do {
+			oldAfterTime = afterTime;
+			//logger.dbg("iteration = " + iterCnt );
+			//logger.dbg("after time = " + afterTime );
+
+			LinkedList<Point2D.Double> posList = tgt.possiblePositionsAfterTime(afterTime, refLength);
+			//logger.dbg("Match list size = " + posList.size() );
+			if ( posList.size() < 1 ) {
+				p = tgt.getPosition();
+			} else {
+				p = posList.getLast();
+			}
+			dist = p.distance(myBot.myCoord);
+			afterTime = (int) (dist/bSpeed);
+			iterCnt++;
+		} while ( ( Math.abs( oldAfterTime -afterTime ) > 1 ) && (iterCnt < 5) ) ;
 		return p;
 	}
 
