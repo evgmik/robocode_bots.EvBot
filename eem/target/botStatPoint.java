@@ -84,6 +84,14 @@ public class botStatPoint {
 		return pos.y;
 	}
 	
+	public double getHeadingDegrees() {
+		return headingDegrees;
+	}
+
+	public double getSpeed() {
+		return velocity.distance(0,0);	
+	}
+
 	public Point2D.Double getVelocity() {
 		return velocity;
 	}
