@@ -9,6 +9,7 @@ import java.awt.geom.Point2D;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.*;
+import java.lang.Integer;
 
 public class InfoBot {
 	protected String name = "";
@@ -224,28 +225,30 @@ public class InfoBot {
 		return str;
 	}
 
-	public LinkedList<Point2D.Double> possiblePositionsAfterTime ( long afterTime,  long refLength ) {
-		// finfs list of possible position via play forward afterTime
-		// for etalon path with length = refLength
-		LinkedList<Point2D.Double> posList = new LinkedList<Point2D.Double>();
+	public LinkedList<Integer> endsOfMatchedSegments ( long refLength, int lastIndToCheck,  int nReqMatches ) {
+		// goes through history of bot track 
+		// and finds matched segments of length = refLength 
+		// with respect to the end of the track
+		LinkedList<Integer> endsOfMAtchedSegmentsIndexes = new LinkedList<Integer>();
 		double speedDist = 1;
 		double angleDist = 20;
 
 		long trackN = botStats.size();
+		int cntMatches = 0;
 
-		if ( trackN  < (refLength + afterTime) ) {
-			posList.add(getPosition());
-			return posList;
+		if ( (lastIndToCheck + 1)  < ( refLength ) ) {
+			return endsOfMAtchedSegmentsIndexes;
 		}
 
-		int rStart = (int) (trackN - afterTime - refLength);
+		int rStart = (int) (trackN  - refLength);
 		Point2D.Double posRefSt = botStats.get(rStart).getPosition();
 		Point2D.Double velRefSt = botStats.get(rStart).getVelocity();
 		double         spdRefSt = botStats.get(rStart).getSpeed();
 		double         angRefSt = botStats.get(rStart).getHeadingDegrees();
 
-		for ( int i=0; i <= (trackN - refLength - afterTime); i++ ) {
-			//go over all possible segment of length = refLength + afterTime
+		for ( int i = ( (int)(lastIndToCheck - refLength + 1) ); i >= 0; i-- ) {
+			//logger.dbg("i = " + i);
+			//go over all possible segment of length = refLength 
 			int tStart = i;
 			double angTstSt = botStats.get(tStart).getHeadingDegrees();
 			boolean doesItMatchRef = true;
@@ -263,28 +266,72 @@ public class InfoBot {
 				}
 			}
 			if (doesItMatchRef) {
-				int matchInd = (int) (tStart + refLength + afterTime - 1);
-				Point2D.Double endPoint = botStats.get( matchInd ).getPosition();
-				int lastIndOfSeg = (int) (tStart + refLength -1);
-				Point2D.Double strtPoint = botStats.get( lastIndOfSeg ).getPosition();
-				//logger.dbg("-------" );
-				//logger.dbg("strt= " + strtPoint );
-				//logger.dbg("end = " + endPoint );
-				double dist = strtPoint.distance(endPoint);
-				double dx = endPoint.x - strtPoint.x;
-				double dy = endPoint.y - strtPoint.y;
-				double angDegrees = math.cortesian2game_angles(Math.atan2(dy,dx)*180.0/Math.PI);
-				//logger.dbg("angle to end = " + angDegrees );
-				angDegrees += -angTstSt;
-				//logger.dbg("angle to end final = " + angDegrees );
-				Point2D.Double lastPoint = botStats.getLast().getPosition();
-				angDegrees =  botStats.getLast().getHeadingDegrees() + angDegrees ;
-				//logger.dbg("angle to match final = " + angDegrees );
-				dx = dist*Math.sin( angDegrees/180*Math.PI );
-				dy = dist*Math.cos( angDegrees/180*Math.PI );
-				Point2D.Double p = new Point2D.Double(lastPoint.x + dx, lastPoint.y + dy); 
-				posList.add( p );
+				int matchedInd = (int) (tStart + refLength - 1);
+				endsOfMAtchedSegmentsIndexes.add(matchedInd);
+				cntMatches++;
+				if (cntMatches == nReqMatches) break; // enough is enough
 			}
+		}
+		return endsOfMAtchedSegmentsIndexes;
+	}
+
+	public LinkedList<Point2D.Double> possiblePositionsAfterTime ( long afterTime,  long refLength ) {
+		// finds list of possible position via play forward afterTime
+		// for etalon path with length = refLength
+
+		int nRequiredMatches = 2; // number of matches to look for
+
+		LinkedList<Point2D.Double> posList = new LinkedList<Point2D.Double>();
+		int trackN = botStats.size();
+		int lastIndToCheck = (int) (trackN - afterTime - 1);
+		//logger.dbg("track length = " + trackN);
+
+		if (  trackN  < (refLength + afterTime) ) {
+			// known history is to short
+			posList.add(getPosition());
+			return posList;
+		}
+
+		LinkedList<Integer> endsIndexes = endsOfMatchedSegments( refLength, lastIndToCheck, nRequiredMatches );
+		int nMatches = endsIndexes.size();
+		if ( nMatches == 0 ) {
+			// no matches found
+			posList.add(getPosition());
+			return posList;
+		}
+		//logger.dbg("Find # matches = " + nMatches );
+
+		int rEnd = (int) (trackN - 1);
+		Point2D.Double lastPos = botStats.get(rEnd).getPosition();
+		Point2D.Double lastVel = botStats.get(rEnd).getVelocity();
+		double         lastSpd = botStats.get(rEnd).getSpeed();
+		double         lastHeadingInDegrees = botStats.get(rEnd).getHeadingDegrees();
+
+		for ( int i=0; i < nMatches; i++ ) {
+			//go over all possible segment of length lets find after time prediciton
+			int lastIndOfMatchedSeg = endsIndexes.get(i); // end of matched segment
+			double headingLastMatchedDegrees = botStats.get(lastIndOfMatchedSeg).getHeadingDegrees();
+			Point2D.Double posLastMatched = botStats.get( lastIndOfMatchedSeg ).getPosition();
+			int matchPredictionInd = (int) (lastIndOfMatchedSeg + afterTime);
+			// check that predicted index within track
+			if ( matchPredictionInd > (trackN - 1) ) continue;
+			Point2D.Double posMatchedAfterTime = botStats.get( matchPredictionInd ).getPosition();
+			double distToMatchedPrediciton = posLastMatched.distance(posMatchedAfterTime);
+			double dx = posMatchedAfterTime.x - posLastMatched.x;
+			double dy = posMatchedAfterTime.y - posLastMatched.y;
+			double matchBearingInDegrees = math.cortesian2game_angles(Math.atan2(dy,dx)*180.0/Math.PI) - headingLastMatchedDegrees;
+
+			//logger.dbg("-------" );
+			//logger.dbg("strt= " + strtPoint );
+			//logger.dbg("end = " + endPoint );
+			//logger.dbg("angle to end = " + angDegrees );
+			double angDegrees = matchBearingInDegrees + lastHeadingInDegrees ;
+				//logger.dbg("angle to end final = " + angDegrees );
+				//logger.dbg("angle to match final = " + angDegrees );
+				dx = distToMatchedPrediciton*Math.sin( angDegrees/180*Math.PI );
+				dy = distToMatchedPrediciton*Math.cos( angDegrees/180*Math.PI );
+				Point2D.Double p = new Point2D.Double(lastPos.x + dx, lastPos.y + dy); 
+				posList.add( p );
 		}
 
 		return posList;
