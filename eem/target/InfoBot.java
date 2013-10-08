@@ -247,12 +247,12 @@ public class InfoBot {
 		double         angRefSt = botStats.get(rStart).getHeadingDegrees();
 
 		for ( int i = ( (int)(lastIndToCheck - refLength + 1) ); i >= 0; i-- ) {
-			//logger.dbg("i = " + i);
 			//go over all possible segment of length = refLength 
 			int tStart = i;
+			//logger.dbg("tStart = " + i);
 			double angTstSt = botStats.get(tStart).getHeadingDegrees();
 			boolean doesItMatchRef = true;
-			for ( int k=0; i <= (refLength); i++ ) {
+			for ( int k=0; k < (refLength); k++ ) {
 				// step by step comparison over reference and test segments
 				int tIndex = tStart + k;
 				int rIndex = rStart + k;
@@ -311,11 +311,14 @@ public class InfoBot {
 			//go over all possible segment of length lets find after time prediciton
 			int lastIndOfMatchedSeg = endsIndexes.get(i); // end of matched segment
 			double headingLastMatchedDegrees = botStats.get(lastIndOfMatchedSeg).getHeadingDegrees();
+			//logger.dbg("--- real end   " + botStats.get(rEnd).format() );
+			//logger.dbg("-- matched tail " + botStats.get(lastIndOfMatchedSeg).format() );
 			Point2D.Double posLastMatched = botStats.get( lastIndOfMatchedSeg ).getPosition();
 			int matchPredictionInd = (int) (lastIndOfMatchedSeg + afterTime);
 			// check that predicted index within track
 			if ( matchPredictionInd > (trackN - 1) ) continue;
 			Point2D.Double posMatchedAfterTime = botStats.get( matchPredictionInd ).getPosition();
+			//logger.dbg("=== predicted future along segment " + botStats.get(matchPredictionInd).format() );
 			double distToMatchedPrediciton = posLastMatched.distance(posMatchedAfterTime);
 			double dx = posMatchedAfterTime.x - posLastMatched.x;
 			double dy = posMatchedAfterTime.y - posLastMatched.y;
@@ -326,12 +329,13 @@ public class InfoBot {
 			//logger.dbg("end = " + endPoint );
 			//logger.dbg("angle to end = " + angDegrees );
 			double angDegrees = matchBearingInDegrees + lastHeadingInDegrees ;
-				//logger.dbg("angle to end final = " + angDegrees );
-				//logger.dbg("angle to match final = " + angDegrees );
-				dx = distToMatchedPrediciton*Math.sin( angDegrees/180*Math.PI );
-				dy = distToMatchedPrediciton*Math.cos( angDegrees/180*Math.PI );
-				Point2D.Double p = new Point2D.Double(lastPos.x + dx, lastPos.y + dy); 
-				posList.add( p );
+			//logger.dbg("angle to end final = " + angDegrees );
+			//logger.dbg("angle to match final = " + angDegrees );
+			dx = distToMatchedPrediciton*Math.sin( angDegrees/180*Math.PI );
+			dy = distToMatchedPrediciton*Math.cos( angDegrees/180*Math.PI );
+			Point2D.Double p = new Point2D.Double(lastPos.x + dx, lastPos.y + dy); 
+			//logger.dbg( "predicted  position = " + p );
+			posList.add( p );
 		}
 
 		return posList;

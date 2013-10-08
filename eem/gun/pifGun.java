@@ -51,7 +51,7 @@ public class pifGun extends baseGun {
 	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
 		Point2D.Double p = new Point2D.Double(0,0);
 
-		long refLength  = 5;
+		long refLength  = 10;
 
 		double bSpeed = bulletSpeed ( calcFirePower() );
 		p = tgt.getPosition();
@@ -76,6 +76,7 @@ public class pifGun extends baseGun {
 			afterTime = (int) (dist/bSpeed);
 			iterCnt++;
 		} while ( ( Math.abs( oldAfterTime -afterTime ) > 1 ) && (iterCnt < 5) ) ;
+		//logger.dbg("point to aim = " + p );
 		return p;
 	}
 
