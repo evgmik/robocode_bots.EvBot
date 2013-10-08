@@ -38,7 +38,7 @@ public class dangerMapMotion extends basicMotion {
 
 	double dangerLevelWall = 50;
 	double dangerLevelEnemyBot = 100;
-	double dangerLevelBullet = 50;
+	double dangerLevelBullet = 100;
 
 	boolean rammingCondition = false;
 	private static double reducedBotDistanceCoef = 1;
@@ -239,16 +239,18 @@ public class dangerMapMotion extends basicMotion {
 				dist = dP*Math.sqrt(1-cos_val*cos_val);
 				double distAlongBulletPath = dP*cos_val;
 				// bullet is dangerous only when we are close to it
-				double escapeDistance = 2000; // very large
-				if ( distAlongBulletPath < escapeDistance ) {
-					danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet );
+				double escapeDistance = 200; // very large
+				//if ( distAlongBulletPath < escapeDistance ) {
+					danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet ); // tangent distance contribution
+					 danger *= math.gaussian( distAlongBulletPath, 1, escapeDistance ); // distance to travel by bullet contribution
+
 					if (rammingCondition) {
 						// if we close to target during ramming
 						// reduce bullet danger
 						double dist2target = p.distance( myBot._trgt.getPosition() );
 						danger *= 1-Math.exp( -Math.max(0, dist2target - 2*myBot.robotHalfSize)/50 );
 					}
-				}
+				//}
 			}
 		}
 		return danger;
