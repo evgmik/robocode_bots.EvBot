@@ -211,6 +211,11 @@ public class baseGun {
 	}
 
 	public void setFirePower() {
+		firePower = calcFirePower();
+	}
+
+	public double calcFirePower() {
+		double firePower =0;
 		if ( myBot._trgt.haveTarget ) {
 			firePower = firePoverVsDistance(myBot._trgt.getLastDistance(myBot.myCoord));
 			// no point to fire bullets more energetic than enemy bot energy level
@@ -224,6 +229,7 @@ public class baseGun {
 		} else {
 			firePower = 0;
 		}
+		return firePower;
 	}
 
 	public double  bulletSpeed( double firePower ) {
