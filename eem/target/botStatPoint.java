@@ -63,9 +63,9 @@ public class botStatPoint {
 
 	public String format() {
 		String str = "";
-		str = str + "energy = " + energy + ", velocity = " + velocity + ", heading = " + headingDegrees;
+		str = str + "energy = " + energy + ", velocity = [ " + velocity.x + ", " + velocity.y + " ]" + ", heading = " + headingDegrees;
 		str = str + "\n";
-		str = str + "position = " + pos + ", tStamp = " + tStamp;
+		str = str + "position = [ "+ pos.x + ", " + pos.y + " ], tStamp = " + tStamp;
 		return str;
 	}
 
