@@ -224,6 +224,72 @@ public class InfoBot {
 		return str;
 	}
 
+	public LinkedList<Point2D.Double> possiblePositionsAfterTime ( long afterTime,  long refLength ) {
+		// finfs list of possible position via play forward afterTime
+		// for etalon path with length = refLength
+		LinkedList<Point2D.Double> posList = new LinkedList<Point2D.Double>();
+		double speedDist = 1;
+		double angleDist = 20;
+
+		long trackN = botStats.size();
+
+		if ( trackN  < (refLength + afterTime) ) {
+			posList.add(getPosition());
+			return posList;
+		}
+
+		int rStart = (int) (trackN - afterTime - refLength);
+		Point2D.Double posRefSt = botStats.get(rStart).getPosition();
+		Point2D.Double velRefSt = botStats.get(rStart).getVelocity();
+		double         spdRefSt = botStats.get(rStart).getSpeed();
+		double         angRefSt = botStats.get(rStart).getHeadingDegrees();
+
+		for ( int i=0; i <= (trackN - refLength - afterTime); i++ ) {
+			//go over all possible segment of length = refLength + afterTime
+			int tStart = i;
+			double angTstSt = botStats.get(tStart).getHeadingDegrees();
+			boolean doesItMatchRef = true;
+			for ( int k=0; i <= (refLength); i++ ) {
+				// step by step comparison over reference and test segments
+				int tIndex = tStart + k;
+				int rIndex = rStart + k;
+				double spdT = botStats.get(tIndex).getSpeed();
+				double angT = botStats.get(tIndex).getHeadingDegrees() - angTstSt;
+				double spdR = botStats.get(rIndex).getSpeed();
+				double angR = botStats.get(rIndex).getHeadingDegrees() - angRefSt;
+				if ( ( Math.abs( spdT - spdR ) > speedDist ) || ( Math.abs( angT - angR) > angleDist ) ) {
+					doesItMatchRef = false;
+					break;
+				}
+			}
+			if (doesItMatchRef) {
+				int matchInd = (int) (tStart + refLength + afterTime - 1);
+				Point2D.Double endPoint = botStats.get( matchInd ).getPosition();
+				int lastIndOfSeg = (int) (tStart + refLength -1);
+				Point2D.Double strtPoint = botStats.get( lastIndOfSeg ).getPosition();
+				//logger.dbg("-------" );
+				//logger.dbg("strt= " + strtPoint );
+				//logger.dbg("end = " + endPoint );
+				double dist = strtPoint.distance(endPoint);
+				double dx = endPoint.x - strtPoint.x;
+				double dy = endPoint.y - strtPoint.y;
+				double angDegrees = math.cortesian2game_angles(Math.atan2(dy,dx)*180.0/Math.PI);
+				//logger.dbg("angle to end = " + angDegrees );
+				angDegrees += -angTstSt;
+				//logger.dbg("angle to end final = " + angDegrees );
+				Point2D.Double lastPoint = botStats.getLast().getPosition();
+				angDegrees =  botStats.getLast().getHeadingDegrees() + angDegrees ;
+				//logger.dbg("angle to match final = " + angDegrees );
+				dx = dist*Math.sin( angDegrees/180*Math.PI );
+				dy = dist*Math.cos( angDegrees/180*Math.PI );
+				Point2D.Double p = new Point2D.Double(lastPoint.x + dx, lastPoint.y + dy); 
+				posList.add( p );
+			}
+		}
+
+		return posList;
+	}
+
 	public void drawLastKnownBotPosition(Graphics2D g) {
 		if ( hasLast() ) {
 			double size = 50;
