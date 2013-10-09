@@ -225,6 +225,10 @@ public class InfoBot {
 		return str;
 	}
 
+	public LinkedList<Integer> endsOfMatchedSegments ( long refLength,  int nReqMatches ) {
+		return endsOfMatchedSegments( refLength, botStats.size()-1, nReqMatches);
+
+	}
 	public LinkedList<Integer> endsOfMatchedSegments ( long refLength, int lastIndToCheck,  int nReqMatches ) {
 		// goes through history of bot track 
 		// and finds matched segments of length = refLength 
@@ -301,6 +305,21 @@ public class InfoBot {
 		posList = playForwardList( endsIndexes, afterTime, botStats.getLast() );
 		return posList;
 	}
+
+	public LinkedList<Point2D.Double> playForwardTrace ( int templatePointIndex, long playTime ) {
+		return playForwardTrace( templatePointIndex, playTime, botStats.getLast() );
+	}
+
+	public LinkedList<Point2D.Double> playForwardTrace ( int templatePointIndex, long playTime, botStatPoint refPoint ) {
+		LinkedList<Point2D.Double> posList = new LinkedList<Point2D.Double>();
+		Point2D.Double p;
+		for (long i=1; i<= playTime; i++) {
+			p = playForward( templatePointIndex, i, refPoint);
+			posList.add( p );
+		}
+		return posList;
+	}
+
 
 	public Point2D.Double playForward( int templatePointIndex, long playTime, botStatPoint refPoint ) {
 		Point2D.Double lastPos = refPoint.getPosition();

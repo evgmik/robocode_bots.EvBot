@@ -10,12 +10,15 @@ import java.awt.Color;
 import java.awt.geom.Point2D;
 import robocode.util.*;
 import java.util.*;
+import java.awt.Graphics2D;
 
 // play it forward (PIF) gun
 public class pifGun extends baseGun {
 	private static int bulletHitCount = 0;
 	private static int bulletMissedCount = 0;
 	private static int bulletFiredCount = 0;
+
+	long refLength  = 5;
 
 	public int getBulletFiredCount() {
 		return this.bulletFiredCount;
@@ -51,8 +54,6 @@ public class pifGun extends baseGun {
 	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
 		Point2D.Double p = new Point2D.Double(0,0);
 
-		long refLength  = 10;
-
 		double bSpeed = bulletSpeed ( calcFirePower() );
 		p = tgt.getPosition();
 
@@ -70,7 +71,7 @@ public class pifGun extends baseGun {
 			if ( posList.size() < 1 ) {
 				p = tgt.getPosition();
 			} else {
-				p = posList.getLast();
+				p = posList.getFirst();
 			}
 			dist = p.distance(myBot.myCoord);
 			afterTime = (int) (dist/bSpeed);
@@ -80,5 +81,28 @@ public class pifGun extends baseGun {
 		return p;
 	}
 
+	public void drawPossiblePlayForwardTracks(Graphics2D g) {
+		target tgt = myBot._trgt;
+		Point2D.Double p = tgt.getPosition();
+		double bSpeed = bulletSpeed ( calcFirePower() );
+		double dist = p.distance(myBot.myCoord);
+		int playTime = (int) (dist/bSpeed);
+
+		int nRequiredMatches = 1000;
+
+		LinkedList<Integer> templateEnds = tgt.endsOfMatchedSegments( refLength, nRequiredMatches);
+		for ( int i=0; i < templateEnds.size(); i++ ) {
+			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) playTime );
+			for ( Point2D.Double pT : trace ) {
+				graphics.drawCircle( g, pT, 1);
+			}
+		}
+
+	}
+
+	public void onPaint(Graphics2D g) {
+		super.onPaint( g );
+		drawPossiblePlayForwardTracks( g );
+	}
 
 }	
