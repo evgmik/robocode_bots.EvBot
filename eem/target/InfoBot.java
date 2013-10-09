@@ -284,7 +284,6 @@ public class InfoBot {
 		LinkedList<Point2D.Double> posList = new LinkedList<Point2D.Double>();
 		int trackN = botStats.size();
 		int lastIndToCheck = (int) (trackN - afterTime - 1);
-		//logger.dbg("track length = " + trackN);
 
 		if (  trackN  < (refLength + afterTime) ) {
 			// known history is to short
@@ -315,8 +314,6 @@ public class InfoBot {
 		botStatPoint templatePoint = botStats.get(templatePointIndex);
 		double headingLastMatchedDegrees = templatePoint.getHeadingDegrees();
 
-		//logger.dbg("--- real end   " + botStats.get(rEnd).format() );
-		//logger.dbg("-- matched tail " + botStats.get(lastIndOfMatchedSeg).format() );
 		Point2D.Double posLastMatched = templatePoint.getPosition();
 		int matchPredictionInd = (int) (templatePointIndex + playTime);
 		// check that predicted index within track
@@ -326,19 +323,12 @@ public class InfoBot {
 		}
 			
 		Point2D.Double posMatchedAfterTime = botStats.get( matchPredictionInd ).getPosition();
-		//logger.dbg("=== predicted future along segment " + botStats.get(matchPredictionInd).format() );
 		double distToMatchedPrediciton = posLastMatched.distance(posMatchedAfterTime);
 		double dx = posMatchedAfterTime.x - posLastMatched.x;
 		double dy = posMatchedAfterTime.y - posLastMatched.y;
 		double matchBearingInDegrees = math.cortesian2game_angles(Math.atan2(dy,dx)*180.0/Math.PI) - headingLastMatchedDegrees;
 
-		//logger.dbg("-------" );
-		//logger.dbg("strt= " + strtPoint );
-		//logger.dbg("end = " + endPoint );
-		//logger.dbg("angle to end = " + angDegrees );
 		double angDegrees = matchBearingInDegrees + lastHeadingInDegrees ;
-		//logger.dbg("angle to end final = " + angDegrees );
-		//logger.dbg("angle to match final = " + angDegrees );
 		dx = distToMatchedPrediciton*Math.sin( angDegrees/180*Math.PI );
 		dy = distToMatchedPrediciton*Math.cos( angDegrees/180*Math.PI );
 
@@ -358,7 +348,6 @@ public class InfoBot {
 			posList.add(refPoint.getPosition());
 			return posList;
 		}
-		//logger.dbg("Find # matches = " + nMatches );
 
 		Point2D.Double lastPos = refPoint.getPosition();
 		Point2D.Double lastVel = refPoint.getVelocity();
