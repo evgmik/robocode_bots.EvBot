@@ -94,19 +94,25 @@ public class pifGun extends baseGun {
 		double bSpeed = bulletSpeed ( calcFirePower() );
 		double dist = p.distance(myBot.myCoord);
 		int playTime = (int) (dist/bSpeed);
+		double Rp = 1; // track point size
 
 		int nRequiredMatches = 50;
 
 		LinkedList<Integer> templateEnds = tgt.endsOfMatchedSegments( refLength, nRequiredMatches);
 		for ( int i=0; i < templateEnds.size(); i++ ) {
 			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) playTime );
+			Point2D.Double pTr = new Point2D.Double(0,0);
 			for ( Point2D.Double pT : trace ) {
 				double disp = 5;
 				double rx = disp*Math.random();
 				double ry = disp*Math.random();
-				graphics.drawCircle( g, new Point2D.Double(pT.x+rx, pT.y +ry), 1);
-
+				pTr.x = pT.x + rx;
+				pTr.y = pT.y + ry;
+				graphics.drawCircle( g, pTr, Rp);
 			}
+			// last point is wide
+			graphics.drawCircle( g, pTr, 4*Rp);
+			
 		}
 
 	}
