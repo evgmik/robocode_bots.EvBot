@@ -18,7 +18,7 @@ public class pifGun extends baseGun {
 	private static int bulletMissedCount = 0;
 	private static int bulletFiredCount = 0;
 
-	long refLength  = 10; // template trace length
+	long refLength  = 5; // template trace length
 	int nRequiredMatches = 1000; // number of matches to look for
 
 	public int getBulletFiredCount() {
@@ -52,6 +52,12 @@ public class pifGun extends baseGun {
 		calcGunSettings();
 	}
 
+	public Point2D.Double chosePointFromDistribution(  LinkedList<Point2D.Double> pointsList ) {
+		int N = pointsList.size();
+		int ni = (int)( Math.random() * N );
+		return pointsList.get(ni);
+	}
+
 	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
 		Point2D.Double p = new Point2D.Double(0,0);
 
@@ -72,7 +78,7 @@ public class pifGun extends baseGun {
 			if ( posList.size() < 1 ) {
 				p = tgt.getPosition();
 			} else {
-				p = posList.getFirst();
+				p = chosePointFromDistribution(posList);
 			}
 			dist = p.distance(myBot.myCoord);
 			afterTime = (int) (dist/bSpeed);
@@ -89,7 +95,7 @@ public class pifGun extends baseGun {
 		double dist = p.distance(myBot.myCoord);
 		int playTime = (int) (dist/bSpeed);
 
-		int nRequiredMatches = 1000;
+		int nRequiredMatches = 50;
 
 		LinkedList<Integer> templateEnds = tgt.endsOfMatchedSegments( refLength, nRequiredMatches);
 		for ( int i=0; i < templateEnds.size(); i++ ) {
