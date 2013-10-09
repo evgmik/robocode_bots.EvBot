@@ -30,6 +30,7 @@ public class gunManager {
 		guns.add(new baseGun(myBot));
 		guns.add(new linearGun(myBot));
 		guns.add(new randomGun(myBot));
+		guns.add(new pifGun(myBot));
 
 		nGuns = guns.size();
 		logger.noise("Number of guns = " + nGuns);
