@@ -279,11 +279,10 @@ public class InfoBot {
 		return endsOfMAtchedSegmentsIndexes;
 	}
 
-	public LinkedList<Point2D.Double> possiblePositionsAfterTime ( long afterTime,  long refLength ) {
+	public LinkedList<Point2D.Double> possiblePositionsAfterTime ( long afterTime,  long refLength, int nRequiredMatches ) {
 		// finds list of possible position via play forward afterTime
 		// for etalon path with length = refLength
 
-		int nRequiredMatches = 2; // number of matches to look for
 
 		LinkedList<Point2D.Double> posList = new LinkedList<Point2D.Double>();
 		int trackN = botStats.size();

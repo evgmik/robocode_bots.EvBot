@@ -18,7 +18,8 @@ public class pifGun extends baseGun {
 	private static int bulletMissedCount = 0;
 	private static int bulletFiredCount = 0;
 
-	long refLength  = 5;
+	long refLength  = 10; // template trace length
+	int nRequiredMatches = 1000; // number of matches to look for
 
 	public int getBulletFiredCount() {
 		return this.bulletFiredCount;
@@ -66,7 +67,7 @@ public class pifGun extends baseGun {
 			//logger.dbg("iteration = " + iterCnt );
 			//logger.dbg("after time = " + afterTime );
 
-			LinkedList<Point2D.Double> posList = tgt.possiblePositionsAfterTime(afterTime, refLength);
+			LinkedList<Point2D.Double> posList = tgt.possiblePositionsAfterTime(afterTime, refLength, nRequiredMatches);
 			//logger.dbg("Match list size = " + posList.size() );
 			if ( posList.size() < 1 ) {
 				p = tgt.getPosition();
