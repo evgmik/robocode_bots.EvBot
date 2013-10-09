@@ -235,7 +235,7 @@ public class InfoBot {
 		// with respect to the end of the track
 		LinkedList<Integer> endsOfMAtchedSegmentsIndexes = new LinkedList<Integer>();
 		double speedDist = 0.5;
-		double angleDist = 5;
+		double angleDist = 20;
 
 		long trackN = botStats.size();
 		int cntMatches = 0;
