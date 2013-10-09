@@ -94,7 +94,11 @@ public class pifGun extends baseGun {
 		for ( int i=0; i < templateEnds.size(); i++ ) {
 			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) playTime );
 			for ( Point2D.Double pT : trace ) {
-				graphics.drawCircle( g, pT, 1);
+				double disp = 5;
+				double rx = disp*Math.random();
+				double ry = disp*Math.random();
+				graphics.drawCircle( g, new Point2D.Double(pT.x+rx, pT.y +ry), 1);
+
 			}
 		}
 
