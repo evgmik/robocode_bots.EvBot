@@ -299,42 +299,76 @@ public class InfoBot {
 			posList.add(getPosition());
 			return posList;
 		}
+		posList = playForwardList( endsIndexes, afterTime, botStats.getLast() );
+		return posList;
+	}
+
+	public Point2D.Double playForward( int templatePointIndex, long playTime, botStatPoint refPoint ) {
+		Point2D.Double lastPos = refPoint.getPosition();
+		Point2D.Double lastVel = refPoint.getVelocity();
+		double         lastSpd = refPoint.getSpeed();
+		double         lastHeadingInDegrees = refPoint.getHeadingDegrees();
+
+		Point2D.Double p;
+
+		int trackN = botStats.size();
+		botStatPoint templatePoint = botStats.get(templatePointIndex);
+		double headingLastMatchedDegrees = templatePoint.getHeadingDegrees();
+
+		//logger.dbg("--- real end   " + botStats.get(rEnd).format() );
+		//logger.dbg("-- matched tail " + botStats.get(lastIndOfMatchedSeg).format() );
+		Point2D.Double posLastMatched = templatePoint.getPosition();
+		int matchPredictionInd = (int) (templatePointIndex + playTime);
+		// check that predicted index within track
+		if ( matchPredictionInd > (trackN - 1) ) {
+			p = refPoint.getPosition();
+			return p;
+		}
+			
+		Point2D.Double posMatchedAfterTime = botStats.get( matchPredictionInd ).getPosition();
+		//logger.dbg("=== predicted future along segment " + botStats.get(matchPredictionInd).format() );
+		double distToMatchedPrediciton = posLastMatched.distance(posMatchedAfterTime);
+		double dx = posMatchedAfterTime.x - posLastMatched.x;
+		double dy = posMatchedAfterTime.y - posLastMatched.y;
+		double matchBearingInDegrees = math.cortesian2game_angles(Math.atan2(dy,dx)*180.0/Math.PI) - headingLastMatchedDegrees;
+
+		//logger.dbg("-------" );
+		//logger.dbg("strt= " + strtPoint );
+		//logger.dbg("end = " + endPoint );
+		//logger.dbg("angle to end = " + angDegrees );
+		double angDegrees = matchBearingInDegrees + lastHeadingInDegrees ;
+		//logger.dbg("angle to end final = " + angDegrees );
+		//logger.dbg("angle to match final = " + angDegrees );
+		dx = distToMatchedPrediciton*Math.sin( angDegrees/180*Math.PI );
+		dy = distToMatchedPrediciton*Math.cos( angDegrees/180*Math.PI );
+
+		p = new Point2D.Double(lastPos.x + dx, lastPos.y + dy); 
+		return p;
+	}
+
+	public LinkedList<Point2D.Double> playForwardList( LinkedList<Integer> startIndexes, long playTime, botStatPoint refPoint ) {
+		// play forward playTime sterp starting from startIndexes 
+		// and apply predicted displacement to  reference end point eEnd
+		LinkedList<Point2D.Double> posList = new LinkedList<Point2D.Double>();
+		int trackN = botStats.size();
+
+		int nMatches = startIndexes.size();
+		if ( nMatches == 0 ) {
+			// no matches found
+			posList.add(refPoint.getPosition());
+			return posList;
+		}
 		//logger.dbg("Find # matches = " + nMatches );
 
-		int rEnd = (int) (trackN - 1);
-		Point2D.Double lastPos = botStats.get(rEnd).getPosition();
-		Point2D.Double lastVel = botStats.get(rEnd).getVelocity();
-		double         lastSpd = botStats.get(rEnd).getSpeed();
-		double         lastHeadingInDegrees = botStats.get(rEnd).getHeadingDegrees();
+		Point2D.Double lastPos = refPoint.getPosition();
+		Point2D.Double lastVel = refPoint.getVelocity();
+		double         lastSpd = refPoint.getSpeed();
+		double         lastHeadingInDegrees = refPoint.getHeadingDegrees();
 
 		for ( int i=0; i < nMatches; i++ ) {
 			//go over all possible segment of length lets find after time prediciton
-			int lastIndOfMatchedSeg = endsIndexes.get(i); // end of matched segment
-			double headingLastMatchedDegrees = botStats.get(lastIndOfMatchedSeg).getHeadingDegrees();
-			//logger.dbg("--- real end   " + botStats.get(rEnd).format() );
-			//logger.dbg("-- matched tail " + botStats.get(lastIndOfMatchedSeg).format() );
-			Point2D.Double posLastMatched = botStats.get( lastIndOfMatchedSeg ).getPosition();
-			int matchPredictionInd = (int) (lastIndOfMatchedSeg + afterTime);
-			// check that predicted index within track
-			if ( matchPredictionInd > (trackN - 1) ) continue;
-			Point2D.Double posMatchedAfterTime = botStats.get( matchPredictionInd ).getPosition();
-			//logger.dbg("=== predicted future along segment " + botStats.get(matchPredictionInd).format() );
-			double distToMatchedPrediciton = posLastMatched.distance(posMatchedAfterTime);
-			double dx = posMatchedAfterTime.x - posLastMatched.x;
-			double dy = posMatchedAfterTime.y - posLastMatched.y;
-			double matchBearingInDegrees = math.cortesian2game_angles(Math.atan2(dy,dx)*180.0/Math.PI) - headingLastMatchedDegrees;
-
-			//logger.dbg("-------" );
-			//logger.dbg("strt= " + strtPoint );
-			//logger.dbg("end = " + endPoint );
-			//logger.dbg("angle to end = " + angDegrees );
-			double angDegrees = matchBearingInDegrees + lastHeadingInDegrees ;
-			//logger.dbg("angle to end final = " + angDegrees );
-			//logger.dbg("angle to match final = " + angDegrees );
-			dx = distToMatchedPrediciton*Math.sin( angDegrees/180*Math.PI );
-			dy = distToMatchedPrediciton*Math.cos( angDegrees/180*Math.PI );
-			Point2D.Double p = new Point2D.Double(lastPos.x + dx, lastPos.y + dy); 
-			//logger.dbg( "predicted  position = " + p );
+			int lastIndOfMatchedSeg = startIndexes.get(i); // end of matched segment
+			Point2D.Double p = playForward( lastIndOfMatchedSeg, playTime, refPoint );
 			posList.add( p );
 		}
 
