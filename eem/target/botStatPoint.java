@@ -3,6 +3,7 @@
 package eem.target;
 
 import eem.EvBot;
+import eem.misc.math;
 import robocode.*;
 import robocode.Rules.*;
 import java.awt.geom.Point2D;
@@ -36,6 +37,9 @@ public class botStatPoint {
 		headingDegrees = e.getHeading();
 		speed = e.getVelocity();
 		velocity = new Point2D.Double( speed*Math.sin(headingDegrees/360.*2.*Math.PI), speed*Math.cos(headingDegrees/360.*2.*Math.PI) );
+		if ( speed < 0 ) {
+			headingDegrees = math.shortest_arc( headingDegrees + 180 );
+		}
 		energy = e.getEnergy();
 	}
 
@@ -48,6 +52,9 @@ public class botStatPoint {
 		headingDegrees = bot.getHeading();
 		speed = bot.getVelocity();
 		velocity = new Point2D.Double( speed*Math.sin(headingDegrees/360.*2.*Math.PI), speed*Math.cos(headingDegrees/360.*2.*Math.PI) );
+		if ( speed < 0 ) {
+			headingDegrees = math.shortest_arc( headingDegrees + 180 );
+		}
 		energy = bot.getEnergy();
 	}
 
