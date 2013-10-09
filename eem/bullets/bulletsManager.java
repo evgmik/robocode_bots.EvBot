@@ -40,6 +40,10 @@ public class  bulletsManager {
 		// linearGun
 		b = new firedBullet( myBot, firedBot,  new linearGun(myBot), firedBot.energyDrop() );
 		bullets.add(b);
+
+		// pifGun
+		b = new firedBullet( myBot, firedBot,  new pifGun(myBot), firedBot.energyDrop() );
+		bullets.add(b);
 	}
 
 	public void add_enemy_bullet() {
