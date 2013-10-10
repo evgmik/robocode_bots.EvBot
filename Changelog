@@ -1,3 +1,8 @@
+= Version  4.2.1 =
+
+Bug fix: ignore the heading of an enemy bot body in the predictor, 
+look only for actual velocity direction
+
 = Version  4.2 =
 
 Added play forward gun and only it is used in the battle
