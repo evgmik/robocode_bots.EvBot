@@ -114,7 +114,7 @@ public class EvBot extends AdvancedRobot
 		startTime = System.nanoTime();
 		_radar.initTic();
 		endTime = System.nanoTime();
-		logger.profiler("radar init Tic execution time =        \t\t\t" + (endTime - startTime) + " ns" );
+		logger.profiler("radar init Tic execution time =         \t\t\t" + (endTime - startTime) + " ns" );
 	}
 
 	public double distTo(double x, double y) {
@@ -162,6 +162,8 @@ public class EvBot extends AdvancedRobot
 		initBattle();
 
 		while(true) {
+			long endTime;
+			long startTime;
 			initTic() ;
 
 			if (_trgt.haveTarget) {
@@ -169,10 +171,19 @@ public class EvBot extends AdvancedRobot
 			}
 
 			choseMotion();
+			startTime = System.nanoTime();
 			_motion.makeMove();
+			endTime = System.nanoTime();
+			logger.profiler("makeMove execution time     =\t\t\t\t" + (endTime - startTime) + " ns" );
 
+			startTime = System.nanoTime();
 			_gun.manage();
+			endTime = System.nanoTime();
+			logger.profiler("gun manage execution time   =\t\t\t\t" + (endTime - startTime) + " ns" );
+			startTime = System.nanoTime();
 			_radar.manage();
+			endTime = System.nanoTime();
+			logger.profiler("radar manage execution time =\t\t\t\t" + (endTime - startTime) + " ns" );
 
 			execute();
 		}
