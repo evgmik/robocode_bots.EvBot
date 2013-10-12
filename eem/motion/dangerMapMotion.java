@@ -48,7 +48,6 @@ public class dangerMapMotion extends basicMotion {
 	public void initTic() {
 		setRammingCondition();
 		setOptimalDistanceFromBot();
-		rebuildDangerMap();
 	}
 
 	public void setRammingCondition() {
@@ -405,6 +404,7 @@ public class dangerMapMotion extends basicMotion {
 	}
 
 	public void drawDangerMap(Graphics2D g) {
+		rebuildDangerMap();
 		for (int i=0; i < dMapSizeX; i++) {
 			for (int j=0; j < dMapSizeY; j++) {
 				drawDangerMapCell(g,i,j);
