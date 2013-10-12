@@ -69,22 +69,46 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void initTic() {
+		long startTime = System.nanoTime();
+		long endTime;
 		ticTime = getTime();
 
-		logger.noise("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
+		logger.routine("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
 		logger.noise("Game time: " + ticTime);
 		logger.noise("Number of other bots = " + getOthers());
 
 		myCoord.x = getX();
 	       	myCoord.y = getY();
 
+		startTime = System.nanoTime();
 		_tracker.update( new botStatPoint( this ) );
+		endTime = System.nanoTime();
+		logger.dbg("tracker update execution time =     \t\t\t" + (endTime - startTime) + " ns" );
+		startTime = System.nanoTime();
 		_botsmanager.initTic(ticTime);
+		endTime = System.nanoTime();
+		logger.dbg("botsmanager initTic execution time =\t\t\t" + (endTime - startTime) + " ns" );
+		startTime = System.nanoTime();
 		_trgt.initTic(ticTime);
+		endTime = System.nanoTime();
+		logger.dbg("target initTic execution time =        \t\t\t" + (endTime - startTime) + " ns" );
+		startTime = System.nanoTime();
 		_bmanager.initTic();
+		endTime = System.nanoTime();
+		logger.dbg("bullet manager initTic execution time =\t\t\t" + (endTime - startTime) + " ns" );
+		startTime = System.nanoTime();
 		_motion.initTic();
+		endTime = System.nanoTime();
+		logger.dbg("motion manager initTic execution time =\t\t\t" + (endTime - startTime) + " ns" );
+		startTime = System.nanoTime();
 		_gun.initTic();
+		endTime = System.nanoTime();
+		logger.dbg("gun init Tic execution time  =          \t\t\t" + (endTime - startTime) + " ns" );
+		startTime = System.nanoTime();
+
 		_radar.initTic();
+		endTime = System.nanoTime();
+		logger.dbg("radar init Tic execution time =        \t\t\t" + (endTime - startTime) + " ns" );
 	}
 
 	public double distTo(double x, double y) {
