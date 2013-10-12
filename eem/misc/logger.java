@@ -6,9 +6,9 @@ public class logger {
 	// debug levels
 	public final static int log_important=0;
 	public final static int log_error=3;
-	public final static int log_profiler=4;
-	public final static int log_routine=5;
-	public final static int log_debuging=6;
+	public final static int log_profiler=11;
+	public final static int log_routine=7;
+	public final static int log_debuging=5;
 	public final static int log_noise=10;
 	static int verbosity_level=log_debuging; // current level, smaller is less noisy
 
