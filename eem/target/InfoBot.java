@@ -282,6 +282,7 @@ public class InfoBot {
 	public LinkedList<Point2D.Double> possiblePositionsAfterTime ( long afterTime,  long refLength, int nRequiredMatches ) {
 		// finds list of possible position via play forward afterTime
 		// for etalon path with length = refLength
+		// must return empty list if nothing is found
 
 
 		LinkedList<Point2D.Double> posList = new LinkedList<Point2D.Double>();
@@ -290,17 +291,10 @@ public class InfoBot {
 
 		if (  trackN  < (refLength + afterTime) ) {
 			// known history is to short
-			posList.add(getPosition());
 			return posList;
 		}
 
 		LinkedList<Integer> endsIndexes = endsOfMatchedSegments( refLength, lastIndToCheck, nRequiredMatches );
-		int nMatches = endsIndexes.size();
-		if ( nMatches == 0 ) {
-			// no matches found
-			posList.add(getPosition());
-			return posList;
-		}
 		posList = playForwardList( endsIndexes, afterTime, botStats.getLast() );
 		return posList;
 	}
@@ -357,13 +351,13 @@ public class InfoBot {
 	public LinkedList<Point2D.Double> playForwardList( LinkedList<Integer> startIndexes, long playTime, botStatPoint refPoint ) {
 		// play forward playTime sterp starting from startIndexes 
 		// and apply predicted displacement to  reference end point eEnd
+		// must return empty list if nothing is found
 		LinkedList<Point2D.Double> posList = new LinkedList<Point2D.Double>();
 		int trackN = botStats.size();
 
 		int nMatches = startIndexes.size();
 		if ( nMatches == 0 ) {
 			// no matches found
-			posList.add(refPoint.getPosition());
 			return posList;
 		}
 
