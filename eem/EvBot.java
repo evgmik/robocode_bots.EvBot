@@ -39,6 +39,8 @@ public class EvBot extends AdvancedRobot
 	public gunManager _gmanager;
 	public botsManager _botsmanager;
 	public InfoBot _tracker; // track my own status
+	
+	public long initTicStartTime = 0;
 
 
 	public Point2D.Double myCoord;
@@ -66,14 +68,19 @@ public class EvBot extends AdvancedRobot
 		_gmanager = new gunManager(this);
 		_botsmanager = new botsManager(this);
 		_tracker = new InfoBot(getName());
+
+		initTicStartTime = System.nanoTime();
 	}
 
 	public void initTic() {
 		long startTime = System.nanoTime();
 		long endTime;
+
 		ticTime = getTime();
 
 		logger.routine("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
+		logger.profiler("===> time between initTics =        \t\t\t" + ( startTime - initTicStartTime ) + " ns" );
+		initTicStartTime = startTime;
 		logger.noise("Game time: " + ticTime);
 		logger.noise("Number of other bots = " + getOthers());
 
@@ -83,32 +90,31 @@ public class EvBot extends AdvancedRobot
 		startTime = System.nanoTime();
 		_tracker.update( new botStatPoint( this ) );
 		endTime = System.nanoTime();
-		logger.dbg("tracker update execution time =     \t\t\t" + (endTime - startTime) + " ns" );
+		logger.profiler("tracker update execution time =     \t\t\t" + (endTime - startTime) + " ns" );
 		startTime = System.nanoTime();
 		_botsmanager.initTic(ticTime);
 		endTime = System.nanoTime();
-		logger.dbg("botsmanager initTic execution time =\t\t\t" + (endTime - startTime) + " ns" );
+		logger.profiler("botsmanager initTic execution time =\t\t\t" + (endTime - startTime) + " ns" );
 		startTime = System.nanoTime();
 		_trgt.initTic(ticTime);
 		endTime = System.nanoTime();
-		logger.dbg("target initTic execution time =        \t\t\t" + (endTime - startTime) + " ns" );
+		logger.profiler("target initTic execution time =        \t\t\t" + (endTime - startTime) + " ns" );
 		startTime = System.nanoTime();
 		_bmanager.initTic();
 		endTime = System.nanoTime();
-		logger.dbg("bullet manager initTic execution time =\t\t\t" + (endTime - startTime) + " ns" );
+		logger.profiler("bullet manager initTic execution time =\t\t\t" + (endTime - startTime) + " ns" );
 		startTime = System.nanoTime();
 		_motion.initTic();
 		endTime = System.nanoTime();
-		logger.dbg("motion manager initTic execution time =\t\t\t" + (endTime - startTime) + " ns" );
+		logger.profiler("motion manager initTic execution time =\t\t\t" + (endTime - startTime) + " ns" );
 		startTime = System.nanoTime();
 		_gun.initTic();
 		endTime = System.nanoTime();
-		logger.dbg("gun init Tic execution time  =          \t\t\t" + (endTime - startTime) + " ns" );
+		logger.profiler("gun init Tic execution time  =          \t\t\t" + (endTime - startTime) + " ns" );
 		startTime = System.nanoTime();
-
 		_radar.initTic();
 		endTime = System.nanoTime();
-		logger.dbg("radar init Tic execution time =        \t\t\t" + (endTime - startTime) + " ns" );
+		logger.profiler("radar init Tic execution time =        \t\t\t" + (endTime - startTime) + " ns" );
 	}
 
 	public double distTo(double x, double y) {
