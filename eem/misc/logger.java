@@ -6,6 +6,7 @@ public class logger {
 	// debug levels
 	public final static int log_important=0;
 	public final static int log_error=3;
+	public final static int log_profiler=4;
 	public final static int log_routine=5;
 	public final static int log_debuging=6;
 	public final static int log_noise=10;
@@ -25,6 +26,10 @@ public class logger {
 
 	public static void noise(String s) {
 		log_message(log_noise, s);
+	}
+
+	public static void profiler(String s) {
+		log_message(log_profiler, s);
 	}
 
 	public static void error(String s) {
