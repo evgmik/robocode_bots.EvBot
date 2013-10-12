@@ -58,6 +58,23 @@ public class pifGun extends baseGun {
 		return pointsList.get(ni);
 	}
 
+	public LinkedList<Point2D.Double> findLongestMatch(long afterTime,  InfoBot tgt ) {
+		LinkedList<Point2D.Double> posList = tgt.possiblePositionsAfterTime(afterTime, refLength, nRequiredMatches);
+		LinkedList<Point2D.Double> prevList;
+		prevList = (LinkedList<Point2D.Double>) posList.clone();
+			logger.dbg("Match list size = " + posList.size() );
+		while ( posList.size() >= 1 ) {
+			prevList = (LinkedList<Point2D.Double>) posList.clone();
+			logger.dbg("Match list size = " + posList.size() );
+			logger.dbg("refLength = " + refLength );
+			logger.dbg("# matches = " + posList.size());
+			refLength++;
+			posList = tgt.possiblePositionsAfterTime(afterTime, refLength, nRequiredMatches);
+			refLength++;
+		}
+		return prevList;
+	}
+
 	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
 		Point2D.Double p = new Point2D.Double(0,0);
 
@@ -69,20 +86,12 @@ public class pifGun extends baseGun {
 		int afterTime = (int) (dist/bSpeed);
 		int oldAfterTime;
 		int iterCnt = 1;
+		logger.dbg("---- gun calc started with refLength = " + refLength );
 		do {
 			oldAfterTime = afterTime;
 			//logger.dbg("iteration = " + iterCnt );
 			//logger.dbg("after time = " + afterTime );
-
-			LinkedList<Point2D.Double> posList = tgt.possiblePositionsAfterTime(afterTime, refLength, nRequiredMatches);
-			//logger.dbg("Match list size = " + posList.size() );
-			if ( (posList.size() < 1) && refLength > 1 ) {
-				// may be refLength was to large, 
-				// lets decrease it and try again
-				refLength--;
-				logger.dbg("refLength = " + refLength );
-				continue;
-			}
+			LinkedList<Point2D.Double> posList = findLongestMatch( afterTime, tgt );
 			if ( posList.size() < 1 ) {
 				p = tgt.getPosition();
 			} else {
@@ -92,6 +101,7 @@ public class pifGun extends baseGun {
 			afterTime = (int) (dist/bSpeed);
 			iterCnt++;
 		} while ( ( Math.abs( oldAfterTime -afterTime ) > 1 ) && (iterCnt < 5) ) ;
+		logger.dbg("--- gun calc ended with refLength = " + refLength );
 		//logger.dbg("point to aim = " + p );
 		return p;
 	}
