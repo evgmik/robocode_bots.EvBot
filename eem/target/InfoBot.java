@@ -257,7 +257,7 @@ public class InfoBot {
 				int rIndex = rStart + k;
 				botStatPoint  testPatPoint = botStats.get(tIndex);
 				botStatPoint  refPatPoint  = botStats.get(rIndex);
-				if ( !(refPatPoint.arePointsOfPathSimilar( refPatStart, refPatPoint, testPatPoint)) ) {
+				if ( !(testPatPoint.arePointsOfPathSimilar( refPatStart, refPatPoint, testPatStart)) ) {
 					doesItMatchRef = false;
 					break;
 				}
