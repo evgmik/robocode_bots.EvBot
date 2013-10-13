@@ -14,33 +14,9 @@ import java.awt.Graphics2D;
 
 // play it forward (PIF) gun
 public class pifGun extends baseGun {
-	private static int bulletHitCount = 0;
-	private static int bulletMissedCount = 0;
-	private static int bulletFiredCount = 0;
-
 	long refLength  = 1; // template trace length
 	int nRequiredMatches = 1000; // number of matches to look for
 	int playTime =1;
-
-	public int getBulletFiredCount() {
-		return this.bulletFiredCount;
-	}
-
-	public int getBulletHitCount() {
-		return this.bulletHitCount;
-	}
-
-	public int getBulletMissedCount() {
-		return this.bulletFiredCount - this.bulletHitCount;
-	}
-
-	protected void incBulletFiredCount() {
-		this.bulletFiredCount++;
-	}
-
-	public void incBulletHitCount() {
-		this.bulletHitCount++;
-	}
 
 	public pifGun() {
 		gunName = "pif";
