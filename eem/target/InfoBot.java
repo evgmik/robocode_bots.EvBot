@@ -234,8 +234,6 @@ public class InfoBot {
 		// and finds matched segments of length = refLength 
 		// with respect to the end of the track
 		LinkedList<Integer> endsOfMAtchedSegmentsIndexes = new LinkedList<Integer>();
-		double speedDist = 0.5;
-		double angleDist = 20;
 
 		long trackN = botStats.size();
 		int cntMatches = 0;
@@ -245,26 +243,21 @@ public class InfoBot {
 		}
 
 		int rStart = (int) (trackN  - refLength);
-		Point2D.Double posRefSt = botStats.get(rStart).getPosition();
-		Point2D.Double velRefSt = botStats.get(rStart).getVelocity();
-		double         spdRefSt = botStats.get(rStart).getSpeed();
-		double         angRefSt = botStats.get(rStart).getHeadingDegrees();
+		botStatPoint   refPatStart = botStats.get(rStart);
 
 		for ( int i = ( (int)(lastIndToCheck - refLength + 1) ); i >= 0; i-- ) {
 			//go over all possible segment of length = refLength 
 			int tStart = i;
 			//logger.dbg("tStart = " + i);
-			double angTstSt = botStats.get(tStart).getHeadingDegrees();
+			botStatPoint   testPatStart = botStats.get(tStart);
 			boolean doesItMatchRef = true;
 			for ( int k=0; k < (refLength); k++ ) {
 				// step by step comparison over reference and test segments
 				int tIndex = tStart + k;
 				int rIndex = rStart + k;
-				double spdT = botStats.get(tIndex).getSpeed();
-				double angT = botStats.get(tIndex).getHeadingDegrees() - angTstSt;
-				double spdR = botStats.get(rIndex).getSpeed();
-				double angR = botStats.get(rIndex).getHeadingDegrees() - angRefSt;
-				if ( ( Math.abs( spdT - spdR ) > speedDist ) || ( Math.abs( angT - angR) > angleDist ) ) {
+				botStatPoint  testPatPoint = botStats.get(tIndex);
+				botStatPoint  refPatPoint  = botStats.get(rIndex);
+				if ( !(refPatPoint.arePointsOfPathSimilar( refPatStart, refPatPoint, testPatPoint)) ) {
 					doesItMatchRef = false;
 					break;
 				}

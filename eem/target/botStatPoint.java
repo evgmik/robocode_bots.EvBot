@@ -106,4 +106,18 @@ public class botStatPoint {
 	public Point2D.Double getPosition() {
 		return  pos;
 	}
+
+	public boolean arePointsOfPathSimilar(botStatPoint refPatStart, botStatPoint refPatCurrent, botStatPoint testPatStart) {
+		double maxSpeedDist = 0.5;
+		double maxAngleDist = 20;
+		double spdT = this.getSpeed();
+		double angT = this.getHeadingDegrees() - testPatStart.getHeadingDegrees();
+		double spdR = refPatCurrent.getSpeed();
+		double angR = refPatCurrent.getHeadingDegrees() - refPatStart.getHeadingDegrees();
+		if ( ( Math.abs( spdT - spdR ) > maxSpeedDist ) || ( Math.abs( angT - angR) > maxAngleDist ) ) {
+			return false;
+		}
+		return true;
+	}
+
 }
