@@ -132,11 +132,14 @@ public class gunManager {
 			gunsFiringTotal += tmp_gun.getBulletFiredCount();
 		}
 
+		logger.routine("-------------------------------------------------------" );
+		logger.routine("Gun stats for " + myBot.getName() );
 		for ( int i =0; i < nGuns; i++ ) {
 			tmp_gun = guns.get(i);
-			logger.dbg("Gun[ " + tmp_gun.getName()+"\t] hit target \t" + tmp_gun.getBulletHitCount() + "\t and was fired \t" + tmp_gun.getBulletFiredCount() +"\t gun weight is \t" + gunsPerformance[i] + " \t firing rate is \t" + (double)tmp_gun.getBulletFiredCount()/gunsFiringTotal);
+			logger.routine("Gun[ " + tmp_gun.getName()+"\t] hit target \t" + tmp_gun.getBulletHitCount() + "\t and was fired \t" + tmp_gun.getBulletFiredCount() +"\t gun weight is \t" + gunsPerformance[i] + " \t firing rate is \t" + (double)tmp_gun.getBulletFiredCount()/gunsFiringTotal);
 		}
-		logger.dbg("Overall guns hit rate = " + overallGunsHitRate() );
+		logger.routine("Overall guns hit rate = " + overallGunsHitRate() );
+		logger.routine("-------------------------------------------------------" );
 	}
 
 }

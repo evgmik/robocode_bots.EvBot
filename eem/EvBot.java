@@ -78,7 +78,7 @@ public class EvBot extends AdvancedRobot
 
 		ticTime = getTime();
 
-		logger.routine("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
+		logger.noise("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
 		logger.profiler("===> time between initTics =        \t\t\t" + ( startTime - initTicStartTime ) + " ns" );
 		initTicStartTime = startTime;
 		logger.noise("Game time: " + ticTime);
@@ -235,10 +235,7 @@ public class EvBot extends AdvancedRobot
 		//setTurnLeft(angle);
 		//moveOrTurn(100,angle);
 		//_trgt.targetUnlocked=true;
-		if ( e.getName().equals( _trgt.getName() ) ) {
-			_trgt.incBulletHitCount();
-			logger.noise("Enemy gun success rate = " + _trgt.getGunHitRate() );
-		}
+		_botsmanager.onHitByBullet(e);
 	}
 
 	public void  onBulletHit(BulletHitEvent e) {
@@ -346,7 +343,7 @@ public class EvBot extends AdvancedRobot
 
 	public void onRoundEnded(RoundEndedEvent e) {
 		_gmanager.printGunsStats();
-		_trgt.printGunsStats();
+		_botsmanager.printGunsStats();
 	}
 
 	public baseGun getGun() {

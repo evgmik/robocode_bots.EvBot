@@ -32,6 +32,8 @@ public class  bulletsManager {
 	}
 
 	public void add_enemy_bullet(InfoBot firedBot) {
+		baseGun eG = new baseGun(myBot);
+		eG.incBulletFiredCount(myBot._tracker, firedBot);
 		firedBullet b;
 		// baseGun (head on)
 		b = new firedBullet( myBot, firedBot,  new baseGun(myBot), firedBot.energyDrop() );
