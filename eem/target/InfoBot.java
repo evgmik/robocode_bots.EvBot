@@ -237,6 +237,8 @@ public class InfoBot {
 		// goes through history of bot track 
 		// and finds matched segments of length = patLength 
 		// with respect to the end of the track
+		long startTime = System.nanoTime();
+		long endTime;
 		LinkedList<Integer> newEndsList = new LinkedList<Integer>();
 
 		long trackN = botStats.size();
@@ -252,18 +254,21 @@ public class InfoBot {
 
 		// lets find all possible end of segments which matches end refernce point
 		// essentially we do patLength = 1 search
+		int patLength = 1;
 		for ( int i = ( (int)(lastIndToCheck) ); i >= Math.max(0, trackN - maxDepthOfHistorySearch-1); i-- ) {
 			botStatPoint   testPatPoint = botStats.get(i);
 			if ( testPatPoint.arePointsOfPathSimilar( refPatStart, refPatStart, testPatPoint) ) {
 				newEndsList.add(i);
 			}
 		}
+		endTime = System.nanoTime();
+		logger.profiler("For pattern length " + patLength + " find # matches " + newEndsList.size() + " in time " + (endTime - startTime) + " ns" );
 
 		LinkedList<Integer> prevEndsList;
 		prevEndsList = (LinkedList<Integer>) newEndsList.clone();
-		int patLength = 1;
 		while ( (newEndsList.size() >=1) && (patLength < maxPatLength) ) {
 			patLength++;
+			startTime = System.nanoTime();
 			prevEndsList = (LinkedList<Integer>) newEndsList.clone();
 			for (Integer i : prevEndsList ) {
 				int testPatIndex = i - patLength + 1;
@@ -280,6 +285,8 @@ public class InfoBot {
 					newEndsList.remove(i);
 				}
 			}
+			endTime = System.nanoTime();
+			logger.profiler("For pattern length " + patLength + " find # matches " + newEndsList.size() + " in time " + (endTime - startTime) + " ns" );
 		}
 		patLength--;
 		//logger.dbg("maximum pattern length = " + patLength);
