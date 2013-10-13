@@ -20,6 +20,7 @@ public class pifGun extends baseGun {
 
 	long refLength  = 1; // template trace length
 	int nRequiredMatches = 1000; // number of matches to look for
+	int playTime =1;
 
 	public int getBulletFiredCount() {
 		return this.bulletFiredCount;
@@ -59,17 +60,9 @@ public class pifGun extends baseGun {
 	}
 
 	public LinkedList<Point2D.Double> findLongestMatch(long afterTime,  InfoBot tgt ) {
-		refLength = 1;
-		int maxRefLength = 1000;
-		LinkedList<Point2D.Double> posList = tgt.possiblePositionsAfterTime(afterTime, refLength, nRequiredMatches);
-		LinkedList<Point2D.Double> prevList;
-		prevList = (LinkedList<Point2D.Double>) posList.clone();
-		while ( (posList.size() >= 1) && (refLength < maxRefLength) ) {
-			prevList = (LinkedList<Point2D.Double>) posList.clone();
-			refLength++;
-			posList = tgt.possiblePositionsAfterTime(afterTime, refLength, nRequiredMatches);
-		}
-		return prevList;
+		int maxPatLength = 10000; //very long we are shooting for max
+		LinkedList<Point2D.Double> posList = tgt.possiblePositionsAfterTime(afterTime, maxPatLength, nRequiredMatches);
+		return posList;
 	}
 
 	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
@@ -82,8 +75,9 @@ public class pifGun extends baseGun {
 		int afterTime = (int) (dist/bSpeed);
 		int oldAfterTime;
 		int iterCnt = 1;
-		logger.dbg("---- gun calc started with refLength = " + refLength );
+		//logger.dbg("---- gun calc started");
 		do {
+			//logger.dbg("required after time = " + afterTime );
 			oldAfterTime = afterTime;
 			//logger.dbg("iteration = " + iterCnt );
 			//logger.dbg("after time = " + afterTime );
@@ -97,8 +91,10 @@ public class pifGun extends baseGun {
 			afterTime = (int) (dist/bSpeed);
 			iterCnt++;
 		} while ( ( Math.abs( oldAfterTime -afterTime ) > 1 ) && (iterCnt < 5) ) ;
-		logger.dbg("Final Match list size = " + posList.size() );
-		logger.dbg("--- gun calc ended with refLength = " + refLength );
+		playTime = afterTime;
+		//logger.dbg("Final Match list size = " + posList.size() );
+		//logger.dbg("Final required play time = " + playTime );
+		//logger.dbg("--- gun calc ended " );
 		//logger.dbg("point to aim = " + p );
 		return p;
 	}
@@ -107,13 +103,19 @@ public class pifGun extends baseGun {
 		target tgt = myBot._trgt;
 		Point2D.Double p = tgt.getPosition();
 		double bSpeed = bulletSpeed ( calcFirePower() );
-		double dist = p.distance(myBot.myCoord);
-		int playTime = (int) (dist/bSpeed);
+		//double dist = p.distance(myBot.myCoord);
+		//int playTime = (int) (dist/bSpeed);
 		double Rp = 1; // track point size
 
 		int nRequiredMatches = 50;
+		int maxPatLength = 10000; // huge number
 
-		LinkedList<Integer> templateEnds = tgt.endsOfMatchedSegments( refLength, nRequiredMatches);
+		LinkedList<Integer> templateEnds = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-playTime,  nRequiredMatches);
+		//logger.dbg("# of ends to plot = " + templateEnds.size() );
+		for ( Integer i : templateEnds ) {
+			//logger.dbg("end point = " + tgt.botStats.get(i).getPosition() );
+		}
+
 		for ( int i=0; i < templateEnds.size(); i++ ) {
 			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) playTime );
 			Point2D.Double pTr = new Point2D.Double(0,0);
