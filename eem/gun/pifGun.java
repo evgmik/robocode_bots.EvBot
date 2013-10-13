@@ -60,10 +60,11 @@ public class pifGun extends baseGun {
 
 	public LinkedList<Point2D.Double> findLongestMatch(long afterTime,  InfoBot tgt ) {
 		refLength = 1;
+		int maxRefLength = 1000;
 		LinkedList<Point2D.Double> posList = tgt.possiblePositionsAfterTime(afterTime, refLength, nRequiredMatches);
 		LinkedList<Point2D.Double> prevList;
 		prevList = (LinkedList<Point2D.Double>) posList.clone();
-		while ( posList.size() >= 1 ) {
+		while ( (posList.size() >= 1) && (refLength < maxRefLength) ) {
 			prevList = (LinkedList<Point2D.Double>) posList.clone();
 			refLength++;
 			posList = tgt.possiblePositionsAfterTime(afterTime, refLength, nRequiredMatches);
