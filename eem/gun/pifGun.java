@@ -44,7 +44,7 @@ public class pifGun extends baseGun {
 
 	public pifGun() {
 		gunName = "pif";
-		gunColor = new Color(0xff, 0x00, 0xff, 0x80);
+		gunColor = new Color(0x00, 0xff, 0xff, 0x80);
 	}
 
 	public pifGun(EvBot bot) {
