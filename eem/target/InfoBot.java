@@ -242,6 +242,11 @@ public class InfoBot {
 			return endsOfMAtchedSegmentsIndexes;
 		}
 
+		if ( refLength < 1) {
+			// we for pattern length smaller than 1
+			return endsOfMAtchedSegmentsIndexes;
+		}
+
 		int rStart = (int) (trackN-1);
 		botStatPoint   refPatStart = botStats.get(rStart);
 
