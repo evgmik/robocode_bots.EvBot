@@ -13,7 +13,7 @@ import java.lang.Integer;
 
 public class InfoBot {
 	protected String name = "";
-	protected LinkedList<botStatPoint> botStats;
+	public LinkedList<botStatPoint> botStats;
 	public boolean targetUnlocked = true; 
 
 	protected int bulletHitCount = 0;
@@ -229,55 +229,60 @@ public class InfoBot {
 		return endsOfMatchedSegments( patLength, botStats.size()-1, nReqMatches);
 
 	}
-	public LinkedList<Integer> endsOfMatchedSegments ( long patLength, int lastIndToCheck,  int nReqMatches ) {
+	public LinkedList<Integer> endsOfMatchedSegments ( long maxPatLength, int lastIndToCheck,  int nReqMatches ) {
 		// goes through history of bot track 
 		// and finds matched segments of length = patLength 
 		// with respect to the end of the track
-		LinkedList<Integer> endsOfMAtchedSegmentsIndexes = new LinkedList<Integer>();
+		LinkedList<Integer> newEndsList = new LinkedList<Integer>();
 
 		long trackN = botStats.size();
 		int cntMatches = 0;
 
-		if ( (lastIndToCheck + 1)  < ( patLength ) ) {
-			return endsOfMAtchedSegmentsIndexes;
-		}
-
-		if ( patLength < 1) {
+		if ( maxPatLength < 1) {
 			// we for pattern length smaller than 1
-			return endsOfMAtchedSegmentsIndexes;
+			return newEndsList;
 		}
 
 		int rStart = (int) (trackN-1);
 		botStatPoint   refPatStart = botStats.get(rStart);
 
-		for ( int i = ( (int)(lastIndToCheck) ); i >= (patLength -1); i-- ) {
-			//go over all possible segment of length = patLength 
-			int tStart = i;
-			//logger.dbg("tStart = " + i);
-			botStatPoint   testPatStart = botStats.get(tStart);
-			boolean doesItMatchRef = true;
-			for ( int k=0; k < (patLength); k++ ) {
-				// step by step comparison over reference and test segments
-				int tIndex = tStart - k;
-				int rIndex = rStart - k;
-				botStatPoint  testPatPoint = botStats.get(tIndex);
-				botStatPoint  refPatPoint  = botStats.get(rIndex);
-				if ( !(testPatPoint.arePointsOfPathSimilar( refPatStart, refPatPoint, testPatStart)) ) {
-					doesItMatchRef = false;
-					break;
-				}
-			}
-			if (doesItMatchRef) {
-				int matchedInd = (int) (tStart);
-				endsOfMAtchedSegmentsIndexes.add(matchedInd);
-				cntMatches++;
-				if (cntMatches == nReqMatches) break; // enough is enough
+		// lets find all possible end of segments which matches end refernce point
+		// essentially we do patLength = 1 search
+		for ( int i = ( (int)(lastIndToCheck) ); i >= 0; i-- ) {
+			botStatPoint   testPatPoint = botStats.get(i);
+			if ( testPatPoint.arePointsOfPathSimilar( refPatStart, refPatStart, testPatPoint) ) {
+				newEndsList.add(i);
 			}
 		}
-		return endsOfMAtchedSegmentsIndexes;
+
+		LinkedList<Integer> prevEndsList;
+		prevEndsList = (LinkedList<Integer>) newEndsList.clone();
+		int patLength = 1;
+		while ( (newEndsList.size() >=1) && (patLength < maxPatLength) ) {
+			patLength++;
+			prevEndsList = (LinkedList<Integer>) newEndsList.clone();
+			for (Integer i : prevEndsList ) {
+				int testPatIndex = i - patLength + 1;
+				int refPatIndex = rStart - patLength+1;
+				if ( (testPatIndex < 0) || (refPatIndex < 0) ) {
+					// out of bounds
+					newEndsList.remove(i);
+					continue;
+				}
+				botStatPoint  testPatStart = botStats.get(i);
+				botStatPoint  testPatPoint = botStats.get(testPatIndex);
+				botStatPoint  refPatPoint  = botStats.get(refPatIndex);
+				if ( !(testPatPoint.arePointsOfPathSimilar( refPatStart, refPatPoint, testPatStart)) ) {
+					newEndsList.remove(i);
+				}
+			}
+		}
+		patLength--;
+		//logger.dbg("maximum pattern length = " + patLength);
+		return prevEndsList;
 	}
 
-	public LinkedList<Point2D.Double> possiblePositionsAfterTime ( long afterTime,  long patLength, int nRequiredMatches ) {
+	public LinkedList<Point2D.Double> possiblePositionsAfterTime ( long afterTime,  long maxPatLength, int nRequiredMatches ) {
 		// finds list of possible position via play forward afterTime
 		// for etalon path with length = patLength
 		// must return empty list if nothing is found
@@ -287,12 +292,8 @@ public class InfoBot {
 		int trackN = botStats.size();
 		int lastIndToCheck = (int) (trackN - afterTime - 1);
 
-		if (  trackN  < (patLength + afterTime) ) {
-			// known history is to short
-			return posList;
-		}
-
-		LinkedList<Integer> endsIndexes = endsOfMatchedSegments( patLength, lastIndToCheck, nRequiredMatches );
+		LinkedList<Integer> endsIndexes = endsOfMatchedSegments( maxPatLength, lastIndToCheck, nRequiredMatches );
+		//logger.dbg("Size of endsIndexes list = " + endsIndexes.size() );
 		posList = playForwardList( endsIndexes, afterTime, botStats.getLast() );
 		return posList;
 	}
