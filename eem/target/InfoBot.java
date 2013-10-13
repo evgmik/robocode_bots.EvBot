@@ -270,6 +270,7 @@ public class InfoBot {
 			patLength++;
 			startTime = System.nanoTime();
 			prevEndsList = (LinkedList<Integer>) newEndsList.clone();
+			newEndsList = new LinkedList<Integer>();
 			for (Integer i : prevEndsList ) {
 				int testPatIndex = i - patLength + 1;
 				int refPatIndex = rStart - patLength+1;
@@ -281,8 +282,8 @@ public class InfoBot {
 				botStatPoint  testPatStart = botStats.get(i);
 				botStatPoint  testPatPoint = botStats.get(testPatIndex);
 				botStatPoint  refPatPoint  = botStats.get(refPatIndex);
-				if ( !(testPatPoint.arePointsOfPathSimilar( refPatStart, refPatPoint, testPatStart)) ) {
-					newEndsList.remove(i);
+				if ( (testPatPoint.arePointsOfPathSimilar( refPatStart, refPatPoint, testPatStart)) ) {
+					newEndsList.add(i);
 				}
 			}
 			endTime = System.nanoTime();
