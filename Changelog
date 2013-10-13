@@ -1,3 +1,8 @@
+= Version  4.2.3 =
+
+The pattern search depth is limited to constrain the time per turn and avoid
+to many skipped turns. 
+
 = Version  4.2.2 =
 
 Bug fixes and speed up in play forward gun. It now looks for the longest
