@@ -242,10 +242,10 @@ public class InfoBot {
 			return endsOfMAtchedSegmentsIndexes;
 		}
 
-		int rStart = (int) (trackN  - refLength);
+		int rStart = (int) (trackN-1);
 		botStatPoint   refPatStart = botStats.get(rStart);
 
-		for ( int i = ( (int)(lastIndToCheck - refLength + 1) ); i >= 0; i-- ) {
+		for ( int i = ( (int)(lastIndToCheck) ); i >= (refLength -1); i-- ) {
 			//go over all possible segment of length = refLength 
 			int tStart = i;
 			//logger.dbg("tStart = " + i);
@@ -253,8 +253,8 @@ public class InfoBot {
 			boolean doesItMatchRef = true;
 			for ( int k=0; k < (refLength); k++ ) {
 				// step by step comparison over reference and test segments
-				int tIndex = tStart + k;
-				int rIndex = rStart + k;
+				int tIndex = tStart - k;
+				int rIndex = rStart - k;
 				botStatPoint  testPatPoint = botStats.get(tIndex);
 				botStatPoint  refPatPoint  = botStats.get(rIndex);
 				if ( !(testPatPoint.arePointsOfPathSimilar( refPatStart, refPatPoint, testPatStart)) ) {
@@ -263,7 +263,7 @@ public class InfoBot {
 				}
 			}
 			if (doesItMatchRef) {
-				int matchedInd = (int) (tStart + refLength - 1);
+				int matchedInd = (int) (tStart);
 				endsOfMAtchedSegmentsIndexes.add(matchedInd);
 				cntMatches++;
 				if (cntMatches == nReqMatches) break; // enough is enough
