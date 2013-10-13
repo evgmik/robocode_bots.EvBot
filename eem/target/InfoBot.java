@@ -19,6 +19,10 @@ public class InfoBot {
 	protected int bulletHitCount = 0;
 	protected int bulletFiredCount = 0;
 
+	// FIXME: need better search algorithm
+	// more than this amount and we start skipping turns
+	protected int maxDepthOfHistorySearch = 500; 
+
 	public InfoBot() {
 		botStats = new LinkedList<botStatPoint>();
 		targetUnlocked = true;
@@ -248,7 +252,7 @@ public class InfoBot {
 
 		// lets find all possible end of segments which matches end refernce point
 		// essentially we do patLength = 1 search
-		for ( int i = ( (int)(lastIndToCheck) ); i >= 0; i-- ) {
+		for ( int i = ( (int)(lastIndToCheck) ); i >= Math.max(0, trackN - maxDepthOfHistorySearch-1); i-- ) {
 			botStatPoint   testPatPoint = botStats.get(i);
 			if ( testPatPoint.arePointsOfPathSimilar( refPatStart, refPatStart, testPatPoint) ) {
 				newEndsList.add(i);
