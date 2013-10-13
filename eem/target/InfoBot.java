@@ -225,24 +225,24 @@ public class InfoBot {
 		return str;
 	}
 
-	public LinkedList<Integer> endsOfMatchedSegments ( long refLength,  int nReqMatches ) {
-		return endsOfMatchedSegments( refLength, botStats.size()-1, nReqMatches);
+	public LinkedList<Integer> endsOfMatchedSegments ( long patLength,  int nReqMatches ) {
+		return endsOfMatchedSegments( patLength, botStats.size()-1, nReqMatches);
 
 	}
-	public LinkedList<Integer> endsOfMatchedSegments ( long refLength, int lastIndToCheck,  int nReqMatches ) {
+	public LinkedList<Integer> endsOfMatchedSegments ( long patLength, int lastIndToCheck,  int nReqMatches ) {
 		// goes through history of bot track 
-		// and finds matched segments of length = refLength 
+		// and finds matched segments of length = patLength 
 		// with respect to the end of the track
 		LinkedList<Integer> endsOfMAtchedSegmentsIndexes = new LinkedList<Integer>();
 
 		long trackN = botStats.size();
 		int cntMatches = 0;
 
-		if ( (lastIndToCheck + 1)  < ( refLength ) ) {
+		if ( (lastIndToCheck + 1)  < ( patLength ) ) {
 			return endsOfMAtchedSegmentsIndexes;
 		}
 
-		if ( refLength < 1) {
+		if ( patLength < 1) {
 			// we for pattern length smaller than 1
 			return endsOfMAtchedSegmentsIndexes;
 		}
@@ -250,13 +250,13 @@ public class InfoBot {
 		int rStart = (int) (trackN-1);
 		botStatPoint   refPatStart = botStats.get(rStart);
 
-		for ( int i = ( (int)(lastIndToCheck) ); i >= (refLength -1); i-- ) {
-			//go over all possible segment of length = refLength 
+		for ( int i = ( (int)(lastIndToCheck) ); i >= (patLength -1); i-- ) {
+			//go over all possible segment of length = patLength 
 			int tStart = i;
 			//logger.dbg("tStart = " + i);
 			botStatPoint   testPatStart = botStats.get(tStart);
 			boolean doesItMatchRef = true;
-			for ( int k=0; k < (refLength); k++ ) {
+			for ( int k=0; k < (patLength); k++ ) {
 				// step by step comparison over reference and test segments
 				int tIndex = tStart - k;
 				int rIndex = rStart - k;
@@ -277,9 +277,9 @@ public class InfoBot {
 		return endsOfMAtchedSegmentsIndexes;
 	}
 
-	public LinkedList<Point2D.Double> possiblePositionsAfterTime ( long afterTime,  long refLength, int nRequiredMatches ) {
+	public LinkedList<Point2D.Double> possiblePositionsAfterTime ( long afterTime,  long patLength, int nRequiredMatches ) {
 		// finds list of possible position via play forward afterTime
-		// for etalon path with length = refLength
+		// for etalon path with length = patLength
 		// must return empty list if nothing is found
 
 
@@ -287,12 +287,12 @@ public class InfoBot {
 		int trackN = botStats.size();
 		int lastIndToCheck = (int) (trackN - afterTime - 1);
 
-		if (  trackN  < (refLength + afterTime) ) {
+		if (  trackN  < (patLength + afterTime) ) {
 			// known history is to short
 			return posList;
 		}
 
-		LinkedList<Integer> endsIndexes = endsOfMatchedSegments( refLength, lastIndToCheck, nRequiredMatches );
+		LinkedList<Integer> endsIndexes = endsOfMatchedSegments( patLength, lastIndToCheck, nRequiredMatches );
 		posList = playForwardList( endsIndexes, afterTime, botStats.getLast() );
 		return posList;
 	}
