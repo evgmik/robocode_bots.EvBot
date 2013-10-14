@@ -129,7 +129,7 @@ public class baseGun {
 			gS = new gunStats();
 			mapOfGunStats.put(key,gS);
 		}
-		return gS.getBulletHitCount();
+		return gS.getGunHitRate();
 	}
 
 	public double getGunHitRate(InfoBot targetBot) {
