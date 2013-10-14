@@ -56,6 +56,25 @@ public class gunManager {
 		return hitRate;
 	}
 
+	public double getGunWeightForBot(baseGun gun, InfoBot bot) {
+		baseGun  tmp_gun;
+		double perfNormilizer = 0;
+		double hR = 0;
+		// calculate each gun weight/performance
+		for ( int i =0; i < nGuns; i++ ) {
+			tmp_gun = guns.get(i);
+			hR = tmp_gun.getGunHitRate( bot );
+			logger.noise("Gun[" + tmp_gun.getName() + " ] hit rate = " + hR);
+			perfNormilizer += hR;
+		} 
+		// normalize gun weights to 1
+		hR = gun.getGunHitRate( bot );
+		double weight;
+		weight = hR / perfNormilizer;
+		logger.noise("Gun[" + gun.getName() + " ] weight = " + weight);
+		return weight;
+	}
+
 	public void updateGunsWeight() {
 		baseGun  tmp_gun;
 		double perfNormilizer = 0;
@@ -143,17 +162,26 @@ public class gunManager {
 		logger.routine("----------------" );
 		logger.routine("Against bot: " + bot.getName() );
 		logger.routine("----------------" );
+		int hCt = 0;
+		int fCt = 0;
 		for ( int i =0; i < nGuns; i++ ) {
 			baseGun tmp_gun = guns.get(i);
 			String botName = tmp_gun.getName();
 			int hC = tmp_gun.getBulletHitCount(bot);
+			hCt += hC;
 			int fC = tmp_gun.getBulletFiredCount(bot);
+			fCt += fC;
+			double weight = getGunWeightForBot(tmp_gun, bot);
 			String str = "";
-			str += "Gun[ " + botName + "\t]";
+			str += "gun[ " + botName + "\t]";
 			str += " hit target \t" + hC;
 			str += "\t and was fired \t" + fC;
+			str += "\t gun weight is \t" + weight;
 			logger.routine(str);
 		}
+		double hProb = 1.0*hCt/Math.max(fCt,1);
+		logger.routine("---" );
+		logger.routine(hProb + " probability to hit bot " + bot.getName() ); 
 	}
 
 	public void printGunsStats() {
@@ -188,9 +216,10 @@ public class gunManager {
 			// firing rate
 			double fR = (double)fC/Math.max(gunsFiringTotal,1);
 			String fRstr = String.format("%.2f", fR );
-			logger.routine("Gun[ " + tmp_gun.getName()+"\t] hit target \t" + hC + "\t and was fired \t" + fC +"\t gun weight is \t" + gunsPerformance[i] + " \t firing rate is \t" + (double)fC/gunsFiringTotal);
+			logger.routine("Gun[ " + tmp_gun.getName()+"\t] hit target \t" + hC + "\t and was fired \t" + fC + " \t firing rate is \t" + (double)fC/gunsFiringTotal);
 			// FIXME: gunsPerformance is not calculated right
 		}
+		logger.routine("-------------------------------------------------------" );
 		logger.routine("Overall guns hit rate = " + overallGunsHitRate() );
 		logger.routine("-------------------------------------------------------" );
 	}
