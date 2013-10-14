@@ -14,8 +14,8 @@ import robocode.Bullet;
 
 
 public class gunStats {
-	private static int bulletHitCount = 0;
-	private static int bulletFiredCount = 0;
+	private int bulletHitCount = 0;
+	private int bulletFiredCount = 0;
 
 	public gunStats() {
 	}
@@ -32,7 +32,7 @@ public class gunStats {
 		return this.bulletFiredCount - this.bulletHitCount;
 	}
 
-	protected void incBulletFiredCount() {
+	public void incBulletFiredCount() {
 		this.bulletFiredCount++;
 	}
 
@@ -42,5 +42,11 @@ public class gunStats {
 
 	public double getGunHitRate() {
 		return (this.getBulletHitCount() + 1.0) / (this.getBulletFiredCount() + 1.0);
+	}
+
+	public String format() {
+		String str = "";
+		str+= "hit target \t" + getBulletHitCount() + "\t and was fired \t" + getBulletFiredCount();
+		return str;
 	}
 }

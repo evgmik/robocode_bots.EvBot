@@ -121,22 +121,72 @@ public class gunManager {
 
 	}
 
+	public int totalGunHitCount(baseGun gun) {
+		LinkedList<InfoBot> botsList = myBot._botsmanager.listOfKnownBots();
+		int gCount = 0;
+		for ( InfoBot bot: botsList ) {
+			gCount += gun.getBulletHitCount(bot);
+		}
+		return gCount;
+	}
+
+	public int totalGunFiredCount(baseGun gun) {
+		LinkedList<InfoBot> botsList = myBot._botsmanager.listOfKnownBots();
+		int gCount = 0;
+		for ( InfoBot bot: botsList ) {
+			gCount += gun.getBulletFiredCount(bot);
+		}
+		return gCount;
+	}
+
+	public void printGunsStatsForTarget(InfoBot bot) {
+		logger.routine("----------------" );
+		logger.routine("Against bot: " + bot.getName() );
+		logger.routine("----------------" );
+		for ( int i =0; i < nGuns; i++ ) {
+			baseGun tmp_gun = guns.get(i);
+			String botName = tmp_gun.getName();
+			int hC = tmp_gun.getBulletHitCount(bot);
+			int fC = tmp_gun.getBulletFiredCount(bot);
+			String str = "";
+			str += "Gun[ " + botName + "\t]";
+			str += " hit target \t" + hC;
+			str += "\t and was fired \t" + fC;
+			logger.routine(str);
+		}
+	}
+
 	public void printGunsStats() {
 		baseGun  tmp_gun = null;
 		ListIterator<baseGun> gLIter = guns.listIterator();
+		LinkedList<InfoBot> botsList = myBot._botsmanager.listOfKnownBots();
+
 		updateGunsWeight();
 		int gunsFiringTotal=0;
 
 		for ( int i =0; i < nGuns; i++ ) {
-			tmp_gun = guns.get(i);
-			gunsFiringTotal += tmp_gun.getBulletFiredCount();
+			for ( InfoBot bot: botsList ) {
+				tmp_gun = guns.get(i);
+				gunsFiringTotal += tmp_gun.getBulletFiredCount(bot);
+			}
 		}
 
 		logger.routine("-------------------------------------------------------" );
 		logger.routine("Gun stats for " + myBot.getName() );
+		logger.routine("-------------------------------------------------------" );
+		for ( InfoBot bot: botsList ) {
+			printGunsStatsForTarget(bot);
+		}
+
+		logger.routine("-------------------------------------------------------" );
+		logger.routine("Summary for each gun" );
+		logger.routine("-------------------------------------------------------" );
 		for ( int i =0; i < nGuns; i++ ) {
 			tmp_gun = guns.get(i);
-			logger.routine("Gun[ " + tmp_gun.getName()+"\t] hit target \t" + tmp_gun.getBulletHitCount() + "\t and was fired \t" + tmp_gun.getBulletFiredCount() +"\t gun weight is \t" + gunsPerformance[i] + " \t firing rate is \t" + (double)tmp_gun.getBulletFiredCount()/gunsFiringTotal);
+			int hC = totalGunHitCount(tmp_gun);
+			int fC = totalGunFiredCount(tmp_gun);
+			logger.routine("Gun[ " + tmp_gun.getName()+"\t] hit target \t" + hC + "\t and was fired \t" + fC +"\t gun weight is \t" + gunsPerformance[i] + " \t firing rate is \t" + (double)tmp_gun.getBulletFiredCount()/gunsFiringTotal);
+			// FIXME: gunsPerformance is not calculated right
 		}
 		logger.routine("Overall guns hit rate = " + overallGunsHitRate() );
 		logger.routine("-------------------------------------------------------" );

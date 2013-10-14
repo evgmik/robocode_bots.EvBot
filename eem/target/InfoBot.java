@@ -55,7 +55,11 @@ public class InfoBot {
 	}
 
 	public void printGunsStats() {
-		logger.routine("Enemy gun hit rate = " + this.getGunHitRate() );
+		logger.routine("-----------------");
+		logger.routine("Gun stats for enemy bot: " + getName() );
+		logger.routine("-----------------");
+		logger.routine("Enemy gun hit us " + this.getBulletHitCount() + " times and was fired " + this.getBulletFiredCount() );
+		logger.routine("Enemy gun hit rate on us = " + this.getGunHitRate() );
 	}
 
 	public void initTic(long ticTime) {

@@ -9,6 +9,7 @@ import java.awt.geom.Point2D;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.HashMap;
+import java.util.LinkedList;
 import robocode.*;
 import robocode.util.*;
 import robocode.Rules.*;
@@ -16,11 +17,11 @@ import robocode.Rules.*;
 public class  botsManager {
 	public EvBot myBot;
 
-	public HashMap<String,InfoBot> bots;
+	public HashMap<String,InfoBot> bots     = new HashMap<String, InfoBot>();
+	public HashMap<String,InfoBot> deadBots = new HashMap<String, InfoBot>();;
 
 	public botsManager(EvBot bot) {
 		myBot = bot;
-		bots = new HashMap<String, InfoBot>();
 	}
 
 	public void initTic(long ticTime) {
@@ -34,13 +35,51 @@ public class  botsManager {
 		}
 	}
 
+	public void printGunsStats() {
+		logger.routine("-------------------------------------------------------" );
+		logger.routine("Summary for enemies guns" );
+		logger.routine("-------------------------------------------------------" );
+		for (InfoBot bot : bots.values()) {
+			bot.printGunsStats();
+		}
+		for (InfoBot bot : deadBots.values()) {
+			bot.printGunsStats();
+		}
+	}
+
+	public LinkedList<InfoBot> listOfKnownBots() {
+		LinkedList<InfoBot> l = new LinkedList<InfoBot>();
+		for (InfoBot bot : bots.values()) {
+			l.add(bot);
+		}
+		for (InfoBot bot : deadBots.values()) {
+			l.add(bot);
+		}
+		return l;
+	}
+
 	public void onRobotDeath(RobotDeathEvent e) {
 		String botName = e.getName();
-		bots.remove(botName);
+		InfoBot dBot = bots.get(botName);
+		deadBots.put( botName, dBot);
+		bots.remove( botName );
 	}
 
 	public void add(InfoBot bot) {
 		bots.put( bot.getName(), bot );
+	}
+
+	public void onHitByBullet(HitByBulletEvent e) {
+		String botName = e.getName();
+		InfoBot bot;
+		bot = bots.get(botName);
+		if ( bot != null ) {
+			bot.incBulletHitCount();
+		}
+		bot = deadBots.get(botName);
+		if ( bot != null ) {
+			bot.incBulletHitCount();
+		}
 	}
 
 	public void onScannedRobot(ScannedRobotEvent e) {
