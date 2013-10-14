@@ -185,7 +185,10 @@ public class gunManager {
 			tmp_gun = guns.get(i);
 			int hC = totalGunHitCount(tmp_gun);
 			int fC = totalGunFiredCount(tmp_gun);
-			logger.routine("Gun[ " + tmp_gun.getName()+"\t] hit target \t" + hC + "\t and was fired \t" + fC +"\t gun weight is \t" + gunsPerformance[i] + " \t firing rate is \t" + (double)tmp_gun.getBulletFiredCount()/gunsFiringTotal);
+			// firing rate
+			double fR = (double)fC/Math.max(gunsFiringTotal,1);
+			String fRstr = String.format("%.2f", fR );
+			logger.routine("Gun[ " + tmp_gun.getName()+"\t] hit target \t" + hC + "\t and was fired \t" + fC +"\t gun weight is \t" + gunsPerformance[i] + " \t firing rate is \t" + (double)fC/gunsFiringTotal);
 			// FIXME: gunsPerformance is not calculated right
 		}
 		logger.routine("Overall guns hit rate = " + overallGunsHitRate() );
