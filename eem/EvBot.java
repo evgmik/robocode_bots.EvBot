@@ -115,6 +115,8 @@ public class EvBot extends AdvancedRobot
 		_radar.initTic();
 		endTime = System.nanoTime();
 		logger.profiler("radar init Tic execution time =         \t\t\t" + (endTime - startTime) + " ns" );
+		//_gmanager.printGunsStats(); // dbg
+		//_botsmanager.printGunsStats(); // dbg
 	}
 
 	public double distTo(double x, double y) {
