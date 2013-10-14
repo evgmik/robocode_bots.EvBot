@@ -114,7 +114,7 @@ public class gunManager {
 		}
 
 
-		_gun = new pifGun(myBot); // dbg/test pif only gun
+		//_gun = new pifGun(myBot); // dbg/test pif only gun
 		_gun.setTargetFuturePosition(myBot._trgt);
 
 		return _gun;
