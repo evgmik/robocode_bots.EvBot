@@ -15,40 +15,57 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.*;
+import java.util.HashMap;
 
 
 public class gunManager {
 	public EvBot myBot;
-	public LinkedList<baseGun> guns;
-	private double[] gunsPerformance;
-	private int nGuns=0;
+	public static HashMap<String, LinkedList<baseGun>> gunSets = new HashMap<String, LinkedList<baseGun>>();
 
 	public gunManager(EvBot bot) {
 		myBot = bot;
+		LinkedList<baseGun> guns;
 		
 		guns = new  LinkedList<baseGun>();
-		guns.add(new baseGun(myBot));
-		guns.add(new linearGun(myBot));
-		guns.add(new randomGun(myBot));
-		guns.add(new pifGun(myBot));
+		guns.add( new linearGun(myBot) );
+		guns.add( new randomGun(myBot) );
+		//guns.add( new pifGun(myBot) ); // FIXME: too slow
+		gunSets.put( "1on1", guns );
 
-		nGuns = guns.size();
-		logger.noise("Number of guns = " + nGuns);
-		gunsPerformance = new double[nGuns];
+		guns = new  LinkedList<baseGun>();
+		guns.add( new linearGun(myBot) );
+		guns.add( new randomGun(myBot) );
+		gunSets.put( "meleeMidle", guns );
 
-	}
+		guns = new  LinkedList<baseGun>();
+		guns.add( new linearGun(myBot) );
+		gunSets.put( "melee", guns );
 
-	public double gunHitRate( baseGun g ) {
-		return g.getGunHitRate();
+		guns = new  LinkedList<baseGun>();
+		guns.add( new baseGun(myBot) );
+		guns.add( new linearGun(myBot) );
+		//guns.add( new pifGun(myBot) ); // FIXME: too slow
+		gunSets.put( "firingAtMyBot", guns );
+
+		guns = new  LinkedList<baseGun>();
+		guns.add( new linearGun(myBot) );
+		gunSets.put( "defaultGun", guns );
+
+		// full known set of my guns
+		//guns = new  LinkedList<baseGun>();
+		//guns.add( new baseGun(myBot) );
+		//guns.add( new linearGun(myBot) );
+		//guns.add( new randomGun(myBot) );
+		//guns.add( new pifGun(myBot) );
+		//gunSets.put( "TEMPLATE", guns );
 	}
 
 	public double overallGunsHitRate(){
 		double hitRate;
 		double firedCount=0;
 		double hitCount=0;
-		baseGun g;
-		for ( int i =0; i < nGuns; i++ ) {
-			g = guns.get(i);
+		LinkedList<baseGun> guns = gunSets.get( myBot.fightType() );
+		for ( baseGun g: guns ) {
 			firedCount += g.getBulletFiredCount();
 			hitCount   += g.getBulletHitCount();
 		} 
@@ -57,78 +74,79 @@ public class gunManager {
 	}
 
 	public double getGunWeightForBot(baseGun gun, InfoBot bot) {
-		baseGun  tmp_gun;
 		double perfNormilizer = 0;
-		double hR = 0;
-		// calculate each gun weight/performance
-		for ( int i =0; i < nGuns; i++ ) {
-			tmp_gun = guns.get(i);
-			hR = tmp_gun.getGunHitRate( bot );
-			logger.noise("Gun[" + tmp_gun.getName() + " ] hit rate = " + hR);
-			perfNormilizer += hR;
+		double perf = 0;
+		// calculate total performance for each weight
+		LinkedList<baseGun> guns = gunSets.get( myBot.fightType() );
+		for ( baseGun tmp_gun: guns ) {
+			perf = tmp_gun.getGunPerformance( bot );
+			logger.noise("Gun[" + tmp_gun.getName() + " ] performance = " + perf);
+			perfNormilizer += perf;
 		} 
 		// normalize gun weights to 1
-		hR = gun.getGunHitRate( bot );
+		perf = gun.getGunPerformance( bot );
 		double weight;
-		weight = hR / perfNormilizer;
+		weight = perf / perfNormilizer;
 		logger.noise("Gun[" + gun.getName() + " ] weight = " + weight);
 		return weight;
 	}
 
-	public void updateGunsWeight() {
-		baseGun  tmp_gun;
-		double perfNormilizer = 0;
-		double perfTmp;
-		// calculate each gun weight/performance
-		for ( int i =0; i < nGuns; i++ ) {
-			tmp_gun = guns.get(i);
-			perfTmp = gunHitRate( tmp_gun );
-			gunsPerformance[i] = perfTmp;
-			logger.noise("Gun[" + guns.get(i).getName() + " ] performance = " + gunsPerformance[i]);
-			perfNormilizer += perfTmp;
-		} 
-		// normilize gun weights to 1
-		for ( int i =0; i < nGuns; i++ ) {
-			gunsPerformance[i] /= perfNormilizer;
-			logger.noise("Gun[" + guns.get(i).getName() + " ] performance = " + gunsPerformance[i]);
-		}
+	public baseGun getDefaultGun(){
+		return  new baseGun(myBot);
 	}
 
-	public baseGun wieghts2gun() {
+	public baseGun weights2gunForBot(InfoBot bot) {
 		double rnd;
+		baseGun g = null;
 		rnd=Math.random();
-		double sumPerformance = 0;
-		baseGun g = new baseGun(myBot);
-		for ( int i =0; i < nGuns; i++ ) {
-			sumPerformance += gunsPerformance[i];
-			if (rnd <= sumPerformance) {
-				g=guns.get(i);
+		
+		double accumWeight = 0;
+		boolean setNewGun = false;
+		LinkedList<baseGun> guns = gunSets.get( myBot.fightType() );
+		for ( baseGun tmp_gun: guns ) {
+			accumWeight += getGunWeightForBot( tmp_gun,  bot );
+			if ( rnd <= accumWeight ) {
+				g=tmp_gun;
+				setNewGun = true;
 				break;
 			}
 		}
+		if ( !setNewGun ) {
+			logger.warning("Improbable happens: rnd == 1, assigning default gun");
+			g = getDefaultGun();
+		}
+
 		return g;
 	}
 
 	public baseGun choseGun() {
 		double rnd;
 		baseGun _gun = myBot.getGun();
+		baseGun new_gun = null;
 		// let's choose the gun if gun is fired
 		if ( _gun.isGunFired() ) {
 			_gun.gunFired = false;
 			logger.noise("new choice of gun instead of old " + _gun.getName());
-			_gun = new linearGun(myBot); //default gun
-			if ( (1< myBot.getOthers() ) && (myBot.getOthers() < 3 ) ) {
+			if ( myBot.fightType().equals("melee") ) {
+				new_gun = new linearGun(myBot); //default gun
+			}
+			if ( myBot.fightType().equals("meleeMidle") ) {
+				new_gun = new linearGun(myBot); //default gun
 				// only survivors are smart and we had to do random gun
 				rnd=Math.random();
 				if ( rnd > 0.5 ) { 
-					_gun = new randomGun(myBot);
+					new_gun = new randomGun(myBot);
 				}
 			}
-			if (myBot.getOthers() == 1 ) {
+			if ( myBot.fightType().equals("1on1") ) {
 				// performance based guns
-				updateGunsWeight();
-				_gun = wieghts2gun();
+				new_gun = weights2gunForBot(myBot._trgt);
 			}
+			if ( new_gun == null ) {
+				new_gun = new linearGun(myBot); //default gun
+				logger.error("This should not happen: we did not chose a gun");
+			}
+			_gun = new_gun;
 			logger.noise("Gun choice = " + _gun.getName());
 		}
 
@@ -164,8 +182,8 @@ public class gunManager {
 		logger.routine("----------------" );
 		int hCt = 0;
 		int fCt = 0;
-		for ( int i =0; i < nGuns; i++ ) {
-			baseGun tmp_gun = guns.get(i);
+		LinkedList<baseGun> guns = gunSets.get( myBot.fightType() );
+		for ( baseGun tmp_gun: guns ) {
 			String botName = tmp_gun.getName();
 			int hC = tmp_gun.getBulletHitCount(bot);
 			hCt += hC;
@@ -185,22 +203,19 @@ public class gunManager {
 	}
 
 	public void printGunsStats() {
-		baseGun  tmp_gun = null;
-		ListIterator<baseGun> gLIter = guns.listIterator();
 		LinkedList<InfoBot> botsList = myBot._botsmanager.listOfKnownBots();
-
-		updateGunsWeight();
 		int gunsFiringTotal=0;
 
-		for ( int i =0; i < nGuns; i++ ) {
+		LinkedList<baseGun> guns = gunSets.get( myBot.fightType() );
+		for ( baseGun tmp_gun: guns ) {
 			for ( InfoBot bot: botsList ) {
-				tmp_gun = guns.get(i);
 				gunsFiringTotal += tmp_gun.getBulletFiredCount(bot);
 			}
 		}
 
 		logger.routine("-------------------------------------------------------" );
 		logger.routine("Gun stats for " + myBot.getName() );
+		logger.routine("Fight type: " + myBot.fightType() );
 		logger.routine("-------------------------------------------------------" );
 		for ( InfoBot bot: botsList ) {
 			printGunsStatsForTarget(bot);
@@ -209,8 +224,7 @@ public class gunManager {
 		logger.routine("-------------------------------------------------------" );
 		logger.routine("Summary for each gun" );
 		logger.routine("-------------------------------------------------------" );
-		for ( int i =0; i < nGuns; i++ ) {
-			tmp_gun = guns.get(i);
+		for ( baseGun tmp_gun: guns ) {
 			int hC = totalGunHitCount(tmp_gun);
 			int fC = totalGunFiredCount(tmp_gun);
 			// firing rate

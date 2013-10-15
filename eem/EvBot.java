@@ -29,6 +29,7 @@ public class EvBot extends AdvancedRobot
 	public int robotHalfSize = 18;
 	public long ticTime;
 	int nonexisting_coord = -10000;
+	public int totalNumOfEnemiesAtStart = 0;
 
 	private botVersion botVer;
 	public target _trgt;
@@ -60,6 +61,8 @@ public class EvBot extends AdvancedRobot
 		setColors(Color.red,Color.blue,Color.green);
 		botVer = new botVersion();
 
+		totalNumOfEnemiesAtStart = getOthers();
+
 		_trgt = new target();
 		_gun = new linearGun(this);
 		_radar = new radar(this);
@@ -78,7 +81,7 @@ public class EvBot extends AdvancedRobot
 
 		ticTime = getTime();
 
-		logger.noise("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
+		logger.dbg("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
 		logger.profiler("===> time between initTics =        \t\t\t" + ( startTime - initTicStartTime ) + " ns" );
 		initTicStartTime = startTime;
 		logger.noise("Game time: " + ticTime);
@@ -115,8 +118,17 @@ public class EvBot extends AdvancedRobot
 		_radar.initTic();
 		endTime = System.nanoTime();
 		logger.profiler("radar init Tic execution time =         \t\t\t" + (endTime - startTime) + " ns" );
-		//_gmanager.printGunsStats(); // dbg
+		_gmanager.printGunsStats(); // dbg
 		//_botsmanager.printGunsStats(); // dbg
+	}
+
+	public String fightType() {
+		double survRatio = 1.0*getOthers()/totalNumOfEnemiesAtStart;
+		if ( getOthers() == 1 )
+			return "1on1";
+		if ( survRatio > 2/3 )
+			return "melee";
+		return "meleeMidle";
 	}
 
 	public double distTo(double x, double y) {

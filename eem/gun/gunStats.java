@@ -41,6 +41,10 @@ public class gunStats {
 	}
 
 	public double getGunHitRate() {
+		return (this.getBulletHitCount() ) / (this.getBulletFiredCount() + 1.0);
+	}
+
+	public double getGunPerformance() {
 		return (this.getBulletHitCount() + 1.0) / (this.getBulletFiredCount() + 1.0);
 	}
 

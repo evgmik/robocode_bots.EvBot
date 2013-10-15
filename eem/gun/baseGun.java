@@ -140,6 +140,24 @@ public class baseGun {
 		return getGunHitRate(myBot._trgt, myBot._tracker);
 	}
 
+	public double getGunPerformance(InfoBot targetBot, InfoBot firingBot) {
+		String key = this.buildMapKey( targetBot, firingBot);
+		gunStats gS = mapOfGunStats.get(key);
+		if (gS == null) {
+			gS = new gunStats();
+			mapOfGunStats.put(key,gS);
+		}
+		return gS.getGunPerformance();
+	}
+
+	public double getGunPerformance(InfoBot targetBot) {
+		return getGunPerformance(targetBot, myBot._tracker);
+	}
+
+	public double getGunPerformance() {
+		return getGunPerformance(myBot._trgt, myBot._tracker);
+	}
+
 	public baseGun() {
 	}
 

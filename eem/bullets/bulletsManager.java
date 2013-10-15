@@ -32,20 +32,15 @@ public class  bulletsManager {
 	}
 
 	public void add_enemy_bullet(InfoBot firedBot) {
-		baseGun eG = new baseGun(myBot);
-		eG.incBulletFiredCount(myBot._tracker, firedBot);
+		baseGun eGun = new baseGun(myBot);
+		eGun.incBulletFiredCount(myBot._tracker, firedBot);
 		firedBullet b;
-		// baseGun (head on)
-		b = new firedBullet( myBot, firedBot,  new baseGun(myBot), firedBot.energyDrop() );
-		bullets.add(b);
 
-		// linearGun
-		b = new firedBullet( myBot, firedBot,  new linearGun(myBot), firedBot.energyDrop() );
-		bullets.add(b);
-
-		// pifGun
-		b = new firedBullet( myBot, firedBot,  new pifGun(myBot), firedBot.energyDrop() );
-		bullets.add(b);
+		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( "firingAtMyBot" );
+		for ( baseGun g: guns ) {
+			b = new firedBullet( myBot, firedBot,  g, firedBot.energyDrop() );
+			bullets.add(b);
+		}
 	}
 
 	public void add_enemy_bullet() {
