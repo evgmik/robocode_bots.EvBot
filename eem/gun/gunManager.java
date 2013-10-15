@@ -69,7 +69,7 @@ public class gunManager {
 			firedCount += g.getBulletFiredCount();
 			hitCount   += g.getBulletHitCount();
 		} 
-		hitRate = (hitCount + 1) / (firedCount + 1);
+		hitRate = math.eventRate( hitCount, firedCount );
 		return hitRate;
 	}
 
@@ -158,6 +158,63 @@ public class gunManager {
 
 	}
 
+	public int totalBotHitCount(InfoBot bot) {
+		LinkedList<baseGun> guns = gunSets.get( myBot.fightType() );
+		int cnt = 0;
+		for ( baseGun tmp_gun: guns ) {
+			cnt += tmp_gun.getBulletHitCount( bot );
+		}
+		return cnt;
+	}
+
+	public int totalBotFiredCount(InfoBot bot) {
+		LinkedList<baseGun> guns = gunSets.get( myBot.fightType() );
+		int cnt = 0;
+		for ( baseGun tmp_gun: guns ) {
+			cnt += tmp_gun.getBulletFiredCount( bot );
+		}
+		return cnt;
+	}
+
+	public double botAsTargetWeight(InfoBot bot) {
+		LinkedList<InfoBot> botsList = myBot._botsmanager.listOfAliveBots();
+		// is this bot alive?
+		boolean statusDead = true;
+		for ( InfoBot tmp_bot: botsList ) {
+			if (bot.getName().equals( tmp_bot.getName() ) ) {
+				statusDead = false;
+				break;
+			}
+		}
+		if ( statusDead ) return 0;
+
+		// for alive bot return normalized weight
+		double weightNorm = 0;
+		for ( InfoBot tmp_bot: botsList ) {
+			weightNorm += math.perfRate( totalBotHitCount( tmp_bot ), totalBotFiredCount( tmp_bot ) );
+		}
+		return  math.perfRate( totalBotHitCount( bot ), totalBotFiredCount( bot ) )/ weightNorm;
+	}
+
+	public InfoBot theBestTarget() {
+		LinkedList<InfoBot> botsList = myBot._botsmanager.listOfAliveBots();
+		InfoBot trgt = null;
+
+		// do we have any candidates in the list of alive bots?
+		if ( botsList.size() == 0 ) return trgt;
+
+		double maxWeight = -10; // something  smaller than 0
+		double w;
+		for ( InfoBot tmp_bot: botsList ) {
+			w = botAsTargetWeight( tmp_bot);
+			if ( w > maxWeight ) {
+				trgt = tmp_bot;
+				maxWeight = w;
+			}
+		}
+		return trgt;
+	}
+
 	public int totalGunHitCount(baseGun gun) {
 		LinkedList<InfoBot> botsList = myBot._botsmanager.listOfKnownBots();
 		int gCount = 0;
@@ -197,9 +254,10 @@ public class gunManager {
 			str += "\t gun weight is \t" + weight;
 			logger.routine(str);
 		}
-		double hProb = 1.0*hCt/Math.max(fCt,1);
 		logger.routine("---" );
+		double hProb = math.eventRate( totalBotHitCount( bot ), totalBotFiredCount( bot ) );
 		logger.routine(hProb + " probability to hit bot " + bot.getName() ); 
+		logger.routine( botAsTargetWeight( bot ) + " weight as a target of bot " + bot.getName() ); 
 	}
 
 	public void printGunsStats() {
@@ -220,18 +278,26 @@ public class gunManager {
 		for ( InfoBot bot: botsList ) {
 			printGunsStatsForTarget(bot);
 		}
+		logger.routine("-------------------------------------------------------" );
+		String theBestTargetName;
+		if ( theBestTarget() == null ) {
+			theBestTargetName = "Yet to find";
+		} else {
+			theBestTargetName = theBestTarget().getName();
+		}
+		logger.routine(" ==> Overall best target: " + theBestTargetName );
+		logger.routine("-------------------------------------------------------" );
 
 		logger.routine("-------------------------------------------------------" );
-		logger.routine("Summary for each gun" );
+		logger.routine("Summary for each gun at this stage across this game" );
 		logger.routine("-------------------------------------------------------" );
 		for ( baseGun tmp_gun: guns ) {
 			int hC = totalGunHitCount(tmp_gun);
 			int fC = totalGunFiredCount(tmp_gun);
 			// firing rate
-			double fR = (double)fC/Math.max(gunsFiringTotal,1);
+			double fR = math.eventRate( fC, gunsFiringTotal );
 			String fRstr = String.format("%.2f", fR );
 			logger.routine("Gun[ " + tmp_gun.getName()+"\t] hit target \t" + hC + "\t and was fired \t" + fC + " \t firing rate is \t" + (double)fC/gunsFiringTotal);
-			// FIXME: gunsPerformance is not calculated right
 		}
 		logger.routine("-------------------------------------------------------" );
 		logger.routine("Overall guns hit rate = " + overallGunsHitRate() );

@@ -64,6 +64,17 @@ public class math {
 		return false;
 	}
 
+	public static double eventRate(double nEvents, double nTotal) {
+		return nEvents / Math.max( nTotal, 1 );
+	}
+
+	public static double perfRate(double nEvents, double nTotal) {
+		// forgiveness is to boost trials which not yet sampled
+		// otherwise any event which happened saturate not yet triggered 
+		double forgiveness = 1;
+		return (nEvents + forgiveness ) / ( nTotal + forgiveness );
+	}
+
 	public static Point2D.Double putWithinBorders( Point2D.Double pnt, Point2D.Double brdr) {
 		Point2D.Double npnt= new Point2D.Double( pnt.x, pnt.y );
 		npnt.x = putWithinRange( npnt.x, 0, brdr.x);
