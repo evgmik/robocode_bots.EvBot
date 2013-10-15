@@ -1,0 +1,6 @@
+This is to keep truck of the best performing bot versions
+
+Melee: v3.9.4 <== APS = 58.9
+1on1 : v4.1.1 <== APS = 54.15
+
+
