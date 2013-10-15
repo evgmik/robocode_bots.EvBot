@@ -1,0 +1,5 @@
+* fix: remove probabilistic choice of random gun.
+* feature: make pifGun faster - keep track of known pattern and iterate from them
+* feature: make target choice based on distance AND hit weight probability
+
+
