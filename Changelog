@@ -1,4 +1,9 @@
-= Version  4.2.4 =
+= Version  4.2.5 =
+
+In each fight style guns chosen according to probability to hit a bot with
+this gun
+
+= Version  4.2.4 unreleased =
 
 Explicit sets of guns for 1on1, melee, and melee Midle battle type.
 Disabled pifGun for now since it is too slow.
