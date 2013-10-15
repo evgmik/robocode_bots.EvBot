@@ -49,14 +49,27 @@ public class  botsManager {
 
 	public LinkedList<InfoBot> listOfKnownBots() {
 		LinkedList<InfoBot> l = new LinkedList<InfoBot>();
+		l.addAll( listOfAliveBots() );
+		l.addAll( listOfDeadBots() );
+		return l;
+	}
+
+	public LinkedList<InfoBot> listOfAliveBots() {
+		LinkedList<InfoBot> l = new LinkedList<InfoBot>();
 		for (InfoBot bot : bots.values()) {
 			l.add(bot);
 		}
+		return l;
+	}
+
+	public LinkedList<InfoBot> listOfDeadBots() {
+		LinkedList<InfoBot> l = new LinkedList<InfoBot>();
 		for (InfoBot bot : deadBots.values()) {
 			l.add(bot);
 		}
 		return l;
 	}
+
 
 	public void onRobotDeath(RobotDeathEvent e) {
 		String botName = e.getName();
