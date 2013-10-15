@@ -1,3 +1,4 @@
+* fix: do proper switch of target not only its name
 * feature: make pifGun faster - keep track of known pattern and iterate from them
 * feature: make target choice based on distance AND hit weight probability
 
