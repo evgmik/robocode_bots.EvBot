@@ -229,7 +229,9 @@ public class InfoBot {
 		} else {
 			strL = "Last: unknown";
 		}
+		int statSize = botStats.size();
 		str = "Target bot name: " + getName() + "\n" + strL + "\n" + strP;
+		str += "\n stats size " + statSize;
 		return str;
 	}
 
