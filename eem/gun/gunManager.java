@@ -95,14 +95,14 @@ public class gunManager {
 		return  new baseGun(myBot);
 	}
 
-	public baseGun weights2gunForBot(InfoBot bot) {
+	public baseGun weights2gunForBot( InfoBot bot, String fightTypeStr ) {
 		double rnd;
 		baseGun g = null;
 		rnd=Math.random();
 		
 		double accumWeight = 0;
 		boolean setNewGun = false;
-		LinkedList<baseGun> guns = gunSets.get( myBot.fightType() );
+		LinkedList<baseGun> guns = gunSets.get( fightTypeStr );
 		for ( baseGun tmp_gun: guns ) {
 			accumWeight += getGunWeightForBot( tmp_gun,  bot );
 			if ( rnd <= accumWeight ) {
@@ -119,6 +119,10 @@ public class gunManager {
 		return g;
 	}
 
+	public baseGun weights2gunForBot(InfoBot bot) {
+		return  weights2gunForBot( bot, myBot.fightType() );
+	}
+
 	public baseGun choseGun() {
 		double rnd;
 		baseGun _gun = myBot.getGun();
@@ -127,24 +131,10 @@ public class gunManager {
 		if ( _gun.isGunFired() ) {
 			_gun.gunFired = false;
 			logger.noise("new choice of gun instead of old " + _gun.getName());
-			if ( myBot.fightType().equals("melee") ) {
-				new_gun = new linearGun(myBot); //default gun
-			}
-			if ( myBot.fightType().equals("meleeMidle") ) {
-				new_gun = new linearGun(myBot); //default gun
-				// only survivors are smart and we had to do random gun
-				rnd=Math.random();
-				if ( rnd > 0.5 ) { 
-					new_gun = new randomGun(myBot);
-				}
-			}
-			if ( myBot.fightType().equals("1on1") ) {
-				// performance based guns
-				new_gun = weights2gunForBot(myBot._trgt);
-			}
+			new_gun = weights2gunForBot(myBot._trgt);
 			if ( new_gun == null ) {
-				new_gun = new linearGun(myBot); //default gun
-				logger.error("This should not happen: we did not chose a gun");
+				logger.warning("This should not happen: we did not chose a gun");
+				new_gun = getDefaultGun(); //default gun
 			}
 			_gun = new_gun;
 			logger.noise("Gun choice = " + _gun.getName());
