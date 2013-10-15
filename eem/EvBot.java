@@ -229,10 +229,6 @@ public class EvBot extends AdvancedRobot
 		_trgt = _trgt.update( new botStatPoint(this, e));
 		logger.noise(_trgt.format());
 
-		// show scanned bot path
-		PaintRobotPath.onPaint(getGraphics(), e.getName(), getTime(), _trgt.getX(), _trgt.getY(), Color.YELLOW);
-
-
 		_radar.setMovingRadarToLastKnownTargetLocation(false);
 		//radarSpinDirection=1;
 		//_trgt.targetUnlocked = true;
