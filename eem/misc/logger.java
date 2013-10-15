@@ -5,7 +5,8 @@ public class logger {
 	// logger staff
 	// debug levels
 	public final static int log_important=0;
-	public final static int log_error=3;
+	public final static int log_error=2;
+	public final static int log_warning=3;
 	public final static int log_profiler=11;
 	public final static int log_routine=4;
 	public final static int log_debuging=5;
@@ -24,6 +25,9 @@ public class logger {
 			System.out.println(s);
 	}
 
+	public static void warning(String s) {
+		log_message(log_warning, s);
+	}
 	public static void noise(String s) {
 		log_message(log_noise, s);
 	}
