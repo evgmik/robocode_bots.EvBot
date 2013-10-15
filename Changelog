@@ -1,3 +1,10 @@
+= Version  4.2.4 =
+
+Explicit sets of guns for 1on1, melee, and melee Midle battle type.
+Disabled pifGun for now since it is too slow.
+Improvements in the gun stats output.
+Preliminary work to make target choice based on relative hit rates.
+
 = Version  4.2.3 =
 
 The pattern search depth is limited to constrain the time per turn and avoid
