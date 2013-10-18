@@ -321,6 +321,8 @@ public class gunManager {
 		if ( botsList.size() >= 1 ) {
 			logger.routine("------ Gun Stats for Dead  bots ------------------------" );
 			printGunsStatsForBotsList(myBot._botsmanager.listOfDeadBots());
+			logger.routine("------ Gun Stats for Alive bots ------------------------" );
+			printGunsStatsForBotsList(myBot._botsmanager.listOfAliveBots());
 		}
 
 		logger.routine("-------------------------------------------------------" );
