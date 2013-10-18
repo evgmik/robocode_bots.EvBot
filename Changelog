@@ -1,3 +1,8 @@
+= Version  4.2.6 =
+
+Random gun switches on only in 1 on 1 fight, otherwise I use only linear
+Improved gun stats output
+
 = Version  4.2.5 =
 
 In each fight style guns chosen according to probability to hit a bot with
