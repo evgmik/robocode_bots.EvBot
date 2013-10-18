@@ -4,4 +4,7 @@
 * tune distToProbe in danger map it looks like changing it from 50 to 100 increases
   1on1 score 
 
+* look at v3.9.4  and see how come it performs so good in melee, with it unsophisticated
+  motion algorithm and lack of enemy bullets avoidance
+
 
