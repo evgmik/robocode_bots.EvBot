@@ -283,6 +283,7 @@ public class gunManager {
 	public void printGunsStatsRoundRelated() {
 		LinkedList<InfoBot> botsList;
 		logger.routine("-------------------------------------------------------" );
+		logger.routine("Fight type: " + myBot.fightType() );
 		botsList = myBot._botsmanager.listOfDeadBots();
 		if ( botsList.size() >= 1 ) {
 			logger.routine("------ Gun Stats for Dead  bots ------------------------" );
@@ -315,10 +316,12 @@ public class gunManager {
 
 		logger.routine("-------------------------------------------------------" );
 		logger.routine("Gun stats for " + myBot.getName() );
-		logger.routine("Fight type: " + myBot.fightType() );
 		logger.routine("-------------------------------------------------------" );
-		printGunsStatsRoundRelated();
 
+		if ( botsList.size() >= 1 ) {
+			logger.routine("------ Gun Stats for Dead  bots ------------------------" );
+			printGunsStatsForBotsList(myBot._botsmanager.listOfDeadBots());
+		}
 
 		logger.routine("-------------------------------------------------------" );
 		logger.routine("Summary for each gun at this stage across this game" );
