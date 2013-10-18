@@ -39,7 +39,7 @@ public class gunManager {
 
 		guns = new  LinkedList<baseGun>();
 		guns.add( new linearGun(myBot) );
-		guns.add( new randomGun(myBot) );
+		//guns.add( new randomGun(myBot) );
 		fightType = "meleeMidle";
 		gunSets.put( fightType, guns );
 		myFightTypes.add( fightType );
