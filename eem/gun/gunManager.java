@@ -21,6 +21,7 @@ import java.util.HashMap;
 public class gunManager {
 	public EvBot myBot;
 	public static HashMap<String, LinkedList<baseGun>> gunSets = new HashMap<String, LinkedList<baseGun>>();
+	public static HashMap<String, baseGun> allUsedByMyBotGuns = new HashMap<String, baseGun>();
 
 	public gunManager(EvBot bot) {
 		myBot = bot;
@@ -58,16 +59,22 @@ public class gunManager {
 		//guns.add( new randomGun(myBot) );
 		//guns.add( new pifGun(myBot) );
 		//gunSets.put( "TEMPLATE", guns );
+
+		for ( String fightType : gunSets.keySet() ) {
+		       guns = gunSets.get( fightType );
+		       for ( baseGun g : guns) {
+			       allUsedByMyBotGuns.put( g.getName(), g );
+		       }
+		}
 	}
 
 	public double overallGunsHitRate(){
 		double hitRate;
-		double firedCount=0;
-		double hitCount=0;
-		LinkedList<baseGun> guns = gunSets.get( myBot.fightType() );
-		for ( baseGun g: guns ) {
-			firedCount += g.getBulletFiredCount();
-			hitCount   += g.getBulletHitCount();
+		int firedCount=0;
+		int hitCount=0;
+		for ( baseGun g: allUsedByMyBotGuns.values() ) {
+			firedCount += totalGunFiredCount( g );
+			hitCount   += totalGunHitCount( g );
 		} 
 		hitRate = math.eventRate( hitCount, firedCount );
 		return hitRate;
@@ -229,19 +236,25 @@ public class gunManager {
 		logger.routine("----------------" );
 		int hCt = 0;
 		int fCt = 0;
-		LinkedList<baseGun> guns = gunSets.get( myBot.fightType() );
-		for ( baseGun tmp_gun: guns ) {
-			String botName = tmp_gun.getName();
+		LinkedList<baseGun> activeGuns = gunSets.get( myBot.fightType() );
+		LinkedList<String> activeGunsNames = new LinkedList<String>();
+		for ( baseGun tmp_gun: activeGuns ) {
+			activeGunsNames.add( tmp_gun.getName() );
+		}
+		for ( baseGun tmp_gun: allUsedByMyBotGuns.values()  ) {
+			String gunName = tmp_gun.getName();
 			int hC = tmp_gun.getBulletHitCount(bot);
 			hCt += hC;
 			int fC = tmp_gun.getBulletFiredCount(bot);
 			fCt += fC;
 			double weight = getGunWeightForBot(tmp_gun, bot);
 			String str = "";
-			str += "gun[ " + botName + "\t]";
+			str += "gun[ " + gunName + "\t]";
 			str += " hit target \t" + hC;
 			str += "\t and was fired \t" + fC;
-			str += "\t gun weight is \t" + weight;
+			if ( activeGunsNames.contains( gunName ) ) {
+				str += "\t gun weight is \t" + weight;
+			}
 			logger.routine(str);
 		}
 		logger.routine("---" );
@@ -250,38 +263,62 @@ public class gunManager {
 		logger.routine( botAsTargetWeight( bot ) + " weight as a target of bot " + bot.getName() ); 
 	}
 
-	public void printGunsStats() {
-		LinkedList<InfoBot> botsList = myBot._botsmanager.listOfKnownBots();
-		int gunsFiringTotal=0;
-
-		LinkedList<baseGun> guns = gunSets.get( myBot.fightType() );
-		for ( baseGun tmp_gun: guns ) {
-			for ( InfoBot bot: botsList ) {
-				gunsFiringTotal += tmp_gun.getBulletFiredCount(bot);
-			}
-		}
-
-		logger.routine("-------------------------------------------------------" );
-		logger.routine("Gun stats for " + myBot.getName() );
-		logger.routine("Fight type: " + myBot.fightType() );
-		logger.routine("-------------------------------------------------------" );
+	public void printGunsStatsForBotsList( LinkedList<InfoBot> botsList ) {
 		for ( InfoBot bot: botsList ) {
 			printGunsStatsForTarget(bot);
 		}
+	}
+
+	public void printGunsStatsRoundRelated() {
+		LinkedList<InfoBot> botsList;
 		logger.routine("-------------------------------------------------------" );
+		botsList = myBot._botsmanager.listOfDeadBots();
+		if ( botsList.size() >= 1 ) {
+			logger.routine("------ Gun Stats for Dead  bots ------------------------" );
+			printGunsStatsForBotsList(myBot._botsmanager.listOfDeadBots());
+		}
+		botsList = myBot._botsmanager.listOfAliveBots();
+		if ( botsList.size() >= 1 ) {
+			logger.routine("------ Gun Stats for Alive bots ------------------------" );
+			printGunsStatsForBotsList(myBot._botsmanager.listOfAliveBots());
+		}
+
+		printGunsBestTarget();
+	}
+
+	public void printGunsBestTarget() {
 		String theBestTargetName;
+		logger.routine("-------------------------------------------------------" );
 		if ( theBestTarget() == null ) {
 			theBestTargetName = "Yet to find";
 		} else {
 			theBestTargetName = theBestTarget().getName();
 		}
 		logger.routine(" ==> Overall best target: " + theBestTargetName );
+	}
+
+	public void printGunsStats() {
+		LinkedList<InfoBot> botsList = myBot._botsmanager.listOfKnownBots();
+		int gunsFiringTotal=0;
+
+
 		logger.routine("-------------------------------------------------------" );
+		logger.routine("Gun stats for " + myBot.getName() );
+		logger.routine("Fight type: " + myBot.fightType() );
+		logger.routine("-------------------------------------------------------" );
+		printGunsStatsRoundRelated();
+
 
 		logger.routine("-------------------------------------------------------" );
 		logger.routine("Summary for each gun at this stage across this game" );
 		logger.routine("-------------------------------------------------------" );
-		for ( baseGun tmp_gun: guns ) {
+		for ( baseGun tmp_gun: allUsedByMyBotGuns.values() ) {
+			for ( InfoBot bot: botsList ) {
+				gunsFiringTotal += tmp_gun.getBulletFiredCount(bot);
+			}
+		}
+
+		for ( baseGun tmp_gun: allUsedByMyBotGuns.values() ) {
 			int hC = totalGunHitCount(tmp_gun);
 			int fC = totalGunFiredCount(tmp_gun);
 			// firing rate
