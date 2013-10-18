@@ -1,5 +1,7 @@
 * fix: do proper switch of target not only its name
 * feature: make pifGun faster - keep track of known pattern and iterate from them
 * feature: make target choice based on distance AND hit weight probability
+* tune distToProbe in danger map it looks like changing it from 50 to 100 increases
+  1on1 score 
 
 
