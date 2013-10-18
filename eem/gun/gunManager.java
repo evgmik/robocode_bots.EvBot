@@ -26,21 +26,29 @@ public class gunManager {
 	public gunManager(EvBot bot) {
 		myBot = bot;
 		LinkedList<baseGun> guns;
+		LinkedList<String> myFightTypes= new  LinkedList<String>();
+		String fightType;
 		
 		guns = new  LinkedList<baseGun>();
 		guns.add( new linearGun(myBot) );
 		guns.add( new randomGun(myBot) );
 		//guns.add( new pifGun(myBot) ); // FIXME: too slow
-		gunSets.put( "1on1", guns );
+		fightType = "1on1";
+		gunSets.put( fightType, guns );
+		myFightTypes.add( fightType );
 
 		guns = new  LinkedList<baseGun>();
 		guns.add( new linearGun(myBot) );
 		guns.add( new randomGun(myBot) );
-		gunSets.put( "meleeMidle", guns );
+		fightType = "meleeMidle";
+		gunSets.put( fightType, guns );
+		myFightTypes.add( fightType );
 
 		guns = new  LinkedList<baseGun>();
 		guns.add( new linearGun(myBot) );
-		gunSets.put( "melee", guns );
+		fightType = "melee";
+		gunSets.put( fightType, guns );
+		myFightTypes.add( fightType );
 
 		guns = new  LinkedList<baseGun>();
 		guns.add( new baseGun(myBot) );
@@ -50,7 +58,9 @@ public class gunManager {
 
 		guns = new  LinkedList<baseGun>();
 		guns.add( new linearGun(myBot) );
-		gunSets.put( "defaultGun", guns );
+		fightType = "defaultGun";
+		gunSets.put( fightType, guns );
+		myFightTypes.add( fightType );
 
 		// full known set of my guns
 		//guns = new  LinkedList<baseGun>();
@@ -60,8 +70,9 @@ public class gunManager {
 		//guns.add( new pifGun(myBot) );
 		//gunSets.put( "TEMPLATE", guns );
 
-		for ( String fightType : gunSets.keySet() ) {
-		       guns = gunSets.get( fightType );
+		
+		for ( String fType : myFightTypes ) {
+		       guns = gunSets.get( fType );
 		       for ( baseGun g : guns) {
 			       allUsedByMyBotGuns.put( g.getName(), g );
 		       }
