@@ -39,9 +39,11 @@ public class  botsManager {
 		logger.routine("-------------------------------------------------------" );
 		logger.routine("Summary for enemies guns" );
 		logger.routine("-------------------------------------------------------" );
+		logger.routine("--- Alive bots ---" );
 		for (InfoBot bot : bots.values()) {
 			bot.printGunsStats();
 		}
+		logger.routine("--- Dead bots ---" );
 		for (InfoBot bot : deadBots.values()) {
 			bot.printGunsStats();
 		}
