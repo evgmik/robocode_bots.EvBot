@@ -401,18 +401,20 @@ public class InfoBot {
 	}
 
 	public void drawBotPath(Graphics2D g) {
-		Point2D.Double pLast;
-		Point2D.Double pPrev;
+		botStatPoint  bsLast;
+		botStatPoint  bsPrev;
 		ListIterator<botStatPoint> bLIter = botStats.listIterator(botStats.size());
 		if (bLIter.hasPrevious()) {
-			pLast = bLIter.previous().getPosition();
+			bsLast = bLIter.previous();
 		} else {
 			return;
 		}
 		while (bLIter.hasPrevious()) {
-			pPrev = bLIter.previous().getPosition();
-			graphics.drawLine( g, pLast, pPrev );
-			pLast = pPrev;
+			bsPrev = bLIter.previous();
+			if ( bsLast.getTimeStamp() <= bsPrev.getTimeStamp() ) 
+				return; // we see previous round point
+			graphics.drawLine( g, bsLast.getPosition(), bsPrev.getPosition() );
+			bsLast = bsPrev;
 		}
 
 	}
