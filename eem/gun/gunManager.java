@@ -280,7 +280,7 @@ public class gunManager {
 		}
 	}
 
-	public void printGunsStatsRoundRelated() {
+	public void printGunsStatsTicRelated() {
 		LinkedList<InfoBot> botsList;
 		logger.routine("-------------------------------------------------------" );
 		logger.routine("Fight type: " + myBot.fightType() );

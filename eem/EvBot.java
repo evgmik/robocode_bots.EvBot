@@ -120,7 +120,7 @@ public class EvBot extends AdvancedRobot
 		logger.profiler("radar init Tic execution time =         \t\t\t" + (endTime - startTime) + " ns" );
 
 		//_gmanager.printGunsStats(); // dbg
-		//_gmanager.printGunsStatsRoundRelated(); // dbg
+		//_gmanager.printGunsStatsTicRelated(); // dbg
 		//_botsmanager.printGunsStats(); // dbg
 	}
 
