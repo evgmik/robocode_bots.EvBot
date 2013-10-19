@@ -184,6 +184,8 @@ public class EvBot extends AdvancedRobot
 			long startTime;
 			initTic() ;
 
+			_trgt = _botsmanager.choseTarget() ;
+
 			if (_trgt.haveTarget) {
 				_gun=_gmanager.choseGun();
 			}
@@ -226,10 +228,12 @@ public class EvBot extends AdvancedRobot
 			return; 
 		}
 
-		_trgt = new target(_botsmanager.getBotByName(e.getName()));
+		//_trgt = new target(_botsmanager.getBotByName(e.getName()));
 		logger.noise(_trgt.format());
 
-		_radar.setMovingRadarToLastKnownTargetLocation(false);
+		if ( e.getName().equals( _trgt.getName() ) ) {
+			_radar.setMovingRadarToLastKnownTargetLocation(false);
+		}
 		//radarSpinDirection=1;
 		//_trgt.targetUnlocked = true;
 		logger.noise("Target seen during radar sweep");
