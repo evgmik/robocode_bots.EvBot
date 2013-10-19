@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.*;
 import java.lang.Integer;
+import robocode.*;
 
 public class InfoBot {
 	protected String name = "";
@@ -396,7 +397,8 @@ public class InfoBot {
 	public void drawLastKnownBotPosition(Graphics2D g) {
 		if ( hasLast() ) {
 			double size = 50;
-			graphics.drawSquare( g, getLast().getPosition(), size );
+			botStatPoint  bsLast = getLast();
+			graphics.drawSquare( g, bsLast.getPosition(), size );
 		}
 	}
 
