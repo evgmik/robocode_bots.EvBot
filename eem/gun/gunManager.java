@@ -105,7 +105,7 @@ public class gunManager {
 		perf = gun.getGunPerformance( bot );
 		double weight;
 		weight = perf / perfNormilizer;
-		logger.noise("Gun[" + gun.getName() + " ] weight = " + weight);
+		logger.noise("Gun[" + gun.getName() + " ] weight = " + logger.shortFormatDouble( weight ) );
 		return weight;
 	}
 
@@ -264,14 +264,14 @@ public class gunManager {
 			str += " hit target \t" + hC;
 			str += "\t and was fired \t" + fC;
 			if ( activeGunsNames.contains( gunName ) ) {
-				str += "\t gun weight is \t" + weight;
+				str += "\t gun weight is \t" + logger.shortFormatDouble( weight );
 			}
 			logger.routine(str);
 		}
 		logger.routine("---" );
 		double hProb = math.eventRate( totalBotHitCount( bot ), totalBotFiredCount( bot ) );
-		logger.routine(hProb + " probability to hit bot " + bot.getName() ); 
-		logger.routine( botAsTargetWeight( bot ) + " weight as a target of bot " + bot.getName() ); 
+		logger.routine(logger.shortFormatDouble( hProb ) + " probability to hit bot " + bot.getName() ); 
+		logger.routine( logger.shortFormatDouble( botAsTargetWeight( bot ) ) + " weight as a target of bot " + bot.getName() ); 
 	}
 
 	public void printGunsStatsForBotsList( LinkedList<InfoBot> botsList ) {
