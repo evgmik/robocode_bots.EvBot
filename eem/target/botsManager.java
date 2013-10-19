@@ -47,6 +47,24 @@ public class  botsManager {
 		return b;
 	}
 
+	public target choseTarget() {
+		target trgt = myBot._trgt;
+		double dist2target = trgt.getLastDistance( myBot.myCoord );
+		double dist2bot = 0;
+		
+		for (InfoBot bot : bots.values()) {
+			if ( bot.getName().equals( trgt.getName() ) )
+				continue; // bit is the same as target
+			dist2bot = bot.getLastDistance( myBot.myCoord );
+			if ( dist2bot < dist2target ) {
+				dist2target = dist2bot;
+				trgt = new target(bot);
+				logger.noise("new target " + trgt.getName() );
+			}
+		}
+		return trgt;
+	}
+
 	public void initTic(long ticTime) {
 		for (InfoBot bot : bots.values()) 
 		{
