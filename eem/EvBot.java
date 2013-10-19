@@ -30,6 +30,8 @@ public class EvBot extends AdvancedRobot
 	public long ticTime;
 	int nonexisting_coord = -10000;
 	public int totalNumOfEnemiesAtStart = 0;
+	public static int roundsWon = 0;
+	public static int roundsLost = 0;
 
 	private botVersion botVer;
 	public target _trgt;
@@ -353,9 +355,24 @@ public class EvBot extends AdvancedRobot
 
 	}
 
+	public void onWin(DeathEvent e ) {
+		roundsWon++;
+		winOrLoseRoundEnd();
+	}
+
+	public void onDeath(DeathEvent e ) {
+		roundsLost++;
+		winOrLoseRoundEnd();
+	}
+
 	public void onRoundEnded(RoundEndedEvent e) {
+		winOrLoseRoundEnd();
+	}
+
+	public void winOrLoseRoundEnd() {
 		_gmanager.printGunsStats();
 		_botsmanager.printGunsStats();
+		logger.routine("Rounds ratio of win/lose = " + roundsWon + "/" + roundsLost );
 	}
 
 	public baseGun getGun() {
