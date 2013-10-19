@@ -177,8 +177,11 @@ public class dangerMapMotion extends basicMotion {
 		double dist;
 		double danger_coef = 1.0; // by default bots repel us
 		Point2D.Double bPos;
+		long currentTime = myBot.ticTime;
 		for (InfoBot bot : myBot._botsmanager.bots.values()) 
 		{
+			if ( bot.getLastSeenTime() > currentTime )
+				continue; // we see bot status from previous round
 			bPos = bot.getPosition();
 			dist = p.distance(bPos);
 			danger += math.gaussian( dist, danger_coef*dangerLevelEnemyBot, safe_distance_from_bot );
