@@ -51,5 +51,12 @@ public class logger {
 	public static void important(String s) {
 		log_message(log_important, s);
 	}
+
+	public static String shortFormatDouble(double d) {
+		String str;
+		str =  String.format("%.2f", d );
+		return str;
+	}
+
 }
 
