@@ -17,11 +17,20 @@ import robocode.Rules.*;
 public class  botsManager {
 	public EvBot myBot;
 
-	public HashMap<String,InfoBot> bots     = new HashMap<String, InfoBot>();
-	public HashMap<String,InfoBot> deadBots = new HashMap<String, InfoBot>();;
+	public static HashMap<String,InfoBot> bots     = new HashMap<String, InfoBot>();
+	public static HashMap<String,InfoBot> deadBots = new HashMap<String, InfoBot>();;
 
 	public botsManager(EvBot bot) {
 		myBot = bot;
+		// move deadBots to alive bots, should happen at the beginning of the round
+		if ( deadBots.size() >= 1) {
+			for (InfoBot dBot : deadBots.values() ) {
+				String botName = dBot.getName();
+				logger.dbg(" Dead bot name " + botName );
+				bots.put( botName, dBot);
+			}
+		}
+		deadBots.clear();
 	}
 
 	public void initTic(long ticTime) {
