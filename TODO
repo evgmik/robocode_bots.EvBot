@@ -1,4 +1,5 @@
-* fix: do proper switch of target not only its name
+* feature: redo radar sweep so it scans minimal needed angle to see all bots
+* feature: redo radar sweep so it scans when gun is too hot
 * feature: make pifGun faster - keep track of known pattern and iterate from them
 * feature: make target choice based on distance AND hit weight probability
 * feature: make bot danger proportional to its hit rate on me
@@ -8,4 +9,6 @@
 * look at v3.9.4  and see how come it performs so good in melee, with it unsophisticated
   motion algorithm and lack of enemy bullets avoidance
 
+= Completed =
+* fix: do proper switch of target not only its name
 
