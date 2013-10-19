@@ -33,6 +33,20 @@ public class  botsManager {
 		deadBots.clear();
 	}
 
+
+	public InfoBot getBotByName(String botName) {
+		InfoBot b = null;
+		b = bots.get( botName );
+		if ( null != b )
+			return b;
+		b = deadBots.get( botName );
+		if ( null != b )
+			return b;
+		// we should never reach here
+		logger.error("Bots manager cannot find bot: " + botName );
+		return b;
+	}
+
 	public void initTic(long ticTime) {
 		for (InfoBot bot : bots.values()) 
 		{

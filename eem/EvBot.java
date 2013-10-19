@@ -229,8 +229,7 @@ public class EvBot extends AdvancedRobot
 		// Calculate the angle to the scanned robot
 		double angle = (getHeading()+ e.getBearing())/360.*2.*Math.PI;
 
-		_trgt.setName(e.getName());
-		_trgt = _trgt.update( new botStatPoint(this, e));
+		_trgt = new target(_botsmanager.getBotByName(e.getName()));
 		logger.noise(_trgt.format());
 
 		_radar.setMovingRadarToLastKnownTargetLocation(false);
@@ -294,7 +293,7 @@ public class EvBot extends AdvancedRobot
 
 	public void onRobotDeath(RobotDeathEvent e) {
 		if (e.getName().equals(_trgt.getName())) {
-			_trgt.targetUnlocked = false;
+			//_trgt.targetUnlocked = false;
 			_trgt = new target();
 		}
 		_botsmanager.onRobotDeath(e);
@@ -370,7 +369,7 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void winOrLoseRoundEnd() {
-		_gmanager.printGunsStats();
+		//_gmanager.printGunsStats();
 		_botsmanager.printGunsStats();
 		logger.routine("Rounds ratio of win/lose = " + roundsWon + "/" + roundsLost );
 	}

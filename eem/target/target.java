@@ -12,23 +12,23 @@ public class target extends InfoBot {
 	public boolean haveTarget=false;
 
 	public target() {
+		super();
 		haveTarget = false;
+	}
+	
+	public target(InfoBot b) {
+		this();
+		this.name = b.getName();
+		this.botStats = b.botStats;
+		this.targetUnlocked = b.targetUnlocked;
+		this.bulletHitCount = b.getBulletHitCount();
+		this.bulletFiredCount = b.getBulletFiredCount();
+
+		haveTarget = true;
 	}
 	
 	public void initTic(long ticTime) {
 		super.initTic(ticTime);
-	}
-
-	public target update(Point2D.Double pos, long tStamp) {
-		super.update( pos, tStamp );
-		haveTarget = true;
-		return this;
-	}
-
-	public target update(botStatPoint statPnt) {
-		super.update( statPnt );
-		haveTarget = true;
-		return this;
 	}
 
 	public void onPaint(Graphics2D g) {
