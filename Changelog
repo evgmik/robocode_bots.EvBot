@@ -1,3 +1,8 @@
+= Version  4.2.7 =
+
+Target choice not only on distance but gun stats input.
+Improved gun stats output.
+
 = Version  4.2.6 =
 
 Random gun switches on only in 1 on 1 fight, otherwise I use only linear
