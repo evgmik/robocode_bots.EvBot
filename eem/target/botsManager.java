@@ -47,17 +47,42 @@ public class  botsManager {
 		return b;
 	}
 
+	public double botWeightForTargeting(InfoBot bot) {
+		double weight =0;
+
+		// distance contribution
+		double dist2bot = bot.getLastDistance( myBot.myCoord );
+		double wDistance = 100/dist2bot;
+
+		// hit probability contribution
+		int cntFired = myBot._gmanager.totalBotFiredCount( bot );
+		double wGun = myBot._gmanager.botAsTargetWeight( bot) ;
+		// apply correction for low gun fires to this bot
+		wGun = (1.0/myBot.getOthers() - wGun) * Math.exp(-cntFired/10) + wGun;
+
+		weight  = wGun * wDistance;
+		logger.noise(
+				""
+				+ " wD = " + logger.shortFormatDouble(wDistance) 
+				+ " wG = " + logger.shortFormatDouble(wGun)
+				+ " cF = " + cntFired
+				+ " weight " + " = " + logger.shortFormatDouble( weight ) 
+				+ " for " + bot.getName()
+			  );
+		return weight;
+	}
+
 	public target choseTarget() {
 		target trgt = myBot._trgt;
-		double dist2target = trgt.getLastDistance( myBot.myCoord );
-		double dist2bot = 0;
+		double trgtWeight = botWeightForTargeting( trgt );
 		
+		// lets find bot weights
 		for (InfoBot bot : bots.values()) {
-			if ( bot.getName().equals( trgt.getName() ) )
-				continue; // bit is the same as target
-			dist2bot = bot.getLastDistance( myBot.myCoord );
-			if ( dist2bot < dist2target ) {
-				dist2target = dist2bot;
+			if ( bot.getName().equals(trgt.getName() ) )
+				continue; // target and test bot are the same
+			double w = botWeightForTargeting(bot);
+			if ( trgtWeight < w ) {
+				trgtWeight = w;
 				trgt = new target(bot);
 				logger.noise("new target " + trgt.getName() );
 			}
