@@ -1,3 +1,10 @@
+= Version  4.2.8 =
+
+Gun weight influence target choice only in the mid melee stage.
+- Before it switched on at the beginning of melee. It seems that 
+  it is the must to shot near by bots at the beginning.
+
+
 = Version  4.2.7 =
 
 Target choice not only on distance but gun stats input.
