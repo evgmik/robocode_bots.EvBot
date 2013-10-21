@@ -56,9 +56,15 @@ public class  botsManager {
 
 		// hit probability contribution
 		int cntFired = myBot._gmanager.totalBotFiredCount( bot );
-		double wGun = myBot._gmanager.botAsTargetWeight( bot) ;
-		// apply correction for low gun fires to this bot
-		wGun = (1.0/myBot.getOthers() - wGun) * Math.exp(-cntFired/10) + wGun;
+		double wGunRaw = myBot._gmanager.botAsTargetWeight( bot) ;
+		double wGun;
+		if ( myBot.fightType().equals("meleeMidle") ) {
+			// high hit chances for robot give higher weight
+			// corrected for  low gun fires to this bot
+			wGun = (1.0/myBot.getOthers() - wGunRaw) * Math.exp(-cntFired/10) + wGunRaw;
+		} else {
+			wGun = 1.0/myBot.getOthers();
+		}
 
 		weight  = wGun * wDistance;
 		logger.noise(
