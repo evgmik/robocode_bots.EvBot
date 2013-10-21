@@ -80,6 +80,12 @@ public class EvBot extends AdvancedRobot
 	public void initTic() {
 		long startTime = System.nanoTime();
 		long endTime;
+		
+
+		// gun, radar, and body are decoupled
+		setAdjustRadarForRobotTurn(true);
+		setAdjustGunForRobotTurn(true);
+		setAdjustRadarForGunTurn(true); 
 
 		ticTime = getTime();
 
