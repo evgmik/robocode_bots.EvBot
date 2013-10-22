@@ -1,3 +1,8 @@
+= Version  4.2.9 =
+
+Radar does much smaller motions to refresh positions of all bots. Radar code
+is much simpler now as well.
+
 = Version  4.2.8 =
 
 Gun weight influence target choice only in the mid melee stage.
