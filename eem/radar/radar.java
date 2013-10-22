@@ -10,6 +10,8 @@ import java.util.Random;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import java.util.LinkedList;
+import robocode.*;
 
 public class radar {
 	protected EvBot myBot;
@@ -26,6 +28,8 @@ public class radar {
 	protected boolean searchForClosestTarget = true;
 	protected boolean movingRadarToLastKnownTargetLocation = false;
 	protected double radarBearingToEnemy=0;
+	protected LinkedList<String> scannedBots = new LinkedList<String>();
+	protected String botToSearchFor = "";
 
 	public radar(EvBot bot) {
 		myBot = bot;
@@ -41,10 +45,60 @@ public class radar {
 	}
 
 	public void manage() {
-			this.performRockingSweepIfNeded();
-			this.moveToOrOverOldTargetPositionIfNeeded();
-			this.decreaseFullSweepDelay();
-			this.performFullSweepIfNeded();
+		double angle = 0;
+		if ( scannedBots.size() < myBot.getOthers() ) {
+			// we have not seen all bots thus we need to do/keep sweeping
+			// performing initial sweep
+			angle = radarSpinDirection*radarMaxRotationAngle;
+			setTurnRadarRight(angle);
+			return;
+		}
+
+		boolean NeedToRefreshBotsPositions = true;
+		if ( NeedToRefreshBotsPositions ) {
+			refreshBotsPositions();
+		}
+
+		boolean NeedToTrackTarget = true;
+		if ( NeedToTrackTarget ) {
+			if ( myBot._trgt.haveTarget ) {
+				String bName = myBot._trgt.getName();
+				moveRadarToBot( bName );
+			} else {
+				refreshBotsPositions();
+			}
+		}
+			//this.performRockingSweepIfNeded();
+			//this.moveToOrOverOldTargetPositionIfNeeded();
+			//this.decreaseFullSweepDelay();
+			//this.performFullSweepIfNeded();
+	}
+
+	public void refreshBotsPositions() {
+		String bName = scannedBots.getFirst();
+		moveRadarToBot( bName );
+	}
+
+	public void moveRadarToBot( String bName ) {
+		double angle = 0;
+		long lastSeenDelay = myBot.ticTime -  myBot._botsmanager.getBotByName( bName ).getLastSeenTime();
+		if ( botToSearchFor.equals( bName ) && (lastSeenDelay > 1) ) {
+			// we already set radar motion parameters
+			angle = radarSpinDirection*radarMaxRotationAngle;
+		} else {
+			// new bot to search or we just saw this bot so its position
+			// can be used for radar spin calculations
+			botToSearchFor = bName;
+			double radar_heading = myBot.getRadarHeading();
+			double angleToLastBotPosition = math.angle2pt(myBot.myCoord, myBot._botsmanager.getBotByName( bName ).getPosition() );
+			angle= angleToLastBotPosition - radar_heading;
+			angle = math.shortest_arc(angle);
+			radarSpinDirection = math.signNoZero(angle);
+			angle = Math.abs( angle );
+				angle+=radarMaxRotationAngle/2; // we want to overshoot
+			angle = radarSpinDirection*angle;
+		}
+		setTurnRadarRight(angle);
 	}
 
 	public void setMovingRadarToLastKnownTargetLocation(boolean val) {
@@ -146,6 +200,22 @@ public class radar {
 		angle2rotate = math.putWithinRange(angle, -radarMaxRotationAngle, radarMaxRotationAngle);
 		logger.noise("Radar rotation angle = " + angle2rotate);
 		myBot.setTurnRadarRight(angle2rotate);
+	}
+
+	public void onRobotDeath(RobotDeathEvent e) {
+		String dBotName = e.getName();
+		scannedBots.remove( dBotName );
+	}
+
+	public void onScannedRobot(ScannedRobotEvent e) {
+		String scannedBotName = e.getName();
+		for ( String bName : scannedBots ) {
+			if ( bName.equals( scannedBotName ) ) {
+				scannedBots.remove( bName );
+				break;
+			}
+		}
+		scannedBots.addLast( scannedBotName );
 	}
 }
 

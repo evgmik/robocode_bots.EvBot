@@ -227,6 +227,7 @@ public class EvBot extends AdvancedRobot
 	       	myCoord.y = getY();
 
 		_botsmanager.onScannedRobot(e);
+		_radar.onScannedRobot(e);
 
 		if ( !e.getName().equals(_trgt.getName()) && (_trgt.getLastDistance(myCoord) < e.getDistance()) ) {
 			//new target is further then old one
@@ -303,6 +304,7 @@ public class EvBot extends AdvancedRobot
 			_trgt = new target();
 		}
 		_botsmanager.onRobotDeath(e);
+		_radar.onRobotDeath(e);
 	}
 
 
