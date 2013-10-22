@@ -46,6 +46,11 @@ public class radar {
 
 	public void manage() {
 		double angle = 0;
+		if ( myBot.getOthers() == 0) {
+			// we already won, no need to do anything
+			return;
+		}
+
 		if ( scannedBots.size() < myBot.getOthers() ) {
 			// we have not seen all bots thus we need to do/keep sweeping
 			// performing initial sweep
