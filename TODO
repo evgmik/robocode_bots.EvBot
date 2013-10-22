@@ -1,5 +1,3 @@
-* feature: redo radar sweep so it scans minimal needed angle to see all bots
-* feature: redo radar sweep so it scans when gun is too hot
 * feature: make pifGun faster - keep track of known pattern and iterate from them
 * feature: make bot danger proportional to its hit rate on me
 * tune distToProbe in danger map it looks like changing it from 50 to 100 increases
@@ -11,4 +9,6 @@
 = Completed =
 * fix: do proper switch of target not only its name
 * feature: make target choice based on distance AND hit weight probability
+* feature: redo radar sweep so it scans minimal needed angle to see all bots
+* feature: redo radar sweep so it scans when gun is too hot
 
