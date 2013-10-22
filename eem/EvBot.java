@@ -229,22 +229,6 @@ public class EvBot extends AdvancedRobot
 
 		_botsmanager.onScannedRobot(e);
 		_radar.onScannedRobot(e);
-
-		if ( !e.getName().equals(_trgt.getName()) && (_trgt.getLastDistance(myCoord) < e.getDistance()) ) {
-			//new target is further then old one
-			//we will not switch to it
-			return; 
-		}
-
-		//_trgt = new target(_botsmanager.getBotByName(e.getName()));
-		logger.noise(_trgt.format());
-
-		if ( e.getName().equals( _trgt.getName() ) ) {
-			_radar.setMovingRadarToLastKnownTargetLocation(false);
-		}
-		//radarSpinDirection=1;
-		//_trgt.targetUnlocked = true;
-		logger.noise("Target seen during radar sweep");
 	}
 
 	/**

@@ -205,7 +205,6 @@ public class baseGun {
 					Math.abs(predictedBulletDeviation) < Math.min( myBot.getHeight(), myBot.getWidth())/2 ) {
 				logger.noise("Firing the gun with power = " + firePower);
 				this.fireGun();
-				myBot._radar.setFullSweepAllowed(); // we can sweep do full radar sweep
 			}
 		}
 	}
