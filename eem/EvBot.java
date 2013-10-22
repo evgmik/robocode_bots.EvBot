@@ -89,7 +89,7 @@ public class EvBot extends AdvancedRobot
 
 		ticTime = getTime();
 
-		logger.dbg("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
+		logger.noise("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
 		logger.profiler("===> time between initTics =        \t\t\t" + ( startTime - initTicStartTime ) + " ns" );
 		initTicStartTime = startTime;
 		logger.noise("Game time: " + ticTime);
