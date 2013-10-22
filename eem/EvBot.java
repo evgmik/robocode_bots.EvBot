@@ -207,6 +207,7 @@ public class EvBot extends AdvancedRobot
 			endTime = System.nanoTime();
 			logger.profiler("gun manage execution time   =\t\t\t\t" + (endTime - startTime) + " ns" );
 			startTime = System.nanoTime();
+			_radar.setNeedToTrackTarget( _gun.doesItNeedTrackedTarget() );
 			_radar.manage();
 			endTime = System.nanoTime();
 			logger.profiler("radar manage execution time =\t\t\t\t" + (endTime - startTime) + " ns" );

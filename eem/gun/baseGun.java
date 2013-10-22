@@ -169,6 +169,14 @@ public class baseGun {
 	public void initTic() {
 	}
 
+	public boolean doesItNeedTrackedTarget() {
+		if ( (myBot.getGunHeat()/myBot.getGunCoolingRate() < 3) ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public void manage() {
 		double angle;
 		double angle2enemyInFutire;
