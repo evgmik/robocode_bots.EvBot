@@ -30,6 +30,7 @@ public class radar {
 	protected double radarBearingToEnemy=0;
 	protected LinkedList<String> scannedBots = new LinkedList<String>();
 	protected String botToSearchFor = "";
+	boolean needToTrackTarget = false;
 
 	public radar(EvBot bot) {
 		myBot = bot;
@@ -44,6 +45,10 @@ public class radar {
 		myBot.setAdjustRadarForGunTurn(true); // decouple gun and radar
 	}
 
+	public void setNeedToTrackTarget( boolean flag ) {
+		needToTrackTarget = flag;
+	}
+
 	public void manage() {
 		double angle = 0;
 		if ( myBot.getOthers() == 0) {
@@ -52,6 +57,7 @@ public class radar {
 		}
 
 		if ( scannedBots.size() < myBot.getOthers() ) {
+			// this should be done only once at the begining of the round
 			// we have not seen all bots thus we need to do/keep sweeping
 			// performing initial sweep
 			angle = radarSpinDirection*radarMaxRotationAngle;
@@ -59,20 +65,22 @@ public class radar {
 			return;
 		}
 
-		boolean NeedToRefreshBotsPositions = true;
-		if ( NeedToRefreshBotsPositions ) {
-			refreshBotsPositions();
-		}
-
-		boolean NeedToTrackTarget = true;
-		if ( NeedToTrackTarget ) {
+		if ( needToTrackTarget ) {
 			if ( myBot._trgt.haveTarget ) {
 				String bName = myBot._trgt.getName();
 				moveRadarToBot( bName );
 			} else {
 				refreshBotsPositions();
 			}
+			return;
 		}
+
+		boolean needToRefreshBotsPositions = true;
+		if ( needToRefreshBotsPositions ) {
+			refreshBotsPositions();
+			return;
+		}
+
 			//this.performRockingSweepIfNeded();
 			//this.moveToOrOverOldTargetPositionIfNeeded();
 			//this.decreaseFullSweepDelay();
