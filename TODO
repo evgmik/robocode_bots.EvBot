@@ -1,5 +1,9 @@
 * feature: make pifGun faster - keep track of known pattern and iterate from them
 * feature: make bot danger proportional to its hit rate on me
+* feature: make bot danger proportional to its survivability
+  good bot last longer, so if I can use their fire count as a measure of their class.
+* feature: change to smaller bullets if hit rate is small, at the end of the game
+  there are larger losses from gun energy drain than enemy hits
 * tune distToProbe in danger map it looks like changing it from 50 to 100 increases
   1on1 score 
 
