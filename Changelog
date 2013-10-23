@@ -1,3 +1,8 @@
+= Version  4.3.0 =
+
+Nothing major just changed distToProbe 50 -> 100. This seems to help with
+score.
+
 = Version  4.2.9 =
 
 Radar does much smaller motions to refresh positions of all bots. Radar code
