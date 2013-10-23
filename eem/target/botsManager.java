@@ -26,7 +26,6 @@ public class  botsManager {
 		if ( deadBots.size() >= 1) {
 			for (InfoBot dBot : deadBots.values() ) {
 				String botName = dBot.getName();
-				logger.dbg(" Dead bot name " + botName );
 				bots.put( botName, dBot);
 			}
 		}
