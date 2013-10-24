@@ -65,12 +65,31 @@ public class  botsManager {
 			wGun = 1.0/myBot.getOthers();
 		}
 
-		weight  = wGun * wDistance;
+		// a weaker target has a preference
+		double wEnergy = 0;
+		wEnergy = 100.0/( bot.getEnergy() + 0.001)  ;
+		// but there is no point to shoot across the whole field to a weak bot
+		// most likely there will be someone else to do it quicker
+		wEnergy = Math.exp( -dist2bot / 200 ); // 200 is used as ~1/4 of field size
+
+		// Survivability. The longer bot leaves the harder it is as a target
+		// bot life length is proportional to its total firing counts
+		// This assumes that my bot lives long enough to detected it
+		int enemyFiringCount = bot.getBulletFiredCount();
+		// easy bots do about 60 firing in 10 rounds
+		// so 30 nicely smooth low count stat
+		double wSurvivability = 30./( 30 + enemyFiringCount );
+
+		// all together
+		weight  = wGun * wDistance * wEnergy * wSurvivability;
 		logger.noise(
 				""
-				+ " wD = " + logger.shortFormatDouble(wDistance) 
-				+ " wG = " + logger.shortFormatDouble(wGun)
-				+ " cF = " + cntFired
+				+ " wDist = " + logger.shortFormatDouble(wDistance) 
+				+ " wGun = " + logger.shortFormatDouble(wGun)
+				+ " cFir = " + cntFired
+				+ " wEnrg = " + logger.shortFormatDouble(wEnergy)
+				+ " cEnFir = " + enemyFiringCount
+				+ " wSurv = " + logger.shortFormatDouble(wSurvivability)
 				+ " weight " + " = " + logger.shortFormatDouble( weight ) 
 				+ " for " + bot.getName()
 			  );
@@ -79,7 +98,13 @@ public class  botsManager {
 
 	public target choseTarget() {
 		target trgt = myBot._trgt;
-		double trgtWeight = botWeightForTargeting( trgt );
+		double trgtWeight;
+		if ( trgt.haveTarget ) {
+			trgtWeight = botWeightForTargeting( trgt );
+		} else {
+			// something negative and small for non existing target
+			trgtWeight = -1000; 
+		}
 		
 		// lets find bot weights
 		for (InfoBot bot : bots.values()) {
