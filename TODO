@@ -1,6 +1,3 @@
-* feature: make sure that danger of points near the border is superhight for distances
-  smaller than bot halfwidth. MyBot often select a firbidden point when pressed to the wall
-  by enemy bullets.
 * feature: make pifGun faster - keep track of known pattern and iterate from them
 * feature: make bot danger proportional to its hit rate on me
 * feature: make bot danger proportional to its survivability
@@ -14,6 +11,9 @@
   motion algorithm and lack of enemy bullets avoidance
 
 = Completed =
+* fix: make sure that danger of points near the border is superhight for distances
+  smaller than bot halfwidth. MyBot often select a forbidden point when pressed to the wall
+  by enemy bullets.
 * fix: do proper switch of target not only its name
 * feature: make target choice based on distance AND hit weight probability
 * feature: redo radar sweep so it scans minimal needed angle to see all bots

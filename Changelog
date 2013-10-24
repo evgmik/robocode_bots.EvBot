@@ -1,3 +1,9 @@
+= Version  4.3.2 =
+
+Bug fix: wall danger increased for no go wall zone, so bot does not bump at
+walls.
+
+
 = Version  4.3.1 =
 
 Target selector takes in account enemy bot energy and how tough is the bot
