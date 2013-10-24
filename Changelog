@@ -1,3 +1,12 @@
+= Version  4.3.1 =
+
+Target selector takes in account enemy bot energy and how tough is the bot
+(i.e. how long it lives in general on the battle field).
+
+Bug fix of non firing gun. if bullet asks more than energy available than no
+fire was set, now it takes almost all available energy
+
+
 = Version  4.3.0 =
 
 Nothing major just changed distToProbe 50 -> 100. This seems to help with
