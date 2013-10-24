@@ -337,7 +337,10 @@ public class baseGun {
 			// fixme replace magic minimal energy bullet = 0.1  with a named var
 			firePower = math.putWithinRange( firePower, 0.1, misc.minReqBulEnergyToKillTarget(myBot._trgt.getEnergy()) );
 
-			// do not fire to get yourself disabled
+			// do not fire more than bot has or it  get itself disabled
+			firePower = Math.min( firePower, myBot.getEnergy() - 1e-4 );
+			firePower = Math.max( firePower, 0.1); //take in account rounding
+			// final check after rounding
 			if (myBot.getEnergy() <= firePower + 1e-4 ) {
 				firePower = 0;
 			}
