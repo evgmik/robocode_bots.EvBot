@@ -160,6 +160,11 @@ public class dangerMapMotion extends basicMotion {
 		double danger = 0;
 		double dx = dist2LeftOrRightWall( p );
 		double dy = dist2BottomOrTopWall( p );
+		if ( shortestDist2wall( p ) <= myBot.robotHalfSize ) {
+			// point within physical no-go zone
+			// danger must be infinite to prevent going there
+			danger += 1e6; // humongous number
+		}
 		danger += math.gaussian( dx, dangerLevelWall, safe_distance_from_wall );
 		danger += math.gaussian( dy, dangerLevelWall, safe_distance_from_wall );
 		return danger;
