@@ -5,6 +5,10 @@ import java.awt.geom.Point2D;
 import robocode.util.*;
 
 public class math {
+	public static double sqr( double x ) {
+		return x*x;
+	}
+
 	public static double gaussian( double dist, double ampl, double width ) {
 		return ampl*Math.exp(-dist*dist/(width*width) );
 	}
