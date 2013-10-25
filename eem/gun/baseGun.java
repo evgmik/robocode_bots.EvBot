@@ -252,7 +252,13 @@ public class baseGun {
                 // calculate firepower based on distance
 		logger.noise("Target distance = " + targetDistance);
                 double firePower;
-                firePower = Math.min(500 / targetDistance, 3);
+                //firePower = Math.min( 12*Math.exp( -math.sqr( targetDistance/200.0 ) ), 3);
+		if ( myBot.fightType().equals("melee") ) {
+			firePower = 3;
+		} else {
+			firePower = Math.min( 700/targetDistance, 3);
+		}
+                firePower = Math.max( firePower, 0.1);
 		logger.noise("Fire power = " + firePower);
                 return firePower;
         }
