@@ -252,11 +252,20 @@ public class baseGun {
                 // calculate firepower based on distance
 		logger.noise("Target distance = " + targetDistance);
                 double firePower;
+		firePower = -100; // negative means unset
                 //firePower = Math.min( 12*Math.exp( -math.sqr( targetDistance/200.0 ) ), 3);
 		if ( myBot.fightType().equals("melee") ) {
 			firePower = 3;
-		} else {
+		}
+		if ( myBot.fightType().equals("meleeMidle") ) {
 			firePower = Math.min( 700/targetDistance, 3);
+		}
+		if ( myBot.fightType().equals("1on1") ) {
+			firePower = Math.min( 700/targetDistance, 3);
+		}
+		if ( firePower < 0 ) {
+			// default case
+			firePower = Math.min( 500/targetDistance, 3);
 		}
                 firePower = Math.max( firePower, 0.1);
 		logger.noise("Fire power = " + firePower);
