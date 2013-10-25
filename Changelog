@@ -1,3 +1,10 @@
+= Version  4.3.4 =
+
+1on1 and melee resulting in 1on1 are treated differently. 
+
+Look like it is a good choice to chose stronger bullets in 1on1.
+
+
 = Version  4.3.3 =
 
 In melee fight fire power is 3, it is boosted up for other fights as well.
@@ -6,7 +13,6 @@ In melee fight fire power is 3, it is boosted up for other fights as well.
 
 Bug fix: wall danger increased for no go wall zone, so bot does not bump at
 walls.
-
 
 = Version  4.3.1 =
 
