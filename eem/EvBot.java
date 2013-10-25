@@ -134,8 +134,10 @@ public class EvBot extends AdvancedRobot
 
 	public String fightType() {
 		double survRatio = 1.0*getOthers()/totalNumOfEnemiesAtStart;
-		if ( getOthers() == 1 )
+		if ( (getOthers() == 1) && (totalNumOfEnemiesAtStart == 1) )
 			return "1on1";
+		if ( (getOthers() == 1) && (totalNumOfEnemiesAtStart != 1) )
+			return "meelee1on1";
 		if ( survRatio > 2/3 )
 			return "melee";
 		return "meleeMidle";
