@@ -1,3 +1,10 @@
+= Version  4.3.5 =
+
+Brought back firing energy coefficient as it was in v4.3.2 except 1on1 melee
+end where it is smaller.
+Increased danger zone around enemy bot. 
+Fix of battle won count.
+
 = Version  4.3.4 =
 
 1on1 and melee resulting in 1on1 are treated differently. 
