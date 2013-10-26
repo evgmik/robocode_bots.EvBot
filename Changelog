@@ -1,6 +1,11 @@
+= Version  4.3.7 =
+
+Danger zone from bots is as in v4.3.2
+Added danger from bullet proportional to its potential damage.
+
 = Version  4.3.6 =
 
-Gun distance to energy method is the same as in v4.3.2 fir melee types
+Gun distance to energy method is the same as in v4.3.2 for melee types
 
 = Version  4.3.5 =
 
