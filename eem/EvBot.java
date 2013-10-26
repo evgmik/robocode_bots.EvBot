@@ -350,8 +350,10 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void onWin(DeathEvent e ) {
-		roundsWon++;
-		winOrLoseRoundEnd();
+		// looks like it is never executed
+		// at least in robocode 1.7.3
+		//roundsWon++;
+		//winOrLoseRoundEnd();
 	}
 
 	public void onDeath(DeathEvent e ) {
@@ -360,6 +362,9 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void onRoundEnded(RoundEndedEvent e) {
+		// seems like it is not called if my bot is died
+		// at least in robocode 1.7.3
+		roundsWon = e.getRound() - roundsLost + 1;
 		winOrLoseRoundEnd();
 	}
 
