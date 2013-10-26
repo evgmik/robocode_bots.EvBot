@@ -86,7 +86,7 @@ public class dangerMapMotion extends basicMotion {
 		dMap = new double[dMapSizeX][dMapSizeY];
 
 		safe_distance_from_wall = myBot.robotHalfSize + 2;
-		safe_distance_from_bot =  22*myBot.robotHalfSize + 2;
+		safe_distance_from_bot =  12*myBot.robotHalfSize + 2;
 		safe_distance_from_bullet =  2*myBot.robotHalfSize + 2;
 		kT = 0.1;
 
@@ -250,6 +250,8 @@ public class dangerMapMotion extends basicMotion {
 				//if ( distAlongBulletPath < escapeDistance ) {
 					danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet ); // tangent distance contribution
 					 danger *= math.gaussian( distAlongBulletPath, 1, escapeDistance ); // distance to travel by bullet contribution
+					 double bDamage = 4*b.bulletEnergy() + 2 * Math.max( b.bulletEnergy() - 1 , 0 );
+					 danger *= 0.01*bDamage;
 
 					if (rammingCondition) {
 						// if we close to target during ramming
