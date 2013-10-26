@@ -49,6 +49,11 @@ public class firedBullet {
 		bulletColor = firedGun.gunColor;
 	}
 
+	public double  bulletEnergy() {
+		double bEnergy = ( 20 - bulletSpeed ) / 3;
+		return bEnergy;
+	}
+
 	public firedBullet(EvBot bot, InfoBot firedBot, baseGun gun, double bulletEnergy) {
 		myBot = bot;
 		isItMine = false;
