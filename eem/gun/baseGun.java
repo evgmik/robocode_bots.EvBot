@@ -262,7 +262,7 @@ public class baseGun {
 			firePower = Math.min( 500/targetDistance, 3);
 		}
 		if ( myBot.fightType().equals("meelee1on1") ) {
-			firePower = Math.min( 100/targetDistance, 3);
+			firePower = Math.min( 500/targetDistance, 3);
 		}
 		if ( myBot.fightType().equals("1on1") ) {
 			firePower = Math.min( 700/targetDistance, 3);
