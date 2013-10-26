@@ -4,9 +4,9 @@
   good bot last longer, so if I can use their fire count as a measure of their class.
 * feature: change to smaller bullets if hit rate is small, at the end of the game
   there are larger losses from gun energy drain than enemy hits
-* tune distToProbe in danger map it looks like changing it from 50 to 100 increases
-  1on1 score 
-
+* fine-tune distToProbe in danger map it looks like changing it from 50 to 100 increases
+  1on1 score, look at it at melee as well
+* Fix typo in meelee1on1 --> melee1on1 fight type name
 * look at v3.9.4  and see how come it performs so good in melee, with it unsophisticated
   motion algorithm and lack of enemy bullets avoidance
 
