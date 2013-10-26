@@ -255,10 +255,14 @@ public class baseGun {
 		firePower = -100; // negative means unset
                 //firePower = Math.min( 12*Math.exp( -math.sqr( targetDistance/200.0 ) ), 3);
 		if ( myBot.fightType().equals("melee") ) {
-			firePower = 3;
+			//firePower = 3;
+			firePower = Math.min( 500/targetDistance, 3);
 		}
 		if ( myBot.fightType().equals("meleeMidle") ) {
-			firePower = Math.min( 700/targetDistance, 3);
+			firePower = Math.min( 500/targetDistance, 3);
+		}
+		if ( myBot.fightType().equals("meelee1on1") ) {
+			firePower = Math.min( 100/targetDistance, 3);
 		}
 		if ( myBot.fightType().equals("1on1") ) {
 			firePower = Math.min( 700/targetDistance, 3);
