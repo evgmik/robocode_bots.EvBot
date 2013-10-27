@@ -30,15 +30,17 @@ public class gunManager {
 		String fightType;
 		
 		guns = new  LinkedList<baseGun>();
-		guns.add( new linearGun(myBot) );
+		//guns.add( new linearGun(myBot) );
 		guns.add( new randomGun(myBot) );
+		guns.add( new circularGun(myBot) );
 		//guns.add( new pifGun(myBot) ); // FIXME: too slow
 		fightType = "1on1";
 		gunSets.put( fightType, guns );
 		myFightTypes.add( fightType );
 
 		guns = new  LinkedList<baseGun>();
-		guns.add( new linearGun(myBot) );
+		//guns.add( new linearGun(myBot) );
+		guns.add( new circularGun(myBot) );
 		guns.add( new randomGun(myBot) );
 		//guns.add( new pifGun(myBot) ); // FIXME: too slow
 		fightType = "meelee1on1";
@@ -46,14 +48,16 @@ public class gunManager {
 		myFightTypes.add( fightType );
 
 		guns = new  LinkedList<baseGun>();
-		guns.add( new linearGun(myBot) );
+		//guns.add( new linearGun(myBot) );
+		guns.add( new circularGun(myBot) );
 		//guns.add( new randomGun(myBot) );
 		fightType = "meleeMidle";
 		gunSets.put( fightType, guns );
 		myFightTypes.add( fightType );
 
 		guns = new  LinkedList<baseGun>();
-		guns.add( new linearGun(myBot) );
+		//guns.add( new linearGun(myBot) );
+		guns.add( new circularGun(myBot) );
 		fightType = "melee";
 		gunSets.put( fightType, guns );
 		myFightTypes.add( fightType );
@@ -61,11 +65,13 @@ public class gunManager {
 		guns = new  LinkedList<baseGun>();
 		guns.add( new baseGun(myBot) );
 		guns.add( new linearGun(myBot) );
+		guns.add( new circularGun(myBot) );
 		//guns.add( new pifGun(myBot) ); // FIXME: too slow
 		gunSets.put( "firingAtMyBot", guns );
 
 		guns = new  LinkedList<baseGun>();
 		guns.add( new linearGun(myBot) );
+		guns.add( new circularGun(myBot) );
 		fightType = "defaultGun";
 		gunSets.put( fightType, guns );
 		myFightTypes.add( fightType );
@@ -74,6 +80,7 @@ public class gunManager {
 		//guns = new  LinkedList<baseGun>();
 		//guns.add( new baseGun(myBot) );
 		//guns.add( new linearGun(myBot) );
+		//guns.add( new circularGun(myBot) );
 		//guns.add( new randomGun(myBot) );
 		//guns.add( new pifGun(myBot) );
 		//gunSets.put( "TEMPLATE", guns );
