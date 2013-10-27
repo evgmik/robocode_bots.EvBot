@@ -60,9 +60,9 @@ public class  botsManager {
 		if ( myBot.fightType().equals("meleeMidle") ) {
 			// high hit chances for robot give higher weight
 			// corrected for  low gun fires to this bot
-			wGun = (1.0/myBot.getOthers() - wGunRaw) * Math.exp(-cntFired/10) + wGunRaw;
+			wGun = (1.0/myBot.numEnemyBotsAlive - wGunRaw) * Math.exp(-cntFired/10) + wGunRaw;
 		} else {
-			wGun = 1.0/myBot.getOthers();
+			wGun = 1.0/myBot.numEnemyBotsAlive;
 		}
 
 		// a weaker target has a preference

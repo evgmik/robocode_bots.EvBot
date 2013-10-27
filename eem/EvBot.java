@@ -96,7 +96,7 @@ public class EvBot extends AdvancedRobot
 		logger.profiler("===> time between initTics =        \t\t\t" + ( startTime - initTicStartTime ) + " ns" );
 		initTicStartTime = startTime;
 		logger.noise("Game time: " + ticTime);
-		logger.noise("Number of other bots = " + getOthers());
+		logger.noise("Number of other bots = " + numEnemyBotsAlive);
 
 		myCoord.x = getX();
 	       	myCoord.y = getY();
@@ -136,10 +136,10 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public String fightType() {
-		double survRatio = 1.0*getOthers()/totalNumOfEnemiesAtStart;
-		if ( (getOthers() == 1) && (totalNumOfEnemiesAtStart == 1) )
+		double survRatio = 1.0*numEnemyBotsAlive/totalNumOfEnemiesAtStart;
+		if ( (numEnemyBotsAlive == 1) && (totalNumOfEnemiesAtStart == 1) )
 			return "1on1";
-		if ( (getOthers() == 1) && (totalNumOfEnemiesAtStart != 1) )
+		if ( (numEnemyBotsAlive == 1) && (totalNumOfEnemiesAtStart != 1) )
 			return "meelee1on1";
 		if ( survRatio > 2/3 )
 			return "melee";

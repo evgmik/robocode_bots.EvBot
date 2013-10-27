@@ -64,7 +64,7 @@ public class dangerMapMotion extends basicMotion {
 		}
 		double energyAdvantage = 30;
 		// are we on 1 vs 1 and more energetic
-		if ( myBot._trgt.haveTarget && ( myBot.getOthers() == 1 ) ) {
+		if ( myBot._trgt.haveTarget && ( myBot.numEnemyBotsAlive == 1 ) ) {
 			double energyAdvantageHysteresis;
 			if ( rammingCondition ) {
 				// if we already engaged keep pressing 
@@ -96,7 +96,7 @@ public class dangerMapMotion extends basicMotion {
 	void setOptimalDistanceFromBot() {
 		double hitRateTreshHold = 0.3;
 		double hitRateDisbalance = ( myBot._gmanager.overallGunsHitRate() - myBot._trgt.getGunHitRate() );
-		if ( myBot.getOthers() > 1 ) {
+		if ( myBot.numEnemyBotsAlive > 1 ) {
 			reducedBotDistanceCoef = 1;
 			return;
 		}
@@ -105,7 +105,7 @@ public class dangerMapMotion extends basicMotion {
 		// and on 1 vs 1
 		// and we miss too badly let's close in
 		// at least we will make some damage
-		if ( !rammingCondition &&  myBot._trgt.haveTarget && ( myBot.getOthers() == 1 ) ) {
+		if ( !rammingCondition &&  myBot._trgt.haveTarget && ( myBot.numEnemyBotsAlive == 1 ) ) {
 			//reducedBotDistanceCoef += 0.1*hitRateDisbalance; // simple negative feedback
 			reducedBotDistanceCoef = myBot._gmanager.overallGunsHitRate()/(myBot._trgt.getGunHitRate()+1e-4); // try to maintain > 1 hit ration
 			reducedBotDistanceCoef = math.putWithinRange( reducedBotDistanceCoef, 0, 1.0);

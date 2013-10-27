@@ -35,7 +35,7 @@ public class chaoticMotion extends basicMotion {
 		double angleRandDeviation = nonexisting_coord;
 		double dist = nonexisting_coord;
 		logger.noise("Normal motion algorithm");
-		if (myBot.getOthers()>=5 && Math.random() < 0.2 ) { 
+		if (myBot.numEnemyBotsAlive >=5 && Math.random() < 0.2 ) { 
 			//move to the closest corner as long as there are a lot of bots
 			double angle2corner = angleToClosestCorner();
 			logger.noise("angle to the closest corner = " + angle2corner );
@@ -48,7 +48,7 @@ public class chaoticMotion extends basicMotion {
 			}
 			logger.noise("moving to the closest corner with rotation by " + angle );
 		}
-		if ( myBot._trgt.haveTarget && (myBot.getOthers() <= 1) && (Math.random() < 0.95) ) {
+		if ( myBot._trgt.haveTarget && (myBot.numEnemyBotsAlive <= 1) && (Math.random() < 0.95) ) {
 			// last enemy standing lets spiral in
 			angle = math.shortest_arc( -90 + (myBot.angle2target() - myBot.getHeading() ) );
 			if ( Math.abs(angle) > 90 ) {
@@ -72,7 +72,7 @@ public class chaoticMotion extends basicMotion {
 			logger.noise("circle around last enemy by rotating = " + angle );
 		} 
 
-		if ( myBot.getOthers() > 1 && (Math.random() < 0.95) ) {
+		if ( myBot.numEnemyBotsAlive > 1 && (Math.random() < 0.95) ) {
 			dist = myBot.getDistanceRemaining();
 			angle = myBot.getTurnRemaining();
 			if ( Math.abs(dist) > 20 ) {
