@@ -251,7 +251,7 @@ public class dangerMapMotion extends basicMotion {
 					danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet ); // tangent distance contribution
 					 danger *= math.gaussian( distAlongBulletPath, 1, escapeDistance ); // distance to travel by bullet contribution
 					 double bDamage = 4*b.bulletEnergy() + 2 * Math.max( b.bulletEnergy() - 1 , 0 );
-					 danger *= 0.01*bDamage;
+					 danger *= (1+myBot.totalNumOfEnemiesAtStart/myBot.numEnemyBotsAlive*0.01*bDamage);
 
 					if (rammingCondition) {
 						// if we close to target during ramming
