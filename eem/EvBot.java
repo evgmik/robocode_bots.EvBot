@@ -42,7 +42,8 @@ public class EvBot extends AdvancedRobot
 	public gunManager _gmanager;
 	public botsManager _botsmanager;
 	public InfoBot _tracker; // track my own status
-	
+
+	public int numEnemyBotsAlive = 1; // we have at least one enemy in general
 	public long initTicStartTime = 0;
 
 
@@ -81,6 +82,8 @@ public class EvBot extends AdvancedRobot
 		long startTime = System.nanoTime();
 		long endTime;
 		
+
+		numEnemyBotsAlive = getOthers();
 
 		// gun, radar, and body are decoupled
 		setAdjustRadarForRobotTurn(true);
