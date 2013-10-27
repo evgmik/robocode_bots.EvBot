@@ -1,3 +1,7 @@
+= Version  4.3.9.1 =
+
+Bug fix for too many calls of getOthers()
+
 = Version  4.3.9 =
 
 Match condition of melee for v4.3.2 and 1on1 for v4.3.8
