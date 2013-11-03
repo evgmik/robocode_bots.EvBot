@@ -56,6 +56,15 @@ public class wave {
 		bullets.add(b);
 	}
 
+	public void removeInactiveBullets() {
+		ListIterator<firedBullet> bLIter;
+		bLIter = this.bullets.listIterator();
+		while (bLIter.hasNext()) {
+			if (!bLIter.next().isActive() ) {
+				bLIter.remove();
+			}
+		} 
+	}
 
 	public double getDistanceTraveled() {
 		double timeInFlight = myBot.ticTime - firedTime + 1;

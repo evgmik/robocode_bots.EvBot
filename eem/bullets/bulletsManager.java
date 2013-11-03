@@ -27,8 +27,12 @@ public class  bulletsManager {
 	}
 
 	public void initTic() {
+		removeInactiveBulletsAndEmptyWaves();
+	}
+
+	public void removeInactiveBulletsAndEmptyWaves() {
 		removeInactiveBullets();
-		removeInactiveWaves();
+		removeEmptyWaves();
 	}
 
 	public void add_enemy_wave(InfoBot firedBot) {
@@ -53,9 +57,10 @@ public class  bulletsManager {
 		w.addBullet(b);
 	}
 
-	public void removeInactiveWaves() {
+	public void removeEmptyWaves() {
 		ListIterator<wave> wLIter;
 		wLIter = waves.listIterator();
+		// this removes waves with no bullets in them
 		while (wLIter.hasNext()) {
 			if (wLIter.next().bullets.size() == 0) {
 				wLIter.remove();
@@ -64,14 +69,8 @@ public class  bulletsManager {
 	}
 
 	public void removeInactiveBullets() {
-		ListIterator<firedBullet> bLIter;
 		for (wave w: waves) {
-			bLIter = w.bullets.listIterator();
-			while (bLIter.hasNext()) {
-				if (!bLIter.next().isActive() ) {
-					bLIter.remove();
-				}
-			} 
+			w.removeInactiveBullets();
 		}
 	}
 
