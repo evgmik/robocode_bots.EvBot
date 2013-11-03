@@ -27,6 +27,31 @@ public class  bulletsManager {
 
 	public void initTic() {
 		removeInactiveBulletsAndEmptyWaves();
+		createShadowingBullets();
+	}
+
+	public void createShadowingBullets() {
+		long time = myBot.ticTime;
+		for ( wave w : myWaves ) {
+			firedBullet b = w.bullets.getFirst(); //my waves have only one bullet
+			Point2D.Double posPrev = b.getPositionAtTime( time - 1);
+			Point2D.Double posNow =  b.getPositionAtTime( time );
+			for ( wave wE : enemyWaves ) {
+				double distNow = wE.getDistanceTraveledAtTime(time); 
+				double distPrev = wE.getDistanceTraveledAtTime(time-1); 
+				Point2D.Double firingPos = wE.getFiringPosition();
+				if ( ( firingPos.distance( posPrev ) > distPrev ) && ( firingPos.distance( posNow ) <= distNow ) ) {
+					Point2D.Double crossingPos  = new Point2D.Double(0,0);
+					// FIXME: use not so crude algorithm
+					crossingPos.x = (posNow.x + posPrev.x)/2;
+					crossingPos.y = (posNow.y + posPrev.y)/2;
+					//logger.dbg("Crossed enemy wave at " + crossingPos);
+					baseGun shadowGun = new shadowGun();
+					firedBullet bShadow = new firedBullet( myBot, wE, shadowGun, crossingPos);
+					wE.addBullet(bShadow);
+				}
+			}
+		}
 	}
 
 	public void removeInactiveBulletsAndEmptyWaves() {

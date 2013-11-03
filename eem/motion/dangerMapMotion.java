@@ -248,6 +248,7 @@ public class dangerMapMotion extends basicMotion {
 				// bullet is dangerous only when we are close to it
 				double escapeDistance = 200; // very large
 				//if ( distAlongBulletPath < escapeDistance ) {
+				if ( !b.getFiredGun().getName().equals("shadow") ) {
 					danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet ); // tangent distance contribution
 					 danger *= math.gaussian( distAlongBulletPath, 1, escapeDistance ); // distance to travel by bullet contribution
 					 if ( myBot.fightType().equals( "1on1" ) ) {
@@ -261,6 +262,10 @@ public class dangerMapMotion extends basicMotion {
 						double dist2target = p.distance( myBot._trgt.getPosition() );
 						danger *= 1-Math.exp( -Math.max(0, dist2target - 2*myBot.robotHalfSize)/50 );
 					}
+				} else {
+					// shadow bullets are safe
+					danger = math.gaussian( dist, -dangerLevelBullet, safe_distance_from_bullet ); // tangent distance contribution
+				}
 				//}
 			}
 		}

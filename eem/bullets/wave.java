@@ -52,6 +52,14 @@ public class wave {
 		firedTime = myBot.ticTime;
 	}
 
+	public Point2D.Double getFiringPosition() {
+		return firingPosition;
+	}
+
+	public long getFiredTime () {
+		return firedTime;
+	}
+
 	public void addBullet(firedBullet b) {
 		bullets.add(b);
 	}
@@ -66,13 +74,17 @@ public class wave {
 		} 
 	}
 
-	public double getDistanceTraveled() {
-		double timeInFlight = myBot.ticTime - firedTime + 1;
+	public double getDistanceTraveledAtTime(long time) {
+		double timeInFlight = time - firedTime + 1;
 		if ( !isItMine ) {
 			timeInFlight = timeInFlight + 1;
 		}
 		double distTraveled = timeInFlight * bulletSpeed;
 		return distTraveled;
+	}
+
+	public double getDistanceTraveled() {
+		return  getDistanceTraveledAtTime( myBot.ticTime );
 	}
 
 	public void onPaint(Graphics2D g) {

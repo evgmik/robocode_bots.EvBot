@@ -54,6 +54,21 @@ public class firedBullet {
 		return bEnergy;
 	}
 
+	public firedBullet(EvBot bot, wave wv, baseGun firedGun, Point2D.Double curPos) { 
+		// to add bullet  passing through curPos to existing wave
+		// intended use for shadowing bullets
+		myBot = bot;
+		isItMine = false;
+		this.firedGun = firedGun;
+		this.bulletSpeed = wv.bulletSpeed;
+		// fixme enemy bullet detected 1 tic later so I need previous coord here
+		this.firingPosition = (Point2D.Double) wv.getFiringPosition().clone();
+		this.targetPosition = null;
+		firedTime = wv.getFiredTime();
+		this.firingAngle = Math.atan2(curPos.x-firingPosition.x, curPos.y - firingPosition.y);
+		bulletColor = firedGun.gunColor;
+	}
+
 	public firedBullet(EvBot bot, InfoBot firedBot, baseGun gun, double bulletEnergy) {
 		myBot = bot;
 		isItMine = false;
@@ -80,8 +95,12 @@ public class firedBullet {
 		bulletColor = firedGun.gunColor;
 	}
 
-	public double getDistanceTraveled() {
-		double timeInFlight = myBot.ticTime - firedTime + 1;
+	public baseGun getFiredGun() {
+		return firedGun;
+	}
+
+	public double getDistanceTraveledAtTime(long time) {
+		double timeInFlight = time - firedTime + 1;
 		if ( !isItMine ) {
 			timeInFlight = timeInFlight + 1;
 		}
@@ -89,12 +108,24 @@ public class firedBullet {
 		return distTraveled;
 	}
 
-	public Point2D.Double getPosition() {
+	public double getDistanceTraveled() {
+		return getDistanceTraveledAtTime( myBot.ticTime );
+	}
+
+	public long getFiredTime () {
+		return firedTime;
+	}
+
+	public Point2D.Double getPositionAtTime(long time) {
 		Point2D.Double pos =  (Point2D.Double) firingPosition.clone();
-		double distTraveled = getDistanceTraveled();
+		double distTraveled = getDistanceTraveledAtTime(time);
 		pos.x = pos.x + distTraveled*Math.sin(firingAngle);
 		pos.y = pos.y + distTraveled*Math.cos(firingAngle);
 		return pos;
+	}
+
+	public Point2D.Double getPosition() {
+		return getPositionAtTime( myBot.ticTime );
 	}
 
 	public boolean isActive() {
@@ -113,13 +144,15 @@ public class firedBullet {
 		g.setColor(bulletColor);
 		// draw target position
 		double R = 18;
-		logger.noise("draw target at position = " + targetPosition);
-		graphics.drawCircle(g, targetPosition, R);
+		if ( targetPosition != null ) {
+			logger.noise("draw target at position = " + targetPosition);
+			graphics.drawCircle(g, targetPosition, R);
 
-		// draw line from firing point to target
-		//Point2D.Double lEnd = endPositionAtBorder();
-		//logger.noise("end of bullet path = " + lEnd);
-		//graphics.drawLine(g, firingPosition, lEnd );
+			// draw line from firing point to target
+			//Point2D.Double lEnd = endPositionAtBorder();
+			//logger.noise("end of bullet path = " + lEnd);
+			//graphics.drawLine(g, firingPosition, lEnd );
+		}
 
 
 		// draw current/presumed bullet position
