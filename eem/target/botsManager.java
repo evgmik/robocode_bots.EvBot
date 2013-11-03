@@ -126,7 +126,7 @@ public class  botsManager {
 			bot.initTic(ticTime);
 			// firing status
 			if ( bot.didItFireABullet(ticTime) ) {
-				myBot._bmanager.add_enemy_bullet( bot );
+				myBot._bmanager.add_enemy_wave( bot );
 			}
 		}
 	}

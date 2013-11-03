@@ -17,6 +17,7 @@ public class  bulletsManager {
 	public EvBot myBot;
 
 	public LinkedList<firedBullet> bullets;
+	public LinkedList<wave> waves;
 	
 	public bulletsManager() {
 		bullets = new LinkedList<firedBullet>();
@@ -25,40 +26,64 @@ public class  bulletsManager {
 	public bulletsManager(EvBot bot) {
 		myBot = bot;
 		bullets = new LinkedList<firedBullet>();
+		waves = new LinkedList<wave>();
 	}
 
 	public void initTic() {
 		removeInactiveBullets();
+		removeInactiveWaves();
 	}
 
-	public void add_enemy_bullet(InfoBot firedBot) {
+	public void add_enemy_wave(InfoBot firedBot) {
 		baseGun eGun = new baseGun(myBot);
 		eGun.incBulletFiredCount(myBot._tracker, firedBot);
 		firedBullet b;
 
+		// create bullet wave
+		wave w = new wave( myBot, firedBot, firedBot.energyDrop() );
+		waves.add(w);
+
 		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( "firingAtMyBot" );
 		for ( baseGun g: guns ) {
 			b = new firedBullet( myBot, firedBot,  g, firedBot.energyDrop() );
+			w.addBullet(b);
 			bullets.add(b);
 		}
 	}
 
-	public void add_enemy_bullet() {
-		firedBullet b = new firedBullet(myBot, new enemyGun());
+	public void add( firedBullet b) {
+		wave w = new wave( myBot, b );
+		waves.add(w);
+		w.addBullet(b);
 		bullets.add(b);
 	}
 
-	public void add( firedBullet b) {
-		bullets.add(b);
+	public void removeInactiveWaves() {
+		ListIterator<wave> wLIter;
+		wLIter = waves.listIterator();
+		while (wLIter.hasNext()) {
+			if (wLIter.next().bullets.size() == 0) {
+				wLIter.remove();
+			}
+		} 
 	}
 
 	public void removeInactiveBullets() {
-		ListIterator<firedBullet> bLIter = bullets.listIterator();
+		ListIterator<firedBullet> bLIter;
+		bLIter = bullets.listIterator();
 		while (bLIter.hasNext()) {
 			if (!bLIter.next().isActive() ) {
 				bLIter.remove();
 			}
 		} 
+		for (wave w: waves) {
+			bLIter = w.bullets.listIterator();
+			while (bLIter.hasNext()) {
+				if (!bLIter.next().isActive() ) {
+					bLIter.remove();
+				}
+			} 
+		}
 	}
 
 	public baseGun whichGunFiredBullet(Bullet b) {
@@ -92,9 +117,9 @@ public class  bulletsManager {
 	}
 
 	public void onPaint(Graphics2D g) {
-		removeInactiveBullets();
-		for ( firedBullet b : bullets ) {
-			b.onPaint(g);
+		//removeInactiveBullets();
+		for ( wave w : waves ) {
+			w.onPaint(g);
 		}
 	}
 }

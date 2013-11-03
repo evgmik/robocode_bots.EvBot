@@ -131,8 +131,18 @@ public class firedBullet {
 		// draw overall bullet wave
 		//double distTraveled = getDistanceTraveled();
 		//graphics.drawCircle(g, firingPosition, distTraveled);
+	}
 
-		
+	public Point2D.Double getFiringPosition() {
+		return firingPosition;
+	}
+
+	public double getSpeed(){
+		return bulletSpeed;
+	}
+
+	public Color getColor(){
+		return bulletColor;
 	}
 }
 
