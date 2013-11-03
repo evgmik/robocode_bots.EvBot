@@ -264,7 +264,7 @@ public class dangerMapMotion extends basicMotion {
 					}
 				} else {
 					// shadow bullets are safe
-					danger = math.gaussian( dist, -dangerLevelBullet, safe_distance_from_bullet ); // tangent distance contribution
+					danger = math.gaussian( dist, -dangerLevelBullet/2, safe_distance_from_bullet ); // tangent distance contribution
 				}
 				//}
 			}
