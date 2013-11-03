@@ -270,7 +270,7 @@ public class dangerMapMotion extends basicMotion {
 	public double pointDangerFromAllBullets( Point2D.Double p ) {
 		double danger = 0;
 		bulletsManager  bm = myBot._bmanager;
-		for ( firedBullet b : bm.bullets ) {
+		for ( firedBullet b : bm.getAllBullets() ) {
 			danger += pointDangerFromBullet( p, b );
 		}
 		return danger;
