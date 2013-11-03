@@ -15,15 +15,14 @@ import java.util.*;
 
 public class  bulletsManager {
 	public EvBot myBot;
-	public LinkedList<wave> waves;
+	public LinkedList<wave> myWaves = new LinkedList<wave>();
+	public LinkedList<wave> enemyWaves = new LinkedList<wave>();
 	
 	public bulletsManager() {
-		waves = new LinkedList<wave>();
 	}
 
 	public bulletsManager(EvBot bot) {
 		myBot = bot;
-		waves = new LinkedList<wave>();
 	}
 
 	public void initTic() {
@@ -42,7 +41,7 @@ public class  bulletsManager {
 
 		// create bullet wave
 		wave w = new wave( myBot, firedBot, firedBot.energyDrop() );
-		waves.add(w);
+		enemyWaves.add(w);
 
 		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( "firingAtMyBot" );
 		for ( baseGun g: guns ) {
@@ -52,38 +51,56 @@ public class  bulletsManager {
 	}
 
 	public void add( firedBullet b) {
+		// adds my waves
 		wave w = new wave( myBot, b );
-		waves.add(w);
+		myWaves.add(w);
 		w.addBullet(b);
 	}
 
-	public void removeEmptyWaves() {
+	public void removeEmptyWavesFromList( LinkedList<wave> waves ) {
+		// this removes waves with no bullets in them
 		ListIterator<wave> wLIter;
 		wLIter = waves.listIterator();
-		// this removes waves with no bullets in them
 		while (wLIter.hasNext()) {
 			if (wLIter.next().bullets.size() == 0) {
 				wLIter.remove();
 			}
 		} 
 	}
+	public void removeEmptyWaves() {
+		// this removes waves with no bullets in them
+		removeEmptyWavesFromList( enemyWaves );
+		removeEmptyWavesFromList( myWaves );
+	}
 
-	public void removeInactiveBullets() {
+	public void removeInactiveBulletsFromWaveList( LinkedList<wave> waves ) {
 		for (wave w: waves) {
 			w.removeInactiveBullets();
 		}
 	}
+	public void removeInactiveBullets() {
+		removeInactiveBulletsFromWaveList( enemyWaves );
+		removeInactiveBulletsFromWaveList( myWaves );
+	}
 
-	public LinkedList<firedBullet> getAllBullets() {
+	public LinkedList<firedBullet> getAllEnemyBullets() {
 		LinkedList<firedBullet> bullets = new LinkedList<firedBullet>();
-		for (wave w: waves) {
+		for (wave w: enemyWaves) {
 			bullets.addAll( w.bullets );
 		}
 		return bullets;
 	}
 
-	public baseGun whichGunFiredBullet(Bullet b) {
-		LinkedList<firedBullet> bullets = getAllBullets();
+	public LinkedList<firedBullet> getAllMyBullets() {
+		LinkedList<firedBullet> bullets = new LinkedList<firedBullet>();
+		for (wave w: myWaves) {
+			bullets.addAll( w.bullets );
+		}
+		return bullets;
+	}
+
+	public baseGun whichOfMyGunsFiredBullet(Bullet b) {
+		LinkedList<firedBullet> bullets = getAllMyBullets();
 		ListIterator<firedBullet> bLIter = bullets.listIterator();
 		firedBullet  fB;
 		baseGun  gun = null;
@@ -114,8 +131,10 @@ public class  bulletsManager {
 	}
 
 	public void onPaint(Graphics2D g) {
-		//removeInactiveBullets();
-		for ( wave w : waves ) {
+		for ( wave w : enemyWaves ) {
+			w.onPaint(g);
+		}
+		for ( wave w : myWaves ) {
 			w.onPaint(g);
 		}
 	}

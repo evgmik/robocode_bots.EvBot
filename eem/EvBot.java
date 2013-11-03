@@ -264,7 +264,7 @@ public class EvBot extends AdvancedRobot
 			logger.dbg("Weird, hit bullet does not exists");
 			return;
 		}
-		tmp_gun = _bmanager.whichGunFiredBullet(b);
+		tmp_gun = _bmanager.whichOfMyGunsFiredBullet(b);
 		if ( tmp_gun == null ) {
 			logger.dbg("Weird, hit bullet does not known its gun");
 			return;
@@ -280,7 +280,7 @@ public class EvBot extends AdvancedRobot
 			logger.dbg("Weird, our missed bullet is not known to event");
 			return;
 		}
-		tmp_gun = _bmanager.whichGunFiredBullet(e.getBullet());
+		tmp_gun = _bmanager.whichOfMyGunsFiredBullet(e.getBullet());
 		if ( tmp_gun == null ) {
 		logger.noise("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
 			logger.dbg("Weird, missed bullet does not known its gun");
