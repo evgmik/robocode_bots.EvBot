@@ -198,7 +198,7 @@ public class InfoBot {
 		}
 		boolean stat = true;
 		double eDrop = energyDrop();
-		if ( (eDrop < .1) || (3 < eDrop) ) {
+		if ( (eDrop < 1e-6) || (3 < eDrop) ) {
 			stat=false;
 			return stat;
 		} else {
