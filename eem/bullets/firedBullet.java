@@ -129,8 +129,8 @@ public class firedBullet {
 		graphics.drawCircle(g, bPos, bSize/2);
 
 		// draw overall bullet wave
-		double distTraveled = getDistanceTraveled();
-		graphics.drawCircle(g, firingPosition, distTraveled);
+		//double distTraveled = getDistanceTraveled();
+		//graphics.drawCircle(g, firingPosition, distTraveled);
 
 		
 	}
