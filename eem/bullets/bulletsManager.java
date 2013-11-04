@@ -27,8 +27,8 @@ public class  bulletsManager {
 
 	public void initTic() {
 		removeInactiveBulletsAndEmptyWaves();
-		createShadowsFromMyBullets();
-		createShadowsFromOtherBots();
+		//createShadowsFromMyBullets();
+		//createShadowsFromOtherBots();
 	}
 
 	public void createShadowsFromOtherBots() {
@@ -74,6 +74,7 @@ public class  bulletsManager {
 	}
 
 	public void removeInactiveBulletsAndEmptyWaves() {
+		removeWavesBehindMe();
 		removeInactiveBullets();
 		removeEmptyWaves();
 	}
@@ -125,6 +126,19 @@ public class  bulletsManager {
 	public void removeInactiveBullets() {
 		removeInactiveBulletsFromWaveList( enemyWaves );
 		removeInactiveBulletsFromWaveList( myWaves );
+	}
+
+	public void removeWavesBehindMe() {
+		ListIterator<wave> wLIter;
+		wLIter = enemyWaves.listIterator();
+		while (wLIter.hasNext()) {
+			wave wE = wLIter.next();
+			double distWaveTrav =  wE.getDistanceTraveled();
+			double distToMe = wE.getFiringPosition().distance( myBot.myCoord );
+			if ( ( distToMe + 2*myBot.robotHalfSize ) < distWaveTrav ) {
+				wLIter.remove();
+			}
+		} 
 	}
 
 	public LinkedList<firedBullet> getAllEnemyBullets() {
