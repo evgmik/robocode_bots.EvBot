@@ -27,10 +27,27 @@ public class  bulletsManager {
 
 	public void initTic() {
 		removeInactiveBulletsAndEmptyWaves();
-		createShadowingBullets();
+		createShadowsFromMyBullets();
+		createShadowsFromOtherBots();
 	}
 
-	public void createShadowingBullets() {
+	public void createShadowsFromOtherBots() {
+		long time = myBot.ticTime;
+		for ( wave wE : enemyWaves ) {
+			Point2D.Double firingPos = wE.getFiringPosition();
+			double waveDist = wE.getDistanceTraveledAtTime(time); 
+			for ( InfoBot bot : myBot._botsmanager.listOfAliveBots() ) {
+				Point2D.Double botPos = bot.getPosition();
+				if ( Math.abs( waveDist - firingPos.distance( botPos )  ) <= myBot.robotHalfSize ) {
+					baseGun shadowGun = new shadowGun();
+					firedBullet bShadow = new firedBullet( myBot, wE, shadowGun, botPos);
+					wE.addBullet(bShadow);
+				}
+			}
+		}
+	}
+
+	public void createShadowsFromMyBullets() {
 		long time = myBot.ticTime;
 		for ( wave w : myWaves ) {
 			firedBullet b = w.bullets.getFirst(); //my waves have only one bullet
@@ -48,6 +65,8 @@ public class  bulletsManager {
 					//logger.dbg("Crossed enemy wave at " + crossingPos);
 					baseGun shadowGun = new shadowGun();
 					firedBullet bShadow = new firedBullet( myBot, wE, shadowGun, crossingPos);
+					// FIXME: head on almost have no shadows
+					// need to have some logic here
 					wE.addBullet(bShadow);
 				}
 			}
