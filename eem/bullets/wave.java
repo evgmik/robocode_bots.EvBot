@@ -73,6 +73,11 @@ public class wave {
 		bullets.add(b);
 	}
 
+	public void removeBullet(firedBullet b) {
+		bullets.remove(b);
+	}
+
+
 	public void removeInactiveBullets() {
 		ListIterator<firedBullet> bLIter;
 		bLIter = this.bullets.listIterator();

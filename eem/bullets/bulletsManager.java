@@ -39,9 +39,26 @@ public class  bulletsManager {
 			for ( InfoBot bot : myBot._botsmanager.listOfAliveBots() ) {
 				Point2D.Double botPos = bot.getPosition();
 				if ( Math.abs( waveDist - firingPos.distance( botPos )  ) <= myBot.robotHalfSize ) {
+					// check if current bullets hit the enemy bot
+					LinkedList<firedBullet> bulletsToRemove = new LinkedList<firedBullet>();
+					for ( firedBullet b: wE.getBullets() ) {
+						Point2D.Double bulPos = b.getPosition();
+						if ( ( Math.abs( bulPos.x - botPos.x ) <= myBot.robotHalfSize ) && ( Math.abs( bulPos.y - botPos.y ) <= myBot.robotHalfSize ) ) {
+							bulletsToRemove.add( b );
+						}
+
+					}
+
+					// remove screened bullets
+					for ( firedBullet b: bulletsToRemove ) {
+						wE.removeBullet( b );
+					}
+					
+					// add shadow from this bot
 					baseGun shadowGun = new shadowGun();
 					firedBullet bShadow = new firedBullet( myBot, wE, shadowGun, botPos);
 					wE.addBullet(bShadow);
+
 				}
 			}
 		}
@@ -155,6 +172,10 @@ public class  bulletsManager {
 			bullets.addAll( w.bullets );
 		}
 		return bullets;
+	}
+
+	public LinkedList<wave> getAllEnemyWaves() {
+		return enemyWaves;
 	}
 
 	public baseGun whichOfMyGunsFiredBullet(Bullet b) {
