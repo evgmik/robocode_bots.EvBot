@@ -1,3 +1,13 @@
+= Version  4.4.3 =
+
+Speed up on enemy wave danger calculations. Do not take in account waves which
+a too distant.
+Remove bullets screened/shadowed by enemy bot.
+
+= Version  4.4.2 =
+
+Comment out code of my bullets shadows
+
 = Version  4.4.1 =
 
 Added shadowing by my bullets and other bots bodies.
