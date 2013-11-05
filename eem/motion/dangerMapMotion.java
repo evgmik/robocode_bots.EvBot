@@ -35,6 +35,8 @@ public class dangerMapMotion extends basicMotion {
 	double safe_distance_from_wall;
 	double safe_distance_from_bot;
 	double safe_distance_from_bullet;
+	double distOfBulletPrecursor = 200; // very large
+	double distFromWaveToFarToWorry = 400;
 
 	double dangerLevelWall = 50;
 	double dangerLevelEnemyBot = 100;
@@ -246,11 +248,10 @@ public class dangerMapMotion extends basicMotion {
 				dist = dP*Math.sqrt(1-cos_val*cos_val);
 				double distAlongBulletPath = dP*cos_val;
 				// bullet is dangerous only when we are close to it
-				double escapeDistance = 200; // very large
-				//if ( distAlongBulletPath < escapeDistance ) {
+				//if ( distAlongBulletPath < distOfBulletPrecursor ) {
 				if ( !b.getFiredGun().getName().equals("shadow") ) {
 					danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet ); // tangent distance contribution
-					 danger *= math.gaussian( distAlongBulletPath, 1, escapeDistance ); // distance to travel by bullet contribution
+					 danger *= math.gaussian( distAlongBulletPath, 1, distOfBulletPrecursor ); // distance to travel by bullet contribution
 					 if ( myBot.fightType().equals( "1on1" ) ) {
 						 double bDamage = 4*b.bulletEnergy() + 2 * Math.max( b.bulletEnergy() - 1 , 0 );
 						 danger *= (1+myBot.totalNumOfEnemiesAtStart/Math.max( myBot.numEnemyBotsAlive, 1) *0.01*bDamage);
@@ -272,11 +273,20 @@ public class dangerMapMotion extends basicMotion {
 		return danger;
 	}
 
-	public double pointDangerFromAllBullets( Point2D.Double p ) {
+	public double pointDangerFromEnemyWaves( Point2D.Double p ) {
 		double danger = 0;
 		bulletsManager  bm = myBot._bmanager;
-		for ( firedBullet b : bm.getAllEnemyBullets() ) {
-			danger += pointDangerFromBullet( p, b );
+		LinkedList<wave> enemyWaves = bm.getAllEnemyWaves();
+		for ( wave eW : enemyWaves ) {
+			double distToWave = eW.distance( p );
+			//logger.dbg(" distance to wave = " + distToWave + " for " + p);
+			if (distToWave < 0 ) // the wave passed this point
+				continue;
+			if ( distToWave > distFromWaveToFarToWorry )
+				continue;
+			for ( firedBullet b : eW.getBullets() ) {
+				danger += pointDangerFromBullet( p, b );
+			}
 		}
 		return danger;
 	}
@@ -285,7 +295,7 @@ public class dangerMapMotion extends basicMotion {
 		double danger = 0;
 		danger += pointDangerFromWalls( p );
 		danger += pointDangerFromAllBots( p );
-		danger += pointDangerFromAllBullets( p );
+		danger += pointDangerFromEnemyWaves( p );
 		return danger;
 	}
 

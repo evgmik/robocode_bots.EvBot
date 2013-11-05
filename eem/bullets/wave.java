@@ -60,6 +60,15 @@ public class wave {
 		return firedTime;
 	}
 
+	public LinkedList<firedBullet> getBullets () {
+		return bullets;
+	}
+
+	public double distance(Point2D.Double p) {
+		double dist = firingPosition.distance( p ) - getDistanceTraveled() ;
+		return dist;
+	}
+
 	public void addBullet(firedBullet b) {
 		bullets.add(b);
 	}
