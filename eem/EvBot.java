@@ -274,7 +274,9 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void  onBulletMissed(BulletMissedEvent e) {
-		baseGun tmp_gun;
+		if ( true ) return;
+		// no need to trace this event it is not used
+		baseGun tmp_gun = null;
 		logger.noise("Ups, our bullet missed");
 		if ( e.getBullet() == null ) {
 			logger.dbg("Weird, our missed bullet is not known to event");

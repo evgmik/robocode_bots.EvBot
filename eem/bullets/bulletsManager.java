@@ -92,6 +92,7 @@ public class  bulletsManager {
 
 	public void removeInactiveBulletsAndEmptyWaves() {
 		removeWavesBehindMe();
+		removeMyWavesBehindEnemies();
 		removeInactiveBullets();
 		removeEmptyWaves();
 	}
@@ -143,6 +144,26 @@ public class  bulletsManager {
 	public void removeInactiveBullets() {
 		removeInactiveBulletsFromWaveList( enemyWaves );
 		removeInactiveBulletsFromWaveList( myWaves );
+	}
+
+	public void removeMyWavesBehindEnemies() {
+		ListIterator<wave> wLIter;
+		wLIter = myWaves.listIterator();
+		while (wLIter.hasNext()) {
+			wave w = wLIter.next();
+			double distWaveTrav =  w.getDistanceTraveled();
+			boolean waveBehind = true;
+			for ( InfoBot eBot: myBot._botsmanager.listOfAliveBots() ) {
+				double distToBot = w.getFiringPosition().distance( eBot.getPosition() );
+				if ( ( distToBot + 2*myBot.robotHalfSize ) > distWaveTrav ) {
+					waveBehind = false;
+					break;
+				}
+			}
+			if ( waveBehind ) {
+				wLIter.remove();
+			}
+		} 
 	}
 
 	public void removeWavesBehindMe() {
