@@ -22,6 +22,7 @@ public class baseGun {
 	protected Random gun_rand = new Random();
 	public    Color gunColor = Color.black;
 	protected Point2D.Double targetFuturePosition;
+	protected int numTicsInColdState = 0;
 	protected double firePower;
 	private static int bulletHitCount = 0;
 	private static int bulletMissedCount = 0;
@@ -33,6 +34,10 @@ public class baseGun {
 	private String buildMapKey(InfoBot targetBot, InfoBot firingBot) {
 		String key = gunName + strSep + firingBot.getName() + strSep + targetBot.getName();
 		return key;
+	}
+
+	public int getNumTicsInColdState() {
+		return numTicsInColdState;
 	}
 
 	public int getBulletFiredCount(InfoBot targetBot, InfoBot firingBot) {
@@ -167,6 +172,9 @@ public class baseGun {
 	};
 
 	public void initTic() {
+		if ( myBot.getGunHeat() == 0 ) {
+			numTicsInColdState++;
+		}
 	}
 
 	public boolean doesItNeedTrackedTarget() {
