@@ -1,3 +1,7 @@
+= Version  4.4.4 =
+
+Bug fix: linear or circular gun never settles if an enemy bot quickly oscillates.
+
 = Version  4.4.3 =
 
 Speed up on enemy wave danger calculations. Do not take in account waves which
