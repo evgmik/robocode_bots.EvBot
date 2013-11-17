@@ -22,6 +22,7 @@ public class gunManager {
 	public EvBot myBot;
 	public static HashMap<String, LinkedList<baseGun>> gunSets = new HashMap<String, LinkedList<baseGun>>();
 	public static HashMap<String, baseGun> allUsedByMyBotGuns = new HashMap<String, baseGun>();
+	private int numOfAllowedTicsInGunColdState = 5;
 
 	public gunManager(EvBot bot) {
 		myBot = bot;
@@ -163,7 +164,7 @@ public class gunManager {
 		baseGun _gun = myBot.getGun();
 		baseGun new_gun = null;
 		// let's choose the gun if gun is fired
-		if ( _gun.isGunFired() ) {
+		if ( _gun.isGunFired() || ( _gun.getNumTicsInColdState() > numOfAllowedTicsInGunColdState ) ) {
 			_gun.gunFired = false;
 			logger.noise("new choice of gun instead of old " + _gun.getName());
 			new_gun = weights2gunForBot(myBot._trgt);
@@ -171,9 +172,14 @@ public class gunManager {
 				logger.warning("This should not happen: we did not chose a gun");
 				new_gun = getDefaultGun(); //default gun
 			}
-			_gun = new_gun;
+			if ( !_gun.getName().equals( new_gun.getName() ) ) {
+				_gun = new_gun;
+			} else {
+				// no need to reset gun which is essentially the same
+			}
 			logger.noise("Gun choice = " + _gun.getName());
 		}
+
 
 
 		//_gun = new pifGun(myBot); // dbg/test pif only gun
