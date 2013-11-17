@@ -23,6 +23,7 @@ public class wave {
 	protected long   firedTime;
 	protected double bulletSpeed;
 	public LinkedList<firedBullet> bullets = new LinkedList<firedBullet>();
+	public HashMap<String, Point2D.Double> enemyPosAtFiringTime = new HashMap<String, Point2D.Double>();
 	protected Color waveColor = new Color(0xff, 0x00, 0x00, 0x80);
 
 	public wave() {
@@ -39,6 +40,11 @@ public class wave {
 		firingPosition = (Point2D.Double) b.getFiringPosition().clone();
 		firedTime = myBot.ticTime;
 		bulletSpeed = b.getSpeed();
+		for ( InfoBot eBot : myBot._botsmanager.listOfAliveBots() ) {
+			String key = eBot.getName();
+			Point2D.Double enemyPos =  (Point2D.Double) eBot.getPosition().clone();
+			enemyPosAtFiringTime.put( key, enemyPos );
+		}
 		waveColor = (Color) b.getColor();
 	}
 
@@ -108,8 +114,14 @@ public class wave {
 		double distTraveled = getDistanceTraveled();
 		graphics.drawCircle(g, firingPosition, distTraveled);
 
+		// draw wave bullets
 		for ( firedBullet b : bullets ) {
 			b.onPaint(g);
+		}
+
+		// draw target positions at firing time
+		for ( Point2D.Double p: enemyPosAtFiringTime.values() ) {
+			graphics.drawCircle(g, p, 2);
 		}
 	}
 }
