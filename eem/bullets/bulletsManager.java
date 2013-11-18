@@ -29,6 +29,9 @@ public class  bulletsManager {
 		removeInactiveBulletsAndEmptyWaves();
 		//createShadowsFromMyBullets();
 		createShadowsFromOtherBots();
+		for ( wave w : myWaves ) {
+			w.initTic();
+		}
 	}
 
 	public void createShadowsFromOtherBots() {
