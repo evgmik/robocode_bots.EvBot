@@ -21,7 +21,7 @@ public class InfoBot {
 	protected int bulletFiredCount = 0;
 
 	private int numGuessFactorBins = 31;
-	private int[] guesFactorBins = new int[numGuessFactorBins];
+	private int[] guessFactorBins = new int[numGuessFactorBins];
 
 	// FIXME: need better search algorithm
 	// more than this amount and we start skipping turns
@@ -57,6 +57,9 @@ public class InfoBot {
 		return (this.getBulletHitCount() ) / (this.getBulletFiredCount() + 1.0);
 	}
 
+	public int[] getGuessFactorBins() {
+		return guessFactorBins;
+	}
 	public void printGunsStats() {
 		String str = "";
 		str += "Enemy gun ratio of hit/fired: " + this.getBulletHitCount() + "/" + this.getBulletFiredCount();
@@ -396,19 +399,19 @@ public class InfoBot {
 		return posList;
 	}
 
-	public long guesFactor2itsBin( double gf, double numBins) {
+	public long guessFactor2itsBin( double gf, double numBins) {
 		return Math.round( (gf+1)/2*(numBins-1) );
 	}
 	
 	public void updateHitGuessFactor( double gf ) {
-		int i = (int)guesFactor2itsBin( gf, numGuessFactorBins );
-		guesFactorBins[i] = guesFactorBins[i] + 1;
+		int i = (int)guessFactor2itsBin( gf, numGuessFactorBins );
+		guessFactorBins[i] = guessFactorBins[i] + 1;
 	}
 
-	public String guesFactorBins2string() {
+	public String guessFactorBins2string() {
 		String gfStr = "";
 		for (int i=0; i < numGuessFactorBins; i++ ) {
-			gfStr += " " + guesFactorBins[i] + " ";
+			gfStr += " " + guessFactorBins[i] + " ";
 		}
 		return gfStr;
 	}

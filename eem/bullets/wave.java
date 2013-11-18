@@ -87,7 +87,7 @@ public class wave {
 				guessFactor = Math.min( 1, guessFactor );
 				bot.updateHitGuessFactor( guessFactor );
 				//logger.dbg("guess factor for " + bName + " = " + guessFactor );
-				//logger.dbg( bName + ":\t" +  bot.guesFactorBins2string() );
+				//logger.dbg( bName + ":\t" +  bot.guessFactorBins2string() );
 			}
 		}
 	}
