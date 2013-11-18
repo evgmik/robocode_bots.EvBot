@@ -81,10 +81,14 @@ public class wave {
 				// the wave is the closest to the bot i.e. crosses the bot
 				String bName = bot.getName();
 				//logger.dbg("My wave intersects with enemy bot" );
-				double guessFactor = math.angle2pt ( this.firingPosition, botPos ) - math.angle2pt ( this.firingPosition, enemyPosAtFiringTime.get(bName) );
-				guessFactor /= enemyMEAatFiringTime.get(bName);
-				//logger.dbg("guess factor for " + bName + " = " + guessFactor );
+				double angle = math.angle2pt ( this.firingPosition, botPos ) - math.angle2pt ( this.firingPosition, enemyPosAtFiringTime.get(bName) );
+				angle = math.shortest_arc( angle );
+				double guessFactor = angle/enemyMEAatFiringTime.get(bName);
+				guessFactor = Math.max(-1, guessFactor );
+				guessFactor = Math.min( 1, guessFactor );
 				bot.updateHitGuessFactor( guessFactor );
+				//logger.dbg("guess factor for " + bName + " = " + guessFactor );
+				//logger.dbg( bName + ":\t" +  bot.guesFactorBins2string() );
 			}
 		}
 	}
