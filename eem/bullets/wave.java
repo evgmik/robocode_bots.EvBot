@@ -24,6 +24,8 @@ public class wave {
 	protected double bulletSpeed;
 	public LinkedList<firedBullet> bullets = new LinkedList<firedBullet>();
 	public HashMap<String, Point2D.Double> enemyPosAtFiringTime = new HashMap<String, Point2D.Double>();
+	// maximum escape angle 
+	public HashMap<String, Double> enemyMEAatFiringTime = new HashMap<String, Double>();
 	protected Color waveColor = new Color(0xff, 0x00, 0x00, 0x80);
 
 	public wave() {
@@ -44,6 +46,11 @@ public class wave {
 			String key = eBot.getName();
 			Point2D.Double enemyPos =  (Point2D.Double) eBot.getPosition().clone();
 			enemyPosAtFiringTime.put( key, enemyPos );
+			double maxBulletSpeed = 8;
+			// Max escape angle
+			double MEA = 180/Math.PI*Math.asin( maxBulletSpeed/bulletSpeed );
+			//logger.dbg("For bot " + key + " MEA = " + MEA);
+			enemyMEAatFiringTime.put( key, MEA );
 		}
 		waveColor = (Color) b.getColor();
 	}
@@ -56,6 +63,30 @@ public class wave {
 		// fixme enemy bullet detected 1 tic later so I need previous coord here
 		this.firingPosition = (Point2D.Double) firedBot.getPosition().clone();
 		firedTime = myBot.ticTime;
+	}
+
+	public void initTic() {
+		updatedHitBotGuessFactor();
+	}
+
+	public void updatedHitBotGuessFactor(){
+		if ( !isItMine ) return;
+		long time = myBot.ticTime;
+		double waveDistNow  = this.getDistanceTraveledAtTime( time ); 
+		double waveDistNext = this.getDistanceTraveledAtTime( time+1 ); 
+		for ( InfoBot bot : myBot._botsmanager.listOfAliveBots() ) {
+			Point2D.Double botPos = bot.getPosition();
+			double dist2bot = botPos.distance( firingPosition );
+			if ( Math.abs( waveDistNow - dist2bot ) <= Math.abs( waveDistNext - dist2bot ) ) {
+				// the wave is the closest to the bot i.e. crosses the bot
+				String bName = bot.getName();
+				//logger.dbg("My wave intersects with enemy bot" );
+				double guessFactor = math.angle2pt ( this.firingPosition, botPos ) - math.angle2pt ( this.firingPosition, enemyPosAtFiringTime.get(bName) );
+				guessFactor /= enemyMEAatFiringTime.get(bName);
+				//logger.dbg("guess factor for " + bName + " = " + guessFactor );
+				bot.updateHitGuessFactor( guessFactor );
+			}
+		}
 	}
 
 	public Point2D.Double getFiringPosition() {
@@ -121,7 +152,7 @@ public class wave {
 
 		// draw target positions at firing time
 		for ( Point2D.Double p: enemyPosAtFiringTime.values() ) {
-			graphics.drawCircle(g, p, 2);
+			graphics.drawSquare(g, p, 4);
 		}
 	}
 }
