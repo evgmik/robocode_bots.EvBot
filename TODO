@@ -1,3 +1,4 @@
+* check that on actual my bullet hit it is counted into guess factor stats.
 * see some logic to speedup screening/shadowing
 * feature: make shadow bullets - safety zone in the wave where it passed through enemy bot wave
   make sure that shadowing area taken in account

@@ -1,3 +1,7 @@
+= Version  4.4.5 =
+
+Added guess factor gun.
+
 = Version  4.4.4 =
 
 Bug fix: linear or circular gun never settles if an enemy bot quickly oscillates.
