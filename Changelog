@@ -1,3 +1,9 @@
+= Version  4.4.6 =
+
+GF gun fix. My hit bullet were not counted in GF stats.
+My wave does not go beyond 2 closes bot. Since it is unlikely that they react
+on my shots.
+
 = Version  4.4.5 =
 
 Added guess factor gun.
