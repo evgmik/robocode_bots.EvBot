@@ -20,6 +20,9 @@ public class InfoBot {
 	protected int bulletHitCount = 0;
 	protected int bulletFiredCount = 0;
 
+	private int numGuessFactorBins = 31;
+	private int[] guesFactorBins = new int[numGuessFactorBins];
+
 	// FIXME: need better search algorithm
 	// more than this amount and we start skipping turns
 	protected int maxDepthOfHistorySearch = 500; 
@@ -34,7 +37,6 @@ public class InfoBot {
 		setName(botName);
 	}
 
-	
 	public int getBulletFiredCount() {
 		return this.bulletFiredCount;
 	}
@@ -392,6 +394,23 @@ public class InfoBot {
 		}
 
 		return posList;
+	}
+
+	public long guesFactor2itsBin( double gf, double numBins) {
+		return Math.round( (gf+1)/2*(numBins-1) );
+	}
+	
+	public void updateHitGuessFactor( double gf ) {
+		int i = (int)guesFactor2itsBin( gf, numGuessFactorBins );
+		guesFactorBins[i] = guesFactorBins[i] + 1;
+	}
+
+	public String guesFactorBins2string() {
+		String gfStr = "";
+		for (int i=0; i < numGuessFactorBins; i++ ) {
+			gfStr += " " + guesFactorBins[i] + " ";
+		}
+		return gfStr;
 	}
 
 	public void drawLastKnownBotPosition(Graphics2D g) {
