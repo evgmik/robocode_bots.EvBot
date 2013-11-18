@@ -23,6 +23,7 @@ public class target extends InfoBot {
 		this.targetUnlocked = b.targetUnlocked;
 		this.bulletHitCount = b.getBulletHitCount();
 		this.bulletFiredCount = b.getBulletFiredCount();
+		this.guessFactorBins = b.getGuessFactorBins();
 
 		haveTarget = true;
 	}

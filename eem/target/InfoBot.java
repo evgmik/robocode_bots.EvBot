@@ -20,8 +20,8 @@ public class InfoBot {
 	protected int bulletHitCount = 0;
 	protected int bulletFiredCount = 0;
 
-	private int numGuessFactorBins = 31;
-	private int[] guessFactorBins = new int[numGuessFactorBins];
+	protected int numGuessFactorBins = 31;
+	protected int[] guessFactorBins = new int[numGuessFactorBins];
 
 	// FIXME: need better search algorithm
 	// more than this amount and we start skipping turns
