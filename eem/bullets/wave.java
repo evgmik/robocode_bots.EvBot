@@ -46,9 +46,8 @@ public class wave {
 			String key = eBot.getName();
 			Point2D.Double enemyPos =  (Point2D.Double) eBot.getPosition().clone();
 			enemyPosAtFiringTime.put( key, enemyPos );
-			double maxBulletSpeed = 8;
 			// Max escape angle
-			double MEA = 180/Math.PI*Math.asin( maxBulletSpeed/bulletSpeed );
+			double MEA = math.calculateMEA( bulletSpeed );
 			//logger.dbg("For bot " + key + " MEA = " + MEA);
 			enemyMEAatFiringTime.put( key, MEA );
 		}

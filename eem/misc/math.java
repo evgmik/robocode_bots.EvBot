@@ -153,4 +153,11 @@ public class math {
 		hit_pnt.x = hit_pnt.x + dist/vy*vx;
 		return hit_pnt;
 	}
+
+	public static double calculateMEA( double bulletSpeed ) {
+			// Max escape angle in degree for a given bullet speed
+			double maxBulletSpeed = 8; // TODO move ro robocode physics class
+			double MEA = 180/Math.PI*Math.asin( maxBulletSpeed/bulletSpeed );
+			return MEA;
+	}
 }
