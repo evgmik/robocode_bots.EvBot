@@ -17,6 +17,12 @@ public class  bulletsManager {
 	public EvBot myBot;
 	public LinkedList<wave> myWaves = new LinkedList<wave>();
 	public LinkedList<wave> enemyWaves = new LinkedList<wave>();
+	// our wave is mainly used to collect gun stats
+	// further bots unlikely to react on our shots so I limit number of bots
+	// which wave need to cross
+	// this is mainly to use for GF gun stats.
+	// For other guns stats it make sence to track all the bots
+	private int numBotsForWaveToIntersect = 2; 
 	
 	public bulletsManager() {
 	}
@@ -97,7 +103,7 @@ public class  bulletsManager {
 		removeWavesBehindMe();
 		removeMyWavesBehindEnemies();
 		removeInactiveBullets();
-		removeEmptyWaves();
+		//removeEmptyWaves();
 	}
 
 	public void add_enemy_wave(InfoBot firedBot) {
@@ -152,14 +158,18 @@ public class  bulletsManager {
 	public void removeMyWavesBehindEnemies() {
 		ListIterator<wave> wLIter;
 		wLIter = myWaves.listIterator();
+		int numBotsBehind = 0;
 		while (wLIter.hasNext()) {
 			wave w = wLIter.next();
 			double distWaveTrav =  w.getDistanceTraveled();
-			boolean waveBehind = true;
+			boolean waveBehind = false;
 			for ( InfoBot eBot: myBot._botsmanager.listOfAliveBots() ) {
 				double distToBot = w.getFiringPosition().distance( eBot.getPosition() );
-				if ( ( distToBot + 2*myBot.robotHalfSize ) > distWaveTrav ) {
-					waveBehind = false;
+				if ( ( distToBot + 2*myBot.robotHalfSize ) < distWaveTrav ) {
+					numBotsBehind++;
+				}
+				if ( ( numBotsBehind == myBot.getOthers() ) || ( numBotsBehind >= numBotsForWaveToIntersect ) ) {
+					waveBehind = true;
 					break;
 				}
 			}
