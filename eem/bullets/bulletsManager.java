@@ -158,23 +158,19 @@ public class  bulletsManager {
 	public void removeMyWavesBehindEnemies() {
 		ListIterator<wave> wLIter;
 		wLIter = myWaves.listIterator();
-		int numBotsBehind = 0;
 		while (wLIter.hasNext()) {
 			wave w = wLIter.next();
 			double distWaveTrav =  w.getDistanceTraveled();
-			boolean waveBehind = false;
+			int numBotsBehind = 0;
 			for ( InfoBot eBot: myBot._botsmanager.listOfAliveBots() ) {
 				double distToBot = w.getFiringPosition().distance( eBot.getPosition() );
 				if ( ( distToBot + 2*myBot.robotHalfSize ) < distWaveTrav ) {
 					numBotsBehind++;
 				}
 				if ( ( numBotsBehind == myBot.getOthers() ) || ( numBotsBehind >= numBotsForWaveToIntersect ) ) {
-					waveBehind = true;
+					wLIter.remove();
 					break;
 				}
-			}
-			if ( waveBehind ) {
-				wLIter.remove();
 			}
 		} 
 	}
