@@ -49,7 +49,7 @@ public class guessFactorGun extends baseGun {
 		return 2.0*gfBin/(numBins-1.0) - 1.0;
 	}
 
-	private double chooseGuessFactor( InfoBot bot ) {
+	private double pickGFprobabilisticly(InfoBot bot) {
 		int[] guessFactorBins = bot.getGuessFactorBins();
 		int numBins = guessFactorBins.length;
 		double[] guessFactorWeighted = new double[ numBins ];
@@ -68,7 +68,6 @@ public class guessFactorGun extends baseGun {
 		}
 		// pick bin # according its probability
 
-		double gf=0;
 		double rnd=Math.random();
 		double accumWeight = 0;
 		int gfBin = 0;
@@ -79,8 +78,35 @@ public class guessFactorGun extends baseGun {
 				break;
 			}
 		}
-		gf = bin2gf( gfBin, numBins );
-		return gf;
+		return bin2gf( gfBin, numBins );
+	}
+
+	private double pickMostProbableGF(InfoBot bot) {
+		int[] guessFactorBins = bot.getGuessFactorBins();
+		int numBins = guessFactorBins.length;
+		double[] guessFactorWeighted = new double[ numBins ];
+		//logger.dbg( bot.getName() + ":gf\t" +  bot.guessFactorBins2string() );
+		double binsSum = 0;
+		int indMax = 0;
+		int maxCnt =0;
+		for (int i=0; i < numBins; i++ ) {
+			binsSum += guessFactorBins[i];
+			if ( guessFactorBins[i] > maxCnt ) {
+				maxCnt = guessFactorBins[i];
+				indMax = i;
+			}
+		}
+		if ( binsSum == 0 ) {
+			// empty statistics
+			return 0; // head on guess factor
+		}
+		
+		return bin2gf( indMax, numBins );
+	}
+
+	private double chooseGuessFactor( InfoBot bot ) {
+		//return pickGFprobabilisticly( bot );
+		return pickMostProbableGF( bot );
 	}
 
 	public void onPaint(Graphics2D g) {
