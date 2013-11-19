@@ -32,7 +32,7 @@ public class gunManager {
 		
 		guns = new  LinkedList<baseGun>();
 		//guns.add( new linearGun(myBot) );
-		//guns.add( new randomGun(myBot) );
+		guns.add( new randomGun(myBot) );
 		guns.add( new circularGun(myBot) );
 		guns.add( new guessFactorGun(myBot) );
 		//guns.add( new pifGun(myBot) ); // FIXME: too slow
@@ -44,7 +44,7 @@ public class gunManager {
 		//guns.add( new linearGun(myBot) );
 		guns.add( new circularGun(myBot) );
 		guns.add( new guessFactorGun(myBot) );
-		//guns.add( new randomGun(myBot) );
+		guns.add( new randomGun(myBot) );
 		//guns.add( new pifGun(myBot) ); // FIXME: too slow
 		fightType = "meelee1on1";
 		gunSets.put( fightType, guns );
