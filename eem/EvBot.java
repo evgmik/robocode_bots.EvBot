@@ -67,11 +67,11 @@ public class EvBot extends AdvancedRobot
 		totalNumOfEnemiesAtStart = getOthers();
 
 		_trgt = new target();
-		_gun = new linearGun(this);
 		_radar = new radar(this);
 		_motion = new dangerMapMotion(this);
 		_bmanager = new bulletsManager(this);
 		_gmanager = new gunManager(this);
+		_gun = _gmanager.getDefaultGun();
 		_botsmanager = new botsManager(this);
 		_tracker = new InfoBot(getName());
 
