@@ -1,5 +1,8 @@
 // -*- java -*-
 package eem.misc;
+import java.io.File;
+import robocode.RobocodeFileWriter;
+import java.io.IOException;
 
 public class logger {
 	// logger staff
@@ -11,9 +14,17 @@ public class logger {
 	public final static int log_routine=4;
 	public final static int log_debuging=5;
 	public final static int log_noise=10;
-	static int verbosity_level=log_debuging; // current level, smaller is less noisy
+	private static int verbosity_level=log_debuging; // current level, smaller is less noisy
+	private static RobocodeFileWriter fileWriter = null;
 
 	public logger (int vLevel) {
+		this();
+		verbosity_level = vLevel;
+	}
+
+	public logger (int vLevel, RobocodeFileWriter fileWriter ) {
+		this();
+		this.fileWriter = fileWriter;
 		verbosity_level = vLevel;
 	}
 
@@ -21,8 +32,23 @@ public class logger {
 	}
 
 	public static void log_message(int level, String s) {
-		if (level <= verbosity_level)
+		if (level <= verbosity_level) {
 			System.out.println(s);
+		}
+		//if (true) {
+		if (level <= verbosity_level) {
+			if ( fileWriter != null ) {
+				try {
+					s = s + "\n";
+					fileWriter.write(s);
+					fileWriter.flush();
+				} catch (IOException ioe) {
+					System.out.println("Trouble writing to the log file: " + ioe.getMessage());
+				}
+			} else {
+				System.out.println("The log file writer does not exist");
+			}
+		}
 	}
 
 	public static void warning(String s) {

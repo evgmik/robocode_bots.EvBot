@@ -6,6 +6,7 @@ import eem.target.*;
 import eem.radar.*;
 import eem.motion.*;
 import eem.bullets.*;
+import java.io.IOException;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -53,11 +54,28 @@ public class EvBot extends AdvancedRobot
 	double desiredBodyRotationDirection = 0; // our robot body desired angle
 
 	// logger staff
+	private String logFileName = "EvBot.log";
 	public int verbosity_level=logger.log_debuging; // current level, smaller is less noisy
-	public logger _log = new logger(verbosity_level);
+	private static RobocodeFileWriter fileWriter = null;
+	private boolean appendToLogFlag = false; // TODO: make use of it
+	public logger _log = null;
 
+	public EvBot() {
+	}
 
 	public void initBattle() {
+		if ( fileWriter == null ) {
+			try {
+				fileWriter = new RobocodeFileWriter( this.getDataFile( logFileName ) );
+				_log = new logger(verbosity_level, fileWriter);
+			} catch (IOException ioe) {
+				System.out.println("Trouble opening the logging file: " + ioe.getMessage());
+				_log = new logger(verbosity_level);
+			}
+		}
+
+		logger.routine("=========== Round #" + (getRoundNum()+1) + "=============");
+
 		BattleField = new Point2D.Double(getBattleFieldWidth(), getBattleFieldHeight());
 		myCoord = new Point2D.Double( getX(), getY() );
 
@@ -374,7 +392,7 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void winOrLoseRoundEnd() {
-		//_gmanager.printGunsStats();
+		_gmanager.printGunsStats();
 		_botsmanager.printGunsStats();
 		logger.routine("Rounds ratio of win/lose = " + roundsWon + "/" + roundsLost );
 	}
