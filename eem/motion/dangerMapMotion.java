@@ -38,6 +38,7 @@ public class dangerMapMotion extends basicMotion {
 	double distOfBulletPrecursor = 200; // very large
 	double distFromWaveToFarToWorry = 400;
 
+	double dangerForPointTouchingTheWall = 1e6; // humongous number
 	double dangerLevelWall = 50;
 	double dangerLevelEnemyBot = 100;
 	double dangerLevelBullet = 100;
@@ -165,7 +166,7 @@ public class dangerMapMotion extends basicMotion {
 		if ( shortestDist2wall( p ) <= myBot.robotHalfSize ) {
 			// point within physical no-go zone
 			// danger must be infinite to prevent going there
-			danger += 1e6; // humongous number
+			danger += dangerForPointTouchingTheWall;
 		}
 		danger += math.gaussian( dx, dangerLevelWall, safe_distance_from_wall );
 		danger += math.gaussian( dy, dangerLevelWall, safe_distance_from_wall );
@@ -282,8 +283,10 @@ public class dangerMapMotion extends basicMotion {
 			//logger.dbg(" distance to wave = " + distToWave + " for " + p);
 			if (distToWave < 0 ) // the wave passed this point
 				continue;
-			if ( distToWave > distFromWaveToFarToWorry )
+			if ( ( distToWave > distFromWaveToFarToWorry ) && ( enemyWaves.size() > 6 ) ) {
+				//logger.dbg("Too many enemy waves, skipping this one");
 				continue;
+			}
 			for ( firedBullet b : eW.getBullets() ) {
 				danger += pointDangerFromBullet( p, b );
 			}
@@ -337,7 +340,7 @@ public class dangerMapMotion extends basicMotion {
 					centerPoint.x + distRand*Math.sin(angleRand) ,
 					centerPoint.y + distRand*Math.cos(angleRand) );
 			dL = pointDanger(nP);
-			if ( !math.isItOutOfBorders( nP, myBot.BattleField ) ) {
+			if ( shortestDist2wall(nP) > (myBot.robotHalfSize + 1) ) {
 				dangerPoints.add(new dangerPoint( nP, dL) );
 				cnt++;
 			}
