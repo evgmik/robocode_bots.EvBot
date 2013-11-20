@@ -166,8 +166,19 @@ public class gunManager {
 		double rnd;
 		baseGun _gun = myBot.getGun();
 		baseGun new_gun = null;
+		boolean choseAnotherGun = false;
+
 		// let's choose the gun if gun is fired
-		if ( _gun.isGunFired() || ( _gun.getNumTicsInColdState() > numOfAllowedTicsInGunColdState ) ) {
+		if ( _gun.isGunFired() ) {
+			choseAnotherGun = true;
+		}
+
+		if ( _gun.getNumTicsInColdState() > numOfAllowedTicsInGunColdState ) {
+			choseAnotherGun = true;
+			logger.noise("At tic: " + myBot.ticTime + " gun " + _gun.getName() + " is cold for too long: " + _gun.getNumTicsInColdState());
+		}
+
+		if ( choseAnotherGun ) {
 			_gun.gunFired = false;
 			logger.noise("new choice of gun instead of old " + _gun.getName());
 			new_gun = weights2gunForBot(myBot._trgt);
@@ -176,6 +187,7 @@ public class gunManager {
 				new_gun = getDefaultGun(); //default gun
 			}
 			if ( !_gun.getName().equals( new_gun.getName() ) ) {
+				_gun.resetTicsInColdState();
 				_gun = new_gun;
 			} else {
 				// no need to reset gun which is essentially the same

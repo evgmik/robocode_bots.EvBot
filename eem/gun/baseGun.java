@@ -231,9 +231,14 @@ public class baseGun {
 			logger.noise("fired bullet  = " + b);
 			myBot._bmanager.add( new firedBullet( myBot, b, this) );
 			gunFired = true;
+			resetTicsInColdState();
 			gunHasTargetPoint = false;
 			this.incBulletFiredCount();
 		}
+	}
+
+	public void resetTicsInColdState() {
+		numTicsInColdState = 0;
 	}
 
 	public void setTargetFuturePosition( Point2D.Double target ) {
