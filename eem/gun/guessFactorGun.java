@@ -127,9 +127,9 @@ public class guessFactorGun extends baseGun {
 		double MEA = math.calculateMEA( bSpeed );
 
 		Point2D.Double gfPnt = new Point2D.Double(0,0);
+		double radius = Math.max(dist/3, dist - 3.5*myBot.robotHalfSize );
 		for( int i=0; i<N; i++ ) {
 			double angle = angle2enemyBot + MEA*bin2gf(i, N);
-			double radius = Math.min(200,dist/3);
 			gfPnt.x = myBot.myCoord.x + radius*Math.sin(angle/180*Math.PI);
 			gfPnt.y = myBot.myCoord.y + radius*Math.cos(angle/180*Math.PI);
 			double circRad = 1+ 4*guessFactorBins[i]/Math.max(wMax,1);
