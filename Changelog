@@ -1,3 +1,9 @@
+= Version  4.4.9 =
+
+bug fix: do not chose point candidate at which my bot hits a wall
+bug fix: choice of new gun if current is cold for too long
+improved GF depiction for the GF paint method
+
 = Version  4.4.8 =
 
 GF gun use the most probable location.
