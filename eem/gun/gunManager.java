@@ -296,15 +296,24 @@ public class gunManager {
 			hCt += hC;
 			int fC = tmp_gun.getBulletFiredCount(bot);
 			fCt += fC;
-			double weight = getGunWeightForBot(tmp_gun, bot);
-			String str = "";
-			str += "gun[ " + gunName + "\t]";
-			str += " hit target \t" + hC;
-			str += "\t and was fired \t" + fC;
+			double hR = math.eventRate( hC, fC );
+			// string formatting
+			String hRstr = logger.shortFormatDouble( hR );
+			String hCstr = String.format("%4d", hC);
+			String fCstr = String.format("%-4d", fC);
+			String strOut = "";
+			strOut += "Gun[ ";
+			strOut += String.format( "%12s", tmp_gun.getName() );
+			strOut += " ]";
+			strOut += " | ";
+			strOut +="hit rate " + hCstr + "/" + fCstr + " = " + hRstr;
 			if ( activeGunsNames.contains( gunName ) ) {
-				str += "\t gun weight is \t" + logger.shortFormatDouble( weight );
+				double weight = getGunWeightForBot(tmp_gun, bot);
+				strOut += " | ";
+				String weightStr = logger.shortFormatDouble( weight );
+				strOut += "gun weight is " + weightStr;
 			}
-			logger.routine(str);
+			logger.routine(strOut);
 		}
 		logger.routine("---" );
 		double hProb = math.eventRate( totalBotHitCount( bot ), totalBotFiredCount( bot ) );
@@ -364,9 +373,9 @@ public class gunManager {
 			printGunsStatsForBotsList(myBot._botsmanager.listOfAliveBots());
 		}
 
-		logger.routine("-------------------------------------------------------" );
-		logger.routine("Summary for each gun at this stage across this game" );
-		logger.routine("-------------------------------------------------------" );
+		logger.routine("------------------------------------------------------------" );
+		logger.routine("Summary for each of my guns at this stage across this game" );
+		logger.routine("------------------------------------------------------------" );
 		for ( baseGun tmp_gun: allUsedByMyBotGuns.values() ) {
 			for ( InfoBot bot: botsList ) {
 				gunsFiringTotal += tmp_gun.getBulletFiredCount(bot);
@@ -376,13 +385,26 @@ public class gunManager {
 		for ( baseGun tmp_gun: allUsedByMyBotGuns.values() ) {
 			int hC = totalGunHitCount(tmp_gun);
 			int fC = totalGunFiredCount(tmp_gun);
+			double hR = math.eventRate( hC, fC );
 			// firing rate
 			double fR = math.eventRate( fC, gunsFiringTotal );
-			String fRstr = String.format("%.2f", fR );
-			logger.routine("Gun[ " + tmp_gun.getName()+"\t] hit target \t" + hC + "\t and was fired \t" + fC + " \t firing rate is \t" + (double)fC/gunsFiringTotal);
+			// string formatting
+			String hRstr = logger.shortFormatDouble( hR );
+			String fRstr = logger.shortFormatDouble( fR );
+			String hCstr = String.format("%4d", hC);
+			String fCstr = String.format("%-4d", fC);
+			String strOut = "";
+			strOut += "Gun[ ";
+			strOut += String.format( "%12s", tmp_gun.getName() );
+			strOut += " ]";
+			strOut += " | ";
+			strOut +="hit rate " + hCstr + "/" + fCstr + " = " + hRstr;
+			strOut += " | ";
+			strOut += "firing rate = " + fRstr;
+			logger.routine(strOut);
 		}
 		logger.routine("-------------------------------------------------------" );
-		logger.routine("Overall guns hit rate = " + overallGunsHitRate() );
+		logger.routine("Overall guns hit rate = " + logger.shortFormatDouble( overallGunsHitRate() ) );
 		logger.routine("-------------------------------------------------------" );
 	}
 

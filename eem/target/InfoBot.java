@@ -61,10 +61,13 @@ public class InfoBot {
 		return guessFactorBins;
 	}
 	public void printGunsStats() {
+		String hCstr = String.format("%4d",  this.getBulletHitCount());
+		String fCstr = String.format("%-4d", this.getBulletFiredCount());
 		String str = "";
-		str += "Enemy gun ratio of hit/fired: " + this.getBulletHitCount() + "/" + this.getBulletFiredCount();
+		str += "Enemy gun ratio of hit/fired: " + hCstr + "/" + fCstr;
 		str += " = " + logger.shortFormatDouble( this.getGunHitRate() );
-		str += "\t " + getName();
+		str += " | ";
+	       	str += getName();
 		logger.routine( str );
 	}
 
