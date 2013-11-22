@@ -290,6 +290,14 @@ public class gunManager {
 		for ( baseGun tmp_gun: activeGuns ) {
 			activeGunsNames.add( tmp_gun.getName() );
 		}
+		String hdrStr = "";
+		hdrStr += String.format( "%12s", "gun name");
+		hdrStr += " | ";
+		hdrStr += String.format( "%12s    ", "hit rate");
+		hdrStr += " | ";
+		hdrStr += String.format( "%9s", "gun weight");
+		logger.routine(hdrStr);
+		logger.routine("------------------------------------------------------------" );
 		for ( baseGun tmp_gun: allUsedByMyBotGuns.values()  ) {
 			String gunName = tmp_gun.getName();
 			int hC = tmp_gun.getBulletHitCount(bot);
@@ -302,16 +310,18 @@ public class gunManager {
 			String hCstr = String.format("%4d", hC);
 			String fCstr = String.format("%-4d", fC);
 			String strOut = "";
-			strOut += "Gun[ ";
+			//strOut += "Gun[ ";
 			strOut += String.format( "%12s", tmp_gun.getName() );
-			strOut += " ]";
+			//strOut += " ]";
 			strOut += " | ";
-			strOut +="hit rate " + hCstr + "/" + fCstr + " = " + hRstr;
+			//strOut += "hit rate ";
+		       	strOut += hCstr + "/" + fCstr + " = " + hRstr;
+			strOut += " | ";
 			if ( activeGunsNames.contains( gunName ) ) {
 				double weight = getGunWeightForBot(tmp_gun, bot);
-				strOut += " | ";
 				String weightStr = logger.shortFormatDouble( weight );
-				strOut += "gun weight is " + weightStr;
+				//strOut += "gun weight is ";
+				strOut += weightStr;
 			}
 			logger.routine(strOut);
 		}
@@ -382,6 +392,14 @@ public class gunManager {
 			}
 		}
 
+		String hdrStr = "";
+		hdrStr += String.format( "%12s", "gun name");
+		hdrStr += " | ";
+		hdrStr += String.format( "%12s    ", "hit rate");
+		hdrStr += " | ";
+		hdrStr += String.format( "%9s", "firing rate");
+		logger.routine(hdrStr);
+		logger.routine("------------------------------------------------------------" );
 		for ( baseGun tmp_gun: allUsedByMyBotGuns.values() ) {
 			int hC = totalGunHitCount(tmp_gun);
 			int fC = totalGunFiredCount(tmp_gun);
@@ -394,13 +412,15 @@ public class gunManager {
 			String hCstr = String.format("%4d", hC);
 			String fCstr = String.format("%-4d", fC);
 			String strOut = "";
-			strOut += "Gun[ ";
+			//strOut += "Gun[ ";
 			strOut += String.format( "%12s", tmp_gun.getName() );
-			strOut += " ]";
+			//strOut += " ]";
 			strOut += " | ";
-			strOut +="hit rate " + hCstr + "/" + fCstr + " = " + hRstr;
+			//strOut += "hit rate "; 
+			strOut += hCstr + "/" + fCstr + " = " + hRstr;
 			strOut += " | ";
-			strOut += "firing rate = " + fRstr;
+			//strOut += "firing rate = ";
+			strOut += fRstr;
 			logger.routine(strOut);
 		}
 		logger.routine("-------------------------------------------------------" );
