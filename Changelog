@@ -1,3 +1,8 @@
+= Version  4.4.9.1 =
+
+Added filelog output.  Random gun is removed, added GF gun to middle melee
+fight.
+
 = Version  4.4.9 =
 
 bug fix: do not chose point candidate at which my bot hits a wall
