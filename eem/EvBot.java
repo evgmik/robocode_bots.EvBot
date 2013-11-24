@@ -42,7 +42,7 @@ public class EvBot extends AdvancedRobot
 	public bulletsManager _bmanager;
 	public gunManager _gmanager;
 	public botsManager _botsmanager;
-	public InfoBot _tracker; // track my own status
+	public static InfoBot _tracker; // track my own status
 
 	public int numEnemyBotsAlive = 1; // we have at least one enemy in general
 	public long initTicStartTime = 0;
@@ -91,7 +91,10 @@ public class EvBot extends AdvancedRobot
 		_gmanager = new gunManager(this);
 		_gun = _gmanager.getDefaultGun();
 		_botsmanager = new botsManager(this);
-		_tracker = new InfoBot(getName());
+		if ( _tracker == null ) {
+			// tracker keep stats for guess factors so I need it permanent
+			_tracker = new InfoBot(getName());
+		}
 
 		initTicStartTime = System.nanoTime();
 	}

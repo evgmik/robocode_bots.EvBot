@@ -17,7 +17,8 @@ public class wave {
 	protected EvBot myBot;
 
 	protected Bullet robocodeBullet;
-	public String firedBotName = "";
+	public InfoBot firedBot = null;
+	//public String firedBotName = "";  // not used
 	protected boolean isItMine = true;
 	protected Point2D.Double firingPosition;
 	protected long   firedTime;
@@ -34,34 +35,62 @@ public class wave {
 	public wave(EvBot bot) {
 		myBot = bot;
 		firingPosition = myBot.myCoord;
+		firedBot = myBot._tracker;
 	}
 
 	public wave(EvBot bot, firedBullet b) {
+		// wave fired by my bot
 		myBot = bot;
 		isItMine = true;
+		firedBot = myBot._tracker;
 		firingPosition = (Point2D.Double) b.getFiringPosition().clone();
 		firedTime = myBot.ticTime;
 		bulletSpeed = b.getSpeed();
-		for ( InfoBot eBot : myBot._botsmanager.listOfAliveBots() ) {
-			String key = eBot.getName();
-			Point2D.Double enemyPos =  (Point2D.Double) eBot.getPosition().clone();
-			enemyPosAtFiringTime.put( key, enemyPos );
-			// Max escape angle
-			double MEA = math.calculateMEA( bulletSpeed );
-			//logger.dbg("For bot " + key + " MEA = " + MEA);
-			enemyMEAatFiringTime.put( key, MEA );
-		}
+		setEnemyPosAtFiringTime();
+		setEnemyMEAatFiringTime();
 		waveColor = (Color) b.getColor();
 	}
 
 	public wave(EvBot bot, InfoBot firedBot, double bulletEnergy) {
+		// wave fired by enemy bot
 		myBot = bot;
 		isItMine = false;
+		this.firedBot = firedBot;
 		baseGun firedGun = new baseGun();
 		this.bulletSpeed = firedGun.bulletSpeed(bulletEnergy); 
 		// fixme enemy bullet detected 1 tic later so I need previous coord here
 		this.firingPosition = (Point2D.Double) firedBot.getPosition().clone();
 		firedTime = myBot.ticTime;
+		setEnemyPosAtFiringTime();
+		setEnemyMEAatFiringTime();
+	}
+
+	private void setEnemyPosAtFiringTime() {
+		LinkedList<InfoBot> aliveBots = new LinkedList<InfoBot>();
+		aliveBots.addAll( myBot._botsmanager.listOfAliveBots() );
+		aliveBots.add( myBot._tracker );
+		for ( InfoBot eBot : aliveBots ) {
+			if ( firedBot.getName().equals( eBot.getName() ) ) {
+				continue;
+			}
+			String key = eBot.getName();
+			Point2D.Double enemyPos =  (Point2D.Double) eBot.getPosition().clone();
+			enemyPosAtFiringTime.put( key, enemyPos );
+		}
+	}
+	private void setEnemyMEAatFiringTime() {
+		LinkedList<InfoBot> aliveBots = new LinkedList<InfoBot>();
+		aliveBots.addAll( myBot._botsmanager.listOfAliveBots() );
+		aliveBots.add( myBot._tracker );
+		for ( InfoBot eBot : aliveBots ) {
+			if ( firedBot.getName().equals( eBot.getName() ) ) {
+				continue;
+			}
+			String key = eBot.getName();
+			// Max escape angle
+			double MEA = math.calculateMEA( bulletSpeed );
+			enemyMEAatFiringTime.put( key, MEA );
+		}
 	}
 
 	public void initTic() {
@@ -69,23 +98,30 @@ public class wave {
 	}
 
 	public void updatedHitBotGuessFactor(){
-		if ( !isItMine ) return;
+		//if ( !isItMine ) return;
 		long time = myBot.ticTime;
 		double waveDistNow  = this.getDistanceTraveledAtTime( time ); 
 		double waveDistNext = this.getDistanceTraveledAtTime( time+1 ); 
-		for ( InfoBot bot : myBot._botsmanager.listOfAliveBots() ) {
+		LinkedList<InfoBot> aliveBots = new LinkedList<InfoBot>();
+		aliveBots.addAll( myBot._botsmanager.listOfAliveBots() );
+		aliveBots.add( myBot._tracker );
+		for ( InfoBot bot : aliveBots ) {
+			//logger.dbg("Wave fired by " + firedBot.getName() + " against bot " + bot.getName() );
+			if ( firedBot.getName().equals( bot.getName() ) ) {
+				continue;
+			}
 			Point2D.Double botPos = bot.getPosition();
 			double dist2bot = botPos.distance( firingPosition );
 			if ( Math.abs( waveDistNow - dist2bot ) <= Math.abs( waveDistNext - dist2bot ) ) {
 				// the wave is the closest to the bot i.e. crosses the bot
 				String bName = bot.getName();
-				//logger.dbg("My wave intersects with enemy bot" );
+				//logger.dbg("Wave fired by " + firedBot.getName() + " intersects with enemy bot " + bName );
 				double angle = math.angle2pt ( this.firingPosition, botPos ) - math.angle2pt ( this.firingPosition, enemyPosAtFiringTime.get(bName) );
 				angle = math.shortest_arc( angle );
 				double guessFactor = angle/enemyMEAatFiringTime.get(bName);
 				guessFactor = Math.max(-1, guessFactor );
 				guessFactor = Math.min( 1, guessFactor );
-				bot.updateHitGuessFactor( guessFactor );
+				firedBot.updateHitGuessFactor( bot, guessFactor );
 				//logger.dbg("guess factor for " + bName + " = " + guessFactor );
 				//logger.dbg( bName + ":\t" +  bot.guessFactorBins2string() );
 			}

@@ -20,8 +20,8 @@ public class InfoBot {
 	protected int bulletHitCount = 0;
 	protected int bulletFiredCount = 0;
 
+	protected HashMap<String, int[]> guessFactorsMap;
 	protected int numGuessFactorBins = 31;
-	protected int[] guessFactorBins = new int[numGuessFactorBins];
 
 	// FIXME: need better search algorithm
 	// more than this amount and we start skipping turns
@@ -29,6 +29,7 @@ public class InfoBot {
 
 	public InfoBot() {
 		botStats = new LinkedList<botStatPoint>();
+		guessFactorsMap = new HashMap<String, int[]>();
 		targetUnlocked = true;
 	}
 
@@ -57,9 +58,15 @@ public class InfoBot {
 		return (this.getBulletHitCount() ) / (this.getBulletFiredCount() + 1.0);
 	}
 
-	public int[] getGuessFactorBins() {
-		return guessFactorBins;
+	public int[] getGuessFactorBins(InfoBot bot) {
+		String key = bot.getName();
+		if ( !guessFactorsMap.containsKey( key ) ) {
+			int[] guessFactorBins = new int[numGuessFactorBins];
+			guessFactorsMap.put( key, guessFactorBins );
+		}
+		return guessFactorsMap.get( key );
 	}
+
 	public void printGunsStats() {
 		String hCstr = String.format("%4d",  this.getBulletHitCount());
 		String fCstr = String.format("%-4d", this.getBulletFiredCount());
@@ -406,17 +413,33 @@ public class InfoBot {
 		return Math.round( (gf+1)/2*(numBins-1) );
 	}
 	
-	public void updateHitGuessFactor( double gf ) {
+	public void updateHitGuessFactor( InfoBot anotherBot, double gf ) {
 		int i = (int)guessFactor2itsBin( gf, numGuessFactorBins );
-		guessFactorBins[i] = guessFactorBins[i] + 1;
+		String key = anotherBot.getName();
+		if ( !guessFactorsMap.containsKey( key ) ) {
+			int[] guessFactorBins = new int[numGuessFactorBins];
+			guessFactorsMap.put( key, guessFactorBins );
+		}
+		int[] gfBins = guessFactorsMap.get( key );
+		gfBins[i] = gfBins[i] + 1;
 	}
 
-	public String guessFactorBins2string() {
+	public String guessFactorBins2string4botName(String botName) {
+		if ( !guessFactorsMap.containsKey( botName ) ) {
+			int[] guessFactorBins = new int[numGuessFactorBins];
+			guessFactorsMap.put( botName, guessFactorBins );
+		}
+		int[] gfBins = guessFactorsMap.get( botName );
 		String gfStr = "";
 		for (int i=0; i < numGuessFactorBins; i++ ) {
-			gfStr += " " + guessFactorBins[i] + " ";
+			gfStr += " " + gfBins[i] + " ";
 		}
 		return gfStr;
+	}
+
+	public String guessFactorBins2string(InfoBot anotherBot) {
+		String botName = anotherBot.getName();
+		return guessFactorBins2string4botName(botName);
 	}
 
 	public void drawLastKnownBotPosition(Graphics2D g) {

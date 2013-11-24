@@ -38,6 +38,9 @@ public class  bulletsManager {
 		for ( wave w : myWaves ) {
 			w.initTic();
 		}
+		for ( wave w : enemyWaves ) {
+			w.initTic();
+		}
 	}
 
 	public void createShadowsFromOtherBots() {

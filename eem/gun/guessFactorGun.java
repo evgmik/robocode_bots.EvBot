@@ -50,7 +50,7 @@ public class guessFactorGun extends baseGun {
 	}
 
 	private double pickGFprobabilisticly(InfoBot bot) {
-		int[] guessFactorBins = bot.getGuessFactorBins();
+		int[] guessFactorBins = myBot._tracker.getGuessFactorBins( bot );
 		int numBins = guessFactorBins.length;
 		double[] guessFactorWeighted = new double[ numBins ];
 		//logger.dbg( bot.getName() + ":gf\t" +  bot.guessFactorBins2string() );
@@ -82,7 +82,7 @@ public class guessFactorGun extends baseGun {
 	}
 
 	private double pickMostProbableGF(InfoBot bot) {
-		int[] guessFactorBins = bot.getGuessFactorBins();
+		int[] guessFactorBins = myBot._tracker.getGuessFactorBins( bot );
 		int numBins = guessFactorBins.length;
 		double[] guessFactorWeighted = new double[ numBins ];
 		//logger.dbg( bot.getName() + ":gf\t" +  bot.guessFactorBins2string() );
@@ -113,7 +113,7 @@ public class guessFactorGun extends baseGun {
 		super.onPaint(g);
 
 		// draw weighted guess factor directions
-		int[] guessFactorBins = myBot._trgt.getGuessFactorBins();
+		int[] guessFactorBins = myBot._tracker.getGuessFactorBins(myBot._trgt);
 		int N = guessFactorBins.length;
 		double wMax=0;
 		for( int i=0; i<N; i++ ) {
