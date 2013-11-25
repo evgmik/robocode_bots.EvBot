@@ -22,18 +22,33 @@ public class guessFactorGun extends baseGun {
 	}
 
 	public guessFactorGun(EvBot bot) {
-		this();
-		myBot = bot;
+		super(bot);
+		gunName = "guessFactor";
+		guessFactor = 0;
+		gunColor = new Color(0xff, 0x88, 0xff, 0x80);
 		calcGunSettings();
 	}
 
+	public Point2D.Double calcTargetFuturePosition( InfoBot firedBot, double firePower, InfoBot tgt) {
+		firingBot = firedBot;
+		Point2D.Double firingPosition = (Point2D.Double) firingBot.getPosition().clone();
+		return calcTargetFuturePosition( firingPosition, firePower, tgt);
+	}
+
 	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
+		if (firingBot == null ) { 
+			//FIXME: this should not happen if I make it right
+			logger.dbg("FIXME: firingBot is not set. This should not happen if I make it right");
+			firingBot = myBot._tracker;
+		}
 		if ( !gunHasTargetPoint ) {
-			guessFactor = chooseGuessFactor( tgt );
 			//logger.dbg("Gun guess factor = " + guessFactor );
 			targetFuturePosition = (Point2D.Double) tgt.getPosition().clone();
 			gunHasTargetPoint = true;
 		}
+		guessFactor = chooseGuessFactor( tgt );
+		//logger.dbg("Firing bot: " + firingBot.getName() );
+		//logger.dbg("Chosen GF = " + guessFactor );
 		double dist = firingPosition.distance( tgt.getPosition() );
 		double dx = dist;
 		double dy = dist;
@@ -50,10 +65,10 @@ public class guessFactorGun extends baseGun {
 	}
 
 	private double pickGFprobabilisticly(InfoBot bot) {
-		int[] guessFactorBins = myBot._tracker.getGuessFactorBins( bot );
+		int[] guessFactorBins = firingBot.getGuessFactorBins( bot );
 		int numBins = guessFactorBins.length;
 		double[] guessFactorWeighted = new double[ numBins ];
-		//logger.dbg( bot.getName() + ":gf\t" +  bot.guessFactorBins2string() );
+		//logger.dbg("firing bot: " + firingBot.getName() + " gf\t[" +  firingBot.guessFactorBins2string(bot) + "]");
 		double binsSum = 0;
 		for (int i=0; i < numBins; i++ ) {
 			binsSum += guessFactorBins[i];
@@ -82,10 +97,10 @@ public class guessFactorGun extends baseGun {
 	}
 
 	private double pickMostProbableGF(InfoBot bot) {
-		int[] guessFactorBins = myBot._tracker.getGuessFactorBins( bot );
+		int[] guessFactorBins = firingBot.getGuessFactorBins( bot );
 		int numBins = guessFactorBins.length;
 		double[] guessFactorWeighted = new double[ numBins ];
-		//logger.dbg( bot.getName() + ":gf\t" +  bot.guessFactorBins2string() );
+		//logger.dbg("firing bot: " + firingBot.getName() + " gf\t[" +  firingBot.guessFactorBins2string(bot) + "]");
 		double binsSum = 0;
 		int indMax = 0;
 		int maxCnt =0;
@@ -113,7 +128,7 @@ public class guessFactorGun extends baseGun {
 		super.onPaint(g);
 
 		// draw weighted guess factor directions
-		int[] guessFactorBins = myBot._tracker.getGuessFactorBins(myBot._trgt);
+		int[] guessFactorBins = firingBot.getGuessFactorBins(myBot._trgt);
 		int N = guessFactorBins.length;
 		double wMax=0;
 		for( int i=0; i<N; i++ ) {
