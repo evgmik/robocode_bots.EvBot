@@ -16,6 +16,7 @@ import java.util.HashMap;
 
 public class baseGun {
 	protected EvBot myBot;
+	protected InfoBot firingBot;
 	protected String gunName = "base";
 	protected boolean  gunFired = false;
 	protected boolean  gunHasTargetPoint = false;
@@ -167,7 +168,9 @@ public class baseGun {
 	}
 
 	public baseGun(EvBot bot) {
+		this();
 		myBot = bot;
+		firingBot = myBot._tracker;
 		calcGunSettings();
 	};
 
@@ -344,6 +347,11 @@ public class baseGun {
 		new_ftPos.x = new_ftPos.x + robotHalfSize;
 		new_ftPos.y = new_ftPos.y + robotHalfSize;
 		return new_ftPos;
+	}
+
+	public Point2D.Double calcTargetFuturePosition( InfoBot firedBot, double firePower, InfoBot tgt) {
+		Point2D.Double firingPosition = (Point2D.Double) firedBot.getPosition().clone();
+		return calcTargetFuturePosition( firingPosition, firePower, tgt);
 	}
 
 	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
