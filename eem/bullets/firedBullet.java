@@ -76,7 +76,7 @@ public class firedBullet {
 		this.bulletSpeed = firedGun.bulletSpeed(bulletEnergy); 
 		// fixme enemy bullet detected 1 tic later so I need previous coord here
 		this.firingPosition = (Point2D.Double) firedBot.getPosition().clone();
-		this.targetPosition = (Point2D.Double) gun.calcTargetFuturePosition( this.firingPosition, bulletEnergy, myBot._tracker);
+		this.targetPosition = (Point2D.Double) gun.calcTargetFuturePosition( firedBot, bulletEnergy, myBot._tracker);
 		firedTime = myBot.ticTime;
 		this.firingAngle = Math.atan2(targetPosition.x-firingPosition.x, targetPosition.y - firingPosition.y);
 		bulletColor = firedGun.gunColor;
