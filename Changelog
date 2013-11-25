@@ -1,3 +1,8 @@
+= Version  4.5.0 =
+
+Added gfGun firing at me in attempt to make GF profile flatter. Seems to help
+a bit.
+
 = Version  4.4.9.1 =
 
 Added filelog output.  Random gun is removed, added GF gun to middle melee
