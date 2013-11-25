@@ -78,6 +78,11 @@ public class InfoBot {
 		logger.routine( str );
 	}
 
+	public void printGFstats(InfoBot anotherBot) {
+		String str = guessFactorBins2string(anotherBot);
+		logger.routine(" [ " + str + "]" + " by bot: " + getName() );
+	}
+
 	public void initTic(long ticTime) {
 		// updating UnLocked status
 		if ( ( ticTime - this.getLastSeenTime() ) > 2) 

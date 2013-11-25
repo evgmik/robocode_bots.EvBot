@@ -331,7 +331,7 @@ public class gunManager {
 		double hProb = math.eventRate( totalBotHitCount( bot ), totalBotFiredCount( bot ) );
 		logger.routine(logger.shortFormatDouble( hProb ) + " probability to hit bot " + bot.getName() ); 
 		logger.routine( logger.shortFormatDouble( botAsTargetWeight( bot ) ) + " weight as a target of bot " + bot.getName() ); 
-		logger.routine( "Guess Factors: " + myBot._tracker.guessFactorBins2string( bot ) ); 
+		logger.routine( "Guess Factors: [ " + myBot._tracker.guessFactorBins2string( bot ) + "]" ); 
 	}
 
 	public void printGunsStatsForBotsList( LinkedList<InfoBot> botsList ) {

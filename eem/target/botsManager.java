@@ -143,6 +143,11 @@ public class  botsManager {
 		for (InfoBot bot : deadBots.values()) {
 			bot.printGunsStats();
 		}
+		logger.routine("--- Guess factors at which I seen ---" );
+		for (InfoBot bot : listOfKnownBots() ) {
+			bot.printGFstats(myBot._tracker);
+		}
+
 	}
 
 	public LinkedList<InfoBot> listOfKnownBots() {
