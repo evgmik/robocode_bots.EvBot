@@ -71,9 +71,11 @@ public class  bulletsManager {
 					}
 					
 					// add shadow from this bot
-					baseGun shadowGun = new shadowGun();
-					firedBullet bShadow = new firedBullet( myBot, wE, shadowGun, botPos);
-					wE.addBullet(bShadow);
+					if ( wE.isPosWithMEAforBot( botPos, myBot._tracker ) ) {
+						baseGun shadowGun = new shadowGun();
+						firedBullet bShadow = new firedBullet( myBot, wE, shadowGun, botPos);
+						wE.addBullet(bShadow);
+					}
 
 				}
 			}
