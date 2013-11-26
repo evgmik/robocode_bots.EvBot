@@ -31,4 +31,7 @@ public class graphics {
 		drawRect( g, p, width, width ) ;
 	}
 
+		public static void drawCircArc( Graphics2D g, Point2D.Double center, double radius, double startAngle, double stopAngle ) {
+			g.drawArc( (int) (center.x - radius), (int) (center.y - radius), (int) (2*radius), (int) (2*radius), (int) startAngle, (int) (stopAngle - startAngle) );
+		}
 }
