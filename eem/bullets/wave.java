@@ -128,6 +128,17 @@ public class wave {
 		}
 	}
 
+	public boolean isPosWithMEAforBot( Point2D.Double pos, InfoBot bot) {
+		Point2D.Double botPos = (Point2D.Double) enemyPosAtFiringTime.get( bot.getName() ).clone();
+		double botMEA = enemyMEAatFiringTime.get( bot.getName() );
+		double angle2botPast = math.angle2pt ( this.firingPosition, botPos );
+		double angle2pos = math.angle2pt ( this.firingPosition, pos );
+		if ( Math.abs( angle2pos - angle2botPast ) < botMEA ) {
+			return true;
+		}
+		return false;
+	}
+
 	public Point2D.Double getFiringPosition() {
 		return firingPosition;
 	}
