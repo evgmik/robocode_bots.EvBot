@@ -54,6 +54,10 @@ public class  bulletsManager {
 					// check if current bullets hit the enemy bot
 					LinkedList<firedBullet> bulletsToRemove = new LinkedList<firedBullet>();
 					for ( firedBullet b: wE.getBullets() ) {
+						if ( b.getFiredGun().getName().equals("shadow") ) {
+							// do not remove shadows
+							continue;
+						}
 						Point2D.Double bulPos = b.getPosition();
 						if ( ( Math.abs( bulPos.x - botPos.x ) <= myBot.robotHalfSize ) && ( Math.abs( bulPos.y - botPos.y ) <= myBot.robotHalfSize ) ) {
 							bulletsToRemove.add( b );
