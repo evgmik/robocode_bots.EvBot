@@ -184,6 +184,16 @@ public class wave {
 		double distTraveled = getDistanceTraveled();
 		graphics.drawCircle(g, firingPosition, distTraveled);
 
+		// draw MEA for me from enemy bot
+		if (!isItMine) {
+			Point2D.Double myPos = (Point2D.Double) enemyPosAtFiringTime.get( myBot.getName() ).clone();
+			double myMEA = enemyMEAatFiringTime.get( myBot.getName() );
+			double angle2myPast = math.angle2pt ( this.firingPosition, myPos );
+			double startAngle = angle2myPast + myMEA;
+			double stopAngle  = angle2myPast - myMEA;
+			graphics.drawCircArc(g, firingPosition, distTraveled-5, startAngle, stopAngle);
+		}
+
 		// draw wave bullets
 		for ( firedBullet b : bullets ) {
 			b.onPaint(g);
@@ -193,6 +203,7 @@ public class wave {
 		for ( Point2D.Double p: enemyPosAtFiringTime.values() ) {
 			graphics.drawSquare(g, p, 4);
 		}
+
 	}
 }
 
