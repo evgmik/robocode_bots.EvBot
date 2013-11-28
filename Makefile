@@ -1,12 +1,12 @@
 # -*- make -*-
 # FILE: "/home/evmik/src/my_src/robocode/Makefile"
-# LAST MODIFICATION: "Thu, 28 Nov 2013 15:57:04 -0500 (evmik)"
+# LAST MODIFICATION: "Thu, 28 Nov 2013 15:57:43 -0500 (evmik)"
 # (C) 2012 by Eugeniy Mikhailov, <evgmik@gmail.com>
 # $Id:$
 
 SUPERPACKADE = eem
 
-ROBOCODE_DIR = ~/misc/rumble-1.7.3.0
+ROBOCODE_DIR = ~/misc/robocode-1.8.2.0
 ROBOTS_DIR   = $(ROBOCODE_DIR)/robots
 ROBOCODEJAR  = $(ROBOCODE_DIR)/libs/robocode.jar
 
