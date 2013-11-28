@@ -161,8 +161,8 @@ public class EvBot extends AdvancedRobot
 		if ( (numEnemyBotsAlive == 1) && (totalNumOfEnemiesAtStart == 1) )
 			return "1on1";
 		if ( (numEnemyBotsAlive == 1) && (totalNumOfEnemiesAtStart != 1) )
-			return "meelee1on1";
-		if ( survRatio > 2/3 )
+			return "melee1on1";
+		if ( survRatio > 2./3. )
 			return "melee";
 		return "meleeMidle";
 	}
