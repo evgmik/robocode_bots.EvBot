@@ -1,3 +1,10 @@
+= Version  4.5.1 =
+
+bug fix: when decided on fight type the ratio was 2/3 instead of 2./3 to
+convert it to float
+bug fix: typos in fight types
+feature: different fight types have different sets of gun firing at me
+
 = Version  4.5.0 =
 
 Added gfGun firing at me in attempt to make GF profile flatter. Seems to help
@@ -28,8 +35,8 @@ added: nice guess factor graphics for GF gun
 = Version  4.4.6 =
 
 GF gun fix. My hit bullet were not counted in GF stats.
-My wave does not go beyond 2 closes bot. Since it is unlikely that they react
-on my shots.
+My wave does not go beyond the 2 closest bot. Since it is unlikely that the
+further ones  react on my shots.
 
 = Version  4.4.5 =
 
