@@ -124,7 +124,11 @@ public class  bulletsManager {
 		wave w = new wave( myBot, firedBot, firedBot.energyDrop() );
 		enemyWaves.add(w);
 
-		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( "firingAtMyBot" );
+		String  gunSetKey = "firingAtMyBot" + "_in_" + myBot.fightType();
+		if ( !myBot._gmanager.gunSets.containsKey( gunSetKey ) ) {
+			gunSetKey = "firingAtMyBot" + "_in_" + "default";
+		}
+		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( gunSetKey );
 		for ( baseGun g: guns ) {
 			b = new firedBullet( myBot, firedBot,  g, firedBot.energyDrop() );
 			w.addBullet(b);
