@@ -1,26 +1,26 @@
 # -*- make -*-
 # FILE: "/home/evmik/src/my_src/robocode/Makefile"
-# LAST MODIFICATION: "Thu, 28 Nov 2013 15:50:34 -0500 (evmik)"
+# LAST MODIFICATION: "Thu, 28 Nov 2013 15:57:04 -0500 (evmik)"
 # (C) 2012 by Eugeniy Mikhailov, <evgmik@gmail.com>
 # $Id:$
 
-OUTDIR=out
-SUPERPACKADE=eem
+SUPERPACKADE = eem
 
-ROBOCODE_DIR=~/misc/rumble-1.7.3.0
-ROBOTS_DIR= $(ROBOCODE_DIR)/robots
-ROBOCODEJAR=$(ROBOCODE_DIR)/libs/robocode.jar
+ROBOCODE_DIR = ~/misc/rumble-1.7.3.0
+ROBOTS_DIR   = $(ROBOCODE_DIR)/robots
+ROBOCODEJAR  = $(ROBOCODE_DIR)/libs/robocode.jar
 
-JFLAGS=-d $(OUTDIR) -classpath $(ROBOCODEJAR):
+TESTVERSION := vtest
+VERSION     := $(shell git describe --tags --abbrev=0)
+UUID        := $(shell uuid)
 
-TESTVERSION:=vtest
-VERSION:=$(shell git describe --tags --abbrev=0)
-UUID:=$(shell uuid)
+TESTJAR    = $(SUPERPACKADE).EvBot_$(TESTVERSION).jar 
+RELEASEJAR = $(SUPERPACKADE).EvBot_$(VERSION).jar
 
-TESTJAR=$(SUPERPACKADE).EvBot_$(TESTVERSION).jar 
-RELEASEJAR=$(SUPERPACKADE).EvBot_$(VERSION).jar
+OUTDIR = out
+JFLAGS = -d $(OUTDIR) -classpath $(ROBOCODEJAR):
 
-SRC=eem/EvBot.java eem/botVersion.java \
+SRC = eem/EvBot.java eem/botVersion.java \
     $(wildcard eem/misc/*.java) \
     $(wildcard eem/radar/*.java) \
     $(wildcard eem/motion/*.java) \
