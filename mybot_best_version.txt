@@ -1,61 +1,61 @@
 This is to keep track of the best performing bot versions
 
-Melee: v4.5.2 <== APS = 64.12 +
-Melee: v4.5.1 <== APS = 62.56
-Melee: v4.5.0 <== APS = 63.23
+Melee: v4.5.2   <== APS = 64.12 +
+Melee: v4.5.1   <== APS = 62.56
+Melee: v4.5.0   <== APS = 63.23
 Melee: v4.4.9.1 <== APS = 63.39
-Melee: v4.4.9 <== APS = 63.62
-Melee: v4.4.8 <== APS = 63.58
-Melee: v4.4.7 <== APS = 63.41
-Melee: v4.4.6 <== APS = 63.15
-Melee: v4.4.5 <== APS = 63.43
-Melee: v4.4.4 <== APS = 63.68 +
-Melee: v4.4.3 <== APS = 63.63 +
-Melee: v4.4.2 <== APS = 62.73
-Melee: v4.4.1 <== APS = 62.06
-Melee: v4.4.0 <== APS = 63.59 +
+Melee: v4.4.9   <== APS = 63.62
+Melee: v4.4.8   <== APS = 63.58
+Melee: v4.4.7   <== APS = 63.41
+Melee: v4.4.6   <== APS = 63.15
+Melee: v4.4.5   <== APS = 63.43
+Melee: v4.4.4   <== APS = 63.68 +
+Melee: v4.4.3   <== APS = 63.63 +
+Melee: v4.4.2   <== APS = 62.73
+Melee: v4.4.1   <== APS = 62.06
+Melee: v4.4.0   <== APS = 63.59 +
 Melee: v4.3.9.1 <== APS = 63.1 
-Melee: v4.3.9 <== APS = 62.82
-Melee: v4.3.8 <== APS = 63.0
-Melee: v4.3.7 <== APS = 62.77
-Melee: v4.3.6 <== APS = 62.32
-Melee: v4.3.5 <== APS = 62.30
-Melee: v4.3.4 <== APS = 62.50
-Melee: v4.3.3 <== APS = 62.45
-Melee: v4.3.2 <== APS = 63.2  +
-Melee: v4.3.1 <== APS = 62.44
-Melee: v4.3.0 <== APS = 62.65 +
-Melee: v4.2.9 <== APS = 59.97 +
-Melee: v4.2.8 <== APS = 59.57 +
-Melee: v4.2.6 <== APS = 59.21
-Melee: v4.2.5 <== APS = 59.21 +
-Melee: v3.9.4 <== APS = 58.9
+Melee: v4.3.9   <== APS = 62.82
+Melee: v4.3.8   <== APS = 63.0
+Melee: v4.3.7   <== APS = 62.77
+Melee: v4.3.6   <== APS = 62.32
+Melee: v4.3.5   <== APS = 62.30
+Melee: v4.3.4   <== APS = 62.50
+Melee: v4.3.3   <== APS = 62.45
+Melee: v4.3.2   <== APS = 63.2  +
+Melee: v4.3.1   <== APS = 62.44
+Melee: v4.3.0   <== APS = 62.65 +
+Melee: v4.2.9   <== APS = 59.97 +
+Melee: v4.2.8   <== APS = 59.57 +
+Melee: v4.2.6   <== APS = 59.21
+Melee: v4.2.5   <== APS = 59.21 +
+Melee: v3.9.4   <== APS = 58.9
 
-1on1 : v4.5.2 <== APS = 64.29
-1on1 : v4.5.1 <== APS = 64.47 +
-1on1 : v4.5.0 <== APS = 64.25 +
+1on1 : v4.5.2   <== APS = 64.29
+1on1 : v4.5.1   <== APS = 64.47 +
+1on1 : v4.5.0   <== APS = 64.25 +
 1on1 : v4.4.9.1 <== APS = 63.92 +
-1on1 : v4.4.9 <== APS = 63.86 +
-1on1 : v4.4.8 <== APS = 62.24 +
-1on1 : v4.4.7 <== APS = 61.15
-1on1 : v4.4.6 <== APS = 60.58
-1on1 : v4.4.5 <== APS = 60.9
-1on1 : v4.4.4 <== APS = 60.44
-1on1 : v4.4.3 <== APS = 61.22
-1on1 : v4.4.2 <== APS = 61.52
-1on1 : v4.4.1 <== APS = 57.83
-1on1 : v4.4.0 <== APS = 61.60 +
+1on1 : v4.4.9   <== APS = 63.86 +
+1on1 : v4.4.8   <== APS = 62.24 +
+1on1 : v4.4.7   <== APS = 61.15
+1on1 : v4.4.6   <== APS = 60.58
+1on1 : v4.4.5   <== APS = 60.9
+1on1 : v4.4.4   <== APS = 60.44
+1on1 : v4.4.3   <== APS = 61.22
+1on1 : v4.4.2   <== APS = 61.52
+1on1 : v4.4.1   <== APS = 57.83
+1on1 : v4.4.0   <== APS = 61.60 +
 1on1 : v4.3.9.1 <== APS = 59.03
-1on1 : v4.3.9 <== APS = 59.18 +
-1on1 : v4.3.8 <== APS = 59.04 +
-1on1 : v4.3.7 <== APS = 53.76
-1on1 : v4.3.6 <== APS = unknown
-1on1 : v4.3.5 <== APS = 58.13
-1on1 : v4.3.4 <== APS = 58.97 +
-1on1 : v4.3.3 <== APS = 58.89 +
-1on1 : v4.3.2 <== APS = 57.3
-1on1 : v4.3.1 <== APS = 57.47 +
-1on1 : v4.3.0 <== APS = 57.25 +
-1on1 : v4.1.1 <== APS = 54.15
+1on1 : v4.3.9   <== APS = 59.18 +
+1on1 : v4.3.8   <== APS = 59.04 +
+1on1 : v4.3.7   <== APS = 53.76
+1on1 : v4.3.6   <== APS = unknown
+1on1 : v4.3.5   <== APS = 58.13
+1on1 : v4.3.4   <== APS = 58.97 +
+1on1 : v4.3.3   <== APS = 58.89 +
+1on1 : v4.3.2   <== APS = 57.3
+1on1 : v4.3.1   <== APS = 57.47 +
+1on1 : v4.3.0   <== APS = 57.25 +
+1on1 : v4.1.1   <== APS = 54.15
 
 
