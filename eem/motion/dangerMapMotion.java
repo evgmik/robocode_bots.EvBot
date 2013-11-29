@@ -42,6 +42,7 @@ public class dangerMapMotion extends basicMotion {
 	double dangerLevelWall = 50;
 	double dangerLevelEnemyBot = 100;
 	double dangerLevelBullet = 100;
+	double dangerLevelShadowBullet = -dangerLevelBullet/6.0;
 
 	boolean rammingCondition = false;
 	private static double reducedBotDistanceCoef = 1;
@@ -266,7 +267,8 @@ public class dangerMapMotion extends basicMotion {
 					}
 				} else {
 					// shadow bullets are safe
-					danger = math.gaussian( dist, -dangerLevelBullet/2, safe_distance_from_bullet ); // tangent distance contribution
+					danger = math.gaussian( dist, dangerLevelShadowBullet, safe_distance_from_bullet ); // tangent distance contribution
+					 danger *= math.gaussian( distAlongBulletPath, 1, distOfBulletPrecursor ); // distance to travel by bullet contribution
 				}
 				//}
 			}
