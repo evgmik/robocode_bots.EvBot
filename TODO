@@ -1,7 +1,5 @@
-* check that on actual my bullet hit it is counted into guess factor stats.
+* many bots when low on energy stop firing, use it to shorten the distance
 * see some logic to speedup screening/shadowing
-* feature: make shadow bullets - safety zone in the wave where it passed through enemy bot wave
-  make sure that shadowing area taken in account
 * feature: make pifGun faster - keep track of known pattern and iterate from them
 * feature: make bot danger proportional to its hit rate on me
 * feature: make bot danger proportional to its survivability
@@ -15,6 +13,9 @@
   motion algorithm and lack of enemy bullets avoidance
 
 = Completed =
+* check that on actual my bullet hit it is counted into guess factor stats.
+* feature: make shadow bullets - safety zone in the wave where it passed through enemy bot wave
+  make sure that shadowing area taken in account
 * feature: make shadow bullets - safety zone in the wave where it passed through enemy bot
 * fix: make sure that danger of points near the border is superhight for distances
   smaller than bot halfwidth. MyBot often select a forbidden point when pressed to the wall
