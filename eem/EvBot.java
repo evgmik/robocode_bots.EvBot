@@ -33,6 +33,7 @@ public class EvBot extends AdvancedRobot
 	public int totalNumOfEnemiesAtStart = 0;
 	public static int roundsWon = 0;
 	public static int roundsLost = 0;
+	public static int  finishingPlacesStats[] = null;
 
 	private botVersion botVer;
 	public target _trgt;
@@ -83,6 +84,9 @@ public class EvBot extends AdvancedRobot
 		botVer = new botVersion();
 
 		totalNumOfEnemiesAtStart = getOthers();
+		if ( finishingPlacesStats == null ) {
+			finishingPlacesStats = new int[totalNumOfEnemiesAtStart+1];
+		}
 
 		_trgt = new target();
 		_radar = new radar(this);
@@ -375,29 +379,38 @@ public class EvBot extends AdvancedRobot
 
 	}
 
-	public void onWin(DeathEvent e ) {
-		// looks like it is never executed
-		// at least in robocode 1.7.3
-		//roundsWon++;
-		//winOrLoseRoundEnd();
+	public void onWin(WinEvent  e) {
+		//logger.dbg("onWin");
+		roundsWon++;
+		updateFinishingPlacesStats();
+		winOrLoseRoundEnd();
 	}
 
 	public void onDeath(DeathEvent e ) {
+		//logger.dbg("onDeath");
 		roundsLost++;
+		updateFinishingPlacesStats();
 		winOrLoseRoundEnd();
 	}
 
 	public void onRoundEnded(RoundEndedEvent e) {
-		// seems like it is not called if my bot is died
-		// at least in robocode 1.7.3
-		roundsWon = e.getRound() - roundsLost + 1;
-		winOrLoseRoundEnd();
+		// this methods is called before onDeath or onWin
+		// so we should not output any valiable stats here
+		// if I want to see it at the end
+		//logger.dbg("onRoundEnded");
+		//winOrLoseRoundEnd();
+	}
+
+	public void updateFinishingPlacesStats() {
+		int myWinLosePlace = getOthers();
+		finishingPlacesStats[myWinLosePlace]++;
 	}
 
 	public void winOrLoseRoundEnd() {
 		_gmanager.printGunsStats();
 		_botsmanager.printGunsStats();
 		logger.routine("Rounds ratio of win/lose = " + roundsWon + "/" + roundsLost );
+		logger.routine("Finishing places stats: " + Arrays.toString( finishingPlacesStats ) );
 	}
 
 	public baseGun getGun() {
