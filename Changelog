@@ -1,8 +1,13 @@
+= Version  4.5.3 =
+
+bug fix: energy is used as part of weight for target choosing
++ placement statistic works properly 
+
 = Version  4.5.2 =
 
 bug fix: shadow bullets had unlimited precursor range
 + gf gun kicks in only in 1on1 settings, it seems to performe worse on most of
-  the bot except Neuromancer
+the bot except Neuromancer
 + Compile for robocode version 1.8.2
 
 = Version  4.5.1 =

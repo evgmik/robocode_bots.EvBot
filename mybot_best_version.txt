@@ -1,5 +1,6 @@
 This is to keep track of the best performing bot versions
 
+Melee: v4.5.2 <== APS = 64.12 +
 Melee: v4.5.1 <== APS = 62.56
 Melee: v4.5.0 <== APS = 63.23
 Melee: v4.4.9.1 <== APS = 63.39
@@ -30,6 +31,7 @@ Melee: v4.2.6 <== APS = 59.21
 Melee: v4.2.5 <== APS = 59.21 +
 Melee: v3.9.4 <== APS = 58.9
 
+1on1 : v4.5.2 <== APS = 64.29
 1on1 : v4.5.1 <== APS = 64.47 +
 1on1 : v4.5.0 <== APS = 64.25 +
 1on1 : v4.4.9.1 <== APS = 63.92 +
