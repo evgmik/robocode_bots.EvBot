@@ -70,7 +70,7 @@ public class  botsManager {
 		wEnergy = 100.0/( bot.getEnergy() + 0.001)  ;
 		// but there is no point to shoot across the whole field to a weak bot
 		// most likely there will be someone else to do it quicker
-		wEnergy = Math.exp( -dist2bot / 200 ); // 200 is used as ~1/4 of field size
+		wEnergy *= Math.exp( -dist2bot / 200 ); // 200 is used as ~1/4 of field size
 
 		// Survivability. The longer bot leaves the harder it is as a target
 		// bot life length is proportional to its total firing counts
@@ -81,9 +81,13 @@ public class  botsManager {
 		double wSurvivability = 30./( 30 + enemyFiringCount );
 
 		// all together
-		weight  = wGun * wDistance * wEnergy * wSurvivability;
+		weight  = 100 * wGun * wDistance * wEnergy * wSurvivability;
+		if ( weight < 0 ) {
+			logger.dbg("ERROR: bot weight as a target is negative");
+		}
 		logger.noise(
 				""
+				+ " dist2bot = " + dist2bot 
 				+ " wDist = " + logger.shortFormatDouble(wDistance) 
 				+ " wGun = " + logger.shortFormatDouble(wGun)
 				+ " cFir = " + cntFired
