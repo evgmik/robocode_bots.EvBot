@@ -74,7 +74,8 @@ public class  botsManager {
 		// but there is no point to shoot across the whole field to a weak bot
 		// most likely there will be someone else to do it quicker
 		wEnergy *= Math.exp( -dist2bot / distAtWhichHitProbabilityDrops );
-		wEnergy += 1;
+		// FIXME: work on wEnergy, there must be some way to take it in account
+		wEnergy = 1;
 
 		// Survivability. The longer bot leaves the harder it is as a target
 		// bot life length is proportional to its total firing counts
