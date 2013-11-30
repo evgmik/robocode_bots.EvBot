@@ -1,3 +1,8 @@
+= Version  4.5.5 =
+
+Weight of enemy energy for targeting is set to constant equal to 1. This should
+mimic logic of v4.5.2
+
 = Version  4.5.4 =
 
 Reduce weight of far targets, to match it to the v4.5.2 with exception that
