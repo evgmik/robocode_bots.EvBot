@@ -121,30 +121,27 @@ public class dangerMapMotion extends basicMotion {
 	}
 	
 	public double dist2LeftOrRightWall( Point2D.Double p ) {
-		double d = p.x; // left wall distance
-		double dTest;
-		dTest = myBot.BattleField.x - p.x; // right wall distance
-		if (dTest < d) {
-			d = dTest;
+		double dLeft  = p.x; // left wall distance
+		double dRight = myBot.BattleField.x - p.x; // right wall distance
+		if ( ( dLeft <= 0 ) || ( dRight <= 0 ) ) {
+			// point is outside of wall
+			return 0;
 		}
-		return d;
+		return Math.min( dLeft, dRight);
 	}
 
 	public double dist2BottomOrTopWall( Point2D.Double p ) {
-		double d = p.y; // bottom wall distance
-		double dTest;
-		dTest = myBot.BattleField.y - p.y; // top wall distance
-		if (dTest < d) {
-			d = dTest;
+		double dBottom = p.y; // bottom wall distance
+		double dTop    = myBot.BattleField.y - p.y; // top wall distance
+		if ( ( dTop <= 0 ) || ( dBottom <= 0 ) ) {
+			// point is outside of wall
+			return 0;
 		}
-		return d;
+		return Math.min( dBottom, dTop);
 	}
 
 	public double shortestDist2wall( Point2D.Double p ) {
-		double dx = dist2LeftOrRightWall( p );
-		double dy = dist2BottomOrTopWall( p );
-		double d = Math.min( dist2LeftOrRightWall( p ), dist2BottomOrTopWall( p ) );
-		return d;
+		return  Math.min( dist2LeftOrRightWall( p ), dist2BottomOrTopWall( p ) );
 	}
 
 	public int[] point2grid(Point2D.Double pnt) {
