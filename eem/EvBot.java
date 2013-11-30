@@ -327,7 +327,7 @@ public class EvBot extends AdvancedRobot
 
 	public void onHitWall(HitWallEvent e) {
 		// turn and move along the hit wall
-		double energyDrop = _tracker.energyDrop();
+		double energyDrop = _tracker.getLast().getEnergy()-getEnergy();
 		logger.dbg("FIXME SLOPPY PROGRAMMING: robot hit a wall with energy drop = " + energyDrop);
 		/*
 		double angle = whichWayToRotateAwayFromWall();
