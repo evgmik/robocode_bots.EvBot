@@ -1,6 +1,7 @@
 This is to keep track of the best performing bot versions
 
 ||Bot Version  | APS in Melee   | APS in 1on1 |
+| v4.5.3       | 63.37          |  64.19      |
 | v4.5.2       | 64.12 +        |  64.29      |
 | v4.5.1       | 62.56          |  64.47 +    |
 | v4.5.0       | 63.23          |  64.25 +    |

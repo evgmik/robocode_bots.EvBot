@@ -1,4 +1,5 @@
-* improve wall avoidance by taking in account stop distance
+* improve wall avoidance by taking in account stop distance or better yet by do proper 
+possible track calculation. This will help to do true goto surfer.
 * many bots when low on energy stop firing, use it to shorten the distance
 * see some logic to speedup screening/shadowing
 * feature: make pifGun faster - keep track of known pattern and iterate from them
@@ -18,8 +19,8 @@
 * feature: make shadow bullets - safety zone in the wave where it passed through enemy bot wave
   make sure that shadowing area taken in account
 * feature: make shadow bullets - safety zone in the wave where it passed through enemy bot
-* fix: make sure that danger of points near the border is superhight for distances
-  smaller than bot halfwidth. MyBot often select a forbidden point when pressed to the wall
+* fix: make sure that danger of points near the border is super hight for distances
+  smaller than bot half width. MyBot often select a forbidden point when pressed to the wall
   by enemy bullets.
 * fix: do proper switch of target not only its name
 * feature: make target choice based on distance AND hit weight probability

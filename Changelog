@@ -1,3 +1,15 @@
+= Version  4.5.4 =
+
+Reduce weight of far targets, to match it to the v4.5.2 with exception that
+energy of the enemy bot makes contribution to its weight. Idea behind that if
+an enemy bot is far enough, the probability to hit is small. So even if it
+tempting to fire at 0 energy bot, we might reconsider.
+
+Hit wall now, throw a message to remind me to rework motion.
+
+Small reworks in danger map motion.
+
+
 = Version  4.5.3 =
 
 bug fix: energy is used as part of weight for target choosing
