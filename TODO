@@ -1,3 +1,4 @@
+* improve wall avoidance by taking in account stop distance
 * many bots when low on energy stop firing, use it to shorten the distance
 * see some logic to speedup screening/shadowing
 * feature: make pifGun faster - keep track of known pattern and iterate from them
