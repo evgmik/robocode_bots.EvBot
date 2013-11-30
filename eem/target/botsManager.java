@@ -19,6 +19,7 @@ public class  botsManager {
 
 	public static HashMap<String,InfoBot> bots     = new HashMap<String, InfoBot>();
 	public static HashMap<String,InfoBot> deadBots = new HashMap<String, InfoBot>();;
+	protected int distAtWhichHitProbabilityDrops = 200; // phenomenological parameter
 
 	public botsManager(EvBot bot) {
 		myBot = bot;
@@ -52,6 +53,8 @@ public class  botsManager {
 		// distance contribution
 		double dist2bot = bot.getLastDistance( myBot.myCoord );
 		double wDistance = 100/dist2bot;
+		// far targets are super hard to hit so they have very low weight
+		wDistance *= Math.exp( -dist2bot / distAtWhichHitProbabilityDrops );
 
 		// hit probability contribution
 		int cntFired = myBot._gmanager.totalBotFiredCount( bot );
@@ -70,7 +73,8 @@ public class  botsManager {
 		wEnergy = 100.0/( bot.getEnergy() + 0.001)  ;
 		// but there is no point to shoot across the whole field to a weak bot
 		// most likely there will be someone else to do it quicker
-		wEnergy *= Math.exp( -dist2bot / 200 ); // 200 is used as ~1/4 of field size
+		wEnergy *= Math.exp( -dist2bot / distAtWhichHitProbabilityDrops );
+		wEnergy += 1;
 
 		// Survivability. The longer bot leaves the harder it is as a target
 		// bot life length is proportional to its total firing counts
