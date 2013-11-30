@@ -161,7 +161,7 @@ public class dangerMapMotion extends basicMotion {
 		double danger = 0;
 		double dx = dist2LeftOrRightWall( p );
 		double dy = dist2BottomOrTopWall( p );
-		if ( shortestDist2wall( p ) <= myBot.robotHalfSize ) {
+		if ( shortestDist2wall( p ) <= ( myBot.robotHalfSize + stopDistance() + 2) ) {
 			// point within physical no-go zone
 			// danger must be infinite to prevent going there
 			danger += dangerForPointTouchingTheWall;
@@ -316,6 +316,22 @@ public class dangerMapMotion extends basicMotion {
 			}
 		}
 	}
+
+
+	private double maxRotationPerTurnInDegrees() {
+		double speed = Math.abs( myBot._tracker.getLast().getSpeed() );
+		return (10 - 0.75 * speed); // see robowiki
+	}
+
+	private double stopDistance() {
+		// distance required to stop a bot with given speed
+		double speed = Math.abs( myBot._tracker.getLast().getSpeed() );
+		// due to robot physics stop distance is simple arithmetic progression
+		double stopDistance =  speed/2.0 * (speed + 2)/2.0;
+		stopDistance = 20; // dbg: cannot be longer than this
+		return stopDistance;
+	}
+	
 	
 	private void buildListOfDestinationsToTest() {
 		dangerPoints = new LinkedList<dangerPoint>();
@@ -381,9 +397,9 @@ public class dangerMapMotion extends basicMotion {
 
 		dangerPoint oldP = new dangerPoint ( DestinationPoint, pointDanger(DestinationPoint) );
 
-		// if we close to target search for new before complete stop
+		// if we close to target, search for new before complete stop
 		if (myBot.myCoord.distance(DestinationPoint) < Math.min( dMapCellSize.x, dMapCellSize.y) ) {
-			oldP.dangerLevel = 1000; // very high to ensure new choice
+			oldP.dangerLevel += 1000; // very high to ensure new choice
 		}
 
 		//printDangerPoints();
