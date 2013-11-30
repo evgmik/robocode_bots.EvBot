@@ -19,7 +19,7 @@ public class  botsManager {
 
 	public static HashMap<String,InfoBot> bots     = new HashMap<String, InfoBot>();
 	public static HashMap<String,InfoBot> deadBots = new HashMap<String, InfoBot>();;
-	protected int distAtWhichHitProbabilityDrops = 200; // phenomenological parameter
+	protected double distAtWhichHitProbabilityDrops = 200.0; // phenomenological parameter
 
 	public botsManager(EvBot bot) {
 		myBot = bot;
