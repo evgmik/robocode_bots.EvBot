@@ -327,8 +327,8 @@ public class dangerMapMotion extends basicMotion {
 		// distance required to stop a bot with given speed
 		double speed = Math.abs( myBot._tracker.getLast().getSpeed() );
 		// due to robot physics stop distance is simple arithmetic progression
-		double stopDistance =  speed/2.0 * (speed + 2)/2.0;
-		stopDistance = 20; // dbg: cannot be longer than this
+		double stopDistance =  Math.ceil(speed/2.0) * (speed + 2)/2.0;
+		// FIXME: above is not good if speed is odd
 		return stopDistance;
 	}
 	
