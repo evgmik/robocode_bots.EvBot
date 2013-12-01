@@ -1,3 +1,13 @@
+
+
+= Version  4.5.6 candidate =
+
+Move a variable from int to double. The target chooser logic seems to be the
+same as v4.5.2 and v4.5.5, yet in meleerumbe v4.5.2 had quite higher score.
+
+Changelog itself reworked.
+
+
 = Version  4.5.5 =
 
 Weight of enemy energy for targeting is set to constant equal to 1. This should
@@ -18,19 +28,24 @@ Small reworks in danger map motion.
 = Version  4.5.3 =
 
 bug fix: energy is used as part of weight for target choosing
-+ placement statistic works properly 
+
+placement statistic works properly 
 
 = Version  4.5.2 =
 
 bug fix: shadow bullets had unlimited precursor range
-+ gf gun kicks in only in 1on1 settings, it seems to performe worse on most of
+
+gf gun kicks in only in 1on1 settings, it seems to performe worse on most of
 the bot except Neuromancer
-+ Compile for robocode version 1.8.2
+
+Compile for robocode version 1.8.2
+
 
 = Version  4.5.1 =
 
 bug fix: when decided on fight type the ratio was 2/3 instead of 2./3 to
 convert it to float
+
 bug fix: typos in fight types
 feature: different fight types have different sets of gun firing at me
 
@@ -41,12 +56,13 @@ a bit.
 
 = Version  4.4.9.1 =
 
-Added filelog output.  Random gun is removed, added GF gun to middle melee
+Added file log output.  Random gun is removed, added GF gun to middle melee
 fight.
 
 = Version  4.4.9 =
 
 bug fix: do not chose point candidate at which my bot hits a wall
+
 bug fix: choice of new gun if current is cold for too long
 improved GF depiction for the GF paint method
 
@@ -79,6 +95,7 @@ Bug fix: linear or circular gun never settles if an enemy bot quickly oscillates
 
 Speed up on enemy wave danger calculations. Do not take in account waves which
 a too distant.
+
 Remove bullets screened/shadowed by enemy bot.
 
 = Version  4.4.2 =
@@ -108,6 +125,7 @@ Redo danger from bullets, it is not as sharp dependence on their damage
 = Version  4.3.7 =
 
 Danger zone from bots is as in v4.3.2
+
 Added danger from bullet proportional to its potential damage.
 
 = Version  4.3.6 =
@@ -118,7 +136,9 @@ Gun distance to energy method is the same as in v4.3.2 for melee types
 
 Brought back firing energy coefficient as it was in v4.3.2 except 1on1 melee
 end where it is smaller.
+
 Increased danger zone around enemy bot. 
+
 Fix of battle won count.
 
 = Version  4.3.4 =
@@ -159,8 +179,8 @@ is much simpler now as well.
 = Version  4.2.8 =
 
 Gun weight influence target choice only in the mid melee stage.
-- Before it switched on at the beginning of melee. It seems that 
-  it is the must to shot near by bots at the beginning.
+Before it switched on at the beginning of melee. It seems that 
+it is the must to shot nearby bots at the beginning.
 
 
 = Version  4.2.7 =
@@ -181,8 +201,11 @@ this gun
 = Version  4.2.4 unreleased =
 
 Explicit sets of guns for 1on1, melee, and melee Midle battle type.
+
 Disabled pifGun for now since it is too slow.
+
 Improvements in the gun stats output.
+
 Preliminary work to make target choice based on relative hit rates.
 
 = Version  4.2.3 =
@@ -215,13 +238,14 @@ Put fires from other bot through predictor of my own guns: linear and base (head
 = Version  4.0 =
 
 Added randomness and arbitrary amount of move point candidates
+
 Track multiple bots now
 
 = Version  3.9.4 =
 
-Bug fixes:
-- when ramming was pulled into the enemy bullet path
-- do not fire when low on energy
+Bug fix: when ramming was pulled into the enemy bullet path
+
+Bug fix: do not fire when low on energy
 
 Disable ramming. It seems to decrease my score against low end bots
 
@@ -229,8 +253,9 @@ Makefile done differently for test version of bot
 
 = Version  3.9 =
 
-- Track enemy target hit rate.
-- Optimize distance to increase mine/enemy hitRate ratio.
+Track enemy target hit rate.
+
+Optimize distance to increase mine/enemy hitRate ratio.
 
 = Version  3.8 =
 
@@ -246,9 +271,11 @@ Ramming weak opponents, and dynamic choice of distance in 1 vs 1
 
 = Version  3.5 =
 
-- Improved linear predictor to place target within bot physical limitations.
-- Simplify and speed up danger map calculations.
-- Increase danger distances from bot and bullets.
+Improved linear predictor to place target within bot physical limitations.
+
+Simplify and speed up danger map calculations.
+
+Increase danger distances from bot and bullets.
 
 
 = Version  3.4 =
@@ -261,6 +288,7 @@ Guns accumulate statistic during the battle. Based on it
 I added performance based choice of available guns for 1 vs 1 stage.
 
 = Version  3.2 =
+
 Incidental release of the same version as v3.1
 
 = Version  3.1 =
@@ -271,18 +299,23 @@ Now we chose among several cell with about the same danger level, no switch
 to new destination if it is still reasonably low in danger level.
 
 = Version  3.0 =
+
 Movements are handled with danger map
 
 = Version  2.1 =
+
 Added a bullet manager to visualize all known bullets
 
 = Version  2.0 =
+
 Gun, radar, bullets, and motion moved to separate classes
 
 Otherwise operational logic is the same as in v1.7
 
 = Version  1.7 =
+
 Quite good robot with almost all methods in one body
 
 = Version < 1.0 =
-Very naive robot with changes lost in history
+
+Very naive robot with changes lost in history :)
