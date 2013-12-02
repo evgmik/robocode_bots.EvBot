@@ -1,7 +1,7 @@
 Robocode bots
 =============
 
-This project contains the EvBot robot for [http://robowiki.net/wiki/Robocode the robocode game]
+This project contains the EvBot robot code for [the robocode game](http://robowiki.net/wiki/Robocode)
 
 License
 -------
