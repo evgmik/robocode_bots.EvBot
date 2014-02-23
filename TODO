@@ -1,5 +1,6 @@
 * improve wall avoidance by taking in account stop distance or better yet by do proper 
 possible track calculation. This will help to do true goto surfer.
+* check why my bot does not fire at low energies around or less of 1
 * many bots when low on energy stop firing, use it to shorten the distance
 * see some logic to speedup screening/shadowing
 * feature: make pifGun faster - keep track of known pattern and iterate from them
@@ -15,6 +16,8 @@ possible track calculation. This will help to do true goto surfer.
   motion algorithm and lack of enemy bullets avoidance
 
 = Completed =
+* add anti bullet shield tactics for 1on1 i.e. fire slightly off enemy bot center 
+  or even just enable random gun.
 * check that on actual my bullet hit it is counted into guess factor stats.
 * feature: make shadow bullets - safety zone in the wave where it passed through enemy bot wave
   make sure that shadowing area taken in account
