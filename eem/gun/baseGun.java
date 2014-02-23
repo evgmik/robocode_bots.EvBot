@@ -262,6 +262,13 @@ public class baseGun {
 
 	public void setTargetFuturePosition(target tgt) {
 		targetFuturePosition = calcTargetFuturePosition( myBot.myCoord, firePower, tgt);
+		//to counter act bullet shielding bots
+		//add small random offset of about bot size 
+		// FIXME ideally it should be orthogonal shift with respect to fire angle
+		double r1=Math.random();
+		double r2=Math.random();
+		targetFuturePosition.x += r1*myBot.robotHalfSize/4;
+		targetFuturePosition.x += r1*myBot.robotHalfSize/4;
 	}
 
         public double firePoverVsDistance( double targetDistance ) {
