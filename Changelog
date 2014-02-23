@@ -2,9 +2,8 @@
 
 = Version  4.5.6 candidate =
 
-Move a variable from int to double. The target chooser logic seems to be the
-same as v4.5.2 and v4.5.5, yet in meleerumbe v4.5.2 had quite higher score.
-
+Move a variable from int to double.
+Added tactics to penetrate bullet shielding bots: aim a bit off center.
 Changelog itself reworked.
 
 
