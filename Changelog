@@ -1,10 +1,12 @@
 
 
-= Version  4.5.6 candidate =
+= Version  4.5.6 =
 
 Move a variable from int to double.
 Added tactics to penetrate bullet shielding bots: aim a bit off center.
 Changelog itself reworked.
+
+v4.5.2 melee success seems to be an artifact of low statistics.
 
 
 = Version  4.5.5 =
