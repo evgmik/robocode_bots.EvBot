@@ -61,7 +61,6 @@ public class circularGun extends baseGun {
 		posFut.x = bot.getX();
 		posFut.y = bot.getY();
 
-		dangerMapMotion dangMotion = new dangerMapMotion(myBot);	
 		for ( int t = 0; t < dT ; t++) {
 			vxNew =  vx * cosPhi - vy * sinPhi;
 			vyNew =  vx * sinPhi + vy * cosPhi;
@@ -69,7 +68,7 @@ public class circularGun extends baseGun {
 			vy = vyNew;
 			posFut.x = posFut.x + vx;
 			posFut.y = posFut.y + vy;
-			if ( dangMotion.shortestDist2wall( posFut ) < (myBot.robotHalfSize-1) ) {
+			if ( eem.motion.misc.shortestDist2wall( posFut ) < (myBot.robotHalfSize-1) ) {
 				// bot hit wall and cannot move anymore
 				posFut.x = posFut.x - vx;
 				posFut.y = posFut.y - vy;
