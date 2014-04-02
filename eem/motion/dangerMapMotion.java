@@ -6,6 +6,7 @@ import eem.EvBot;
 import eem.target.*;
 import eem.misc.*;
 import eem.bullets.*;
+import eem.motion.misc;
 import java.util.Random;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -32,12 +33,9 @@ public class dangerMapMotion extends basicMotion {
 	double dMap[][];
 	double kT; // characteristic temperature for Metropolis algorithm
 
-	double safe_distance_from_wall;
 	double safe_distance_from_bot;
 	double distFromWaveToFarToWorry = 400;
 
-	double dangerForPointTouchingTheWall = 1e6; // humongous number
-	double dangerLevelWall = 50;
 	double dangerLevelEnemyBot = 100;
 
 	boolean rammingCondition = false;
@@ -81,11 +79,11 @@ public class dangerMapMotion extends basicMotion {
 
 	public dangerMapMotion(EvBot bot) {
 		myBot = bot;
+		misc.init(myBot);
 		DestinationPoint = (Point2D.Double) myBot.myCoord.clone();
 		dMapCellSize= new Point2D.Double(myBot.BattleField.x/dMapSizeX, myBot.BattleField.y/dMapSizeY);
 		dMap = new double[dMapSizeX][dMapSizeY];
 
-		safe_distance_from_wall = myBot.robotHalfSize + 2;
 		safe_distance_from_bot =  12*myBot.robotHalfSize + 2;
 		kT = 0.1;
 
@@ -115,30 +113,6 @@ public class dangerMapMotion extends basicMotion {
 		dMap = new double[dMapSizeX][dMapSizeY];
 	}
 	
-	public double dist2LeftOrRightWall( Point2D.Double p ) {
-		double dLeft  = p.x; // left wall distance
-		double dRight = myBot.BattleField.x - p.x; // right wall distance
-		if ( ( dLeft <= 0 ) || ( dRight <= 0 ) ) {
-			// point is outside of wall
-			return 0;
-		}
-		return Math.min( dLeft, dRight);
-	}
-
-	public double dist2BottomOrTopWall( Point2D.Double p ) {
-		double dBottom = p.y; // bottom wall distance
-		double dTop    = myBot.BattleField.y - p.y; // top wall distance
-		if ( ( dTop <= 0 ) || ( dBottom <= 0 ) ) {
-			// point is outside of wall
-			return 0;
-		}
-		return Math.min( dBottom, dTop);
-	}
-
-	public double shortestDist2wall( Point2D.Double p ) {
-		return  Math.min( dist2LeftOrRightWall( p ), dist2BottomOrTopWall( p ) );
-	}
-
 	public int[] point2grid(Point2D.Double pnt) {
 		int[] grid = new int[2];  
 		grid[0] = (int) Math.floor( pnt.x / dMapCellSize.x );
@@ -152,20 +126,6 @@ public class dangerMapMotion extends basicMotion {
 		return dMap[i][j];
 	}
 	
-	public double pointDangerFromWalls( Point2D.Double p ) {
-		double danger = 0;
-		double dx = dist2LeftOrRightWall( p );
-		double dy = dist2BottomOrTopWall( p );
-		if ( shortestDist2wall( p ) <= ( myBot.robotHalfSize + stopDistance() + 2) ) {
-			// point within physical no-go zone
-			// danger must be infinite to prevent going there
-			danger += dangerForPointTouchingTheWall;
-		}
-		danger += math.gaussian( dx, dangerLevelWall, safe_distance_from_wall );
-		danger += math.gaussian( dy, dangerLevelWall, safe_distance_from_wall );
-		return danger;
-	}
-
 	public double pointDangerFromAllBots( Point2D.Double p ) {
 		double danger = 0;
 		danger += pointDangerFromNonTargetBots(p);
@@ -235,7 +195,7 @@ public class dangerMapMotion extends basicMotion {
 
 	public double pointDanger( Point2D.Double p ) {
 		double danger = 0;
-		danger += pointDangerFromWalls( p );
+		danger += misc.pointDangerFromWalls( p, myBot._tracker.getLast().getSpeed() );
 		danger += pointDangerFromAllBots( p );
 		danger += pointDangerFromEnemyWaves( p );
 		return danger;
@@ -257,21 +217,11 @@ public class dangerMapMotion extends basicMotion {
 		}
 	}
 
-
 	private double maxRotationPerTurnInDegrees() {
 		double speed = Math.abs( myBot._tracker.getLast().getSpeed() );
 		return (10 - 0.75 * speed); // see robowiki
 	}
 
-	private double stopDistance() {
-		// distance required to stop a bot with given speed
-		double speed = Math.abs( myBot._tracker.getLast().getSpeed() );
-		// due to robot physics stop distance is simple arithmetic progression
-		double stopDistance =  Math.ceil(speed/2.0) * (speed + 2)/2.0;
-		// FIXME: above is not good if speed is odd
-		return stopDistance;
-	}
-	
 	
 	private void buildListOfDestinationsToTest() {
 		dangerPoints = new LinkedList<dangerPoint>();
@@ -295,7 +245,7 @@ public class dangerMapMotion extends basicMotion {
 					centerPoint.x + distRand*Math.sin(angleRand) ,
 					centerPoint.y + distRand*Math.cos(angleRand) );
 			dL = pointDanger(nP);
-			if ( shortestDist2wall(nP) > (myBot.robotHalfSize + 1) ) {
+			if ( misc.shortestDist2wall(nP) > (myBot.robotHalfSize + 1) ) {
 				dangerPoints.add(new dangerPoint( nP, dL) );
 				cnt++;
 			}
