@@ -78,8 +78,8 @@ public class dangerMapMotion extends basicMotion {
 	}
 
 	public dangerMapMotion(EvBot bot) {
-		myBot = bot;
-		misc.init(myBot);
+		super(bot);
+		//myBot = bot;
 		DestinationPoint = (Point2D.Double) myBot.myCoord.clone();
 		dMapCellSize= new Point2D.Double(myBot.BattleField.x/dMapSizeX, myBot.BattleField.y/dMapSizeY);
 		dMap = new double[dMapSizeX][dMapSizeY];
