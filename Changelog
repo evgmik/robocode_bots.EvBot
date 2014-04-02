@@ -1,4 +1,8 @@
+= Version  4.5.7 candidate =
 
+Motion helper function moved to special helper class.
+Makefile can compile for one version but put bot into other robocode
+directory.
 
 = Version  4.5.6 =
 
