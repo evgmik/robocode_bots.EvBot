@@ -128,6 +128,60 @@ public class firedBullet {
 		return getPositionAtTime( myBot.ticTime );
 	}
 
+	public double pointDangerFromBulletPrecursor( Point2D.Double p, long time ) {
+		double distOfBulletPrecursor = 200; // very large
+		double dangerLevelBullet = 100;
+		double dangerLevelShadowBullet = -dangerLevelBullet/6.0;
+		double safe_distance_from_bullet =  2*myBot.robotHalfSize + 2;
+
+		double danger = 0;
+		double dist;
+		Point2D.Double bPos, bEnd;
+		if ( isActive() && !isItMine ) {
+			bPos = getPositionAtTime(time);
+			bEnd = endPositionAtBorder();
+			double dBx, dBy;
+			double dPx, dPy;
+			double dP, dB;
+			// bullet path vector
+			dBx = bEnd.x - bPos.x;
+			dBy = bEnd.y - bPos.y;
+			dB = Math.sqrt(dBx*dBx + dBy*dBy);
+			if( dBx == 0 ) dBx = 1e-8;
+			if( dBy == 0 ) dBy = 1e-8;
+			// vector to point from bullet present location
+			dPx = p.x - bPos.x;
+			dPy = p.y - bPos.y;
+			dP = Math.sqrt(dPx*dPx + dPy*dPy);
+
+			// if cos between dP and dB vectors positive
+			// the point is in front of bullet
+			double cos_val = (dPx*dBx + dPy*dBy)/(dP*dB); // normalized scalar product
+			if ( cos_val > 0 ) {
+				// distance to the bullet path from point
+				dist = dP*Math.sqrt(1-cos_val*cos_val);
+				double distAlongBulletPath = dP*cos_val;
+				// bullet is dangerous only when we are close to it
+				//if ( distAlongBulletPath < distOfBulletPrecursor ) {
+				if ( !getFiredGun().getName().equals("shadow") ) {
+					danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet ); // tangent distance contribution
+					 danger *= math.gaussian( distAlongBulletPath, 1, distOfBulletPrecursor ); // distance to travel by bullet contribution
+					 if ( myBot.fightType().equals( "1on1" ) ) {
+						 double bDamage = 4*bulletEnergy() + 2 * Math.max( bulletEnergy() - 1 , 0 );
+						 danger *= (1+myBot.totalNumOfEnemiesAtStart/Math.max( myBot.numEnemyBotsAlive, 1) *0.01*bDamage);
+					 }
+
+				} else {
+					// shadow bullets are safe
+					danger = math.gaussian( dist, dangerLevelShadowBullet, safe_distance_from_bullet ); // tangent distance contribution
+					 danger *= math.gaussian( distAlongBulletPath, 1, distOfBulletPrecursor ); // distance to travel by bullet contribution
+				}
+				//}
+			}
+		}
+		return danger;
+	}
+
 	public boolean isActive() {
 		if (isItMine) {
 			return robocodeBullet.isActive();

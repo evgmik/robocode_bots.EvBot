@@ -34,15 +34,11 @@ public class dangerMapMotion extends basicMotion {
 
 	double safe_distance_from_wall;
 	double safe_distance_from_bot;
-	double safe_distance_from_bullet;
-	double distOfBulletPrecursor = 200; // very large
 	double distFromWaveToFarToWorry = 400;
 
 	double dangerForPointTouchingTheWall = 1e6; // humongous number
 	double dangerLevelWall = 50;
 	double dangerLevelEnemyBot = 100;
-	double dangerLevelBullet = 100;
-	double dangerLevelShadowBullet = -dangerLevelBullet/6.0;
 
 	boolean rammingCondition = false;
 	private static double reducedBotDistanceCoef = 1;
@@ -91,7 +87,6 @@ public class dangerMapMotion extends basicMotion {
 
 		safe_distance_from_wall = myBot.robotHalfSize + 2;
 		safe_distance_from_bot =  12*myBot.robotHalfSize + 2;
-		safe_distance_from_bullet =  2*myBot.robotHalfSize + 2;
 		kT = 0.1;
 
 		rammingCondition = false;
@@ -218,61 +213,6 @@ public class dangerMapMotion extends basicMotion {
 		return danger;
 	}
 
-	public double pointDangerFromBullet( Point2D.Double p, firedBullet b ) {
-		double danger = 0;
-		double dist;
-		Point2D.Double bPos, bEnd;
-		if ( b.isActive() && !b.isItMine ) {
-			bPos = b.getPosition();
-			bEnd = b.endPositionAtBorder();
-			double dBx, dBy;
-			double dPx, dPy;
-			double dP, dB;
-			// bullet path vector
-			dBx = bEnd.x - bPos.x;
-			dBy = bEnd.y - bPos.y;
-			dB = Math.sqrt(dBx*dBx + dBy*dBy);
-			if( dBx == 0 ) dBx = 1e-8;
-			if( dBy == 0 ) dBy = 1e-8;
-			// vector to point from bullet present location
-			dPx = p.x - bPos.x;
-			dPy = p.y - bPos.y;
-			dP = Math.sqrt(dPx*dPx + dPy*dPy);
-
-			// if cos between dP and dB vectors positive
-			// the point is in front of bullet
-			double cos_val = (dPx*dBx + dPy*dBy)/(dP*dB); // normalized scalar product
-			if ( cos_val > 0 ) {
-				// distance to the bullet path from point
-				dist = dP*Math.sqrt(1-cos_val*cos_val);
-				double distAlongBulletPath = dP*cos_val;
-				// bullet is dangerous only when we are close to it
-				//if ( distAlongBulletPath < distOfBulletPrecursor ) {
-				if ( !b.getFiredGun().getName().equals("shadow") ) {
-					danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet ); // tangent distance contribution
-					 danger *= math.gaussian( distAlongBulletPath, 1, distOfBulletPrecursor ); // distance to travel by bullet contribution
-					 if ( myBot.fightType().equals( "1on1" ) ) {
-						 double bDamage = 4*b.bulletEnergy() + 2 * Math.max( b.bulletEnergy() - 1 , 0 );
-						 danger *= (1+myBot.totalNumOfEnemiesAtStart/Math.max( myBot.numEnemyBotsAlive, 1) *0.01*bDamage);
-					 }
-
-					if (rammingCondition) {
-						// if we close to target during ramming
-						// reduce bullet danger
-						double dist2target = p.distance( myBot._trgt.getPosition() );
-						danger *= 1-Math.exp( -Math.max(0, dist2target - 2*myBot.robotHalfSize)/50 );
-					}
-				} else {
-					// shadow bullets are safe
-					danger = math.gaussian( dist, dangerLevelShadowBullet, safe_distance_from_bullet ); // tangent distance contribution
-					 danger *= math.gaussian( distAlongBulletPath, 1, distOfBulletPrecursor ); // distance to travel by bullet contribution
-				}
-				//}
-			}
-		}
-		return danger;
-	}
-
 	public double pointDangerFromEnemyWaves( Point2D.Double p ) {
 		double danger = 0;
 		bulletsManager  bm = myBot._bmanager;
@@ -287,7 +227,7 @@ public class dangerMapMotion extends basicMotion {
 				continue;
 			}
 			for ( firedBullet b : eW.getBullets() ) {
-				danger += pointDangerFromBullet( p, b );
+				danger += b.pointDangerFromBulletPrecursor( p, myBot.ticTime );
 			}
 		}
 		return danger;
