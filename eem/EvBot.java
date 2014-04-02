@@ -78,6 +78,8 @@ public class EvBot extends AdvancedRobot
 		logger.routine("=========== Round #" + (getRoundNum()+1) + "=============");
 
 		BattleField = new Point2D.Double(getBattleFieldWidth(), getBattleFieldHeight());
+		eem.motion.misc.init(this); // must be called once BattleField parameters are known
+
 		myCoord = new Point2D.Double( getX(), getY() );
 
 		setColors(Color.red,Color.blue,Color.green);
