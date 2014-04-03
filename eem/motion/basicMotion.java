@@ -67,6 +67,11 @@ public class basicMotion {
 	}
 
 	// --- Utils -----
+	private double maxRotationPerTurnInDegrees() {
+		double speed = Math.abs( myBot._tracker.getLast().getSpeed() );
+		return (10 - 0.75 * speed); // see robowiki
+	}
+
 	public double stopDistance( double velocity ) {
 		int dist =0;
 		if (Math.abs(velocity) == 0 ) 

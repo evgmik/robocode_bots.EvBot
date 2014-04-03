@@ -216,12 +216,6 @@ public class dangerMapMotion extends basicMotion {
 		}
 	}
 
-	private double maxRotationPerTurnInDegrees() {
-		double speed = Math.abs( myBot._tracker.getLast().getSpeed() );
-		return (10 - 0.75 * speed); // see robowiki
-	}
-
-	
 	private void buildListOfDestinationsToTest() {
 		dangerPoints = new LinkedList<dangerPoint>();
 		Point2D.Double nP;
