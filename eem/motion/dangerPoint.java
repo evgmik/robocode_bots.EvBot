@@ -21,6 +21,22 @@ public class dangerPoint implements Comparable<dangerPoint> {
 		dangerLevel = dL;
 	}
 
+	public double getDanger() {
+		return dangerLevel;
+	}
+
+	public void setDanger(double dL) {
+		dangerLevel = dL;
+	}
+
+	public Point2D.Double getPosition() {
+		return position;
+	}
+
+	public void setPosition( Point2D.Double p ) {
+		position = (Point2D.Double) p.clone();
+	}
+
 	public int compare(dangerPoint p1, dangerPoint p2) {
 		double dL1 = p1.dangerLevel;
 		double dL2 = p2.dangerLevel;
