@@ -39,7 +39,7 @@ public class EvBot extends AdvancedRobot
 	public target _trgt;
 	private baseGun _gun;
 	public radar _radar;
-	private basicMotion _motion;
+	public basicMotion _motion;
 	public bulletsManager _bmanager;
 	public gunManager _gmanager;
 	public botsManager _botsmanager;
@@ -78,7 +78,6 @@ public class EvBot extends AdvancedRobot
 		logger.routine("=========== Round #" + (getRoundNum()+1) + "=============");
 
 		BattleField = new Point2D.Double(getBattleFieldWidth(), getBattleFieldHeight());
-		eem.motion.misc.init(this); // must be called once BattleField parameters are known
 
 		myCoord = new Point2D.Double( getX(), getY() );
 
