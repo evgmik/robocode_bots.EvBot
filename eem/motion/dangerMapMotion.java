@@ -360,7 +360,6 @@ public class dangerMapMotion extends basicMotion {
 
 	public void drawDangerPoints(Graphics2D g) {
 		ListIterator<dangerPoint> iter = dangerPoints.listIterator();
-		Point2D.Double p;
 		dangerPoint  dP;
 		double dL;
 		while (iter.hasNext()) {
