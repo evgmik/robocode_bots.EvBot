@@ -20,7 +20,7 @@ public class dangerPath implements Comparable<dangerPath> {
 
 	public dangerPath(){};
 
-	public void addPoint(dangerPoint dP) {
+	public void add(dangerPoint dP) {
 		path.add( dP );
 		dangerLevel += dP.getDanger();
 	}
