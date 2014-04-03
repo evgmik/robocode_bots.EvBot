@@ -68,7 +68,7 @@ public class circularGun extends baseGun {
 			vy = vyNew;
 			posFut.x = posFut.x + vx;
 			posFut.y = posFut.y + vy;
-			if ( eem.motion.misc.shortestDist2wall( posFut ) < (myBot.robotHalfSize-1) ) {
+			if ( myBot._motion.shortestDist2wall( posFut ) < (myBot.robotHalfSize-1) ) {
 				// bot hit wall and cannot move anymore
 				posFut.x = posFut.x - vx;
 				posFut.y = posFut.y - vy;
