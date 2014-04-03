@@ -6,7 +6,6 @@ import eem.EvBot;
 import eem.target.*;
 import eem.misc.*;
 import eem.bullets.*;
-import eem.motion.misc;
 import java.util.Random;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -79,7 +78,6 @@ public class dangerMapMotion extends basicMotion {
 
 	public dangerMapMotion(EvBot bot) {
 		super(bot);
-		//myBot = bot;
 		DestinationPoint = (Point2D.Double) myBot.myCoord.clone();
 		dMapCellSize= new Point2D.Double(myBot.BattleField.x/dMapSizeX, myBot.BattleField.y/dMapSizeY);
 		dMap = new double[dMapSizeX][dMapSizeY];
@@ -195,7 +193,7 @@ public class dangerMapMotion extends basicMotion {
 
 	public double pointDanger( Point2D.Double p ) {
 		double danger = 0;
-		danger += misc.pointDangerFromWalls( p, myBot._tracker.getLast().getSpeed() );
+		danger += pointDangerFromWalls( p, myBot._tracker.getLast().getSpeed() );
 		danger += pointDangerFromAllBots( p );
 		danger += pointDangerFromEnemyWaves( p );
 		return danger;
@@ -245,7 +243,7 @@ public class dangerMapMotion extends basicMotion {
 					centerPoint.x + distRand*Math.sin(angleRand) ,
 					centerPoint.y + distRand*Math.cos(angleRand) );
 			dL = pointDanger(nP);
-			if ( misc.shortestDist2wall(nP) > (myBot.robotHalfSize + 1) ) {
+			if ( shortestDist2wall(nP) > (myBot.robotHalfSize + 1) ) {
 				dangerPoints.add(new dangerPoint( nP, dL) );
 				cnt++;
 			}
