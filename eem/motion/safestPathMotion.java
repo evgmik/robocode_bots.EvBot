@@ -25,9 +25,12 @@ import java.util.Collections;
 public class safestPathMotion extends dangerMapMotion {
 	private dangerPath  safestPath = new dangerPath();
 	public LinkedList<dangerPath> dangerPaths;
-	private int maxPathLength = 500;
+	private int maxPathLength = 10;
 	
 	public void initTic() {
+		if ( safestPath.size() < 1 ) {
+			safestPath = randomPath();
+		}
 		DestinationPoint = safestPath.removeFirst().getPosition();
 	}
 
