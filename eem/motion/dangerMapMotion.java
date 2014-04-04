@@ -175,6 +175,10 @@ public class dangerMapMotion extends basicMotion {
 	public double pointDangerFromEnemyWaves( Point2D.Double p ) {
 		double danger = 0;
 		bulletsManager  bm = myBot._bmanager;
+		if ( bm == null) {
+			//logger.dbg("This should not happen: bullet manager is null" );
+		       	return 0;
+		}
 		LinkedList<wave> enemyWaves = bm.getAllEnemyWaves();
 		for ( wave eW : enemyWaves ) {
 			double distToWave = eW.distance( p );
