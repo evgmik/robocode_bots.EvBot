@@ -143,7 +143,7 @@ public class safestPathMotion extends dangerMapMotion {
 			danger = 0;
 			danger = pointDangerFromWalls(posNew, speedNew);
 			danger += pointDangerFromAllBots( posNew );
-			danger += pointDangerFromEnemyWaves( posNew );
+			danger += pointDangerFromEnemyWavesAndItsPrecursor( posNew );
 			dp= new dangerPoint( posNew, danger );
 			nPath.add( dp );
 			angle = angleNew;

@@ -172,7 +172,7 @@ public class dangerMapMotion extends basicMotion {
 		return danger;
 	}
 
-	public double pointDangerFromEnemyWaves( Point2D.Double p ) {
+	public double pointDangerFromEnemyWavesAndItsPrecursor( Point2D.Double p ) {
 		double danger = 0;
 		bulletsManager  bm = myBot._bmanager;
 		if ( bm == null) {
@@ -200,7 +200,7 @@ public class dangerMapMotion extends basicMotion {
 		double danger = 0;
 		danger += pointDangerFromWalls( p, myBot._tracker.getLast().getSpeed() );
 		danger += pointDangerFromAllBots( p );
-		danger += pointDangerFromEnemyWaves( p );
+		danger += pointDangerFromEnemyWavesAndItsPrecursor( p );
 		return danger;
 	}
 
