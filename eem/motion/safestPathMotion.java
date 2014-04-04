@@ -28,7 +28,7 @@ public class safestPathMotion extends dangerMapMotion {
 	private int maxPathLength = 40;
 	
 	public void initTic() {
-		if ( safestPath.size() < 35 ) {
+		if ( safestPath.size() < maxPathLength-30 ) {
 			safestPath = generateTheBestPath();
 			//safestPath.print();
 		}
