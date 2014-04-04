@@ -51,6 +51,16 @@ public class dangerPath implements Comparable<dangerPath> {
 		return compare( this, p2);
 	}
 
+	public void print() {
+		ListIterator<dangerPoint> iter = path.listIterator();
+		dangerPoint oldP=null;
+		dangerPoint  dP;
+		while (iter.hasNext()) {
+			dP = iter.next();
+			dP.print();
+		}
+		logger.dbg("Path danger = " + dangerLevel);
+	}
 	public void onPaint(Graphics2D g) {
 		ListIterator<dangerPoint> iter = path.listIterator();
 		dangerPoint oldP=null;
