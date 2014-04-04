@@ -28,7 +28,11 @@ public class safestPathMotion extends dangerMapMotion {
 	private int maxPathLength = 40;
 	
 	public void initTic() {
+		logger.dbg("Actual position " + myBot.myCoord);
+		logger.dbg("Predicted position " + DestinationPoint);
+		logger.dbg("Distance between " + DestinationPoint.distance(myBot.myCoord));
 		if ( safestPath.size() < maxPathLength-30 ) {
+			logger.dbg("New path");
 			safestPath = generateTheBestPath();
 			//safestPath.print();
 		}
