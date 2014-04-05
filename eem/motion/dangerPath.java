@@ -4,6 +4,7 @@ package eem.motion;
 
 import eem.misc.*;
 import eem.motion.dangerPoint;
+import eem.motion.dangerPathPoint;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
@@ -15,12 +16,13 @@ import java.util.Collections;
 
 
 public class dangerPath implements Comparable<dangerPath> {
-	private LinkedList<dangerPoint> path = new LinkedList<dangerPoint>();
+	private LinkedList<dangerPathPoint> path = new LinkedList<dangerPathPoint>();
 	private double dangerLevel = 0;
+	private double accelDir = 0; // how to accelerate to get here
 
 	public dangerPath(){};
 
-	public void add(dangerPoint dP) {
+	public void add(dangerPathPoint dP) {
 		path.add( dP );
 		dangerLevel += dP.getDanger();
 	}
@@ -33,8 +35,8 @@ public class dangerPath implements Comparable<dangerPath> {
 		return dangerLevel;
 	}
 
-	public dangerPoint removeFirst() {
-		dangerPoint dP = path.removeFirst();
+	public dangerPathPoint removeFirst() {
+		dangerPathPoint dP = path.removeFirst();
 		dangerLevel -= dP.getDanger();
 		return dP;
 	}
@@ -52,7 +54,7 @@ public class dangerPath implements Comparable<dangerPath> {
 	}
 
 	public void print() {
-		ListIterator<dangerPoint> iter = path.listIterator();
+		ListIterator<dangerPathPoint> iter = path.listIterator();
 		dangerPoint oldP=null;
 		dangerPoint  dP;
 		while (iter.hasNext()) {
@@ -62,9 +64,9 @@ public class dangerPath implements Comparable<dangerPath> {
 		logger.dbg("Path danger = " + dangerLevel);
 	}
 	public void onPaint(Graphics2D g) {
-		ListIterator<dangerPoint> iter = path.listIterator();
-		dangerPoint oldP=null;
-		dangerPoint  dP;
+		ListIterator<dangerPathPoint> iter = path.listIterator();
+		dangerPathPoint oldP=null;
+		dangerPathPoint  dP;
 		while (iter.hasNext()) {
 			dP = iter.next();
 			dP.onPaint(g);
