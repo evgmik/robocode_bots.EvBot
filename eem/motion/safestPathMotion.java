@@ -25,25 +25,37 @@ import java.util.Collections;
 
 public class safestPathMotion extends dangerMapMotion {
 	private dangerPath  safestPath = new dangerPath();
+	private dangerPathPoint DestinationDangerPathPoint = null;
 	public LinkedList<dangerPath> dangerPaths;
-	private int maxPathLength = 40;
+	private int NofGenNewPathAttempts = 100;
+	private int maxPathLength = 55;
+	private int pathSafetyMargin = 50; // when we have less point recalculate path
 	
 	public void initTic() {
-		logger.dbg("Actual position " + myBot.myCoord);
-		logger.dbg("Predicted position " + DestinationPoint);
-		logger.dbg("Distance between " + DestinationPoint.distance(myBot.myCoord));
-		if ( safestPath.size() < maxPathLength-30 ) {
-			logger.dbg("New path");
-			safestPath = generateTheBestPath();
-			//safestPath.print();
+		double deviation =  myBot.myCoord.distance(DestinationDangerPathPoint.getPosition());
+		if ( deviation > 1e-3 ) {
+			logger.dbg("Go fix the code: to large deviation from expected position");
+			logger.dbg("Deviation from predicted " + deviation );
+			logger.dbg("motion initTic " + myBot.ticTime );
+			logger.dbg("Actual position " + myBot.myCoord);
+			logger.dbg("Predicted position " + DestinationDangerPathPoint.getPosition());
+			logger.dbg("Velocity expected " + DestinationDangerPathPoint.getVelocity() + " actual " + myBot.getVelocity() );
+			logger.dbg("Heading expected " + DestinationDangerPathPoint.getHeading() + " actual " + myBot.getHeading() );
 		}
-		DestinationPoint = safestPath.removeFirst().getPosition();
+		if ( safestPath.size() < pathSafetyMargin ) {
+			safestPath = generateTheBestPath();
+		}
+		DestinationDangerPathPoint = safestPath.removeFirst();
 	}
 
 	public safestPathMotion(EvBot bot) {
 		super(bot);
+		double danger = 0;
+		Point2D.Double pos = (Point2D.Double) myBot.myCoord.clone();
+		double angle = myBot.getHeading();
+		double speed = myBot.getVelocity();
+		DestinationDangerPathPoint = new dangerPathPoint( pos, danger, 0, 0, speed, angle );
 	       	safestPath = generateTheBestPath();
-		//safestPath.print();
 	}
 
 	public double possibleNewSpeed(double speed) {
@@ -63,7 +75,7 @@ public class safestPathMotion extends dangerMapMotion {
 			}
 
 			double r = Math.random();
-			// probabilisticly change speed
+			// probabilistically change speed
 			if ( r <= accelProb ) {
 				// accel
 				newSpeed = math.signNoZero(speed)* (Math.abs(speed)+1);
@@ -91,31 +103,36 @@ public class safestPathMotion extends dangerMapMotion {
 		double bestDanger = 1e9; // humongously large
 		dangerPath bestPath=null;
 		dangerPath trialPath;
-		int Ntrials = 100;
-		//logger.dbg("New path search");
-		for (int i=0; i< Ntrials; i++) {
+		for (int i=0; i< NofGenNewPathAttempts; i++) {
 			trialPath=randomPath(bestDanger);
 			if ( trialPath.getDanger() < bestDanger ) {
 				bestPath = trialPath;
 				bestDanger = bestPath.getDanger();
-				//logger.dbg("Best path danger so far = " + bestDanger);
 				
 			}
 		}
 		return bestPath;
 	}
 
+	double possibleNewTurnAngle( double speed ) {
+		double turnAngle = maxRotationPerTurnInDegrees( speed );
+		double r = Math.random();
+		if ( r <= .33 ) 
+			// right
+			return  turnAngle;
+		if ( r <= .66 ) 
+			// left
+			return -turnAngle;
+		// no rotation
+		return 0;
+	}
+
 	double possibleNewHeading(double speed, double angle) {
 		//if ( speed < 0 ) 
 			//angle += 180; // we are moving backwards
 		angle = math.shortest_arc(angle);
-		double da = maxRotationPerTurnInDegrees( speed );
-		double r = Math.random();
-		if ( r <= .33 ) 
-			return math.shortest_arc( angle + da );
-		if ( r <= .66 ) 
-			return math.shortest_arc( angle - da );
-		return math.shortest_arc( angle );
+		double da = possibleNewTurnAngle( speed );
+		return math.shortest_arc( angle + da );
 	}
 
 	public dangerPath randomPath() {
@@ -156,7 +173,7 @@ public class safestPathMotion extends dangerMapMotion {
 		}
 		// hard case passing over zero
 		double overshoot = velocity - Rules.DECELERATION;
-		return -overshoot/2;
+		return overshoot/2;
 	}
 
 	public double randomAccelDir(double velocity) {
@@ -186,26 +203,24 @@ public class safestPathMotion extends dangerMapMotion {
 
 		double angle = myBot.getHeading();
 		double speed = myBot.getVelocity();
-		//if ( speed < 0 ) 
-			//angle += 180; // we are moving backwards
-		angle = math.shortest_arc(angle);
-
+		dp= new dangerPathPoint( pos, danger, 0, 0, speed, angle );
 
 		int cnt = 0;
 		while( cnt < maxPathLength) {
-			angleNew = possibleNewHeading(speed, angle);
 			double accelDir = randomAccelDir(speed);
+			double turnAngle = possibleNewTurnAngle(speed);
 			speedNew = getNewVelocity(speed, accelDir);
+			angleNew = angle + turnAngle;
 
 			posNew = (Point2D.Double) pos.clone();
-			posNew.x += speed*Math.sin(angle*Math.PI/180);
-			posNew.y += speed*Math.cos(angle*Math.PI/180);
-
+			posNew.x += speedNew*Math.sin(angleNew*Math.PI/180);
+			posNew.y += speedNew*Math.cos(angleNew*Math.PI/180);
 			danger = 0;
 			danger = pointDangerFromWalls(posNew, speedNew);
 			danger += pointDangerFromAllBots( posNew );
 			danger += pointDangerFromEnemyWavesAndItsPrecursor( posNew );
-			dp= new dangerPathPoint( posNew, danger, accelDir );
+			dp= new dangerPathPoint( posNew, danger, turnAngle, accelDir, speedNew, angleNew );
+
 			nPath.add( dp );
 			angle = angleNew;
 			speed = speedNew;
@@ -217,8 +232,6 @@ public class safestPathMotion extends dangerMapMotion {
 				return nPath;
 			}
 
-			//logger.dbg("cntr = " + cnt );
-			//logger.dbg("at tic = " + (myBot.ticTime + cnt +1) + " pos: "+ posNew );
 		}
 		return nPath;
 	}
@@ -232,8 +245,10 @@ public class safestPathMotion extends dangerMapMotion {
 
 
 	public void makeMove() {
-		//choseNewDestinationPoint();
-		moveToPoint( DestinationPoint );
+		double dist = 200* DestinationDangerPathPoint.getAccelDir();
+		double angle =    DestinationDangerPathPoint.getTurnAngle();
+		myBot.setTurnRight(angle);
+		myBot.setAhead (dist);
 	}
 
 	public void onPaint(Graphics2D g) {
