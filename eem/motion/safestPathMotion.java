@@ -27,9 +27,9 @@ public class safestPathMotion extends dangerMapMotion {
 	private dangerPath  safestPath = new dangerPath();
 	private dangerPathPoint DestinationDangerPathPoint = null;
 	public LinkedList<dangerPath> dangerPaths;
-	private int NofGenNewPathAttempts = 100;
+	private int NofGenNewPathAttempts = 500;
 	private int maxPathLength = 55;
-	private int pathSafetyMargin = 50; // when we have less point recalculate path
+	private int pathSafetyMargin = 54; // when we have less point recalculate path
 	
 	public void initTic() {
 		double deviation =  myBot.myCoord.distance(DestinationDangerPathPoint.getPosition());
