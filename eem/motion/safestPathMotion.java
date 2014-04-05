@@ -14,6 +14,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import robocode.util.*;
+import robocode.*;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -121,12 +122,66 @@ public class safestPathMotion extends dangerMapMotion {
 		return randomPath(1e9); // any pass is good one
 	}
 
+	public double  getNewVelocity(double velocity, double direction) {
+		// direction stands for accelerate->1 or deaccelerate->-1 or 0
+
+		if ( velocity < 0 ) 
+			return -getNewVelocity( -velocity, -direction);
+
+		//life is easier now velocity is always positive and we can treat it as speed
+
+		double maxAccel = Rules.ACCELERATION;
+		double maxDeAccel = Rules.DECELERATION;
+
+		if ( ( velocity == 0) && (direction == 0) )
+			return 0;
+
+		if ( ( velocity != 0) && (direction == 0) ) {
+			// robophysics require to accelerate
+			// this is wrong call direction 
+			// velocity must be zero to ask for zero direction
+			// forcing acceleration
+			direction = 1; //i.e. up
+		}
+
+		// easy case speeding up
+		if ( direction > 0 ) {
+			return Math.min( Rules.MAX_VELOCITY, velocity + Rules.ACCELERATION );
+		}
+		
+		// slow down is tricky
+		if ( velocity > Rules.DECELERATION ) {
+			// still easy
+			return velocity - Rules.DECELERATION;
+		}
+		// hard case passing over zero
+		double overshoot = velocity - Rules.DECELERATION;
+		return -overshoot/2;
+	}
+
+	public double randomAccelDir(double velocity) {
+		double probSame = 0, probUp = 0;
+		if (velocity == 0) {
+			probSame = 0.333;
+			probUp = 0.333;
+		} else {
+			probSame = 0;
+			probUp = 0.5;
+		}
+		double r = Math.random();
+		if ( r < probSame ) 
+			return 0;
+		if ( r <= (probSame + probUp) )
+			return 1;
+		return -1;
+	}
+
 	public dangerPath randomPath(double thresholdDanger ) {
 		dangerPath  nPath = new dangerPath();
 		double danger = 0;
 		Point2D.Double pos = (Point2D.Double) myBot.myCoord.clone();
 		Point2D.Double posNew;
-		dangerPoint dp;
+		dangerPathPoint dp;
 		double speedNew=1, angleNew;
 
 		double angle = myBot.getHeading();
@@ -139,7 +194,9 @@ public class safestPathMotion extends dangerMapMotion {
 		int cnt = 0;
 		while( cnt < maxPathLength) {
 			angleNew = possibleNewHeading(speed, angle);
-			speedNew = possibleNewSpeed(speed);
+			double accelDir = randomAccelDir(speed);
+			speedNew = getNewVelocity(speed, accelDir);
+
 			posNew = (Point2D.Double) pos.clone();
 			posNew.x += speed*Math.sin(angle*Math.PI/180);
 			posNew.y += speed*Math.cos(angle*Math.PI/180);
@@ -148,7 +205,7 @@ public class safestPathMotion extends dangerMapMotion {
 			danger = pointDangerFromWalls(posNew, speedNew);
 			danger += pointDangerFromAllBots( posNew );
 			danger += pointDangerFromEnemyWavesAndItsPrecursor( posNew );
-			dp= new dangerPoint( posNew, danger );
+			dp= new dangerPathPoint( posNew, danger, accelDir );
 			nPath.add( dp );
 			angle = angleNew;
 			speed = speedNew;
