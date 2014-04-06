@@ -65,17 +65,20 @@ public class dangerPath implements Comparable<dangerPath> {
 	}
 	public void onPaint(Graphics2D g) {
 		ListIterator<dangerPathPoint> iter = path.listIterator();
+		int opacityTreshold = 100;
 		dangerPathPoint oldP=null;
 		dangerPathPoint  dP;
 		while (iter.hasNext()) {
 			dP = iter.next();
-			dP.onPaint(g);
 
+			// path between points
 			g.setColor(Color.blue);
 			if ( oldP != null ) {
 				graphics.drawLine(g,  dP.getPosition(), oldP.getPosition());
 			}
 			oldP = dP;
+
+			dP.onPaint(g);
 		}
 	}
 }
