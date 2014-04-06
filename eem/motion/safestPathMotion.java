@@ -27,7 +27,7 @@ public class safestPathMotion extends dangerMapMotion {
 	private dangerPath  safestPath = new dangerPath();
 	private dangerPathPoint DestinationDangerPathPoint = null;
 	public LinkedList<dangerPath> dangerPaths;
-	private int NofGenNewPathAttempts = 500;
+	private int NofGenNewPathAttempts = 1500;
 	private int maxPathLength = 55;
 	private int pathSafetyMargin = 54; // when we have less point recalculate path
 	
@@ -114,7 +114,7 @@ public class safestPathMotion extends dangerMapMotion {
 		return bestPath;
 	}
 
-	double possibleNewTurnAngle( double speed ) {
+	double randomNewTurnAngle( double speed ) {
 		double turnAngle = maxRotationPerTurnInDegrees( speed );
 		double r = Math.random();
 		if ( r <= .33 ) 
@@ -127,11 +127,9 @@ public class safestPathMotion extends dangerMapMotion {
 		return 0;
 	}
 
-	double possibleNewHeading(double speed, double angle) {
-		//if ( speed < 0 ) 
-			//angle += 180; // we are moving backwards
+	double randomNewHeading(double speed, double angle) {
 		angle = math.shortest_arc(angle);
-		double da = possibleNewTurnAngle( speed );
+		double da = randomNewTurnAngle( speed );
 		return math.shortest_arc( angle + da );
 	}
 
@@ -208,7 +206,7 @@ public class safestPathMotion extends dangerMapMotion {
 		int cnt = 0;
 		while( cnt < maxPathLength) {
 			double accelDir = randomAccelDir(speed);
-			double turnAngle = possibleNewTurnAngle(speed);
+			double turnAngle = randomNewTurnAngle(speed);
 			speedNew = getNewVelocity(speed, accelDir);
 			angleNew = angle + turnAngle;
 
@@ -245,9 +243,10 @@ public class safestPathMotion extends dangerMapMotion {
 
 
 	public void makeMove() {
+		// dist here should be large to ensure bot acceleration
 		double dist = 200* DestinationDangerPathPoint.getAccelDir();
-		double angle =    DestinationDangerPathPoint.getTurnAngle();
-		myBot.setTurnRight(angle);
+		double turnAngle =    DestinationDangerPathPoint.getTurnAngle();
+		myBot.setTurnRight(turnAngle);
 		myBot.setAhead (dist);
 	}
 
