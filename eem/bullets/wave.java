@@ -124,6 +124,16 @@ public class wave {
 				firedBot.updateHitGuessFactor( bot, guessFactor );
 				//logger.dbg("guess factor for " + bName + " = " + guessFactor );
 				//logger.dbg( bName + ":\t" +  bot.guessFactorBins2string() );
+
+				// now let's check which bullet hit this bot
+				for ( firedBullet b : this.getBullets() ) {
+
+					if ( botPos.distance( b.getPosition() ) <= Math.sqrt(2)*myBot.robotHalfSize ) {
+						// bot hit by this bullet
+						logger.dbg("Bot was hit by bullet " + b.firedGun.getName() );
+					}
+				}
+
 			}
 		}
 	}
