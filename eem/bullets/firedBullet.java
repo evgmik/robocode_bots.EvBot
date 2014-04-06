@@ -128,6 +128,34 @@ public class firedBullet {
 		return getPositionAtTime( myBot.ticTime );
 	}
 
+	public double pointDangerFromExactBulletHit( Point2D.Double p, long time ) {
+		double dangerLevelBullet = 100;
+		double dangerLevelShadowBullet = -dangerLevelBullet/6.0;
+		double safe_distance_from_bullet =  2*myBot.robotHalfSize + 2;
+
+		double danger = 0;
+		double dist;
+		Point2D.Double bPos;
+		if ( isActive() && !isItMine ) {
+			bPos = getPositionAtTime(time);
+
+			double dx = p.x - bPos.x;
+			double dy = p.y - bPos.y;
+			dist = p.distance(bPos);
+			//if ( (Math.abs(dx) <= myBot.robotHalfSize) && (Math.abs(dy) <= myBot.robotHalfSize) ) {
+				// bullet hits bot at point p
+				if ( !getFiredGun().getName().equals("shadow") ) {
+					danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet );
+
+				} else {
+					// shadow bullets are safe
+					danger = math.gaussian( dist, dangerLevelShadowBullet, safe_distance_from_bullet );
+				}
+			//}
+		}
+		return danger;
+	}
+
 	public double pointDangerFromBulletPrecursor( Point2D.Double p, long time ) {
 		double distOfBulletPrecursor = 200; // very large
 		double dangerLevelBullet = 100;
