@@ -29,7 +29,7 @@ public class safestPathMotion extends dangerMapMotion {
 	public LinkedList<dangerPath> dangerPaths;
 	private int NofGenNewPathAttempts = 1500;
 	private int maxPathLength = 55;
-	private int pathSafetyMargin = 54; // when we have less point recalculate path
+	private int pathSafetyMargin = 10; // when we have less point recalculate path
 	
 	public void initTic() {
 		double deviation =  myBot.myCoord.distance(DestinationDangerPathPoint.getPosition());
@@ -111,6 +111,7 @@ public class safestPathMotion extends dangerMapMotion {
 				
 			}
 		}
+		//logger.dbg("Path danger " + bestPath.getDanger() );
 		return bestPath;
 	}
 
@@ -191,6 +192,38 @@ public class safestPathMotion extends dangerMapMotion {
 		return -1;
 	}
 
+	public double pointDanger( dangerPathPoint p ) {
+		double danger = 0;
+		danger += pointDangerFromWalls( p.getPosition(), 0 );
+		danger += pointDangerFromAllBots( p.getPosition() );
+		danger += pointDangerFromEnemyWavesAtTicTime( p.getPosition(), p.getTime() );
+		return danger;
+	}
+
+	public double pointDangerFromEnemyWavesAtTicTime( Point2D.Double p, long ticTime ) {
+		double danger = 0;
+		bulletsManager  bm = myBot._bmanager;
+		if ( bm == null) {
+			//logger.dbg("This should not happen: bullet manager is null" );
+		       	return 0;
+		}
+		LinkedList<wave> enemyWaves = bm.getAllEnemyWaves();
+		for ( wave eW : enemyWaves ) {
+			double distToWave = eW.distance( p, ticTime );
+			if (Math.abs(distToWave) > Math.sqrt(2)*myBot.robotHalfSize ) {
+				// this wave is too far to worry
+				continue;
+			}
+			//logger.dbg("wave close to the point at time " + ticTime);
+			for ( firedBullet b : eW.getBullets() ) {
+				danger += b.pointDangerFromExactBulletHit( p, ticTime );
+			}
+			//logger.dbg("wave danger " + danger);
+		}
+		return danger;
+	}
+
+
 	public dangerPath randomPath(double thresholdDanger ) {
 		dangerPath  nPath = new dangerPath();
 		long pntTicTime = myBot.ticTime;
@@ -214,15 +247,13 @@ public class safestPathMotion extends dangerMapMotion {
 			posNew = (Point2D.Double) pos.clone();
 			posNew.x += speedNew*Math.sin(angleNew*Math.PI/180);
 			posNew.y += speedNew*Math.cos(angleNew*Math.PI/180);
-			danger = 0;
-			danger = pointDangerFromWalls(posNew, 0);
-			danger += pointDangerFromAllBots( posNew );
-			danger += pointDangerFromEnemyWavesAndItsPrecursor( posNew );
 
-
+			danger = 0; // temporary will be recalculated
 			cnt++;
 			pntTicTime++;
 			dp= new dangerPathPoint( posNew, danger, turnAngle, accelDir, speedNew, angleNew, pntTicTime);
+			danger = pointDanger( dp );
+			dp.setDanger(danger);
 			nPath.add( dp );
 			angle = angleNew;
 			speed = speedNew;
@@ -254,7 +285,7 @@ public class safestPathMotion extends dangerMapMotion {
 	}
 
 	public void onPaint(Graphics2D g) {
-		drawDangerMap(g);
+		//drawDangerMap(g);
 		safestPath.onPaint(g);
 	}
 
