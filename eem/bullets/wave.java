@@ -156,6 +156,11 @@ public class wave {
 		return dist;
 	}
 
+	public double distance(Point2D.Double p, long tic) {
+		double dist = firingPosition.distance( p ) - getDistanceTraveledAtTime(tic) ;
+		return dist;
+	}
+
 	public void addBullet(firedBullet b) {
 		bullets.add(b);
 	}
