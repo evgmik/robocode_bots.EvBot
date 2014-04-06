@@ -228,7 +228,7 @@ public class firedBullet {
 		double R = 18;
 		if ( targetPosition != null ) {
 			logger.noise("draw target at position = " + targetPosition);
-			graphics.drawCircle(g, targetPosition, R);
+			//graphics.drawCircle(g, targetPosition, R);
 
 			// draw line from firing point to target
 			//Point2D.Double lEnd = endPositionAtBorder();
