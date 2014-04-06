@@ -14,6 +14,7 @@ public class dangerPathPoint extends dangerPoint {
 	private double turnAngle = 0; // how to rotate to get here
 	private double velocity = 0; // at this point
 	private double heading = 0;  // at this point
+	private long  ticTime = 0;  // at this point
 	
 	public dangerPathPoint( Point2D.Double dP, double dangerLevel, double turnAngle, double accelDir) {
 		super( dP, dangerLevel );
@@ -21,14 +22,19 @@ public class dangerPathPoint extends dangerPoint {
 		this.turnAngle = turnAngle;
 	}
 
-	public dangerPathPoint( Point2D.Double dP, double dangerLevel, double turnAngle, double accelDir, double velocity, double heading) {
+	public dangerPathPoint( Point2D.Double dP, double dangerLevel, double turnAngle, double accelDir, double velocity, double heading, long ticTime ) {
 		this( dP, dangerLevel, turnAngle, accelDir );
 		this.velocity = velocity;
 		this.heading = heading;
+		this.ticTime = ticTime;
 	}
 
 	public double getHeading() {
 		return heading;
+	}
+
+	public long getTime() {
+		return ticTime;
 	}
 
 	public double getVelocity() {
