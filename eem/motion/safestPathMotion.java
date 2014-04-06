@@ -215,7 +215,7 @@ public class safestPathMotion extends dangerMapMotion {
 			posNew.x += speedNew*Math.sin(angleNew*Math.PI/180);
 			posNew.y += speedNew*Math.cos(angleNew*Math.PI/180);
 			danger = 0;
-			danger = pointDangerFromWalls(posNew, speedNew);
+			danger = pointDangerFromWalls(posNew, 0);
 			danger += pointDangerFromAllBots( posNew );
 			danger += pointDangerFromEnemyWavesAndItsPrecursor( posNew );
 
