@@ -130,7 +130,9 @@ public class wave {
 
 					if ( botPos.distance( b.getPosition() ) <= Math.sqrt(2)*myBot.robotHalfSize ) {
 						// bot hit by this bullet
-						logger.dbg("Bot was hit by bullet " + b.firedGun.getName() );
+						if ( myBot.fightType().equals( "1on1" ) ) {
+							logger.dbg("FIXME sloppy programming: myBot should not by predicted bullet " + b.firedGun.getName() );
+						}
 					}
 				}
 
