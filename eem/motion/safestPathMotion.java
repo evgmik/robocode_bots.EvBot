@@ -36,7 +36,7 @@ public class safestPathMotion extends dangerMapMotion {
 		if ( deviation > 1e-3 ) {
 			logger.dbg("Go fix the code: to large deviation from expected position");
 			logger.dbg("Deviation from predicted " + deviation );
-			logger.dbg("motion initTic " + myBot.ticTime );
+			logger.dbg("Actual time " + myBot.ticTime + " expected " + DestinationDangerPathPoint.getTime() );
 			logger.dbg("Actual position " + myBot.myCoord);
 			logger.dbg("Predicted position " + DestinationDangerPathPoint.getPosition());
 			logger.dbg("Velocity expected " + DestinationDangerPathPoint.getVelocity() + " actual " + myBot.getVelocity() );
@@ -54,7 +54,7 @@ public class safestPathMotion extends dangerMapMotion {
 		Point2D.Double pos = (Point2D.Double) myBot.myCoord.clone();
 		double angle = myBot.getHeading();
 		double speed = myBot.getVelocity();
-		DestinationDangerPathPoint = new dangerPathPoint( pos, danger, 0, 0, speed, angle );
+		DestinationDangerPathPoint = new dangerPathPoint( pos, danger, 0, 0, speed, angle, myBot.ticTime );
 	       	safestPath = generateTheBestPath();
 	}
 
@@ -193,6 +193,7 @@ public class safestPathMotion extends dangerMapMotion {
 
 	public dangerPath randomPath(double thresholdDanger ) {
 		dangerPath  nPath = new dangerPath();
+		long pntTicTime = myBot.ticTime;
 		double danger = 0;
 		Point2D.Double pos = (Point2D.Double) myBot.myCoord.clone();
 		Point2D.Double posNew;
@@ -201,7 +202,7 @@ public class safestPathMotion extends dangerMapMotion {
 
 		double angle = myBot.getHeading();
 		double speed = myBot.getVelocity();
-		dp= new dangerPathPoint( pos, danger, 0, 0, speed, angle );
+		dp= new dangerPathPoint( pos, danger, 0, 0, speed, angle, pntTicTime );
 
 		int cnt = 0;
 		while( cnt < maxPathLength) {
@@ -217,13 +218,15 @@ public class safestPathMotion extends dangerMapMotion {
 			danger = pointDangerFromWalls(posNew, speedNew);
 			danger += pointDangerFromAllBots( posNew );
 			danger += pointDangerFromEnemyWavesAndItsPrecursor( posNew );
-			dp= new dangerPathPoint( posNew, danger, turnAngle, accelDir, speedNew, angleNew );
 
+
+			cnt++;
+			pntTicTime++;
+			dp= new dangerPathPoint( posNew, danger, turnAngle, accelDir, speedNew, angleNew, pntTicTime);
 			nPath.add( dp );
 			angle = angleNew;
 			speed = speedNew;
 			pos = posNew;
-			cnt++;
 			if ( nPath.getDanger() > thresholdDanger) {
 				// this is already bad path
 				// no need to look dipper
