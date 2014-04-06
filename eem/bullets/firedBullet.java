@@ -128,6 +128,16 @@ public class firedBullet {
 		return getPositionAtTime( myBot.ticTime );
 	}
 
+	public boolean isPositionHitAtTime( Point2D.Double p, long time ) {
+		Point2D.Double bPos = getPositionAtTime(time);
+		double dx = p.x - bPos.x;
+		double dy = p.y - bPos.y;
+		if ( (Math.abs(dx) <= myBot.robotHalfSize) && (Math.abs(dy) <= myBot.robotHalfSize) ) {
+			return true;
+		}
+		return false;
+	}
+
 	public double pointDangerFromExactBulletHit( Point2D.Double p, long time ) {
 		double dangerLevelBullet = 100;
 		double dangerLevelShadowBullet = -dangerLevelBullet/6.0;
@@ -138,20 +148,25 @@ public class firedBullet {
 		Point2D.Double bPos;
 		if ( isActive() && !isItMine ) {
 			bPos = getPositionAtTime(time);
-
-			double dx = p.x - bPos.x;
-			double dy = p.y - bPos.y;
 			dist = p.distance(bPos);
-			//if ( (Math.abs(dx) <= myBot.robotHalfSize) && (Math.abs(dy) <= myBot.robotHalfSize) ) {
-				// bullet hits bot at point p
-				if ( !getFiredGun().getName().equals("shadow") ) {
-					danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet );
 
+			// adding danger of exact hit
+			if ( isPositionHitAtTime( p, time ) ) {
+				if ( !getFiredGun().getName().equals("shadow") ) {
+					danger += dangerLevelBullet;
 				} else {
-					// shadow bullets are safe
-					danger = math.gaussian( dist, dangerLevelShadowBullet, safe_distance_from_bullet );
+					danger += dangerLevelShadowBullet;
 				}
-			//}
+			}
+
+			// adding proximity danger
+			if ( !getFiredGun().getName().equals("shadow") ) {
+				danger += math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet );
+
+			} else {
+				// shadow bullets are safe
+				danger += math.gaussian( dist, dangerLevelShadowBullet, safe_distance_from_bullet );
+			}
 		}
 		return danger;
 	}
