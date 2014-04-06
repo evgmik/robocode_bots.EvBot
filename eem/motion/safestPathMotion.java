@@ -27,9 +27,9 @@ public class safestPathMotion extends dangerMapMotion {
 	private dangerPath  safestPath = new dangerPath();
 	private dangerPathPoint DestinationDangerPathPoint = null;
 	public LinkedList<dangerPath> dangerPaths;
-	private int NofGenNewPathAttempts = 1500;
-	private int maxPathLength = 55;
-	private int pathSafetyMargin = 10; // when we have less point recalculate path
+	private int NofGenNewPathAttempts = 4500;
+	private int maxPathLength = 25;
+	private int pathSafetyMargin = 24; // when we have less point recalculate path
 	
 	public void initTic() {
 		double deviation =  myBot.myCoord.distance(DestinationDangerPathPoint.getPosition());
@@ -210,7 +210,7 @@ public class safestPathMotion extends dangerMapMotion {
 		LinkedList<wave> enemyWaves = bm.getAllEnemyWaves();
 		for ( wave eW : enemyWaves ) {
 			double distToWave = eW.distance( p, ticTime );
-			if (Math.abs(distToWave) > Math.sqrt(2)*myBot.robotHalfSize ) {
+			if (Math.abs(distToWave) > (Math.sqrt(2)*myBot.robotHalfSize+1) ) {
 				// this wave is too far to worry
 				continue;
 			}
