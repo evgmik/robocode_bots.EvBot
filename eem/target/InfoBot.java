@@ -418,6 +418,16 @@ public class InfoBot {
 		return Math.round( (gf+1)/2*(numBins-1) );
 	}
 	
+	public int getGuessFactorCount( InfoBot anotherBot, double gf ) {
+		int i = (int)guessFactor2itsBin( gf, numGuessFactorBins );
+		String key = anotherBot.getName();
+		if ( !guessFactorsMap.containsKey( key ) ) {
+			return 0;
+		}
+		int[] gfBins = guessFactorsMap.get( key );
+		return gfBins[i];
+	}
+
 	public void updateHitGuessFactor( InfoBot anotherBot, double gf ) {
 		int i = (int)guessFactor2itsBin( gf, numGuessFactorBins );
 		String key = anotherBot.getName();

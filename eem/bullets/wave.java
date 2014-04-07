@@ -140,6 +140,20 @@ public class wave {
 		}
 	}
 
+	public int getGuessFactorCount( InfoBot targetBot, double guessFactor) {
+		return this.firedBot.getGuessFactorCount( targetBot, guessFactor );
+	}
+
+	public int getGuessFactorCountForPoint( InfoBot targetBot, Point2D.Double p) {
+		// calculate guess factor point counts for wave at point p
+		// as if it directed to targetBot
+		String targetName = targetBot.getName();
+			double angle = math.angle2pt ( this.firingPosition, p ) - math.angle2pt ( this.firingPosition, this.enemyPosAtFiringTime.get( targetName ) );
+			angle = math.shortest_arc( angle );
+			double guessFactor = angle/this.enemyMEAatFiringTime.get( targetName );
+			return this.firedBot.getGuessFactorCount( targetBot, guessFactor );
+	}
+
 	public boolean isPosWithMEAforBot( Point2D.Double pos, InfoBot bot) {
 		Point2D.Double botPos = (Point2D.Double) enemyPosAtFiringTime.get( bot.getName() ).clone();
 		double botMEA = enemyMEAatFiringTime.get( bot.getName() );
