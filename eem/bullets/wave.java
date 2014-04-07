@@ -131,7 +131,7 @@ public class wave {
 					if ( botPos.distance( b.getPosition() ) <= Math.sqrt(2)*myBot.robotHalfSize ) {
 						// bot hit by this bullet
 						if ( myBot.fightType().equals( "1on1" ) ) {
-							logger.dbg("FIXME sloppy programming: myBot should not be hit by predicted bullet " + b.firedGun.getName() );
+							logger.dbg("FIXME sloppy path finding algorythm: myBot should not be hit by predicted bullet " + b.firedGun.getName() );
 						}
 					}
 				}
