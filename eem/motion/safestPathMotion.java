@@ -231,11 +231,35 @@ public class safestPathMotion extends dangerMapMotion {
 		return danger;
 	}
 
+	public dangerPathPoint randomNewDangerPathPoint( dangerPathPoint pOld ) {
+		double danger = 0;
+		long pntTicTime = pOld.getTime();
+		double angle = pOld.getHeading();
+		double speed = pOld.getVelocity();
+
+		double accelDir = randomAccelDir(speed);
+		double turnAngle = randomNewTurnAngle(speed);
+		double speedNew = getNewVelocity(speed, accelDir);
+		double angleNew = angle + turnAngle;
+
+		Point2D.Double posNew;
+		posNew = (Point2D.Double) pOld.getPosition().clone();
+		posNew.x += speedNew*Math.sin(angleNew*Math.PI/180);
+		posNew.y += speedNew*Math.cos(angleNew*Math.PI/180);
+
+		pntTicTime++;
+		dangerPathPoint pNew= new dangerPathPoint( posNew, danger, turnAngle, accelDir, speedNew, angleNew, pntTicTime);
+		danger = pointDanger( pNew );
+		pNew.setDanger(danger);
+		return pNew;
+	}
 
 	public dangerPath randomPath(double thresholdDanger ) {
 		dangerPath  nPath = new dangerPath();
 		long pntTicTime = myBot.ticTime;
 		double danger = 0;
+		double accelDir = 0;
+		double turnAngle = 0;
 		Point2D.Double pos = (Point2D.Double) myBot.myCoord.clone();
 		Point2D.Double posNew;
 		dangerPathPoint dp;
@@ -247,8 +271,8 @@ public class safestPathMotion extends dangerMapMotion {
 
 		int cnt = 0;
 		while( cnt < maxPathLength) {
-			double accelDir = randomAccelDir(speed);
-			double turnAngle = randomNewTurnAngle(speed);
+			accelDir = randomAccelDir(speed);
+			turnAngle = randomNewTurnAngle(speed);
 			speedNew = getNewVelocity(speed, accelDir);
 			angleNew = angle + turnAngle;
 
