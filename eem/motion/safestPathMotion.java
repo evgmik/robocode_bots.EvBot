@@ -29,7 +29,7 @@ public class safestPathMotion extends dangerMapMotion {
 	public LinkedList<dangerPath> dangerPaths;
 	private double waveSafetyDist = (Math.sqrt(2)*myBot.robotHalfSize+1);
 	private double guessFactorFlatenerStrength = 10;
-	private int NofGenNewPathAttempts = 100;
+	private int NofGenNewPathAttempts = 4000;
 	private int maxPathLength = 20;
 	private int pathSafetyMargin = 19; // when we have less point recalculate path
 	
