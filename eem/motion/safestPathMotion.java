@@ -27,9 +27,10 @@ public class safestPathMotion extends dangerMapMotion {
 	private dangerPath  safestPath = new dangerPath();
 	private dangerPathPoint DestinationDangerPathPoint = null;
 	public LinkedList<dangerPath> dangerPaths;
+	private double guessFactorFlatenerStrength = 10;
 	private int NofGenNewPathAttempts = 4500;
-	private int maxPathLength = 25;
-	private int pathSafetyMargin = 24; // when we have less point recalculate path
+	private int maxPathLength = 50;
+	private int pathSafetyMargin = 49; // when we have less point recalculate path
 	
 	public void initTic() {
 		double deviation =  myBot.myCoord.distance(DestinationDangerPathPoint.getPosition());
@@ -222,6 +223,8 @@ public class safestPathMotion extends dangerMapMotion {
 			for ( firedBullet b : eW.getBullets() ) {
 				danger += b.pointDangerFromExactBulletHit( p, ticTime );
 			}
+			// wave guess factor danger
+			danger += guessFactorFlatenerStrength*eW.getGuessFactorCountForPoint( myBot._tracker, p );
 			//logger.dbg("wave danger " + danger);
 		}
 		return danger;
