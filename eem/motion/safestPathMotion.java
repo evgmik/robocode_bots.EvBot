@@ -176,20 +176,24 @@ public class safestPathMotion extends dangerMapMotion {
 	}
 
 	public double randomAccelDir(double velocity) {
-		double probSame = 0, probUp = 0;
+		double probStanding = 0, probSameDir = 0;
 		if (velocity == 0) {
-			probSame = 0.333;
-			probUp = 0.333;
+			probStanding = 0.333;
+			probSameDir = 0.333;
 		} else {
-			probSame = 0;
-			probUp = 0.5;
+			probStanding = 0; // in robocode always accelerates or deaccelerates
+			probSameDir = 0.6;
 		}
 		double r = Math.random();
-		if ( r < probSame ) 
+		if ( r < probStanding ) 
 			return 0;
-		if ( r <= (probSame + probUp) )
-			return 1;
-		return -1;
+		if (velocity == 0) {
+			// we need 50/50 chance
+			return math.sign( Math.random()-0.5 );
+		} 
+		if ( r <= (probStanding + probSameDir) )
+			return math.sign(velocity); // speed up in same direction
+		return -math.sign(velocity); // try to slow down
 	}
 
 	public double pointDanger( dangerPathPoint p ) {
