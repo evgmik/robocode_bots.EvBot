@@ -27,8 +27,12 @@ public class dangerPath implements Comparable<dangerPath> {
 		dangerLevel += dP.getDanger();
 	}
 
-	public double size() {
+	public int size() {
 		return path.size();
+	}
+
+	public dangerPathPoint get(int i) {
+		return path.get(i);
 	}
 
 	public double getDanger() {
