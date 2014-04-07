@@ -29,7 +29,7 @@ public class safestPathMotion extends dangerMapMotion {
 	public LinkedList<dangerPath> dangerPaths;
 	private double waveSafetyDist = (Math.sqrt(2)*myBot.robotHalfSize+1);
 	private double guessFactorFlatenerStrength = 10;
-	private int NofGenNewPathAttempts = 500;
+	private int NofGenNewPathAttempts = 100;
 	private int maxPathLength = 20;
 	private int pathSafetyMargin = 19; // when we have less point recalculate path
 	
@@ -103,14 +103,15 @@ public class safestPathMotion extends dangerMapMotion {
 
 	public dangerPath generateTheBestPath() {
 		double bestDanger = 1e9; // humongously large
-		dangerPath bestPath=null;
+		// first we will try to pad old path with new points
+		dangerPath bestPath=randomPath(safestPath, maxPathLength, bestDanger);
+		bestDanger = bestPath.getDanger();
 		dangerPath trialPath;
 		for (int i=0; i< NofGenNewPathAttempts; i++) {
 			trialPath=randomPath(bestDanger);
 			if ( trialPath.getDanger() < bestDanger ) {
 				bestPath = trialPath;
 				bestDanger = bestPath.getDanger();
-				
 			}
 		}
 		//logger.dbg("Path danger " + bestPath.getDanger() );
@@ -255,41 +256,38 @@ public class safestPathMotion extends dangerMapMotion {
 	}
 
 	public dangerPath randomPath(double thresholdDanger ) {
-		dangerPath  nPath = new dangerPath();
-		long pntTicTime = myBot.ticTime;
-		double danger = 0;
-		double accelDir = 0;
-		double turnAngle = 0;
-		Point2D.Double pos = (Point2D.Double) myBot.myCoord.clone();
-		Point2D.Double posNew;
+		return randomPath(null, maxPathLength, thresholdDanger);
+	}
+
+	public dangerPathPoint formCurDangerPointFromStatsNow() {
+			// form fictional previous path point from current
+			long pntTicTime = myBot.ticTime;
+			double angle = myBot.getHeading();
+			double speed = myBot.getVelocity();
+			Point2D.Double pos = (Point2D.Double) myBot.myCoord.clone();
+			return new dangerPathPoint( pos, 0, 0, 0, speed, angle, pntTicTime );
+	}
+
+	public dangerPath randomPath(dangerPath nPath, int maxPathLength,  double thresholdDanger ) {
+		int cnt=0;
 		dangerPathPoint dp;
-		double speedNew=1, angleNew;
-
-		double angle = myBot.getHeading();
-		double speed = myBot.getVelocity();
-		dp= new dangerPathPoint( pos, danger, 0, 0, speed, angle, pntTicTime );
-
-		int cnt = 0;
+		if ( nPath == null ) {
+			nPath = new dangerPath();
+			cnt = 0;
+			dp=formCurDangerPointFromStatsNow();
+		} else {
+			cnt = nPath.size();
+			if (cnt > 0 ) {
+				dp= nPath.get(cnt-1);
+			} else {
+				dp=formCurDangerPointFromStatsNow();
+			}
+		}
+		
 		while( cnt < maxPathLength) {
-			accelDir = randomAccelDir(speed);
-			turnAngle = randomNewTurnAngle(speed);
-			speedNew = getNewVelocity(speed, accelDir);
-			angleNew = angle + turnAngle;
-
-			posNew = (Point2D.Double) pos.clone();
-			posNew.x += speedNew*Math.sin(angleNew*Math.PI/180);
-			posNew.y += speedNew*Math.cos(angleNew*Math.PI/180);
-
-			danger = 0; // temporary will be recalculated
+			dp = randomNewDangerPathPoint(dp);
+			nPath.add(dp);
 			cnt++;
-			pntTicTime++;
-			dp= new dangerPathPoint( posNew, danger, turnAngle, accelDir, speedNew, angleNew, pntTicTime);
-			danger = pointDanger( dp );
-			dp.setDanger(danger);
-			nPath.add( dp );
-			angle = angleNew;
-			speed = speedNew;
-			pos = posNew;
 			if ( nPath.getDanger() > thresholdDanger) {
 				// this is already bad path
 				// no need to look dipper
