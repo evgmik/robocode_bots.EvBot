@@ -234,6 +234,32 @@ public class wave {
 			double startAngle = angle2myPast + myMEA;
 			double stopAngle  = angle2myPast - myMEA;
 			graphics.drawCircArc(g, firingPosition, distTraveled-5, startAngle, stopAngle);
+			// draw GF danger for me from enemy bot
+			// find largest hit count
+			int[] guessFactorBins = this.firedBot.getGuessFactorBins(myBot._tracker);
+			int N = guessFactorBins.length;
+			double wMax=0;
+			for( int i=0; i<N; i++ ) {
+				if ( guessFactorBins[i] > wMax )
+					wMax = guessFactorBins[i];
+			}
+
+			// show this  GF danger
+			double MEA = math.calculateMEA( bulletSpeed );
+			Point2D.Double pStrt = new Point2D.Double(0,0);
+			Point2D.Double pEnd = new Point2D.Double(0,0);
+			double radius;
+			for( int i=0; i<N; i++ ) {
+				double angle = angle2myPast + MEA*math.bin2gf(i, N);
+				radius = distTraveled + 5;
+				pStrt.x = firingPosition.x + radius*Math.sin(angle/180*Math.PI);
+				pStrt.y = firingPosition.y + radius*Math.cos(angle/180*Math.PI);
+				radius = distTraveled + 5 + 1+ 20*guessFactorBins[i]/Math.max(wMax,1);
+				pEnd.x = firingPosition.x + radius*Math.sin(angle/180*Math.PI);
+				pEnd.y = firingPosition.y + radius*Math.cos(angle/180*Math.PI);
+				graphics.drawLine(g, pStrt, pEnd);
+			}
+
 		}
 
 		// draw wave bullets
