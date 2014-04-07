@@ -160,4 +160,9 @@ public class math {
 			double MEA = 180/Math.PI*Math.asin( maxBulletSpeed/bulletSpeed );
 			return MEA;
 	}
+
+	public static double bin2gf( int gfBin, int numBins ) {
+		return 2.0*gfBin/(numBins-1.0) - 1.0;
+	}
+
 }

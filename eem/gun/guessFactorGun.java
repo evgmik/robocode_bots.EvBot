@@ -60,10 +60,6 @@ public class guessFactorGun extends baseGun {
 		return targetFuturePosition;
 	}
 
-	private double bin2gf( int gfBin, int numBins ) {
-		return 2.0*gfBin/(numBins-1.0) - 1.0;
-	}
-
 	private double pickGFprobabilisticly(InfoBot bot) {
 		int[] guessFactorBins = firingBot.getGuessFactorBins( bot );
 		int numBins = guessFactorBins.length;
@@ -93,7 +89,7 @@ public class guessFactorGun extends baseGun {
 				break;
 			}
 		}
-		return bin2gf( gfBin, numBins );
+		return math.bin2gf( gfBin, numBins );
 	}
 
 	private double pickMostProbableGF(InfoBot bot) {
@@ -116,7 +112,7 @@ public class guessFactorGun extends baseGun {
 			return 0; // head on guess factor
 		}
 		
-		return bin2gf( indMax, numBins );
+		return math.bin2gf( indMax, numBins );
 	}
 
 	private double chooseGuessFactor( InfoBot bot ) {
@@ -144,7 +140,7 @@ public class guessFactorGun extends baseGun {
 		Point2D.Double gfPnt = new Point2D.Double(0,0);
 		double radius = Math.max(dist/3, dist - 3.5*myBot.robotHalfSize );
 		for( int i=0; i<N; i++ ) {
-			double angle = angle2enemyBot + MEA*bin2gf(i, N);
+			double angle = angle2enemyBot + MEA*math.bin2gf(i, N);
 			gfPnt.x = myBot.myCoord.x + radius*Math.sin(angle/180*Math.PI);
 			gfPnt.y = myBot.myCoord.y + radius*Math.cos(angle/180*Math.PI);
 			double circRad = 1+ 4*guessFactorBins[i]/Math.max(wMax,1);
