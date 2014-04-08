@@ -226,7 +226,7 @@ public class safestPathMotion extends dangerMapMotion {
 				danger += b.pointDangerFromExactBulletHit( p, ticTime );
 			}
 			// wave guess factor danger
-			danger += guessFactorFlatenerStrength*eW.getGuessFactorCountForPoint( myBot._tracker, p );
+			danger += guessFactorFlatenerStrength*eW.getGuessFactorProbForPoint( myBot._tracker, p );
 			//logger.dbg("wave danger " + danger);
 		}
 		return danger;
