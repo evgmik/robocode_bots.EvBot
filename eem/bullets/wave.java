@@ -144,15 +144,30 @@ public class wave {
 		return this.firedBot.getGuessFactorCount( targetBot, guessFactor );
 	}
 
-	public int getGuessFactorCountForPoint( InfoBot targetBot, Point2D.Double p) {
+	public double getGuessFactorForPoint( InfoBot targetBot, Point2D.Double p) {
 		// calculate guess factor point counts for wave at point p
 		// as if it directed to targetBot
 		String targetName = targetBot.getName();
-			double angle = math.angle2pt ( this.firingPosition, p ) - math.angle2pt ( this.firingPosition, this.enemyPosAtFiringTime.get( targetName ) );
-			angle = math.shortest_arc( angle );
-			double guessFactor = angle/this.enemyMEAatFiringTime.get( targetName );
-			return this.firedBot.getGuessFactorCount( targetBot, guessFactor );
+		double angle = math.angle2pt ( this.firingPosition, p ) - math.angle2pt ( this.firingPosition, this.enemyPosAtFiringTime.get( targetName ) );
+		angle = math.shortest_arc( angle );
+		double guessFactor = angle/this.enemyMEAatFiringTime.get( targetName );
+		return guessFactor;
 	}
+
+
+	public int getGuessFactorCountForPoint( InfoBot targetBot, Point2D.Double p) {
+		// calculate guess factor point counts for wave at point p
+		// as if it directed to targetBot
+		double guessFactor = getGuessFactorForPoint( targetBot, p);
+		return this.firedBot.getGuessFactorCount( targetBot, guessFactor );
+	}
+
+
+	public double getGuessFactorProbForPoint( InfoBot targetBot, Point2D.Double p) {
+		double guessFactor = getGuessFactorForPoint( targetBot, p);
+		return this.firedBot.getGuessFactorProb( targetBot, guessFactor );
+	}
+
 
 	public boolean isPosWithMEAforBot( Point2D.Double pos, InfoBot bot) {
 		Point2D.Double botPos = (Point2D.Double) enemyPosAtFiringTime.get( bot.getName() ).clone();
@@ -226,8 +241,8 @@ public class wave {
 		double distTraveled = getDistanceTraveled();
 		graphics.drawCircle(g, firingPosition, distTraveled);
 
-		// draw MEA for me from enemy bot
 		if (!isItMine) {
+			// draw MEA for me from enemy bot
 			Point2D.Double myPos = (Point2D.Double) enemyPosAtFiringTime.get( myBot.getName() ).clone();
 			double myMEA = enemyMEAatFiringTime.get( myBot.getName() );
 			double angle2myPast = math.angle2pt ( this.firingPosition, myPos );
