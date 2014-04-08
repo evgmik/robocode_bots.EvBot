@@ -22,6 +22,7 @@ public class InfoBot {
 
 	protected HashMap<String, int[]> guessFactorsMap;
 	protected HashMap<String, Integer> guessFactorsTotalCounts; // total hit count for a bot
+	protected HashMap<String, Integer> guessFactorsMaxCounts; // max hit in most probable gf for a bot
 	protected int numGuessFactorBins = 31;
 
 	// FIXME: need better search algorithm
@@ -32,6 +33,7 @@ public class InfoBot {
 		botStats = new LinkedList<botStatPoint>();
 		guessFactorsMap = new HashMap<String, int[]>();
 		guessFactorsTotalCounts = new HashMap<String, Integer>();
+		guessFactorsMaxCounts = new HashMap<String, Integer>();
 		targetUnlocked = true;
 	}
 
@@ -440,6 +442,16 @@ public class InfoBot {
 		return (double) cnt/totCnt;
 	}
 
+	public double getGuessFactorNormProb( InfoBot anotherBot, double gf ) {
+		String key = anotherBot.getName();
+		if ( !guessFactorsMaxCounts.containsKey( key ) ) {
+			return 0;
+		}
+		int cnt = getGuessFactorCount( anotherBot, gf);
+		int maxCnt = guessFactorsMaxCounts.get( key );
+		return (double) cnt/maxCnt;
+	}
+
 	public void updateHitGuessFactor( InfoBot anotherBot, double gf ) {
 		int i = (int)guessFactor2itsBin( gf, numGuessFactorBins );
 		String key = anotherBot.getName();
@@ -450,11 +462,18 @@ public class InfoBot {
 		if ( !guessFactorsTotalCounts.containsKey( key ) ) {
 			guessFactorsTotalCounts.put( key, 0);
 		}
+		if ( !guessFactorsMaxCounts.containsKey( key ) ) {
+			guessFactorsMaxCounts.put( key, 0);
+		}
 		int[] gfBins = guessFactorsMap.get( key );
 		gfBins[i] = gfBins[i] + 1;
 		int cnt = guessFactorsTotalCounts.get( key );
 		cnt++;
 		guessFactorsTotalCounts.put( key, cnt);
+		int maxCnt = guessFactorsMaxCounts.get(key);
+		if ( gfBins[i] > maxCnt ) {
+			guessFactorsMaxCounts.put(key, gfBins[i]);
+		}
 	}
 
 	public String guessFactorBins2string4botName(String botName) {

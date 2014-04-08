@@ -162,12 +162,15 @@ public class wave {
 		return this.firedBot.getGuessFactorCount( targetBot, guessFactor );
 	}
 
+	public double getGuessFactorNormProbForPoint( InfoBot targetBot, Point2D.Double p) {
+		double guessFactor = getGuessFactorForPoint( targetBot, p);
+		return this.firedBot.getGuessFactorNormProb( targetBot, guessFactor );
+	}
 
 	public double getGuessFactorProbForPoint( InfoBot targetBot, Point2D.Double p) {
 		double guessFactor = getGuessFactorForPoint( targetBot, p);
 		return this.firedBot.getGuessFactorProb( targetBot, guessFactor );
 	}
-
 
 	public boolean isPosWithMEAforBot( Point2D.Double pos, InfoBot bot) {
 		Point2D.Double botPos = (Point2D.Double) enemyPosAtFiringTime.get( bot.getName() ).clone();
