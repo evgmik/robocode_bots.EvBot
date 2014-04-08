@@ -21,6 +21,7 @@ public class InfoBot {
 	protected int bulletFiredCount = 0;
 
 	protected HashMap<String, int[]> guessFactorsMap;
+	protected HashMap<String, Integer> guessFactorsTotalCounts; // total hit count for a bot
 	protected int numGuessFactorBins = 31;
 
 	// FIXME: need better search algorithm
@@ -30,6 +31,7 @@ public class InfoBot {
 	public InfoBot() {
 		botStats = new LinkedList<botStatPoint>();
 		guessFactorsMap = new HashMap<String, int[]>();
+		guessFactorsTotalCounts = new HashMap<String, Integer>();
 		targetUnlocked = true;
 	}
 
@@ -428,6 +430,16 @@ public class InfoBot {
 		return gfBins[i];
 	}
 
+	public double getGuessFactorProb( InfoBot anotherBot, double gf ) {
+		String key = anotherBot.getName();
+		if ( !guessFactorsTotalCounts.containsKey( key ) ) {
+			return 0;
+		}
+		int cnt = getGuessFactorCount( anotherBot, gf);
+		int totCnt = guessFactorsTotalCounts.get( key );
+		return (double) cnt/totCnt;
+	}
+
 	public void updateHitGuessFactor( InfoBot anotherBot, double gf ) {
 		int i = (int)guessFactor2itsBin( gf, numGuessFactorBins );
 		String key = anotherBot.getName();
@@ -435,8 +447,14 @@ public class InfoBot {
 			int[] guessFactorBins = new int[numGuessFactorBins];
 			guessFactorsMap.put( key, guessFactorBins );
 		}
+		if ( !guessFactorsTotalCounts.containsKey( key ) ) {
+			guessFactorsTotalCounts.put( key, 0);
+		}
 		int[] gfBins = guessFactorsMap.get( key );
 		gfBins[i] = gfBins[i] + 1;
+		int cnt = guessFactorsTotalCounts.get( key );
+		cnt++;
+		guessFactorsTotalCounts.put( key, cnt);
 	}
 
 	public String guessFactorBins2string4botName(String botName) {
