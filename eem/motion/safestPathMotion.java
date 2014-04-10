@@ -56,6 +56,7 @@ public class safestPathMotion extends dangerMapMotion {
 		Point2D.Double pos = (Point2D.Double) myBot.myCoord.clone();
 		double angle = myBot.getHeading();
 		double speed = myBot.getVelocity();
+		seedDangerPathPoint = formCurDangerPointFromStatsNow();
 		DestinationDangerPathPoint = new dangerPathPoint( pos, danger, 0, 0, speed, angle, myBot.ticTime );
 	       	safestPath = generateTheBestPath();
 	}
@@ -274,13 +275,13 @@ public class safestPathMotion extends dangerMapMotion {
 		if ( nPath == null ) {
 			nPath = new dangerPath();
 			cnt = 0;
-			dp=formCurDangerPointFromStatsNow();
+			dp = seedDangerPathPoint;
 		} else {
 			cnt = nPath.size();
 			if (cnt > 0 ) {
 				dp= nPath.get(cnt-1);
 			} else {
-				dp=formCurDangerPointFromStatsNow();
+				dp = seedDangerPathPoint;
 			}
 		}
 		
