@@ -63,7 +63,7 @@ public class safestPathMotion extends dangerMapMotion {
 	//private double guessFactorFlatenerStrength = 50; gives enemy hit rate 0.13
 	//private double guessFactorFlatenerStrength = 100; gives enemy hit rate 0.12
 	//private double guessFactorFlatenerStrength = 1000; gives enemy hit rate 0.18
-	private int NofGenNewPathAttempts = 5000;
+	private int NofGenNewPathAttempts = 15000;
 	private int maxPathLength = 50;
 	private int pathSafetyMargin = 49; // when we have less point recalculate path
 	
@@ -319,6 +319,9 @@ public class safestPathMotion extends dangerMapMotion {
 		// recalculate danger for every point
 		
 		for(int i=0; i< cnt; i++) {
+			// no point to keep outdated points
+			if ( myBot.ticTime > DestinationDangerPathPoint.getTime() ) continue;
+			// the current and future point need their danger to be updated
 			dangerPathPoint dp = oldP.get(i);
 			double danger = pointDanger( dp );
 			dp.setDanger(danger);
