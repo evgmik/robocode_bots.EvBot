@@ -26,14 +26,50 @@ import java.util.Collections;
 public class safestPathMotion extends dangerMapMotion {
 	private dangerPath  safestPath = new dangerPath();
 	private dangerPathPoint DestinationDangerPathPoint = null;
+	private dangerPathPoint seedDangerPathPoint = null;
 	public LinkedList<dangerPath> dangerPaths;
 	private double waveSafetyDist = (Math.sqrt(2)*myBot.robotHalfSize+1);
-	private double guessFactorFlatenerStrength = 10000;
-	private int NofGenNewPathAttempts = 4500;
-	private int maxPathLength = 20;
-	private int pathSafetyMargin = 19; // when we have less point recalculate path
+	private double guessFactorFlatenerStrength = 100;
+	// against ds.Versatile
+	// with maxPathLength = 10
+	//private double guessFactorFlatenerStrength = 0; gives enemy hit rate 0.13
+	//private double guessFactorFlatenerStrength = 10; gives enemy hit rate 0.16
+	//private double guessFactorFlatenerStrength = 100; gives enemy hit rate 0.14
+	//private double guessFactorFlatenerStrength = 100; gives enemy hit rate 0.16
+	// with maxPathLength = 20
+	//private double guessFactorFlatenerStrength = 1; gives enemy hit rate 0.14
+	//private double guessFactorFlatenerStrength = 10; gives enemy hit rate 0.11
+	//private double guessFactorFlatenerStrength = 100; gives enemy hit rate 0.11
+	//private double guessFactorFlatenerStrength = 1000; gives enemy hit rate 0.15
+	// with maxPathLength = 30
+	//private double guessFactorFlatenerStrength = 0; gives enemy hit rate 0.12, 0.11
+	//private double guessFactorFlatenerStrength = 10; gives enemy hit rate 0.12
+	//private double guessFactorFlatenerStrength = 50; gives enemy hit rate 0.12
+	//private double guessFactorFlatenerStrength = 100; gives enemy hit rate 0.15
+	//private double guessFactorFlatenerStrength = 500; gives enemy hit rate 0.18
+	// with maxPathLength = 40
+	//private double guessFactorFlatenerStrength = 10; gives enemy hit rate 0.14
+	//private double guessFactorFlatenerStrength = 100; gives enemy hit rate 0.14
+	//private double guessFactorFlatenerStrength = 1000; gives enemy hit rate 0.16
+	// with maxPathLength = 50
+	//private double guessFactorFlatenerStrength = 0; gives enemy hit rate 0.10, 0.11
+	//private double guessFactorFlatenerStrength = 10; gives enemy hit rate 0.12
+	//private double guessFactorFlatenerStrength = 100; gives enemy hit rate 0.14
+	//private double guessFactorFlatenerStrength = 500; gives enemy hit rate 0.12
+	//private double guessFactorFlatenerStrength = 1000; gives enemy hit rate 0.16
+	// with maxPathLength = 60
+	//private double guessFactorFlatenerStrength = 0; gives enemy hit rate 0.13
+	//private double guessFactorFlatenerStrength = 10; gives enemy hit rate 0.10
+	//private double guessFactorFlatenerStrength = 50; gives enemy hit rate 0.13
+	//private double guessFactorFlatenerStrength = 100; gives enemy hit rate 0.12
+	//private double guessFactorFlatenerStrength = 1000; gives enemy hit rate 0.18
+	private int NofGenNewPathAttempts = 9500;
+	private int maxPathLength = 50;
+	private int pathSafetyMargin = 49; // when we have less point recalculate path
 	
 	public void initTic() {
+		seedDangerPathPoint = formCurDangerPointFromStatsNow();
+
 		double deviation =  myBot.myCoord.distance(DestinationDangerPathPoint.getPosition());
 		if ( deviation > 1e-3 ) {
 			logger.dbg("Go fix the code: to large deviation from expected position");
@@ -186,7 +222,13 @@ public class safestPathMotion extends dangerMapMotion {
 			probSameDir = 0.333;
 		} else {
 			probStanding = 0; // in robocode always accelerates or deaccelerates
-			probSameDir = 0.8;
+			// 0.5, i.e. equal probability make bot to predictable
+			// bot get a high GF=0 spike
+			//probSameDir = 0.9; // good even GF distribution but more skewed to edges
+			//probSameDir = 0.6; // bad spike at GF=0
+			//probSameDir = 0.95; // gives spikes at large GF
+			//probSameDir = 0.7; // wings GF have lower probability
+			probSameDir = 0.8; // gives quite flat GF
 		}
 		double r = Math.random();
 		if ( r < probStanding ) 
