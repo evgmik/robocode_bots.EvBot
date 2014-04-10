@@ -63,7 +63,7 @@ public class safestPathMotion extends dangerMapMotion {
 	//private double guessFactorFlatenerStrength = 50; gives enemy hit rate 0.13
 	//private double guessFactorFlatenerStrength = 100; gives enemy hit rate 0.12
 	//private double guessFactorFlatenerStrength = 1000; gives enemy hit rate 0.18
-	private int NofGenNewPathAttempts = 9500;
+	private int NofGenNewPathAttempts = 5000;
 	private int maxPathLength = 50;
 	private int pathSafetyMargin = 49; // when we have less point recalculate path
 	
@@ -311,6 +311,22 @@ public class safestPathMotion extends dangerMapMotion {
 			return new dangerPathPoint( pos, 0, 0, 0, speed, angle, pntTicTime );
 	}
 
+	public dangerPath recalculatePathDanger(dangerPath oldP) {
+		dangerPath newP = new dangerPath();
+		if ( oldP == null ) return newP;
+		int cnt = oldP.size();
+		if (  cnt == 0 ) return oldP;
+		// recalculate danger for every point
+		
+		for(int i=0; i< cnt; i++) {
+			dangerPathPoint dp = oldP.get(i);
+			double danger = pointDanger( dp );
+			dp.setDanger(danger);
+			newP.add(dp);
+		}
+		return newP;
+	}
+
 	public dangerPath randomPath(dangerPath nPath, int maxPathLength,  double thresholdDanger ) {
 		int cnt=0;
 		dangerPathPoint dp;
@@ -321,12 +337,16 @@ public class safestPathMotion extends dangerMapMotion {
 		} else {
 			cnt = nPath.size();
 			if (cnt > 0 ) {
+				// try to reuse old path
+				nPath  = recalculatePathDanger(nPath);
 				dp= nPath.get(cnt-1);
 			} else {
 				dp = seedDangerPathPoint;
 			}
 		}
+
 		
+		// add new points
 		while( cnt < maxPathLength) {
 			dp = randomNewDangerPathPoint(dp);
 			nPath.add(dp);
