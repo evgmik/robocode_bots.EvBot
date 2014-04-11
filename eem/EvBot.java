@@ -91,8 +91,8 @@ public class EvBot extends AdvancedRobot
 
 		_trgt = new target();
 		_radar = new radar(this);
-		//_motion = new dangerMapMotion(this);
-		_motion = new safestPathMotion(this);
+		_motion = new dangerMapMotion(this);
+		//_motion = new safestPathMotion(this);
 		_bmanager = new bulletsManager(this);
 		_gmanager = new gunManager(this);
 		_gun = _gmanager.getDefaultGun();
