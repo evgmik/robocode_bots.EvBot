@@ -64,6 +64,13 @@ public class dangerMapMotion extends basicMotion {
 	}
 
 	public boolean calcRammingCondition() {
+		if ( myBot._trgt.haveTarget && ( myBot.numEnemyBotsAlive == 1 ) ) {
+		// are we on 1 vs 1 and enemy has less than 0.1 energy
+		// i.e. firing is not possible
+			if (  myBot._trgt.getEnergy() < 0.1 ) {
+				return true;
+			}
+		}
 		if ( true ){
 			// for now looks like ramming is bad idea even against weak bots
 			return false; 
