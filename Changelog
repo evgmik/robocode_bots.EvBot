@@ -1,4 +1,11 @@
-= Version  4.5.7 candidate =
+= Version  4.5.7 =
+
+Enemy wave shows guess factor danger.
+
+Added ramming of week bots (<0.1 energy) in 1on1.
+
+Made a exact safe path calculation but it is to slow to be used. Need to
+improve selection algorithm. 
 
 Motion helper function moved to special helper class.
 Makefile can compile for one version but put bot into other robocode
