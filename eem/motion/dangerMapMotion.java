@@ -24,7 +24,9 @@ import java.util.Collections;
 public class dangerMapMotion extends basicMotion {
 	Point2D.Double DestinationPoint = new Point2D.Double(0,0);
 	int nPointsToCheckForNewDestination = 50;
-	double distToProbe = 100;
+	double distToProbeDefault = 100;
+	double distToProbe1on1 = 200;
+	double distToProbe = distToProbeDefault;
 
 
 	int dMapSizeX = 20;
@@ -44,6 +46,12 @@ public class dangerMapMotion extends basicMotion {
 	public LinkedList<dangerPoint> dangerPoints;
 	
 	public void initTic() {
+		
+		if (  myBot.numEnemyBotsAlive == 1  ) {
+			distToProbe = distToProbe1on1;
+		} else {
+			distToProbe = distToProbeDefault;
+		}
 		setRammingCondition();
 		setOptimalDistanceFromBot();
 	}
