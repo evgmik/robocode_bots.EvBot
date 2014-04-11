@@ -22,6 +22,14 @@ import java.util.List;
 import java.util.*;
 import java.util.Collections;
 
+// so far best path search is algorithm is very bad (slow) 
+// I randomly flip bot acceleration direction and turn direction 
+// and check danger of such pass. It is very inefficient
+// and even if I run in paint mode (with no tick time limit) 
+// it does not give significant advantage over my dangerMapMotion 
+// i.e. my bot get hit with similar probability
+// For now I abandon this attempt till I get a better idea how to speed up
+// search. Most likely I need metropolis algorithm.
 
 public class safestPathMotion extends dangerMapMotion {
 	private dangerPath  safestPath = new dangerPath();
