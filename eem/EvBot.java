@@ -29,6 +29,7 @@ public class EvBot extends AdvancedRobot
 	double BodyTurnRate = 10;
 	public int robotHalfSize = 18;
 	public long ticTime;
+	public int roundCnt = 0;
 	int nonexisting_coord = -10000;
 	public int totalNumOfEnemiesAtStart = 0;
 	public static int roundsWon = 0;
@@ -75,7 +76,8 @@ public class EvBot extends AdvancedRobot
 			}
 		}
 
-		logger.routine("=========== Round #" + (getRoundNum()+1) + "=============");
+		roundCnt = getRoundNum() + 1;
+		logger.routine("=========== Round #" + (roundCnt) + "=============");
 
 		BattleField = new Point2D.Double(getBattleFieldWidth(), getBattleFieldHeight());
 		math.init(this); // BattleField must be set
