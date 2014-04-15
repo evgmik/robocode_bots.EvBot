@@ -94,6 +94,9 @@ public class pifGun extends baseGun {
 
 		for ( int i=0; i < templateEnds.size(); i++ ) {
 			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) playTime );
+			// do not draw traces with end point outside of BattleField
+			if ( math.isBotOutOfBorders( trace.getLast() ) )
+				continue;
 			Point2D.Double pTr = new Point2D.Double(0,0);
 			for ( Point2D.Double pT : trace ) {
 				double disp = 5;
