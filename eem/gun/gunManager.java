@@ -35,7 +35,7 @@ public class gunManager {
 		//guns.add( new randomGun(myBot) );
 		guns.add( new circularGun(myBot) );
 		guns.add( new guessFactorGun(myBot) );
-		//guns.add( new pifGun(myBot) ); // FIXME: too slow
+		guns.add( new pifGun(myBot) ); // FIXME: too slow
 		fightType = "1on1";
 		gunSets.put( fightType, guns );
 		myFightTypes.add( fightType );
