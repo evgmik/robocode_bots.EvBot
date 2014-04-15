@@ -3,8 +3,18 @@ package eem.misc;
 
 import java.awt.geom.Point2D;
 import robocode.util.*;
+import eem.EvBot;
 
 public class math {
+	public static int robotHalfSize = 0;
+	public static Point2D.Double BattleField = new Point2D.Double(0,0);
+
+	public static void init(EvBot myBot) {
+		robotHalfSize = myBot.robotHalfSize;
+		BattleField = (Point2D.Double) myBot.BattleField.clone();
+	}
+
+
 	public static double sqr( double x ) {
 		return x*x;
 	}
@@ -65,6 +75,15 @@ public class math {
 		if ( pnt.y < 0 ) return true;
 		if ( pnt.x > brdr.x ) return true;
 		if ( pnt.y > brdr.y ) return true;
+		return false;
+	}
+
+	
+	public static boolean isBotOutOfBorders( Point2D.Double pnt ) {
+		if ( ( pnt.x < robotHalfSize ) || ( pnt.x > (BattleField.x - robotHalfSize) ) )
+			return true;
+		if ( ( pnt.y < robotHalfSize ) || ( pnt.y > (BattleField.y - robotHalfSize) ) )
+			return true;
 		return false;
 	}
 
