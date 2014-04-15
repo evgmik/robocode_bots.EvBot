@@ -42,6 +42,7 @@ public class botStatPoint {
 			headingDegrees = math.shortest_arc( headingDegrees + 180 );
 		}
 		energy = e.getEnergy();
+		//logger.dbg("bot stat = " + this.format() );
 	}
 
 	public botStatPoint(EvBot bot) {
@@ -105,7 +106,7 @@ public class botStatPoint {
 	}
 
 	public Point2D.Double getPosition() {
-		return  pos;
+		return (Point2D.Double) pos.clone();
 	}
 
 	public boolean arePointsOfPathSimilar(botStatPoint refPatStart, botStatPoint refPatCurrent, botStatPoint testPatStart) {
