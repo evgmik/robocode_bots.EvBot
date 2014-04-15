@@ -4,6 +4,7 @@ package eem.target;
 
 import eem.EvBot;
 import eem.misc.math;
+import eem.misc.logger;
 import robocode.*;
 import robocode.Rules.*;
 import java.awt.geom.Point2D;
@@ -33,7 +34,7 @@ public class botStatPoint {
 		double distance = e.getDistance();
 		pos = new Point2D.Double( (myCoord.x + Math.sin(angle) * distance),
 				(myCoord.y + Math.cos(angle) * distance) );
-		tStamp = bot.getTime();
+		tStamp = bot.getTime() + 100000*(bot.getRoundNum()+1); // round cnt large enough to update major digit
 		headingDegrees = e.getHeading();
 		speed = e.getVelocity();
 		velocity = new Point2D.Double( speed*Math.sin(headingDegrees/360.*2.*Math.PI), speed*Math.cos(headingDegrees/360.*2.*Math.PI) );
@@ -48,7 +49,7 @@ public class botStatPoint {
 		double speed;
 		pos.x = bot.getX();
 	       	pos.y = bot.getY();
-		tStamp = bot.getTime();
+		tStamp = bot.getTime() + 100000*(bot.getRoundNum()+1); // round cnt large enough to update major digit
 		headingDegrees = bot.getHeading();
 		speed = bot.getVelocity();
 		velocity = new Point2D.Double( speed*Math.sin(headingDegrees/360.*2.*Math.PI), speed*Math.cos(headingDegrees/360.*2.*Math.PI) );
@@ -112,11 +113,16 @@ public class botStatPoint {
 		double maxAngleDist = 20;
 		double spdT = this.getSpeed();
 		double angT = this.getHeadingDegrees() - testPatStart.getHeadingDegrees();
+		long   timeDiffT = this.getTimeStamp() - testPatStart.getTimeStamp();
 		double spdR = refPatCurrent.getSpeed();
 		double angR = refPatCurrent.getHeadingDegrees() - refPatStart.getHeadingDegrees();
+		long   timeDiffR = refPatCurrent.getTimeStamp() - refPatStart.getTimeStamp();
 		if ( ( Math.abs( spdT - spdR ) > maxSpeedDist ) || ( Math.abs( angT - angR) > maxAngleDist ) ) {
 			return false;
 		}
+		// now let's check that the timing is right
+		if ( timeDiffT != timeDiffR )
+			return false;
 		return true;
 	}
 
