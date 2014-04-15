@@ -412,6 +412,8 @@ public class InfoBot {
 			//go over all possible segment of length lets find after time prediciton
 			int lastIndOfMatchedSeg = startIndexes.get(i); // end of matched segment
 			Point2D.Double p = playForward( lastIndOfMatchedSeg, playTime, refPoint );
+			if ( math.isBotOutOfBorders( p ) )
+				continue;
 			posList.add( p );
 		}
 
