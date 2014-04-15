@@ -513,11 +513,14 @@ public class InfoBot {
 		} else {
 			return;
 		}
+		//logger.dbg("bot name = " + this.getName() );
+		//logger.dbg("bot stat = " + bsLast.format() );
 		while (bLIter.hasPrevious()) {
 			bsPrev = bLIter.previous();
 			if ( bsLast.getTimeStamp() <= bsPrev.getTimeStamp() ) 
 				return; // we see previous round point
 			graphics.drawLine( g, bsLast.getPosition(), bsPrev.getPosition() );
+			//logger.dbg("bot stat = " + bsPrev.format() );
 			bsLast = bsPrev;
 		}
 
