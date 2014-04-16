@@ -16,6 +16,7 @@ import java.awt.Graphics2D;
 public class pifGun extends baseGun {
 	long refLength  = 1; // template trace length
 	int nRequiredMatches = 1000; // number of matches to look for
+	int maxPatLength = 10; // huge number
 	int playTime =1;
 
 	public pifGun() {
@@ -36,7 +37,6 @@ public class pifGun extends baseGun {
 	}
 
 	public LinkedList<Point2D.Double> findLongestMatch(long afterTime,  InfoBot tgt ) {
-		int maxPatLength = 10000; //very long we are shooting for max
 		LinkedList<Point2D.Double> posList = tgt.possiblePositionsAfterTime(afterTime, maxPatLength, nRequiredMatches);
 		return posList;
 	}
@@ -83,11 +83,9 @@ public class pifGun extends baseGun {
 		//int playTime = (int) (dist/bSpeed);
 		double Rp = 1; // track point size
 
-		int nRequiredMatches = 50;
-		int maxPatLength = 10000; // huge number
 
 		LinkedList<Integer> templateEnds = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-playTime,  nRequiredMatches);
-		//logger.dbg("# of ends to plot = " + templateEnds.size() );
+		logger.dbg("# of ends to plot = " + templateEnds.size() );
 		for ( Integer i : templateEnds ) {
 			//logger.dbg("end point = " + tgt.botStats.get(i).getPosition() );
 		}
