@@ -1,5 +1,10 @@
 = Version  4.5.9 =
 
+PIF gun takes in account wall proximity, some improvements and bug fixes in
+bot stats tracking. PIF gun in 1on1 like fights.
+
+= Version  4.5.8 =
+
 Enable PIF gun for 1on1
 
 = Version  4.5.7 =
