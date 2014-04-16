@@ -165,69 +165,11 @@ public class basicMotion {
 	}
 
 	public String whichWallAhead() {
-		double angle=myBot.getHeadingRadians(); 
-		double velocity=myBot.getVelocity();
-		double x = myBot.myCoord.x;
-		double y = myBot.myCoord.y;
-
-		String wallName="";
-
-		if ( Utils.isNear(velocity, 0.0) ) {
-			// we are not moving anywhere 
-			// assigning fake velocity
-			velocity = 8;
-		}
-
-		double dx = Math.sin( angle )*velocity;
-		double dy = Math.cos( angle )*velocity;
-
-		while (  wallName.equals("") ) {
-			x+= dx;
-			y+= dy;
-			logger.noise("Projected position = " + x + ", " + y);
-
-			if ( x-myBot.robotHalfSize <= 0 ) {
-				wallName = "left";
-			}
-			if ( y-myBot.robotHalfSize <= 0 ) {
-				wallName = "bottom";
-			}
-			if ( x >= myBot.BattleField.x-myBot.robotHalfSize ) {
-				wallName = "right";
-			}
-			if ( y >= myBot.BattleField.y-myBot.robotHalfSize ) {
-				wallName = "top";
-			}
-		}
-		logger.noise("Wall name = " + wallName);
-		return wallName;
+		return math.whichWallAhead( myBot.myCoord, myBot.getVelocity(), myBot.getHeadingRadians() );
 	}
 
 	public double distanceToWallAhead() {
-		double angle=myBot.getHeading(); 
-		double velocity=myBot.getVelocity();
-		logger.noise("Our velocity = " + velocity);
-		double dist=0;
-
-		String wallName = whichWallAhead();
-
-		if ( wallName.equals("left") ) {
-				dist = myBot.myCoord.x;
-		}	
-		if ( wallName.equals("right") ) {
-				dist = myBot.BattleField.x - myBot.myCoord.x;
-		}
-		if ( wallName.equals("bottom") ) {
-				dist = myBot.myCoord.y;
-		}
-		if ( wallName.equals("top") ) {
-				dist = myBot.BattleField.y - myBot.myCoord.y;
-		}
-		dist = dist - myBot.robotHalfSize;
-		dist = Math.max(dist,0);
-		if (dist < 1) dist = 0 ;
-		logger.noise("distance to closest wall ahead " + dist);
-		return dist;
+		return math.distanceToWallAhead( myBot.myCoord, myBot.getVelocity(), myBot.getHeadingRadians() );
 	}
 
 	public double distanceToTheClosestWallFrom( double px, double py ) {

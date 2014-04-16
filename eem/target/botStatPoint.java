@@ -15,6 +15,7 @@ public class botStatPoint {
 	private Point2D.Double velocity;
 	private double headingDegrees;
 	private double energy;
+	private double dist2WallAhead;
 
 	public botStatPoint() {
 		pos = new Point2D.Double(0,0);
@@ -22,6 +23,7 @@ public class botStatPoint {
 		velocity = new  Point2D.Double(0,0);
 		headingDegrees = 0;
 		energy =0;
+		dist2WallAhead=0;
 	}
 
 	public botStatPoint(AdvancedRobot bot, ScannedRobotEvent e ) {
@@ -42,6 +44,7 @@ public class botStatPoint {
 			headingDegrees = math.shortest_arc( headingDegrees + 180 );
 		}
 		energy = e.getEnergy();
+		dist2WallAhead = distanceToWallAhead();
 		//logger.dbg("bot stat = " + this.format() );
 	}
 
@@ -58,12 +61,18 @@ public class botStatPoint {
 			headingDegrees = math.shortest_arc( headingDegrees + 180 );
 		}
 		energy = bot.getEnergy();
+		dist2WallAhead = distanceToWallAhead();
+		//logger.dbg("bot stat = " + this.format() );
 	}
 
 	public botStatPoint(Point2D.Double p, long t ) {
 		this();
 		tStamp = t;
 		pos = p;
+	}
+
+	public Double getDistanceToWallAhead() {
+		return dist2WallAhead;
 	}
 
 	public Double getDistance(Point2D.Double p) {
@@ -75,6 +84,8 @@ public class botStatPoint {
 		str = str + "energy = " + energy + ", velocity = [ " + velocity.x + ", " + velocity.y + " ]" + ", heading = " + headingDegrees;
 		str = str + "\n";
 		str = str + "position = [ "+ pos.x + ", " + pos.y + " ], tStamp = " + tStamp;
+		str = str + "\n";
+		str = str + "distance to " + whichWallAhead() +" wall ahead = " + getDistanceToWallAhead();
 		return str;
 	}
 
@@ -97,12 +108,16 @@ public class botStatPoint {
 		return headingDegrees;
 	}
 
+	public double getHeadingRadians() {
+		return Math.toRadians( headingDegrees );
+	}
+
 	public double getSpeed() {
 		return velocity.distance(0,0);	
 	}
 
 	public Point2D.Double getVelocity() {
-		return velocity;
+		return (Point2D.Double) velocity.clone();
 	}
 
 	public Point2D.Double getPosition() {
@@ -127,4 +142,19 @@ public class botStatPoint {
 		return true;
 	}
 
+	public String whichWallAhead(botStatPoint bStatPnt) {
+		return math.whichWallAhead( bStatPnt.getPosition(), bStatPnt.getSpeed(), bStatPnt.getHeadingRadians() );
+	}
+
+	public String whichWallAhead() {
+		return whichWallAhead( this );
+	}
+
+	public double distanceToWallAhead(botStatPoint bStatPnt) {
+		return math.distanceToWallAhead( bStatPnt.getPosition(), bStatPnt.getSpeed(), bStatPnt.getHeadingRadians() );
+	}
+
+	public double distanceToWallAhead() {
+		return distanceToWallAhead( this );
+	}
 }
