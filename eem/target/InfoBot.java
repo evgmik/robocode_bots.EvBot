@@ -350,6 +350,8 @@ public class InfoBot {
 		Point2D.Double p;
 		for (long i=1; i<= playTime; i++) {
 			p = playForward( templatePointIndex, i, refPoint);
+			if ( p == null )
+				continue;
 			posList.add( p );
 		}
 		return posList;
@@ -372,8 +374,19 @@ public class InfoBot {
 		int matchPredictionInd = (int) (templatePointIndex + playTime);
 		// check that predicted index within track
 		if ( matchPredictionInd > (trackN - 1) ) {
-			p = refPoint.getPosition();
-			return p;
+			return null;
+		}
+		// are points taken within the same round?
+		if ( ( botStats.get( matchPredictionInd ).getTimeStamp() - templatePoint.getTimeStamp() ) != playTime ) {
+			// FIXME: looks like some times I have missed turns even in 1on1
+			// FIXME: go check radar code
+			//logger.dbg("playTime = " + playTime);
+			//logger.dbg("play forward start and end are in different rounds or missed turns!");
+			//for ( int i=templatePointIndex; i<= (templatePointIndex+playTime); i++) {
+				//logger.dbg(botStats.get( i ).format());
+			//}
+
+			return null;
 		}
 			
 		Point2D.Double posMatchedAfterTime = botStats.get( matchPredictionInd ).getPosition();
@@ -412,6 +425,8 @@ public class InfoBot {
 			//go over all possible segment of length lets find after time prediciton
 			int lastIndOfMatchedSeg = startIndexes.get(i); // end of matched segment
 			Point2D.Double p = playForward( lastIndOfMatchedSeg, playTime, refPoint );
+			if (p == null)
+				continue;
 			if ( math.isBotOutOfBorders( p ) )
 				continue;
 			posList.add( p );
