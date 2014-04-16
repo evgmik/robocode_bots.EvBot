@@ -26,7 +26,8 @@ public class dangerMapMotion extends basicMotion {
 	int nPointsToCheckForNewDestination = 50;
 	double distToProbeDefault = 100;
 	double distToProbe1on1 = 200;
-	double distToProbeWhenRamming = 20;
+	double distToProbeWhenRamming = 50;
+	double distToProbeWhenAtReducedDistance = 50;
 	double distToProbe = distToProbeDefault;
 
 
@@ -52,6 +53,9 @@ public class dangerMapMotion extends basicMotion {
 			distToProbe = distToProbe1on1;
 		} else {
 			distToProbe = distToProbeDefault;
+		}
+		if ( reducedBotDistanceCoef < 1.0 ) {
+			distToProbe = distToProbeWhenAtReducedDistance;
 		}
 		setRammingCondition();
 		if ( rammingCondition ) 
@@ -120,9 +124,9 @@ public class dangerMapMotion extends basicMotion {
 		// and we miss too badly let's close in
 		// at least we will make some damage
 		if ( !rammingCondition &&  myBot._trgt.haveTarget && ( myBot.numEnemyBotsAlive == 1 ) ) {
-			//reducedBotDistanceCoef += 0.1*hitRateDisbalance; // simple negative feedback
-			reducedBotDistanceCoef = myBot._gmanager.overallGunsHitRate()/(myBot._trgt.getGunHitRate()+1e-4); // try to maintain > 1 hit ration
-			reducedBotDistanceCoef = math.putWithinRange( reducedBotDistanceCoef, 0, 1.0);
+			//FIXME it seems its better to do nothing
+			//reducedBotDistanceCoef = myBot._gmanager.overallGunsHitRate()/(myBot._trgt.getGunHitRate()+1e-4); // try to maintain > 1 hit ration
+			//reducedBotDistanceCoef = math.putWithinRange( reducedBotDistanceCoef, 0, 1.0);
 		}
 	}
 
