@@ -26,6 +26,7 @@ public class dangerMapMotion extends basicMotion {
 	int nPointsToCheckForNewDestination = 50;
 	double distToProbeDefault = 100;
 	double distToProbe1on1 = 200;
+	double distToProbeWhenRamming = 20;
 	double distToProbe = distToProbeDefault;
 
 
@@ -53,6 +54,8 @@ public class dangerMapMotion extends basicMotion {
 			distToProbe = distToProbeDefault;
 		}
 		setRammingCondition();
+		if ( rammingCondition ) 
+			distToProbe = distToProbeWhenRamming;
 		setOptimalDistanceFromBot();
 	}
 
