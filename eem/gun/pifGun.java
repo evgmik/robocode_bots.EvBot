@@ -15,7 +15,7 @@ import java.awt.Graphics2D;
 // play it forward (PIF) gun
 public class pifGun extends baseGun {
 	long refLength  = 1; // template trace length
-	int nRequiredMatches = 1000; // number of matches to look for
+	int nRequiredMatches = 100; // number of matches to look for
 	int maxPatLength = 10; // huge number
 	int playTime =1;
 
@@ -85,13 +85,17 @@ public class pifGun extends baseGun {
 
 
 		LinkedList<Integer> templateEnds = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-playTime,  nRequiredMatches);
-		logger.dbg("# of ends to plot = " + templateEnds.size() );
+		//logger.dbg("# of ends to plot = " + templateEnds.size() );
 		for ( Integer i : templateEnds ) {
 			//logger.dbg("end point = " + tgt.botStats.get(i).getPosition() );
 		}
 
 		for ( int i=0; i < templateEnds.size(); i++ ) {
 			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) playTime );
+			if ( trace == null )
+				continue;
+			if ( trace.size() == 0 )
+				continue;
 			// do not draw traces with end point outside of BattleField
 			if ( math.isBotOutOfBorders( trace.getLast() ) )
 				continue;
