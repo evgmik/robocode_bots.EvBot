@@ -125,20 +125,31 @@ public class botStatPoint {
 	}
 
 	public boolean arePointsOfPathSimilar(botStatPoint refPatStart, botStatPoint refPatCurrent, botStatPoint testPatStart) {
+		// essentially does this point matches refPatCurrent point.
+		// compare how this stat point with respect to testPatStart
+		// matches reference Start and refPatCurrent
+		double dist2WallProximity = 80;
+		double dist2WallDiff = 4;
 		double maxSpeedDist = 0.5;
 		double maxAngleDist = 20;
 		double spdT = this.getSpeed();
 		double angT = this.getHeadingDegrees() - testPatStart.getHeadingDegrees();
 		long   timeDiffT = this.getTimeStamp() - testPatStart.getTimeStamp();
+		double dist2wallAheadT = this.getDistanceToWallAhead();
 		double spdR = refPatCurrent.getSpeed();
 		double angR = refPatCurrent.getHeadingDegrees() - refPatStart.getHeadingDegrees();
 		long   timeDiffR = refPatCurrent.getTimeStamp() - refPatStart.getTimeStamp();
+		double dist2wallAheadR = refPatCurrent.getDistanceToWallAhead();
 		if ( ( Math.abs( spdT - spdR ) > maxSpeedDist ) || ( Math.abs( angT - angR) > maxAngleDist ) ) {
 			return false;
 		}
 		// now let's check that the timing is right
 		if ( timeDiffT != timeDiffR )
 			return false;
+		if ( Math.max( dist2wallAheadR, dist2wallAheadT) < dist2WallProximity ) {
+			if ( Math.abs( dist2wallAheadT - dist2wallAheadR ) > dist2WallDiff )
+				return false;
+		}
 		return true;
 	}
 
