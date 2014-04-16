@@ -286,10 +286,14 @@ public class InfoBot {
 		// lets find all possible end of segments which matches end refernce point
 		// essentially we do patLength = 1 search
 		int patLength = 1;
+		int cntrFoundEnds = 0;
 		for ( int i = ( (int)(lastIndToCheck) ); i >= Math.max(0, trackN - maxDepthOfHistorySearch-1); i-- ) {
 			botStatPoint   testPatPoint = botStats.get(i);
 			if ( testPatPoint.arePointsOfPathSimilar( refPatStart, refPatStart, testPatPoint) ) {
 				newEndsList.add(i);
+				cntrFoundEnds++;
+				if ( cntrFoundEnds > nReqMatches )
+					break;
 			}
 		}
 		endTime = System.nanoTime();
