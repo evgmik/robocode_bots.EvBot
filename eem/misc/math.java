@@ -184,4 +184,65 @@ public class math {
 		return 2.0*gfBin/(numBins-1.0) - 1.0;
 	}
 
+	public static String whichWallAhead(Point2D.Double pos, double speed, double headingInRadians) {
+		double x = pos.x;
+		double y = pos.y;
+
+		String wallName="";
+
+		if ( Utils.isNear(speed, 0.0) ) {
+			// we are not moving anywhere 
+			// assigning fake velocity
+			speed = 8;
+		}
+
+		double dx = Math.sin( headingInRadians )*speed;
+		double dy = Math.cos( headingInRadians )*speed;
+
+		while (  wallName.equals("") ) {
+			x+= dx;
+			y+= dy;
+			logger.noise("Projected position = " + x + ", " + y);
+
+			if ( x-robotHalfSize <= 0 ) {
+				wallName = "left";
+			}
+			if ( y-robotHalfSize <= 0 ) {
+				wallName = "bottom";
+			}
+			if ( x >= BattleField.x-robotHalfSize ) {
+				wallName = "right";
+			}
+			if ( y >= BattleField.y-robotHalfSize ) {
+				wallName = "top";
+			}
+		}
+		logger.noise("Wall name = " + wallName);
+		return wallName;
+	}
+
+	public static double distanceToWallAhead( Point2D.Double pos, double speed, double headingInRadians ) {
+		double dist=0;
+
+		String wallName = whichWallAhead( pos, speed, headingInRadians);
+
+		if ( wallName.equals("left") ) {
+				dist = pos.x;
+		}	
+		if ( wallName.equals("right") ) {
+				dist = BattleField.x - pos.x;
+		}
+		if ( wallName.equals("bottom") ) {
+				dist = pos.y;
+		}
+		if ( wallName.equals("top") ) {
+				dist = BattleField.y - pos.y;
+		}
+		dist = dist - robotHalfSize;
+		dist = Math.max(dist,0);
+		if (dist < 1) dist = 0 ;
+		logger.noise("distance to closest wall ahead " + dist);
+		return dist;
+	}
+
 }
