@@ -32,14 +32,14 @@ public class botStatPoint {
 		Point2D.Double myCoord = new Point2D.Double();
 		myCoord.x = bot.getX();
 	       	myCoord.y = bot.getY();
-		double angle = (bot.getHeading()+ e.getBearing())/360.*2.*Math.PI;
+		double angle = Math.toRadians(bot.getHeading()+ e.getBearing());
 		double distance = e.getDistance();
 		pos = new Point2D.Double( (myCoord.x + Math.sin(angle) * distance),
 				(myCoord.y + Math.cos(angle) * distance) );
 		tStamp = bot.getTime() + 100000*(bot.getRoundNum()+1); // round cnt large enough to update major digit
 		headingDegrees = e.getHeading();
 		speed = e.getVelocity();
-		velocity = new Point2D.Double( speed*Math.sin(headingDegrees/360.*2.*Math.PI), speed*Math.cos(headingDegrees/360.*2.*Math.PI) );
+		velocity = new Point2D.Double( speed*Math.sin( Math.toRadians(headingDegrees) ), speed*Math.cos( Math.toRadians(headingDegrees) ) );
 		if ( speed < 0 ) {
 			headingDegrees = math.shortest_arc( headingDegrees + 180 );
 		}
@@ -56,7 +56,7 @@ public class botStatPoint {
 		tStamp = bot.getTime() + 100000*(bot.getRoundNum()+1); // round cnt large enough to update major digit
 		headingDegrees = bot.getHeading();
 		speed = bot.getVelocity();
-		velocity = new Point2D.Double( speed*Math.sin(headingDegrees/360.*2.*Math.PI), speed*Math.cos(headingDegrees/360.*2.*Math.PI) );
+		velocity = new Point2D.Double( speed*Math.sin( Math.toRadians(headingDegrees) ), speed*Math.cos( Math.toRadians(headingDegrees) ) );
 		if ( speed < 0 ) {
 			headingDegrees = math.shortest_arc( headingDegrees + 180 );
 		}
