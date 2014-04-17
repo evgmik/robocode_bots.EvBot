@@ -413,7 +413,6 @@ public class baseGun {
 		if ( null != targetFuturePosition ) {
 			//logger.dbg("aiming at = " + targetFuturePosition );
 			g.setColor(gunColor);
-			//g.fillRect((int)targetFuturePosition.x - 20, (int)targetFuturePosition.y - 20, 40, 40);
 			graphics.fillSquare( g,  targetFuturePosition, 40);
 		}
 	}
