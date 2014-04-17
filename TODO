@@ -1,3 +1,4 @@
+* do not recalculate pattern in pif calcTargetFuturePosition method, reuse found ends
 * instead of moving danger in front of enemy wave, calculate hit position at radius
   where my bot is now +/- some distance and use it in the danger map calculation.
 * improve wall avoidance by taking in account stop distance or better yet by do proper 
