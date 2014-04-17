@@ -1,3 +1,10 @@
+= Version  4.5.10 =
+
+Bug fix: introduced in 4.5.9 where I moved to new form of time stamps. 
+Bug fix: in random future target position offset to avoid bullet shielding
+bots
+Various small improvements in logic.
+
 = Version  4.5.9 =
 
 PIF gun takes in account wall proximity, some improvements and bug fixes in
