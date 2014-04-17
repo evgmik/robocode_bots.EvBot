@@ -120,7 +120,7 @@ public class EvBot extends AdvancedRobot
 		setAdjustGunForRobotTurn(true);
 		setAdjustRadarForGunTurn(true); 
 
-		ticTime = getTime();
+		ticTime = this.getTime();
 
 		logger.noise("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
 		logger.profiler("===> time between initTics =        \t\t\t" + ( startTime - initTicStartTime ) + " ns" );
@@ -163,6 +163,14 @@ public class EvBot extends AdvancedRobot
 		//_gmanager.printGunsStats(); // dbg
 		//_gmanager.printGunsStatsTicRelated(); // dbg
 		//_botsmanager.printGunsStats(); // dbg
+	}
+
+	public long getTime() {
+		// Robocode start every round with zero
+		// to keep our own time increasing along the battle
+		// we add to this time 100000*round_number
+		// this big enough to separate rounds 
+		return ( super.getTime() + 100000*(getRoundNum()+1) ); 
 	}
 
 	public String fightType() {

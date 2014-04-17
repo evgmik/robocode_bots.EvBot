@@ -36,7 +36,7 @@ public class botStatPoint {
 		double distance = e.getDistance();
 		pos = new Point2D.Double( (myCoord.x + Math.sin(angle) * distance),
 				(myCoord.y + Math.cos(angle) * distance) );
-		tStamp = bot.getTime() + 100000*(bot.getRoundNum()+1); // round cnt large enough to update major digit
+		tStamp = bot.getTime();
 		headingDegrees = e.getHeading();
 		speed = e.getVelocity();
 		velocity = new Point2D.Double( speed*Math.sin( Math.toRadians(headingDegrees) ), speed*Math.cos( Math.toRadians(headingDegrees) ) );
@@ -53,7 +53,7 @@ public class botStatPoint {
 		double speed;
 		pos.x = bot.getX();
 	       	pos.y = bot.getY();
-		tStamp = bot.getTime() + 100000*(bot.getRoundNum()+1); // round cnt large enough to update major digit
+		tStamp = bot.getTime();
 		headingDegrees = bot.getHeading();
 		speed = bot.getVelocity();
 		velocity = new Point2D.Double( speed*Math.sin( Math.toRadians(headingDegrees) ), speed*Math.cos( Math.toRadians(headingDegrees) ) );
