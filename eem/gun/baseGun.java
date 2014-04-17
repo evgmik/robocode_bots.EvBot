@@ -257,7 +257,8 @@ public class baseGun {
 	}
 
 	public Point2D.Double getTargetFuturePosition() {
-		return targetFuturePosition;
+		//logger.dbg("aiming at = " + targetFuturePosition );
+		return (Point2D.Double) targetFuturePosition.clone();
 	}
 
 	public void setTargetFuturePosition(target tgt) {
@@ -410,6 +411,7 @@ public class baseGun {
 
 	private void drawTargetFuturePosition(Graphics2D g) {
 		if ( null != targetFuturePosition ) {
+			//logger.dbg("aiming at = " + targetFuturePosition );
 			g.setColor(gunColor);
 			//g.fillRect((int)targetFuturePosition.x - 20, (int)targetFuturePosition.y - 20, 40, 40);
 			graphics.fillSquare( g,  targetFuturePosition, 40);
@@ -423,6 +425,7 @@ public class baseGun {
 	private void drawLineToTargetFuturePosition(Graphics2D g) {
 		if ( null != targetFuturePosition ) {
 			g.setColor(gunColor);
+			//logger.dbg("target future pos at " + getTargetFuturePosition() );
 			graphics.drawLine( g, getTargetFuturePosition(), myBot.myCoord );
 		}
 	}
