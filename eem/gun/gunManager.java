@@ -88,7 +88,7 @@ public class gunManager {
 		guns.add( new linearGun(myBot) );
 		guns.add( new circularGun(myBot) );
 		guns.add( new guessFactorGun(myBot) );
-		guns.add( new pifGun(myBot) ); // FIXME: too slow
+		//guns.add( new pifGun(myBot) ); // FIXME: too slow
 		gunSets.put( "firingAtMyBot" + "_in_" + "melee1on1", guns );
 		gunSets.put( "firingAtMyBot" + "_in_" + "1on1", guns );
 
