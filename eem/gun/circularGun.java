@@ -45,7 +45,7 @@ public class circularGun extends baseGun {
 			vTvecPrev = bStatPrev.getVelocity();
 			double phiLast = Math.atan2( vTvecLast.y, vTvecLast.x);
 			double phiPrev = Math.atan2( vTvecPrev.y, vTvecPrev.x);
-			double dt =  bStatLast.getTimeStamp() - bStatPrev.getTimeStamp();
+			double dt =  bStatLast.getTime() - bStatPrev.getTime();
 			phi = (phiLast - phiPrev)/dt;
 		}
 		// rotation coefficients

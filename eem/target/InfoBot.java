@@ -200,7 +200,7 @@ public class InfoBot {
 
 	public long getLastSeenTime() {
 		if ( hasLast() ) {
-			return  getLast().getTimeStamp();
+			return  getLast().getTime();
 		} else {
 			return  -1000; // far far ago
 		}
@@ -381,7 +381,7 @@ public class InfoBot {
 			return null;
 		}
 		// are points taken within the same round?
-		if ( ( botStats.get( matchPredictionInd ).getTimeStamp() - templatePoint.getTimeStamp() ) != playTime ) {
+		if ( ( botStats.get( matchPredictionInd ).getTime() - templatePoint.getTime() ) != playTime ) {
 			// FIXME: looks like some times I have missed turns even in 1on1
 			// FIXME: go check radar code
 			//logger.dbg("playTime = " + playTime);
@@ -536,7 +536,7 @@ public class InfoBot {
 		//logger.dbg("bot stat = " + bsLast.format() );
 		while (bLIter.hasPrevious()) {
 			bsPrev = bLIter.previous();
-			if ( bsLast.getTimeStamp() <= bsPrev.getTimeStamp() ) 
+			if ( bsLast.getTime() <= bsPrev.getTime() ) 
 				return; // we see previous round point
 			graphics.drawLine( g, bsLast.getPosition(), bsPrev.getPosition() );
 			//logger.dbg("bot stat = " + bsPrev.format() );
