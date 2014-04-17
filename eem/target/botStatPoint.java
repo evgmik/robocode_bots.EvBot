@@ -89,7 +89,7 @@ public class botStatPoint {
 		return str;
 	}
 
-	public long getTimeStamp() {
+	public long getTime() {
 		return tStamp;
 	}
 
@@ -134,11 +134,11 @@ public class botStatPoint {
 		double maxAngleDist = 20;
 		double spdT = this.getSpeed();
 		double angT = this.getHeadingDegrees() - testPatStart.getHeadingDegrees();
-		long   timeDiffT = this.getTimeStamp() - testPatStart.getTimeStamp();
+		long   timeDiffT = this.getTime() - testPatStart.getTime();
 		double dist2wallAheadT = this.getDistanceToWallAhead();
 		double spdR = refPatCurrent.getSpeed();
 		double angR = refPatCurrent.getHeadingDegrees() - refPatStart.getHeadingDegrees();
-		long   timeDiffR = refPatCurrent.getTimeStamp() - refPatStart.getTimeStamp();
+		long   timeDiffR = refPatCurrent.getTime() - refPatStart.getTime();
 		double dist2wallAheadR = refPatCurrent.getDistanceToWallAhead();
 		if ( ( Math.abs( spdT - spdR ) > maxSpeedDist ) || ( Math.abs( angT - angR) > maxAngleDist ) ) {
 			return false;
