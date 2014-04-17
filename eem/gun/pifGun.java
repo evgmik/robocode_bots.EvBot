@@ -72,7 +72,7 @@ public class pifGun extends baseGun {
 		//logger.dbg("Final required play time = " + playTime );
 		//logger.dbg("--- gun calc ended " );
 		//logger.dbg("point to aim = " + p );
-		return p;
+		return (Point2D.Double) p.clone();
 	}
 
 	public void drawPossiblePlayForwardTracks(Graphics2D g) {
