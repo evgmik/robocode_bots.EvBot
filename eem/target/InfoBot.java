@@ -325,7 +325,7 @@ public class InfoBot {
 			logger.profiler("For pattern length " + patLength + " find # matches " + newEndsList.size() + " in time " + (endTime - startTime) + " ns" );
 		}
 		patLength--;
-		//logger.dbg("maximum pattern length = " + patLength);
+		//logger.dbg("maximum pattern length = " + patLength + " find # matches " + prevEndsList.size());
 		return prevEndsList;
 	}
 
