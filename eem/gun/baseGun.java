@@ -268,7 +268,7 @@ public class baseGun {
 		double r1=Math.random();
 		double r2=Math.random();
 		targetFuturePosition.x += r1*myBot.robotHalfSize/4;
-		targetFuturePosition.x += r1*myBot.robotHalfSize/4;
+		targetFuturePosition.y += r2*myBot.robotHalfSize/4;
 	}
 
         public double firePoverVsDistance( double targetDistance ) {
