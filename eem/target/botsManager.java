@@ -208,6 +208,7 @@ public class  botsManager {
 	}
 
 	public void onScannedRobot(ScannedRobotEvent e) {
+		long startTime = System.nanoTime();
 		String botName = e.getName();
 		InfoBot iBot = bots.get(botName);
 		if ( iBot == null ) {
@@ -216,6 +217,7 @@ public class  botsManager {
 		}
 		iBot.update( new botStatPoint(myBot, e) );
 		bots.put(botName, iBot);
+		logger.profiler("botsManager.onScannedRobot execution time =\t\t\t\t" + (System.nanoTime() - startTime) + " ns" );
 	}
 
 	public void onPaint(Graphics2D g) {
