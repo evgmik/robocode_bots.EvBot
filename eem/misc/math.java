@@ -245,8 +245,6 @@ public class math {
 				time_to_top_bottom_wall =  ( BattleField.y - y - robotHalfSize + wall_margin )/vy;
 			}
 		}
-		logger.dbg("time to x wall = " + time_to_sidewall);
-		logger.dbg("time to y wall = " + time_to_top_bottom_wall);
 
 		if ( time_to_sidewall < time_to_top_bottom_wall) {
 			// side walls are closer
