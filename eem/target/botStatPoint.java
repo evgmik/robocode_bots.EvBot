@@ -140,7 +140,7 @@ public class botStatPoint {
 		double angR = refPatCurrent.getHeadingDegrees() - refPatStart.getHeadingDegrees();
 		long   timeDiffR = refPatCurrent.getTime() - refPatStart.getTime();
 		double dist2wallAheadR = refPatCurrent.getDistanceToWallAhead();
-		if ( ( Math.abs( spdT - spdR ) > maxSpeedDist ) || ( Math.abs( angT - angR) > maxAngleDist ) ) {
+		if ( ( Math.abs( spdT - spdR ) > maxSpeedDist ) || ( Math.abs( math.shortest_arc( angT - angR) ) > maxAngleDist ) ) {
 			return false;
 		}
 		// now let's check that the timing is right
