@@ -131,7 +131,7 @@ public class botStatPoint {
 		double dist2WallProximity = 80;
 		double dist2WallDiff = 4;
 		double maxSpeedDist = 0.5;
-		double maxAngleDist = 20;
+		double maxAngleDist = 10; // 10 is maximum bot rotation per turn
 		double spdT = this.getSpeed();
 		double angT = this.getHeadingDegrees() - testPatStart.getHeadingDegrees();
 		long   timeDiffT = this.getTime() - testPatStart.getTime();
