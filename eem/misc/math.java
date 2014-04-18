@@ -190,6 +190,7 @@ public class math {
 		double wall_margin = 1;
 		double x = pos.x;
 		double y = pos.y;
+		double huge = 1e100; // humongous number
 
 		String wallName="";
 
@@ -219,28 +220,49 @@ public class math {
 			return wallName;
 		}
 
-		double dx = Math.sin( headingInRadians )*speed;
-		double dy = Math.cos( headingInRadians )*speed;
+		double vx = Math.sin( headingInRadians )*speed;
+		double vy = Math.cos( headingInRadians )*speed;
 
-		while (  wallName.equals("") ) {
-			x+= dx;
-			y+= dy;
-			logger.noise("Projected position = " + x + ", " + y);
+		double time_to_sidewall, time_to_top_bottom_wall;
 
-			if ( x-robotHalfSize + wall_margin <= 0 ) {
+		if ( Utils.isNear(vx, 0.0) ) {
+			// we are not moving in x direction
+			time_to_sidewall = huge;
+		} else {
+			if ( vx < 0 ) {
+				time_to_sidewall = -( x -  robotHalfSize + wall_margin )/vx;
+			} else {
+				time_to_sidewall =  ( BattleField.x - x - robotHalfSize + wall_margin )/vx;
+			}
+		}
+		if ( Utils.isNear(vy, 0.0) ) {
+			// we are not moving in y direction
+			time_to_top_bottom_wall = huge;
+		} else {
+			if ( vy < 0 ) {
+				time_to_top_bottom_wall = -( y -  robotHalfSize + wall_margin )/vy;
+			} else {
+				time_to_top_bottom_wall =  ( BattleField.y - y - robotHalfSize + wall_margin )/vy;
+			}
+		}
+		logger.dbg("time to x wall = " + time_to_sidewall);
+		logger.dbg("time to y wall = " + time_to_top_bottom_wall);
+
+		if ( time_to_sidewall < time_to_top_bottom_wall) {
+			// side walls are closer
+			if ( vx<0 ) {
 				wallName = "left";
-			}
-			if ( y-robotHalfSize + wall_margin <= 0 ) {
-				wallName = "bottom";
-			}
-			if ( x - wall_margin >= BattleField.x-robotHalfSize ) {
+			} else {
 				wallName = "right";
 			}
-			if ( y - wall_margin>= BattleField.y-robotHalfSize ) {
+		} else {
+			// top or bootom is closer
+			if ( vy<0 ) {
+				wallName = "bottom";
+			} else {
 				wallName = "top";
 			}
 		}
-		//logger.dbg("Wall name = " + wallName);
 		return wallName;
 	}
 
