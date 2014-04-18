@@ -14,9 +14,8 @@ import java.awt.Graphics2D;
 
 // play it forward (PIF) gun
 public class pifGun extends baseGun {
-	long refLength  = 1; // template trace length
 	int nRequiredMatches = 100; // number of matches to look for
-	int maxPatLength = 50; // huge number
+	int maxPatLength = 50; // maximum lenght of the template/pattern to search
 	int playTime =1;
 
 	public pifGun() {
