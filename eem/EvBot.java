@@ -229,6 +229,7 @@ public class EvBot extends AdvancedRobot
 		initBattle();
 
 		while(true) {
+			long mainLoopStartTime = System.nanoTime();
 			long endTime;
 			long startTime;
 			initTic() ;
@@ -255,6 +256,8 @@ public class EvBot extends AdvancedRobot
 			endTime = System.nanoTime();
 			logger.profiler("radar manage execution time =\t\t\t\t" + (endTime - startTime) + " ns" );
 
+			endTime = System.nanoTime();
+			logger.profiler("Main loop execution time =\t\t\t\t" + (endTime - mainLoopStartTime) + " ns" );
 			execute();
 		}
 	}
@@ -267,11 +270,14 @@ public class EvBot extends AdvancedRobot
 	 * onScannedRobot: What to do when you see another robot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
+		long startTime = System.nanoTime();
 		myCoord.x = getX();
 	       	myCoord.y = getY();
 
 		_botsmanager.onScannedRobot(e);
 		_radar.onScannedRobot(e);
+		long endTime = System.nanoTime();
+		logger.profiler("EvBot.onScannedRobot execution time =\t\t\t\t" + (endTime - startTime) + " ns" );
 	}
 
 	/**
