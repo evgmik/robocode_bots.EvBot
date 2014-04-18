@@ -1,3 +1,8 @@
+= Version  4.5.11 =
+
+Bug fix: distance to wall ahead used ineffective algorithm which leaded to
+long execution times and skipped turns
+
 = Version  4.5.10 =
 
 Bug fix: introduced in 4.5.9 where I moved to new form of time stamps. 
