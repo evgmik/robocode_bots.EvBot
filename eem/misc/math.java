@@ -185,6 +185,9 @@ public class math {
 	}
 
 	public static String whichWallAhead(Point2D.Double pos, double speed, double headingInRadians) {
+		// due to round offs bot position might appear inside of walls
+		// below give us some margin to account for it
+		double wall_margin = 1;
 		double x = pos.x;
 		double y = pos.y;
 
@@ -204,20 +207,20 @@ public class math {
 			y+= dy;
 			logger.noise("Projected position = " + x + ", " + y);
 
-			if ( x-robotHalfSize <= 0 ) {
+			if ( x-robotHalfSize + wall_margin <= 0 ) {
 				wallName = "left";
 			}
-			if ( y-robotHalfSize <= 0 ) {
+			if ( y-robotHalfSize + wall_margin <= 0 ) {
 				wallName = "bottom";
 			}
-			if ( x >= BattleField.x-robotHalfSize ) {
+			if ( x - wall_margin >= BattleField.x-robotHalfSize ) {
 				wallName = "right";
 			}
-			if ( y >= BattleField.y-robotHalfSize ) {
+			if ( y - wall_margin>= BattleField.y-robotHalfSize ) {
 				wallName = "top";
 			}
 		}
-		logger.noise("Wall name = " + wallName);
+		//logger.dbg("Wall name = " + wallName);
 		return wallName;
 	}
 
