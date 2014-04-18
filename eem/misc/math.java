@@ -195,8 +195,28 @@ public class math {
 
 		if ( Utils.isNear(speed, 0.0) ) {
 			// we are not moving anywhere 
-			// assigning fake velocity
-			speed = 8;
+			//find the closest wall
+			double dist = x;
+			double dist_temp=0;
+			wallName = "left";
+
+			dist_temp = y;
+			if ( dist_temp < dist ) { 
+				dist = y;
+				wallName = "bottom";
+			}
+			
+			dist_temp = BattleField.x - x;
+			if ( dist_temp < dist ) { 
+				dist = dist_temp;
+				wallName = "right";
+			}
+			dist_temp = BattleField.y - y;
+			if ( dist_temp < dist ) { 
+				dist = dist_temp;
+				wallName = "top";
+			}
+			return wallName;
 		}
 
 		double dx = Math.sin( headingInRadians )*speed;
@@ -243,7 +263,7 @@ public class math {
 		}
 		dist = dist - robotHalfSize;
 		dist = Math.max(dist,0);
-		if (dist < 1) dist = 0 ;
+		if (dist < 0) dist = 0 ;
 		logger.noise("distance to closest wall ahead " + dist);
 		return dist;
 	}
