@@ -67,8 +67,7 @@ public class pifGun extends baseGun {
 			iterCnt++;
 		} while ( ( Math.abs( oldAfterTime -afterTime ) > 1 ) && (iterCnt < 5) ) ;
 		playTime = afterTime;
-		//logger.dbg("Final Match list size = " + posList.size() );
-		//logger.dbg("Final required play time = " + playTime );
+		//logger.dbg("Final Match list size = " + posList.size() + " for required play time = " + playTime );
 		//logger.dbg("--- gun calc ended " );
 		//logger.dbg("point to aim = " + p );
 		return (Point2D.Double) p.clone();
