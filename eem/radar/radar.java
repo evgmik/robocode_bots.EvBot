@@ -106,6 +106,7 @@ public class radar {
 	}
 
 	public void onScannedRobot(ScannedRobotEvent e) {
+		long startTime = System.nanoTime();
 		String scannedBotName = e.getName();
 		for ( String bName : scannedBots ) {
 			if ( bName.equals( scannedBotName ) ) {
@@ -114,6 +115,8 @@ public class radar {
 			}
 		}
 		scannedBots.addLast( scannedBotName );
+		long endTime = System.nanoTime();
+		logger.profiler("radar.onScannedRobot execution time =\t\t\t\t" + (endTime - startTime) + " ns" );
 	}
 }
 
