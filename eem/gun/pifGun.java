@@ -48,13 +48,14 @@ public class pifGun extends baseGun {
 
 		double dist = p.distance(myBot.myCoord);
 		int afterTime = (int) (dist/bSpeed);
+
 		int oldAfterTime;
 		int iterCnt = 1;
 		//logger.dbg("---- gun calc started");
 		do {
 			//logger.dbg("required after time = " + afterTime );
 			oldAfterTime = afterTime;
-			//logger.dbg("iteration = " + iterCnt );
+			//logger.dbg("iteration = " + iterCnt + " for afterTime " + afterTime );
 			//logger.dbg("after time = " + afterTime );
 			posList = findLongestMatch( afterTime, tgt );
 			if ( posList.size() < 1 ) {
@@ -70,6 +71,9 @@ public class pifGun extends baseGun {
 		//logger.dbg("Final Match list size = " + posList.size() + " for required play time = " + playTime );
 		//logger.dbg("--- gun calc ended " );
 		//logger.dbg("point to aim = " + p );
+		if ( posList.size() == 0 ) {
+			//logger.dbg( "pifGun has no points to work with, suggesting to use another gun" );
+		}
 		return (Point2D.Double) p.clone();
 	}
 
