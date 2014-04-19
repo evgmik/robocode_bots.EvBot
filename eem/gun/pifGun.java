@@ -89,6 +89,8 @@ public class pifGun extends baseGun {
 		LinkedList<Integer> templateEnds = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-playTime,  nRequiredMatches);
 		//logger.dbg("# of ends to plot = " + templateEnds.size() );
 		for ( Integer i : templateEnds ) {
+			// draw matching ends
+			graphics.drawSquare( g, tgt.botStats.get(i).getPosition(), 4);
 			//logger.dbg("end point = " + tgt.botStats.get(i).getPosition() );
 		}
 
