@@ -411,7 +411,7 @@ public class baseGun {
 
 	private void drawTargetFuturePosition(Graphics2D g) {
 		if ( null != targetFuturePosition ) {
-			//logger.dbg("aiming at = " + targetFuturePosition );
+			//logger.dbg("at time " + myBot.getTime() + " aiming at = " + targetFuturePosition );
 			g.setColor(gunColor);
 			graphics.fillSquare( g,  targetFuturePosition, 40);
 		}
