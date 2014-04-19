@@ -104,8 +104,8 @@ public class pifGun extends baseGun {
 			Point2D.Double pTr = new Point2D.Double(0,0);
 			for ( Point2D.Double pT : trace ) {
 				double disp = 5;
-				double rx = disp*Math.random();
-				double ry = disp*Math.random();
+				double rx = 0*disp*Math.random();
+				double ry = 0*disp*Math.random();
 				pTr.x = pT.x + rx;
 				pTr.y = pT.y + ry;
 				graphics.drawCircle( g, pTr, Rp);
