@@ -18,6 +18,7 @@ public class pifGun extends baseGun {
 	int maxPatLength = 4; // maximum lenght of the template/pattern to search
 	int playTime =1;
 	LinkedList<Integer> templateEnds = null;
+	int templateEndIndex = 0;
 	botStatPoint refPoint = null;
 
 	public pifGun() {
@@ -51,9 +52,44 @@ public class pifGun extends baseGun {
 
 		double dist = p.distance(myBot.myCoord);
 		int afterTime = (int) (dist/bSpeed);
+		playTime = afterTime; // just in case if we cannot find anything
+		afterTime += 20; // FIXME: account for bullet flight time in a proper way
 
 		templateEnds = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-afterTime,  nRequiredMatches);
 		//logger.dbg("number of found matching patterns ends= " + templateEnds.size() );
+		if ( templateEnds.size() == 0 ) {
+			//logger.dbg( "pifGun has no points to work with, suggesting to use another gun" );
+			//for now we will use head on gun approach
+			return (Point2D.Double) refPoint.getPosition().clone();
+		}
+
+		//Let's remove ends which give out of bound solutions
+		LinkedList<Integer> templateEndsCleaned = new LinkedList<Integer>();
+		for ( int i=0; i < templateEnds.size(); i++ ) {
+			// for each templateEnds point find a pif trace
+			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) ( afterTime ), refPoint );
+			// now let's check validity of the trace
+			if ( trace == null )
+				continue;
+			if ( trace.size() == 0 )
+				continue;
+			// do not draw traces with end point outside of BattleField
+			p = trace.getLast();
+			if ( math.isBotOutOfBorders( p ) )
+				continue;
+			templateEndsCleaned.add( templateEnds.get(i) );
+		}
+		templateEnds = templateEndsCleaned;
+
+		// chose randomly a templateEnd to use as pif target
+		int N = templateEnds.size();
+		if (N == 0 ) {
+			//logger.dbg( "pifGun has no points to work with, suggesting to use another gun" );
+			//for now we will use head on gun approach
+			return (Point2D.Double) refPoint.getPosition().clone();
+		}
+
+		templateEndIndex = (int)( Math.random() * N );
 
 		int oldAfterTime;
 		int iterCnt = 1;
@@ -62,24 +98,18 @@ public class pifGun extends baseGun {
 			//logger.dbg("required after time = " + afterTime );
 			oldAfterTime = afterTime;
 			//logger.dbg("iteration = " + iterCnt + " for afterTime " + afterTime );
-			//logger.dbg("after time = " + afterTime );
-			posList = findLongestMatch( afterTime, tgt );
-			if ( posList.size() < 1 ) {
-				p = tgt.getPosition();
-			} else {
-				p = chosePointFromDistribution(posList);
-			}
+			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(templateEndIndex) ), (long) ( afterTime ), refPoint );
+			if ( trace == null )
+				break;
+			if ( trace.size() == 0 )
+				break;
+			p = trace.getLast();
+
 			dist = p.distance(myBot.myCoord);
 			afterTime = (int) (dist/bSpeed);
 			iterCnt++;
 		} while ( ( Math.abs( oldAfterTime -afterTime ) > 1 ) && (iterCnt < 5) ) ;
 		playTime = oldAfterTime;
-		//logger.dbg("Final Match list size = " + posList.size() + " for required play time = " + playTime );
-		//logger.dbg("--- gun calc ended " );
-		//logger.dbg("at time " + myBot.getTime() + " point to aim = " + p);
-		if ( posList.size() == 0 ) {
-			//logger.dbg( "pifGun has no points to work with, suggesting to use another gun" );
-		}
 		return (Point2D.Double) p.clone();
 	}
 
