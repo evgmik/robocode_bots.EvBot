@@ -17,6 +17,8 @@ public class pifGun extends baseGun {
 	int nRequiredMatches = 100; // number of matches to look for
 	int maxPatLength = 4; // maximum lenght of the template/pattern to search
 	int playTime =1;
+	LinkedList<Integer> templateEnds = null;
+	botStatPoint refPoint = null;
 
 	public pifGun() {
 		gunName = "pif";
@@ -41,6 +43,7 @@ public class pifGun extends baseGun {
 	}
 
 	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
+		refPoint = tgt.botStats.getLast();
 		Point2D.Double p = new Point2D.Double(0,0);
 		LinkedList<Point2D.Double> posList;
 		double bSpeed = bulletSpeed ( calcFirePower() );
@@ -48,6 +51,9 @@ public class pifGun extends baseGun {
 
 		double dist = p.distance(myBot.myCoord);
 		int afterTime = (int) (dist/bSpeed);
+
+		templateEnds = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-afterTime,  nRequiredMatches);
+		//logger.dbg("number of found matching patterns ends= " + templateEnds.size() );
 
 		int oldAfterTime;
 		int iterCnt = 1;
@@ -67,10 +73,10 @@ public class pifGun extends baseGun {
 			afterTime = (int) (dist/bSpeed);
 			iterCnt++;
 		} while ( ( Math.abs( oldAfterTime -afterTime ) > 1 ) && (iterCnt < 5) ) ;
-		playTime = afterTime;
+		playTime = oldAfterTime;
 		//logger.dbg("Final Match list size = " + posList.size() + " for required play time = " + playTime );
 		//logger.dbg("--- gun calc ended " );
-		//logger.dbg("point to aim = " + p );
+		//logger.dbg("at time " + myBot.getTime() + " point to aim = " + p);
 		if ( posList.size() == 0 ) {
 			//logger.dbg( "pifGun has no points to work with, suggesting to use another gun" );
 		}
@@ -78,6 +84,8 @@ public class pifGun extends baseGun {
 	}
 
 	public void drawPossiblePlayForwardTracks(Graphics2D g) {
+		// Remember that onPaint happens on new tic but with old data.
+		// Except apparently getTime out
 		target tgt = myBot._trgt;
 		Point2D.Double p = tgt.getPosition();
 		double bSpeed = bulletSpeed ( calcFirePower() );
@@ -86,7 +94,7 @@ public class pifGun extends baseGun {
 		double Rp = 1; // track point size
 
 
-		LinkedList<Integer> templateEnds = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-(playTime+1),  nRequiredMatches);
+		//templateEnds = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-(playTime+1),  nRequiredMatches);
 		//logger.dbg("number of matching ends to plot = " + templateEnds.size() );
 		for ( Integer i : templateEnds ) {
 			// draw matching ends
@@ -95,7 +103,8 @@ public class pifGun extends baseGun {
 		}
 
 		for ( int i=0; i < templateEnds.size(); i++ ) {
-			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) (playTime-1) );
+			//LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) (playTime + 5 ) );
+			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) ( playTime ), refPoint );
 			if ( trace == null )
 				continue;
 			if ( trace.size() == 0 )
@@ -111,8 +120,10 @@ public class pifGun extends baseGun {
 				pTr.x = pT.x + rx;
 				pTr.y = pT.y + ry;
 				graphics.drawCircle( g, pTr, Rp);
+				//logger.dbg("Trace " + i + " point = " + pT );
 			}
 			// last point is wide
+			//logger.dbg("predicted point = " + pTr );
 			graphics.drawCircle( g, pTr, 4*Rp);
 			
 		}
