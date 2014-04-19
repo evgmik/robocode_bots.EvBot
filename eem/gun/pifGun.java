@@ -86,8 +86,8 @@ public class pifGun extends baseGun {
 		double Rp = 1; // track point size
 
 
-		LinkedList<Integer> templateEnds = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-playTime,  nRequiredMatches);
-		//logger.dbg("# of ends to plot = " + templateEnds.size() );
+		LinkedList<Integer> templateEnds = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-(playTime+1),  nRequiredMatches);
+		//logger.dbg("number of matching ends to plot = " + templateEnds.size() );
 		for ( Integer i : templateEnds ) {
 			// draw matching ends
 			graphics.drawSquare( g, tgt.botStats.get(i).getPosition(), 4);
@@ -95,7 +95,7 @@ public class pifGun extends baseGun {
 		}
 
 		for ( int i=0; i < templateEnds.size(); i++ ) {
-			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) playTime );
+			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) (playTime-1) );
 			if ( trace == null )
 				continue;
 			if ( trace.size() == 0 )
