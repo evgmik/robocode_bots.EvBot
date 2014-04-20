@@ -31,6 +31,14 @@ public class matchedEnds extends LinkedList<LinkedList<Integer>> {
 		return endIndexes;
 	}
 	
+	public int totalMatches() {
+		int cnt = 0;
+		for ( LinkedList<Integer> l : this ) {
+			cnt += l.size();	
+		}
+		return cnt;
+	}
+
 	public String format() {
 		String outStr = "List of matched ends has " + this.size() + " depth";
 		int cnt = 0;
