@@ -260,11 +260,11 @@ public class InfoBot {
 		return str;
 	}
 
-	public LinkedList<LinkedList<Integer>> endsOfMatchedSegments ( long patLength,  int nReqMatches ) {
+	public matchedEnds endsOfMatchedSegments ( long patLength,  int nReqMatches ) {
 		return endsOfMatchedSegments( patLength, botStats.size()-1, nReqMatches);
 	}
 
-	public LinkedList<LinkedList<Integer>> endsOfMatchedSegments ( long maxPatLength, int lastIndToCheck,  int nReqMatches ) {
+	public matchedEnds endsOfMatchedSegments ( long maxPatLength, int lastIndToCheck,  int nReqMatches ) {
 		// goes through history of bot track 
 		// and finds matched segments of length = patLength 
 		// with respect to the end of the track
@@ -273,7 +273,7 @@ public class InfoBot {
 		LinkedList<Integer> newEndsList = new LinkedList<Integer>();
 
 		// we create a list with matches for a given pattern length
-		LinkedList<LinkedList<Integer>> endsListVsPatternLength = new LinkedList<LinkedList<Integer>>();
+		matchedEnds endsListVsPatternLength = new matchedEnds();
 
 		long trackN = botStats.size();
 		int cntMatches = 0;
@@ -330,13 +330,7 @@ public class InfoBot {
 		}
 		patLength--;
 		//logger.dbg("maximum pattern length = " + patLength + " find # matches " + prevEndsList.size());
-		// short debug output
-		//int cnt = 0;
-		//for ( LinkedList<Integer> l : endsListVsPatternLength ) {
-			//cnt++;
-			//logger.dbg("for pattern length = " + cnt + " find # matches " + l.size());
-			//logger.dbg("matches = " + l );
-		//}
+		//logger.dbg( endsListVsPatternLength.format() );
 		return endsListVsPatternLength;
 	}
 
@@ -350,7 +344,7 @@ public class InfoBot {
 		int trackN = botStats.size();
 		int lastIndToCheck = (int) (trackN - afterTime - 1);
 
-		LinkedList<LinkedList<Integer>> endsIndexes = endsOfMatchedSegments( maxPatLength, lastIndToCheck, nRequiredMatches );
+		matchedEnds endsIndexes = endsOfMatchedSegments( maxPatLength, lastIndToCheck, nRequiredMatches );
 		//logger.dbg("Size of endsIndexes list = " + endsIndexes.size() );
 		posList = playForwardList( endsIndexes, afterTime, botStats.getLast() );
 		return posList;
@@ -418,20 +412,13 @@ public class InfoBot {
 		return p;
 	}
 
-	public LinkedList<Point2D.Double> playForwardList( LinkedList<LinkedList<Integer>> startIndexesList, long playTime, botStatPoint refPoint ) {
+	public LinkedList<Point2D.Double> playForwardList( matchedEnds startIndexesList, long playTime, botStatPoint refPoint ) {
 		// play forward playTime steps starting from startIndexes 
 		// and apply predicted displacement to  reference end point eEnd
 		// must return empty list if nothing is found
 		LinkedList<Point2D.Double> posList = new LinkedList<Point2D.Double>();
-		LinkedList<Integer> startIndexes = new LinkedList<Integer>();
+		LinkedList<Integer> startIndexes = startIndexesList.flatten();
 		int trackN = botStats.size();
-
-		// flatten startIndexesList
-		for ( LinkedList<Integer> l : startIndexesList ) {
-			for ( int i : l ) {
-				startIndexes.add(i);
-			}
-		}
 
 		int nMatches = startIndexes.size();
 		if ( nMatches == 0 ) {
