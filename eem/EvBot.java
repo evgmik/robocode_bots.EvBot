@@ -35,6 +35,7 @@ public class EvBot extends AdvancedRobot
 	public static int roundsWon = 0;
 	public static int roundsLost = 0;
 	public static int  finishingPlacesStats[] = null;
+	public static int  skippedTurnStats[] = null;
 
 	private botVersion botVer;
 	public target _trgt;
@@ -90,6 +91,10 @@ public class EvBot extends AdvancedRobot
 		totalNumOfEnemiesAtStart = getOthers();
 		if ( finishingPlacesStats == null ) {
 			finishingPlacesStats = new int[totalNumOfEnemiesAtStart+1];
+		}
+
+		if ( skippedTurnStats == null ) {
+			skippedTurnStats = new int[getNumRounds()];
 		}
 
 		_trgt = new target();
@@ -372,6 +377,10 @@ public class EvBot extends AdvancedRobot
 		return desiredBodyRotationDirection;
 	}
 
+	public void onSkippedTurn(SkippedTurnEvent e) {
+		skippedTurnStats[getRoundNum()]++;
+		//logger.dbg("Skipped turns stats: " + Arrays.toString(skippedTurnStats) );
+	}
 	
 	public void onPaint(Graphics2D g) {
 		// Set the paint color to a red half transparent color
@@ -430,6 +439,7 @@ public class EvBot extends AdvancedRobot
 		_gmanager.printGunsStats();
 		_botsmanager.printGunsStats();
 		logger.routine("Rounds ratio of win/lose = " + roundsWon + "/" + roundsLost );
+		logger.routine("Skipped turns stats: " + Arrays.toString(skippedTurnStats) );
 		logger.routine("Finishing places stats: " + Arrays.toString( finishingPlacesStats ) );
 	}
 
