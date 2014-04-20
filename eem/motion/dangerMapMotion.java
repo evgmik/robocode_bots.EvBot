@@ -51,6 +51,20 @@ public class dangerMapMotion extends basicMotion {
 		
 		if (  myBot.numEnemyBotsAlive == 1  ) {
 			distToProbe = distToProbe1on1;
+			if ( myBot._trgt.haveTarget ) {
+				// we need to adjust distance releative to the danger distance
+				// FIXME: take in account wave distance and do it
+				// for not only 1on1
+				Point2D.Double bPos = myBot._trgt.getPosition();
+				double dist = myBot.myCoord.distance(bPos);
+				// some fudge distance
+				// distToProbe = 200 good when bots are at opposit sides
+				// distToProbe = 100 reasonable fir half field distances
+				// let's try to interpolate in between
+				distToProbe = Math.min(200, 50 + 100*Math.exp( (dist-400)/20) );
+				distToProbe = Math.min( dist, distToProbe );
+				//logger.dbg( "dist = " + dist + " distToProbe = " + distToProbe );
+			}
 		} else {
 			distToProbe = distToProbeDefault;
 		}
