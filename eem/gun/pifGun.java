@@ -150,31 +150,19 @@ public class pifGun extends baseGun {
 		target tgt = myBot._trgt;
 		Point2D.Double p = tgt.getPosition();
 		double bSpeed = bulletSpeed ( calcFirePower() );
-		//double dist = p.distance(myBot.myCoord);
-		//int playTime = (int) (dist/bSpeed);
 		double Rp = 1; // track point size
 
 
-		//templateEnds = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-(playTime+1),  nRequiredMatches);
-		//logger.dbg("number of matching ends to plot = " + templateEnds.size() );
-		//
 		LinkedList<Integer> templateEnds = templateEndsList.getEndsForPatternSizeN(1);
-
+		if ( templateEnds == null ) return;
+		//logger.dbg("number of matching ends to plot = " + templateEnds.size() + " for list " + templateEnds );
 		for ( Integer i : templateEnds ) {
 			// draw matching ends
 			//graphics.drawSquare( g, tgt.botStats.get(i).getPosition(), 4);
 			//logger.dbg("end point = " + tgt.botStats.get(i).getPosition() );
-		}
 
-		for ( int i=0; i < templateEnds.size(); i++ ) {
-			//LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) (playTime + 5 ) );
-			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) ( playTime ), refPoint );
-			if ( trace == null )
-				continue;
-			if ( trace.size() == 0 )
-				continue;
-			// do not draw traces with end point outside of BattleField
-			if ( math.isBotOutOfBorders( trace.getLast() ) )
+			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( i ), (long) ( playTime ), refPoint );
+			if ( !isItGoodTrace( trace ) )
 				continue;
 			Point2D.Double pTr = new Point2D.Double(0,0);
 			for ( Point2D.Double pT : trace ) {
@@ -184,7 +172,6 @@ public class pifGun extends baseGun {
 				pTr.x = pT.x + rx;
 				pTr.y = pT.y + ry;
 				graphics.drawCircle( g, pTr, Rp);
-				//logger.dbg("Trace " + i + " point = " + pT );
 			}
 			// last point is wide
 			//logger.dbg("predicted point = " + pTr );
