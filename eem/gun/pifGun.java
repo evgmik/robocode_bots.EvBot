@@ -15,9 +15,9 @@ import java.awt.Graphics2D;
 // play it forward (PIF) gun
 public class pifGun extends baseGun {
 	int nRequiredMatches = 100; // number of matches to look for
-	int maxPatLength = 4; // maximum lenght of the template/pattern to search
+	int maxPatLength = 10; // maximum lenght of the template/pattern to search
 	int playTime =1;
-	LinkedList<Integer> templateEnds = null;
+	LinkedList<LinkedList<Integer>> templateEndsList = null;
 	int templateEndIndex = 0;
 	botStatPoint refPoint = null;
 
@@ -55,7 +55,16 @@ public class pifGun extends baseGun {
 		playTime = afterTime; // just in case if we cannot find anything
 		afterTime += 20; // FIXME: account for bullet flight time in a proper way
 
-		templateEnds = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-afterTime,  nRequiredMatches);
+		// FIXME: do some weighting based on number of matches
+		templateEndsList = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-afterTime,  nRequiredMatches);
+		LinkedList<Integer> templateEnds = new LinkedList<Integer>();
+		// flatten startIndexesList
+		for ( LinkedList<Integer> l : templateEndsList ) {
+			for ( int i : l ) {
+				templateEnds.add(i);
+			}
+		}
+
 		//logger.dbg("number of found matching patterns ends= " + templateEnds.size() );
 		if ( templateEnds.size() == 0 ) {
 			//logger.dbg( "pifGun has no points to work with, suggesting to use another gun" );
@@ -126,6 +135,16 @@ public class pifGun extends baseGun {
 
 		//templateEnds = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-(playTime+1),  nRequiredMatches);
 		//logger.dbg("number of matching ends to plot = " + templateEnds.size() );
+		//
+		LinkedList<Integer> templateEnds = new LinkedList<Integer>();
+		// flatten startIndexesList
+		// FIXME: some ends repeat, so we do double work
+		for ( LinkedList<Integer> l : templateEndsList ) {
+			for ( int i : l ) {
+				templateEnds.add(i);
+			}
+		}
+
 		for ( Integer i : templateEnds ) {
 			// draw matching ends
 			graphics.drawSquare( g, tgt.botStats.get(i).getPosition(), 4);
