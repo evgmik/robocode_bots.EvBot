@@ -49,10 +49,18 @@ public class matchedEnds extends LinkedList<LinkedList<Integer>> {
 	}
 
 	public void removePoint(Integer i) {
+		LinkedList<LinkedList<Integer>> listsToRemove = new LinkedList<LinkedList<Integer>>();
+		// first we remove element "i" from all list
 		for ( LinkedList<Integer> l : this ) {
 			l.remove(i);
-			if ( l.size() == 0 )
-				this.remove(l);
+			if ( l.size() == 0 ) // if empty schedule to remove
+				listsToRemove.add(l);
+		}
+		// we are lucky next pattern depth will be empty if previous is empty
+		// so we do not need special checks
+		// remove sheduled empty lists
+		for ( LinkedList<Integer> l : listsToRemove ) {
+			this.remove(l);
 		}
 	}
 
