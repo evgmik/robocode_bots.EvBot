@@ -131,8 +131,7 @@ public class pifGun extends baseGun {
 		//templateEnds = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-(playTime+1),  nRequiredMatches);
 		//logger.dbg("number of matching ends to plot = " + templateEnds.size() );
 		//
-		LinkedList<Integer> templateEnds = templateEndsList.flatten();
-		// FIXME: some ends repeat, so we do double work
+		LinkedList<Integer> templateEnds = templateEndsList.getEndsForPatternSizeN(1);
 
 		for ( Integer i : templateEnds ) {
 			// draw matching ends
