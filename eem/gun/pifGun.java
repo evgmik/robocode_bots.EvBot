@@ -135,7 +135,7 @@ public class pifGun extends baseGun {
 
 		for ( Integer i : templateEnds ) {
 			// draw matching ends
-			graphics.drawSquare( g, tgt.botStats.get(i).getPosition(), 4);
+			//graphics.drawSquare( g, tgt.botStats.get(i).getPosition(), 4);
 			//logger.dbg("end point = " + tgt.botStats.get(i).getPosition() );
 		}
 
