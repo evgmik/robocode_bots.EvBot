@@ -1,3 +1,8 @@
+= Version  4.5.12 =
+
+pif improvements: working with all pattern length points (probabilistically),
+speed up (do not check the same pattern points on the higher depth level).
+
 = Version  4.5.11 =
 
 Bug fix: distance to wall ahead used ineffective algorithm which leaded to
