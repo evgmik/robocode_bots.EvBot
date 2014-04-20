@@ -260,11 +260,11 @@ public class InfoBot {
 		return str;
 	}
 
-	public LinkedList<Integer> endsOfMatchedSegments ( long patLength,  int nReqMatches ) {
+	public LinkedList<LinkedList<Integer>> endsOfMatchedSegments ( long patLength,  int nReqMatches ) {
 		return endsOfMatchedSegments( patLength, botStats.size()-1, nReqMatches);
-
 	}
-	public LinkedList<Integer> endsOfMatchedSegments ( long maxPatLength, int lastIndToCheck,  int nReqMatches ) {
+
+	public LinkedList<LinkedList<Integer>> endsOfMatchedSegments ( long maxPatLength, int lastIndToCheck,  int nReqMatches ) {
 		// goes through history of bot track 
 		// and finds matched segments of length = patLength 
 		// with respect to the end of the track
@@ -272,12 +272,15 @@ public class InfoBot {
 		long endTime;
 		LinkedList<Integer> newEndsList = new LinkedList<Integer>();
 
+		// we create a list with matches for a given pattern length
+		LinkedList<LinkedList<Integer>> endsListVsPatternLength = new LinkedList<LinkedList<Integer>>();
+
 		long trackN = botStats.size();
 		int cntMatches = 0;
 
 		if ( maxPatLength < 1) {
-			// we for pattern length smaller than 1
-			return newEndsList;
+			// we do not search for pattern length smaller than 1
+			return endsListVsPatternLength;
 		}
 
 		int rStart = (int) (trackN-1);
@@ -305,6 +308,7 @@ public class InfoBot {
 			patLength++;
 			startTime = System.nanoTime();
 			prevEndsList = (LinkedList<Integer>) newEndsList.clone();
+			endsListVsPatternLength.add( prevEndsList );
 			newEndsList = new LinkedList<Integer>();
 			for (Integer i : prevEndsList ) {
 				int testPatIndex = i - patLength + 1;
@@ -322,11 +326,18 @@ public class InfoBot {
 				}
 			}
 			endTime = System.nanoTime();
-			logger.profiler("For pattern length " + patLength + " find # matches " + newEndsList.size() + " in time " + (endTime - startTime) + " ns" );
+			//logger.profiler("For pattern length " + patLength + " find # matches " + newEndsList.size() + " in time " + (endTime - startTime) + " ns" );
 		}
 		patLength--;
 		//logger.dbg("maximum pattern length = " + patLength + " find # matches " + prevEndsList.size());
-		return prevEndsList;
+		// short debug output
+		//int cnt = 0;
+		//for ( LinkedList<Integer> l : endsListVsPatternLength ) {
+			//cnt++;
+			//logger.dbg("for pattern length = " + cnt + " find # matches " + l.size());
+			//logger.dbg("matches = " + l );
+		//}
+		return endsListVsPatternLength;
 	}
 
 	public LinkedList<Point2D.Double> possiblePositionsAfterTime ( long afterTime,  long maxPatLength, int nRequiredMatches ) {
@@ -339,7 +350,7 @@ public class InfoBot {
 		int trackN = botStats.size();
 		int lastIndToCheck = (int) (trackN - afterTime - 1);
 
-		LinkedList<Integer> endsIndexes = endsOfMatchedSegments( maxPatLength, lastIndToCheck, nRequiredMatches );
+		LinkedList<LinkedList<Integer>> endsIndexes = endsOfMatchedSegments( maxPatLength, lastIndToCheck, nRequiredMatches );
 		//logger.dbg("Size of endsIndexes list = " + endsIndexes.size() );
 		posList = playForwardList( endsIndexes, afterTime, botStats.getLast() );
 		return posList;
@@ -407,12 +418,20 @@ public class InfoBot {
 		return p;
 	}
 
-	public LinkedList<Point2D.Double> playForwardList( LinkedList<Integer> startIndexes, long playTime, botStatPoint refPoint ) {
-		// play forward playTime sterp starting from startIndexes 
+	public LinkedList<Point2D.Double> playForwardList( LinkedList<LinkedList<Integer>> startIndexesList, long playTime, botStatPoint refPoint ) {
+		// play forward playTime steps starting from startIndexes 
 		// and apply predicted displacement to  reference end point eEnd
 		// must return empty list if nothing is found
 		LinkedList<Point2D.Double> posList = new LinkedList<Point2D.Double>();
+		LinkedList<Integer> startIndexes = new LinkedList<Integer>();
 		int trackN = botStats.size();
+
+		// flatten startIndexesList
+		for ( LinkedList<Integer> l : startIndexesList ) {
+			for ( int i : l ) {
+				startIndexes.add(i);
+			}
+		}
 
 		int nMatches = startIndexes.size();
 		if ( nMatches == 0 ) {
@@ -425,6 +444,9 @@ public class InfoBot {
 		double         lastSpd = refPoint.getSpeed();
 		double         lastHeadingInDegrees = refPoint.getHeadingDegrees();
 
+		// playing forward each match
+		// FIXME some indexes will be run multiple times
+		// try to do it more efficient
 		for ( int i=0; i < nMatches; i++ ) {
 			//go over all possible segment of length lets find after time prediciton
 			int lastIndOfMatchedSeg = startIndexes.get(i); // end of matched segment
