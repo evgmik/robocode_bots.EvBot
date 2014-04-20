@@ -43,7 +43,22 @@ public class pifGun extends baseGun {
 		return posList;
 	}
 
+	public boolean isItGoodTrace( LinkedList<Point2D.Double> trace ) {
+		// now let's check validity of the trace
+		if ( trace == null )
+			return false;
+		if ( trace.size() == 0 )
+			return false;
+		// do not draw traces with end point outside of BattleField
+		Point2D.Double p = trace.getLast();
+		if ( math.isBotOutOfBorders( p ) )
+			return false;
+		return true;
+	}
+
 	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
+		long startTimeCalc = System.nanoTime();
+		long startTime, endTime;
 		refPoint = tgt.botStats.getLast();
 		Point2D.Double p = new Point2D.Double(0,0);
 		LinkedList<Point2D.Double> posList;
@@ -55,8 +70,15 @@ public class pifGun extends baseGun {
 		playTime = afterTime; // just in case if we cannot find anything
 		afterTime += 20; // FIXME: account for bullet flight time in a proper way
 
+		startTime = System.nanoTime();
 		templateEndsList = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-afterTime,  nRequiredMatches);
-		logger.dbg( templateEndsList.format() );
+		//logger.dbg( templateEndsList.format() );
+		endTime = System.nanoTime();
+		logger.profiler("Find patterns with depth " + templateEndsList.size() + " in time " + (endTime - startTime) + " ns" );
+		if ( templateEndsList.size() >= 1 ) {
+			logger.profiler(" Pattern length 1 has " + templateEndsList.getFirst().size() + " matches and total matches size " + templateEndsList.totalMatches() );
+		}
+		//logger.dbg( templateEndsList.format() );
 		// FIXME: do some weighting based on number of matches
 		LinkedList<Integer> templateEnds = templateEndsList.flatten();
 
@@ -68,22 +90,25 @@ public class pifGun extends baseGun {
 		}
 
 		//Let's remove ends which give out of bound solutions
+		startTime = System.nanoTime();
 		LinkedList<Integer> templateEndsCleaned = new LinkedList<Integer>();
-		for ( int i=0; i < templateEnds.size(); i++ ) {
+		LinkedList<Integer> endsToRemove = new LinkedList<Integer>();
+		for ( Integer i : templateEndsList.getEndsForPatternSizeN(1) ) {
+			// first we find which ends are bad and schedule them to remove
 			// for each templateEnds point find a pif trace
-			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( templateEnds.get(i) ), (long) ( afterTime ), refPoint );
-			// now let's check validity of the trace
-			if ( trace == null )
-				continue;
-			if ( trace.size() == 0 )
-				continue;
-			// do not draw traces with end point outside of BattleField
-			p = trace.getLast();
-			if ( math.isBotOutOfBorders( p ) )
-				continue;
-			templateEndsCleaned.add( templateEnds.get(i) );
+			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( i ), (long) ( afterTime ), refPoint );
+			if ( !isItGoodTrace( trace ) ) {
+				endsToRemove.add( i) ;
+			}
+
 		}
-		templateEnds = templateEndsCleaned;
+		// now removing bad ends
+		for ( Integer i : endsToRemove ) {
+			templateEndsList.removePoint( i );
+		}
+		templateEnds = templateEndsList.flatten();
+		endTime = System.nanoTime();
+		logger.profiler("cleaning all possible ends future position took " + (endTime - startTime) + " ns" );
 
 		// chose randomly a templateEnd to use as pif target
 		int N = templateEnds.size();
@@ -114,6 +139,8 @@ public class pifGun extends baseGun {
 			iterCnt++;
 		} while ( ( Math.abs( oldAfterTime -afterTime ) > 1 ) && (iterCnt < 5) ) ;
 		playTime = oldAfterTime;
+		long endTimeCalc = System.nanoTime();
+		logger.profiler("pifGun calculation time " + (endTimeCalc - startTimeCalc) + " ns" );
 		return (Point2D.Double) p.clone();
 	}
 
