@@ -30,6 +30,15 @@ public class matchedEnds extends LinkedList<LinkedList<Integer>> {
 		}
 		return endIndexes;
 	}
+
+	public LinkedList<Integer> getEndsForPatternSizeN( int n) { 
+		if ( n <= 0 ) // check input argument
+			return null;
+		if ( this.size() < n )
+			return null;
+
+		return this.get(n-1);
+	}
 	
 	public int totalMatches() {
 		int cnt = 0;
