@@ -48,6 +48,14 @@ public class matchedEnds extends LinkedList<LinkedList<Integer>> {
 		return cnt;
 	}
 
+	public void removePoint(Integer i) {
+		for ( LinkedList<Integer> l : this ) {
+			l.remove(i);
+			if ( l.size() == 0 )
+				this.remove(l);
+		}
+	}
+
 	public String format() {
 		String outStr = "List of matched ends has " + this.size() + " depth";
 		int cnt = 0;
