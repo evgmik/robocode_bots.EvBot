@@ -1,3 +1,11 @@
+= Version  4.5.13 =
+
+Bug fix: pidGun drawing polished and fixed
+Improvements: dangerMap motion in 1on1 has flexible distance to probe, there
+are bots which like to fight in closer distance, and old long and fixed probe
+distance were a bad choice.
+Added: skipped turns stats
+
 = Version  4.5.12 =
 
 pif improvements: working with all pattern length points (probabilistically),
