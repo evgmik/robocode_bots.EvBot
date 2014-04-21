@@ -1,6 +1,7 @@
 * !important: see what degraded performance between v4.5.11 and v4.5.12, 
   most likely it is a pifGun which probes along all points but not only
   longest matches
+* do not go over all pifGun matched ends only as needed, i.e. speedup
 * !important: do not recalculate pattern in pif calcTargetFuturePosition method, 
   reuse found ends
 * !important: see why calcTargetFuturePosition called twice per turn for pifGun and may be
