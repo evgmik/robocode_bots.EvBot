@@ -93,9 +93,11 @@ public class pifGun extends baseGun {
 		startTime = System.nanoTime();
 		LinkedList<Integer> templateEndsCleaned = new LinkedList<Integer>();
 		LinkedList<Integer> endsToRemove = new LinkedList<Integer>();
+		// first we find which ends are bad and schedule them to remove
+		// for each templateEnds point find a pif trace
+		// FIXME no need to go over all of them if we are using only
+		// the longest matched ones at the highest depth level
 		for ( Integer i : templateEndsList.getEndsForPatternSizeN(1) ) {
-			// first we find which ends are bad and schedule them to remove
-			// for each templateEnds point find a pif trace
 			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( i ), (long) ( afterTime ), refPoint );
 			if ( !isItGoodTrace( trace ) ) {
 				endsToRemove.add( i) ;
@@ -106,18 +108,20 @@ public class pifGun extends baseGun {
 		for ( Integer i : endsToRemove ) {
 			templateEndsList.removePoint( i );
 		}
-		templateEnds = templateEndsList.flatten();
+		//templateEnds = templateEndsList.flatten();
 		endTime = System.nanoTime();
 		logger.profiler("cleaning all possible ends future position took " + (endTime - startTime) + " ns" );
 
-		// chose randomly a templateEnd to use as pif target
-		int N = templateEnds.size();
-		if (N == 0 ) {
+		if (templateEndsList.totalMatches() == 0 ) {
 			//logger.dbg( "pifGun has no points to work with, suggesting to use another gun" );
 			//for now we will use head on gun approach
 			return (Point2D.Double) refPoint.getPosition().clone();
 		}
 
+		// chose randomly a templateEnd to use as pif target
+		// with highest matched pattern length
+		templateEnds = templateEndsList.getEndsForPatternSizeN( templateEndsList.size() );
+		int N = templateEnds.size();
 		templateEndIndex = (int)( Math.random() * N );
 
 		int oldAfterTime;
