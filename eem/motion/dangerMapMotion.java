@@ -61,8 +61,11 @@ public class dangerMapMotion extends basicMotion {
 				// distToProbe = 200 good when bots are at opposit sides
 				// distToProbe = 100 reasonable fir half field distances
 				// let's try to interpolate in between
-				distToProbe = Math.min(200, 50 + 100*Math.exp( (dist-400)/20) );
-				distToProbe = Math.min( dist, distToProbe );
+				distToProbe = Math.min(200, 50 + 150*Math.exp( (dist-400)/20) );
+				// IMPORTANT: to evade rammers I need distToProbe to be about 200
+				// but this seems to much for bots fighting in close distance
+				//distToProbe = distToProbe1on1;
+				//distToProbe = Math.min( dist, distToProbe );
 				//logger.dbg( "dist = " + dist + " distToProbe = " + distToProbe );
 			}
 		} else {
@@ -263,7 +266,13 @@ public class dangerMapMotion extends basicMotion {
 		double angleRand;
 		double dL;
 		Point2D.Double centerPoint = (Point2D.Double) myBot.myCoord.clone();
-		//centerPoint = (Point2D.Double) DestinationPoint.clone();
+		Point2D.Double bPos = myBot._trgt.getPosition();
+		double dist2enemy = myBot.myCoord.distance(bPos);
+		if (dist2enemy < 100 ) {
+			// this is probably a rammer
+			// increase probe distance
+			distToProbe = 200;
+		}
 		double dist;
 		int cnt = 0;
 		double probLongStep = Math.random();
@@ -279,8 +288,7 @@ public class dangerMapMotion extends basicMotion {
 			if ( myBot.fightType().equals("1on1") && myBot._trgt.haveTarget ) {
 				// we will generate points with in an ellipse with minor
 				// axis no longer than max(distToProbe, dist2target)
-				Point2D.Double bPos = myBot._trgt.getPosition();
-				double minorR = myBot.myCoord.distance(bPos) - myBot.robotHalfSize*2;
+				double minorR = dist2enemy - myBot.robotHalfSize*2;
 				minorR = Math.min( minorR, distToProbe);
 				double majorR = distToProbe;
 				// when we build the point within the ellipse lets direct
