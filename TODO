@@ -1,3 +1,5 @@
+* !important: increase conner danger in 1on1, often my bot pushed in the conner,
+  which reduces MEA
 * !important: see what degraded performance between v4.5.11 and v4.5.12, 
   most likely it is a pifGun which probes along all points but not only
   longest matches

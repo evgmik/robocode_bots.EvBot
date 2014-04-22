@@ -1,3 +1,9 @@
+= Version  4.5.15 =
+
+Feature: rammer avoidance with danger map motion, also probing points are now
+do not span beyond enemy bot: the normally circled area squashed in enemy
+direction.
+
 = Version  4.5.14 =
 
 pifGun use only longest matches ends. Close to v4.5.11 logic
