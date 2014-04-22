@@ -268,15 +268,57 @@ public class dangerMapMotion extends basicMotion {
 		int cnt = 0;
 		double probLongStep = Math.random();
 		while ( cnt < nPointsToCheckForNewDestination ) {
-			distRand = distToProbe*Math.random();
+			double rnd = Math.random();
 			if ( probLongStep < 0.01 ) {
 				// sometimes we build points with larger spread
-				distRand += distToProbe;
+				rnd += 1;
+				//FIXME this would need new rnd otherwise
+				// 1 < rnd < 1.01 which is boring i.e. big step is not that big
 			}
 			angleRand = 2*Math.PI*Math.random();
-			nP = new Point2D.Double( 
+			if ( myBot.fightType().equals("1on1") && myBot._trgt.haveTarget ) {
+				// we will generate points with in an ellipse with minor
+				// axis no longer than max(distToProbe, dist2target)
+				Point2D.Double bPos = myBot._trgt.getPosition();
+				double minorR = myBot.myCoord.distance(bPos) - myBot.robotHalfSize*2;
+				minorR = Math.min( minorR, distToProbe);
+				double majorR = distToProbe;
+				// when we build the point within the ellipse lets direct
+				// minor axis towards the enemy
+				// FIXME probably need to count distance to wave not enemy
+				// FIXME can increase distance to go back
+				double dxEl = majorR*Math.cos( angleRand );
+				double dyEl;
+				if ( angleRand < Math.PI ) {
+					// this ellipse part pointing to enemy
+					dyEl = minorR*Math.sin( angleRand );
+				} else {
+					// we are pointing away from enemy
+					// it is OK to use major radius in this direction
+					dyEl = majorR*Math.sin( angleRand );
+				}
+				// now random distance within ellipse
+				dxEl = rnd*dxEl;
+				dyEl = rnd*dyEl;
+
+				//now we need to rotate this ellipse so it faces enemy
+				double angle2enemy =  Math.toRadians( math.angle2pt(myBot.myCoord, bPos) );
+				double dx =  dxEl*Math.cos(angle2enemy) + dyEl*Math.sin(angle2enemy);
+				double dy = -dxEl*Math.sin(angle2enemy) + dyEl*Math.cos(angle2enemy);
+				//logger.dbg( "angle 2 enemy " + angle2enemy );
+				
+				nP = new Point2D.Double( 
+					centerPoint.x + dx,
+					centerPoint.y + dy );
+
+			} else {
+				// for other fight types search in within a circle
+				// FIXME use similar to 1on1 logic
+				distRand = rnd*distToProbe;
+				nP = new Point2D.Double( 
 					centerPoint.x + distRand*Math.sin(angleRand) ,
 					centerPoint.y + distRand*Math.cos(angleRand) );
+			}
 			dL = pointDanger(nP);
 			if ( shortestDist2wall(nP) > (myBot.robotHalfSize + 1) ) {
 				dangerPoints.add(new dangerPoint( nP, dL) );
