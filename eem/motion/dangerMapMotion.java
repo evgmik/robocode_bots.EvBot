@@ -61,7 +61,10 @@ public class dangerMapMotion extends basicMotion {
 				// distToProbe = 200 good when bots are at opposit sides
 				// distToProbe = 100 reasonable fir half field distances
 				// let's try to interpolate in between
-				distToProbe = Math.min(200, 50 + 150*Math.exp( (dist-400)/20) );
+				//distToProbe = dist/2;
+				distToProbe = 50 + 150*Math.exp( (dist-400)/20 );
+				distToProbe = Math.min(200, distToProbe );
+				//distToProbe = Math.min(200, 50 + 150*Math.exp( (dist-400)/20) );
 				// IMPORTANT: to evade rammers I need distToProbe to be about 200
 				// but this seems to much for bots fighting in close distance
 				//distToProbe = distToProbe1on1;
