@@ -128,8 +128,8 @@ public class botStatPoint {
 		// essentially does this point matches refPatCurrent point.
 		// compare how this stat point with respect to testPatStart
 		// matches reference Start and refPatCurrent
-		double dist2WallProximity = 400;
-		double dist2WallDiff = 5;
+		double dist2WallProximity = 80;
+		double dist2WallDiff = 4;
 		double maxSpeedDist = 0.5;
 		double maxAngleDist = 10; // 10 is maximum bot rotation per turn
 		double spdT = this.getSpeed();
