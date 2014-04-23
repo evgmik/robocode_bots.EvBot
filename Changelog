@@ -1,3 +1,9 @@
+= Version  4.5.16 =
+
+Reversion: pifGun and botStats comparison essentially reverted to v4.5.11 
+parameters. It seems to increase APS.
+
+
 = Version  4.5.15 =
 
 Feature: rammer avoidance with danger map motion, also probing points are now

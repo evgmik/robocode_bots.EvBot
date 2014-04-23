@@ -1,8 +1,5 @@
 * !important: increase conner danger in 1on1, often my bot pushed in the conner,
   which reduces MEA
-* !important: see what degraded performance between v4.5.11 and v4.5.12, 
-  most likely it is a pifGun which probes along all points but not only
-  longest matches
 * do not go over all pifGun matched ends only as needed, i.e. speedup
 * !important: do not recalculate pattern in pif calcTargetFuturePosition method, 
   reuse found ends
@@ -29,6 +26,9 @@ possible track calculation. This will help to do true goto surfer.
   motion algorithm and lack of enemy bullets avoidance
 
 = Completed =
+* see what degraded performance between v4.5.11 and v4.5.12:
+  prinniung/cleaning points for out of bounds check generated a lot of skipped turns, thus
+  overall degraded stats
 * add anti bullet shield tactics for 1on1 i.e. fire slightly off enemy bot center 
   or even just enable random gun.
 * check that on actual my bullet hit it is counted into guess factor stats.
