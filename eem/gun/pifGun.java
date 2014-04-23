@@ -97,12 +97,18 @@ public class pifGun extends baseGun {
 		// for each templateEnds point find a pif trace
 		// FIXME no need to go over all of them if we are using only
 		// the longest matched ones at the highest depth level
+		if ( false ) { 
+			// FIXME cleaning leads to a lot of skipping so I disable it for now
+			// FIXME alternatively, it decreases probablility of head on targetring
+			// FIXME nope, tried just to use head on and it drops APS,
+			// FIXME so I am convinced it is skipped turns.
 		for ( Integer i : templateEndsList.getEndsForPatternSizeN(1) ) {
 			LinkedList<Point2D.Double> trace = tgt.playForwardTrace( (int)( i ), (long) ( afterTime ), refPoint );
 			if ( !isItGoodTrace( trace ) ) {
 				endsToRemove.add( i) ;
 			}
 
+		}
 		}
 		// now removing bad ends
 		for ( Integer i : endsToRemove ) {
