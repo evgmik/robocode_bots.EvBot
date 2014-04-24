@@ -377,7 +377,8 @@ public class dangerMapMotion extends basicMotion {
 		dangerPoint oldP = new dangerPoint ( DestinationPoint, pointDanger(DestinationPoint) );
 
 		// if we close to target, search for new before complete stop
-		if (myBot.myCoord.distance(DestinationPoint) < Math.min( dMapCellSize.x, dMapCellSize.y) ) {
+		double distToStop = 20; // 8+6+4+2 max stopping distance
+		if (myBot.myCoord.distance(DestinationPoint) < 5*distToStop ) {
 			oldP.dangerLevel += 1000; // very high to ensure new choice
 		}
 
