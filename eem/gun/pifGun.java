@@ -193,7 +193,7 @@ public class pifGun extends baseGun {
 
 	public void onPaint(Graphics2D g) {
 		super.onPaint( g );
-		drawPossiblePlayForwardTracks( g );
+		//drawPossiblePlayForwardTracks( g );
 	}
 
 }	
