@@ -73,27 +73,19 @@ public class basicMotion {
 	}
 
 	public double stopDistance( double velocity ) {
+		double speed = Math.abs(velocity);
 		int dist =0;
-		if (Math.abs(velocity) == 0 ) 
-			dist = 0;
-		if (Math.abs(velocity) == 1 ) 
-			dist =1;
-		if (Math.abs(velocity) == 2 ) 
-			dist =2;
-		if (Math.abs(velocity) == 3 ) 
-			dist =3+1;
-		if (Math.abs(velocity) == 4 ) 
-			dist =4+2;
-		if (Math.abs(velocity) == 5 ) 
-			dist =5+3+1;
-		if (Math.abs(velocity) == 6 ) 
-			dist =6+4+2;
-		if (Math.abs(velocity) == 7 ) 
-			dist =7+5+3+1;
-		if (Math.abs(velocity) == 8 ) 
-			dist =8+6+4+2;
-		dist=-dist*math.sign(velocity);
+
+		speed =- 2;
+		while ( speed > 0 ) {
+			dist += speed;
+			speed =- 2;
+		}
 		return dist;
+	}
+
+	public double stopDistanceVector( double velocity ) {
+		return -stopDistanceVector(velocity)*math.sign(velocity);
 	}
 
 	public double pointDangerFromWalls( Point2D.Double p, double speed ) {
