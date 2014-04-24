@@ -21,6 +21,7 @@ public class basicMotion {
 	protected int robotHalfSize;
 	protected double dangerForPointTouchingTheWall = 1e6; // humongous number
 	protected double dangerLevelWall = 50;
+	protected double dangerLevelCorner = 1e4;
 	protected double safe_distance_from_wall;
 
 
@@ -86,6 +87,30 @@ public class basicMotion {
 
 	public double stopDistanceVector( double velocity ) {
 		return -stopDistanceVector(velocity)*math.sign(velocity);
+	}
+
+	public double pointDangerFromCorners( Point2D.Double p, double speed ) {
+		double danger = 0;
+		double cornerDanger = 100;
+		double dist;
+
+		Point2D.Double corner = new Point2D.Double(0,0); // bottom left
+		dist = corner.distance(p);
+		danger += math.gaussian( dist, dangerLevelCorner, 2*safe_distance_from_wall );
+
+		corner = new Point2D.Double(myBot.BattleField.x, myBot.BattleField.y); // top right
+		dist= corner.distance(p);
+		danger += math.gaussian( dist, dangerLevelCorner, 2*safe_distance_from_wall );
+
+		corner = new Point2D.Double(myBot.BattleField.x, 0); // bottom right 
+		dist = corner.distance(p);
+		danger += math.gaussian( dist, dangerLevelCorner, 2*safe_distance_from_wall );
+
+		corner = new Point2D.Double(0, myBot.BattleField.y); // top left
+		dist = corner.distance(p);
+		danger += math.gaussian( dist, dangerLevelCorner, 2*safe_distance_from_wall );
+
+		return danger;
 	}
 
 	public double pointDangerFromWalls( Point2D.Double p, double speed ) {
