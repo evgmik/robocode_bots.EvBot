@@ -1,3 +1,8 @@
+= Version  4.5.17 =
+
+Improvements: added danger from corners in 1on1 type fight
+Bug fix: stopDistance assumed integer values for speed
+
 = Version  4.5.16 =
 
 Reversion: pifGun and botStats comparison essentially reverted to v4.5.11 
