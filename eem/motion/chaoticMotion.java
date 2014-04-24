@@ -127,7 +127,7 @@ public class chaoticMotion extends basicMotion {
 					dist = -41;
 					myBot.setTurnRight(0);
 			} else {
-				dist = stopDistance(myBot.getVelocity());
+				dist = stopDistanceVector(myBot.getVelocity());
 				logger.noise("Robot velocity =  " + myBot.getVelocity());
 				logger.noise("Trying to stop by setting distance = " + dist);
 			}
