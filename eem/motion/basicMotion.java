@@ -79,7 +79,7 @@ public class basicMotion {
 		speed =- 2;
 		while ( speed > 0 ) {
 			dist += speed;
-			speed =- 2;
+			speed -= 2;
 		}
 		return dist;
 	}
