@@ -241,6 +241,9 @@ public class dangerMapMotion extends basicMotion {
 	public double pointDanger( Point2D.Double p ) {
 		double danger = 0;
 		danger += pointDangerFromWalls( p, myBot._tracker.getLast().getSpeed() );
+		if ( myBot.fightType().equals("1on1") || myBot.fightType().equals("melee1on1") ) {
+			danger += pointDangerFromCorners( p, myBot._tracker.getLast().getSpeed() );
+		}
 		danger += pointDangerFromAllBots( p );
 		danger += pointDangerFromEnemyWavesAndItsPrecursor( p );
 		return danger;
