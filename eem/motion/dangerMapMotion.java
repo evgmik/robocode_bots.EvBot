@@ -303,12 +303,12 @@ public class dangerMapMotion extends basicMotion {
 				double majorRFromEnemy = majorRToEnemy;
 				// when we build the point within the ellipse lets direct
 				// minor axis towards the enemy
-				// FIXME probably need to count distance to wave not enemy
-				// FIXME can increase distance to go back
 				double dxEl;
 				double dyEl;
 				if ( angleRand < Math.PI ) {
 					// this ellipse part pointing to enemy
+					// FIXME angle enemy should be concern with
+					// wave start point if it is dominating decision
 					dyEl = minorRToEnemy*Math.sin( angleRand );
 					dxEl = majorRToEnemy*Math.cos( angleRand );
 				} else {
