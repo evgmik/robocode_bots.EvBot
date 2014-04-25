@@ -12,6 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.*;
 import robocode.*;
 import robocode.util.*;
 import robocode.Rules.*;
@@ -300,7 +301,7 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void  onBulletHit(BulletHitEvent e) {
-		baseGun tmp_gun;
+		LinkedList<baseGun> luckyGunsList = null;
 		Bullet b;	
 		logger.noise("Yey, we hit someone");
 		b = e.getBullet();
@@ -314,31 +315,35 @@ public class EvBot extends AdvancedRobot
 			logger.dbg("Weird, hit bullet does not exists");
 			return;
 		}
-		tmp_gun = _bmanager.whichOfMyGunsFiredBullet(b);
-		if ( tmp_gun == null ) {
+		luckyGunsList = _bmanager.whichOfMyGunsFiredBullet(b);
+		if ( luckyGunsList.size() == 0 ) {
 			logger.dbg("Weird, hit bullet does not known its gun");
 			return;
 		}
-		logger.noise("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
-		tmp_gun.incBulletHitCount();
+		for ( baseGun tmp_gun : luckyGunsList ) {
+			logger.dbg("This gun " + tmp_gun.getName() + " was fired " + tmp_gun.getBulletFiredCount() + " times" );
+			tmp_gun.incBulletHitCount();
+		}
 	}
 
 	public void  onBulletMissed(BulletMissedEvent e) {
+		LinkedList<baseGun> luckyGunsList = null;
 		if ( true ) return;
 		// no need to trace this event it is not used
-		baseGun tmp_gun = null;
 		logger.noise("Ups, our bullet missed");
 		if ( e.getBullet() == null ) {
 			logger.dbg("Weird, our missed bullet is not known to event");
 			return;
 		}
-		tmp_gun = _bmanager.whichOfMyGunsFiredBullet(e.getBullet());
-		if ( tmp_gun == null ) {
-		logger.noise("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
+		luckyGunsList = _bmanager.whichOfMyGunsFiredBullet(e.getBullet());
+		if ( luckyGunsList.size() == 0 ) {
 			logger.dbg("Weird, missed bullet does not known its gun");
 			return;
 		}
-		logger.noise("This gun was fired " + tmp_gun.getBulletFiredCount() + " times" );
+		for ( baseGun tmp_gun : luckyGunsList ) {
+			logger.dbg("This gun " + tmp_gun.getName() + " was fired " + tmp_gun.getBulletFiredCount() + " times" );
+			tmp_gun.incBulletHitCount();
+		}
 	}
 
 	public void onRobotDeath(RobotDeathEvent e) {
