@@ -295,6 +295,7 @@ public class EvBot extends AdvancedRobot
 		//setTurnLeft(angle);
 		//moveOrTurn(100,angle);
 		//_trgt.targetUnlocked=true;
+		logger.dbg("Hit by bullet at tic " +  this.ticTime );
 		_botsmanager.onHitByBullet(e);
 	}
 
