@@ -274,11 +274,6 @@ public class dangerMapMotion extends basicMotion {
 		Point2D.Double centerPoint = (Point2D.Double) myBot.myCoord.clone();
 		Point2D.Double bPos = myBot._trgt.getPosition();
 		double dist2enemy = myBot.myCoord.distance(bPos);
-		if (dist2enemy < 100 ) {
-			// this is probably a rammer
-			// increase probe distance
-			distToProbe = 200;
-		}
 		double dist;
 		int cnt = 0;
 		double probLongStep = Math.random();
