@@ -58,6 +58,7 @@ public class dangerPoint implements Comparable<dangerPoint> {
 		p = this.position;
 		double dL = this.dangerLevel;
 		g.setColor( graphics.dangerLevel2mapColor( dL ) );
+		g.setColor( new Color(0x00, 0x00, 0xaa, 0xff) );
 		g.drawOval((int) p.x-5, (int) p.y-5, 10, 10);
 		// put dot in the middle
 		//g.setColor( new Color(0x00, 0x00, 0xaa, 0xff) );
