@@ -271,14 +271,13 @@ public class  bulletsManager {
 		baseGun  gun = null;
 		double bx = b.getX();
 		double by = b.getY();
-		double bfBx, bfBy, dx, dy, dist;
+		double dx, dy, dist;
 		while (bLIter.hasNext()) {
 			fB = bLIter.next();
 			if ( fB.isItMine ) {
-				bfBx = fB.robocodeBullet.getX();
-				bfBy = fB.robocodeBullet.getY();
-				dx = Math.abs(bx - bfBx);
-				dy = Math.abs(by - bfBy);
+				Point2D.Double bfB = (Point2D.Double) fB.getPosition().clone();
+				dx = Math.abs(bx - bfB.x);
+				dy = Math.abs(by - bfB.y);
 				//dist = Math.sqrt( dx*dx + dy*dy );
 				//logger.noise("Fired bullet known coordinates " + bfBx + ", " + bfBy + " \t bullet reported " + bx + ", " + by + "dist = " + dist );
 				// below is dirty hack since robocode seems to miss report
