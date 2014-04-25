@@ -213,7 +213,7 @@ public class baseGun {
 			// if gun is called and
 			// predicted bullet deviation within half a body size of the robot
 			if (myBot.getGunHeat() == 0 && 
-					Math.abs(predictedBulletDeviation) < Math.min( myBot.getHeight(), myBot.getWidth())/2 ) {
+					Math.abs(predictedBulletDeviation) < Math.min( myBot.getHeight(), myBot.getWidth())/5 ) {
 				logger.noise("Firing the gun with power = " + firePower);
 				this.fireGun();
 			}
