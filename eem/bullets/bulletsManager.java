@@ -264,7 +264,8 @@ public class  bulletsManager {
 		return enemyWaves;
 	}
 
-	public baseGun whichOfMyGunsFiredBullet(Bullet b) {
+	public LinkedList<baseGun> whichOfMyGunsFiredBullet(Bullet b) {
+		LinkedList<baseGun> luckyGunsList = new LinkedList<baseGun>();
 		LinkedList<firedBullet> bullets = getAllMyBullets();
 		ListIterator<firedBullet> bLIter = bullets.listIterator();
 		firedBullet  fB;
@@ -286,12 +287,12 @@ public class  bulletsManager {
 				// from reported by onBulletHit method
 				if (( dx <= myBot.robotHalfSize ) && ( dy <= myBot.robotHalfSize ) ) {
 					gun = fB.firedGun;
+					luckyGunsList.add(gun);
 					logger.noise("This bullet was fired by gun = " + gun.getName() );
-					break;
 				}
 			}
 		} 
-		return  gun;
+		return  luckyGunsList;
 	}
 
 	public void onPaint(Graphics2D g) {
