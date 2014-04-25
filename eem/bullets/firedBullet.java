@@ -237,11 +237,7 @@ public class firedBullet {
 	}
 
 	public boolean isActive() {
-		if (isItMine) {
-			return robocodeBullet.isActive();
-		} else {
-			return !math.isItOutOfBorders(getPosition(), myBot.BattleField) ;
-		}
+		return !math.isItOutOfBorders(getPosition(), myBot.BattleField) ;
 	}
 
 	public Point2D.Double endPositionAtBorder() {
