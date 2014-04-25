@@ -139,7 +139,16 @@ public class  bulletsManager {
 		// adds my waves
 		wave w = new wave( myBot, b );
 		myWaves.add(w);
-		w.addBullet(b);
+		//w.addBullet(b);
+		double bEnergy = b.bulletEnergy();
+		String  gunSetKey = myBot.fightType();
+		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( gunSetKey );
+		firedBullet tmpB;
+		for ( baseGun g: guns ) {
+			tmpB = new firedBullet( myBot, myBot._tracker, myBot._trgt, g, bEnergy );
+			logger.dbg("virtual bullet " + tmpB );
+			w.addBullet(tmpB);
+		}
 	}
 
 	public void removeEmptyWavesFromList( LinkedList<wave> waves ) {
