@@ -70,14 +70,25 @@ public class firedBullet {
 	}
 
 	public firedBullet(EvBot bot, InfoBot firedBot, baseGun gun, double bulletEnergy) {
+		// bullets fired at me
+		this( bot, firedBot, bot._tracker, gun, bulletEnergy );
+	}
+
+	public firedBullet(EvBot bot, InfoBot firedBot, InfoBot targetBot, baseGun gun, double bulletEnergy) {
+		// general constructor
 		myBot = bot;
-		isItMine = false;
 		firedGun = gun;
-		this.bulletSpeed = firedGun.bulletSpeed(bulletEnergy); 
-		// fixme enemy bullet detected 1 tic later so I need previous coord here
-		this.firingPosition = (Point2D.Double) firedBot.getPosition().clone();
-		this.targetPosition = (Point2D.Double) gun.calcTargetFuturePosition( firedBot, bulletEnergy, myBot._tracker);
 		firedTime = myBot.ticTime;
+		this.bulletSpeed = firedGun.bulletSpeed(bulletEnergy); 
+		// FIXME my virtual bullet do not coinside with actual ones
+		if ( firedBot.getName().equals( myBot.getName() ) ) {
+			isItMine = true;
+		} else {
+			isItMine = false;
+		}
+		// fixme enemy bullet detected 1 tic later so I need previous coord here
+		this.targetPosition = (Point2D.Double) gun.calcTargetFuturePosition( firedBot, bulletEnergy, targetBot);
+		this.firingPosition = (Point2D.Double) firedBot.getPosition().clone();
 		this.firingAngle = Math.atan2(targetPosition.x-firingPosition.x, targetPosition.y - firingPosition.y);
 		bulletColor = firedGun.gunColor;
 	}
