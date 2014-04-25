@@ -386,7 +386,7 @@ public class EvBot extends AdvancedRobot
 		// Set the paint color to a red half transparent color
 		if (_trgt.haveTarget ) {
 			// show our own path
-			PaintRobotPath.onPaint(g, getName(), getTime(), myCoord.x, myCoord.y, Color.GREEN);
+			//PaintRobotPath.onPaint(g, getName(), getTime(), myCoord.x, myCoord.y, Color.GREEN);
 			// show estimated future position to be fired
 			logger.noise("Gun choice = " + _gun.getName() );
 			_gun.onPaint(g);
