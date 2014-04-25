@@ -118,36 +118,16 @@ public class  bulletsManager {
 	public void add_enemy_wave(InfoBot firedBot) {
 		baseGun eGun = new baseGun(myBot);
 		eGun.incBulletFiredCount(myBot._tracker, firedBot);
-		firedBullet b;
 
 		// create bullet wave
 		wave w = new wave( myBot, firedBot, firedBot.energyDrop() );
 		enemyWaves.add(w);
-
-		String  gunSetKey = "firingAtMyBot" + "_in_" + myBot.fightType();
-		if ( !myBot._gmanager.gunSets.containsKey( gunSetKey ) ) {
-			gunSetKey = "firingAtMyBot" + "_in_" + "default";
-		}
-		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( gunSetKey );
-		for ( baseGun g: guns ) {
-			b = new firedBullet( myBot, firedBot,  g, firedBot.energyDrop() );
-			w.addBullet(b);
-		}
 	}
 
 	public void add( firedBullet b) {
 		// adds my waves
 		wave w = new wave( myBot, b );
 		myWaves.add(w);
-		//w.addBullet(b);
-		double bEnergy = b.bulletEnergy();
-		String  gunSetKey = myBot.fightType();
-		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( gunSetKey );
-		firedBullet tmpB;
-		for ( baseGun g: guns ) {
-			tmpB = new firedBullet( myBot, myBot._tracker, myBot._trgt, g, bEnergy );
-			w.addBullet(tmpB);
-		}
 	}
 
 	public void removeEmptyWavesFromList( LinkedList<wave> waves ) {

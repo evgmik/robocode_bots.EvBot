@@ -49,6 +49,18 @@ public class wave {
 		setEnemyPosAtFiringTime();
 		setEnemyMEAatFiringTime();
 		waveColor = (Color) b.getColor();
+		// fill wave with virtual bullets
+		//w.addBullet(b);
+		double bEnergy = b.bulletEnergy();
+		String  gunSetKey = myBot.fightType();
+		//logger.dbg("my bot pos " + myBot._tracker.getPosition() );
+		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( gunSetKey );
+		firedBullet tmpB;
+		for ( baseGun g: guns ) {
+			// FIXME differentiate between virtual and real fired bullet gun
+			tmpB = new firedBullet( myBot, myBot._tracker, myBot._trgt, g, bEnergy );
+			this.addBullet(tmpB);
+		}
 	}
 
 	public wave(EvBot bot, InfoBot firedBot, double bulletEnergy) {
@@ -63,6 +75,16 @@ public class wave {
 		firedTime = myBot.ticTime;
 		setEnemyPosAtFiringTime();
 		setEnemyMEAatFiringTime();
+
+		String  gunSetKey = "firingAtMyBot" + "_in_" + myBot.fightType();
+		if ( !myBot._gmanager.gunSets.containsKey( gunSetKey ) ) {
+			gunSetKey = "firingAtMyBot" + "_in_" + "default";
+		}
+		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( gunSetKey );
+		for ( baseGun g: guns ) {
+			firedBullet b = new firedBullet( myBot, firedBot,  g, firedBot.energyDrop() );
+			this.addBullet(b);
+		}
 	}
 
 	private void setEnemyPosAtFiringTime() {
@@ -135,7 +157,7 @@ public class wave {
 					if ( botPos.distance( b.getPosition() ) <= Math.sqrt(2)*myBot.robotHalfSize ) {
 						// bot hit by this bullet
 						if ( myBot.fightType().equals( "1on1" ) ) {
-							logger.dbg("FIXME sloppy path finding algorithm at tic " +  myBot.ticTime +": myBot should not be hit by predicted bullet " + b.firedGun.getName() );
+							//logger.dbg("FIXME sloppy path finding algorithm at tic " +  myBot.ticTime +": myBot should not be hit by predicted bullet " + b.firedGun.getName() );
 						}
 					}
 				}
