@@ -51,7 +51,7 @@ public class dangerMapMotion extends basicMotion {
 		
 		if (  myBot.numEnemyBotsAlive == 1  ) {
 			distToProbe = distToProbe1on1;
-			if ( myBot._trgt.haveTarget ) {
+			if ( myBot._trgt.haveTarget && false ) {
 				// we need to adjust distance releative to the danger distance
 				// FIXME: take in account wave distance and do it
 				// for not only 1on1
