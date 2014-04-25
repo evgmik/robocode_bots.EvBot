@@ -450,7 +450,7 @@ public class dangerMapMotion extends basicMotion {
 	}
 
 	public void onPaint(Graphics2D g) {
-		drawDangerMap(g);
+		//drawDangerMap(g);
 		drawMotionDestination(g);
 		drawDangerPoints(g);
 	}
