@@ -201,6 +201,41 @@ public class  bulletsManager {
 		} 
 	}
 
+	public wave getClosestToMeWave() {
+		ListIterator<wave> wLIter;
+		wave closestWave = null;
+		wLIter = enemyWaves.listIterator();
+		double closestDist=1e6; // unreasonably large
+		while (wLIter.hasNext()) {
+			wave wE = wLIter.next();
+			double distToMe = wE.distance( myBot.myCoord );
+			if ( (distToMe < closestDist) && ( (distToMe + myBot.robotHalfSize) > 0 )) {
+				closestWave = wE;
+				closestDist = distToMe;
+			}
+		} 
+		return closestWave;
+	}
+
+	public double getClosestToMeWaveDist() {
+		wave wE = getClosestToMeWave();
+		double distToMe=1e6; // unreasonably large
+		if ( wE == null ) 
+			return distToMe;
+		distToMe = wE.distance( myBot.myCoord );
+		return distToMe;
+	}
+
+	public double getClosestToMeWaveTimeArrival() {
+		wave wE = getClosestToMeWave();
+		double t=1e6; // unreasonably large
+		if ( wE == null ) 
+			return t;
+		t = wE.distance( myBot.myCoord ) / wE.getSpeed();
+		return t;
+	}
+
+
 	public LinkedList<firedBullet> getAllEnemyBullets() {
 		LinkedList<firedBullet> bullets = new LinkedList<firedBullet>();
 		for (wave w: enemyWaves) {
