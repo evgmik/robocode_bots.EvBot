@@ -146,7 +146,6 @@ public class  bulletsManager {
 		firedBullet tmpB;
 		for ( baseGun g: guns ) {
 			tmpB = new firedBullet( myBot, myBot._tracker, myBot._trgt, g, bEnergy );
-			logger.dbg("virtual bullet " + tmpB );
 			w.addBullet(tmpB);
 		}
 	}
