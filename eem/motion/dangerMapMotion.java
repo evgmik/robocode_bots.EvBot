@@ -294,22 +294,33 @@ public class dangerMapMotion extends basicMotion {
 			if ( myBot.fightType().equals("1on1") && myBot._trgt.haveTarget ) {
 				// we will generate points with in an ellipse with minor
 				// axis no longer than max(distToProbe, dist2target)
-				double minorR = dist2enemy - myBot.robotHalfSize*2;
-				minorR = Math.min( minorR, distToProbe);
-				double majorR = distToProbe;
+				double distBotConstrained = dist2enemy - myBot.robotHalfSize*2;
+				double distWaveConstrained = Math.abs(myBot._bmanager.getClosestToMeWaveTimeArrival())*8;
+				if ( distWaveConstrained < myBot.robotHalfSize) {
+					// wave already hit us too late to worry about it
+					distWaveConstrained = distToProbe;
+				}
+				double minorRToEnemy = Math.min( distBotConstrained, distWaveConstrained);
+				minorRToEnemy = Math.min( minorRToEnemy, distToProbe);
+				double majorRToEnemy = Math.min( distWaveConstrained, distToProbe );
+
+				double minorRFromEnemy = distToProbe;
+				double majorRFromEnemy = majorRToEnemy;
 				// when we build the point within the ellipse lets direct
 				// minor axis towards the enemy
 				// FIXME probably need to count distance to wave not enemy
 				// FIXME can increase distance to go back
-				double dxEl = majorR*Math.cos( angleRand );
+				double dxEl;
 				double dyEl;
 				if ( angleRand < Math.PI ) {
 					// this ellipse part pointing to enemy
-					dyEl = minorR*Math.sin( angleRand );
+					dyEl = minorRToEnemy*Math.sin( angleRand );
+					dxEl = majorRToEnemy*Math.cos( angleRand );
 				} else {
 					// we are pointing away from enemy
 					// it is OK to use major radius in this direction
-					dyEl = majorR*Math.sin( angleRand );
+					dyEl = minorRFromEnemy*Math.sin( angleRand );
+					dxEl = majorRFromEnemy*Math.cos( angleRand );
 				}
 				// now random distance within ellipse
 				dxEl = rnd*dxEl;
