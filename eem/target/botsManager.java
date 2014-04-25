@@ -223,7 +223,7 @@ public class  botsManager {
 	public void onPaint(Graphics2D g) {
 		for (InfoBot bot : bots.values()) 
 		{
-			bot.onPaint(g);
+			//bot.onPaint(g);
 		}
 	}
 }
