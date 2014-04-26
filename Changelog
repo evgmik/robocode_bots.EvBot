@@ -1,3 +1,8 @@
+= Version  4.6.1 =
+
+Bug fix: "shadow" gun was used in stats and was reason for a crash since
+pointer to it was null.
+
 = Version  4.6.0 =
 
 Improvements: fire virtual bullets with my gun as well, using virtual bullets
