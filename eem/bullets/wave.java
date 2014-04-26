@@ -60,6 +60,7 @@ public class wave {
 			// FIXME differentiate between virtual and real fired bullet gun
 			tmpB = new firedBullet( myBot, myBot._tracker, myBot._trgt, g, bEnergy );
 			this.addBullet(tmpB);
+			g.incBulletFiredCount();
 		}
 	}
 
