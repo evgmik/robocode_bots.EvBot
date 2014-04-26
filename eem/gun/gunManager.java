@@ -446,8 +446,8 @@ public class gunManager {
 			logger.routine(strOut);
 		}
 		logger.routine("-------------------------------------------------------" );
-		logger.routine("Overall guns hit rate = " + logger.shortFormatDouble( 100*overallGunsHitRate() ) + "%" );
-		logger.routine("Overall real guns hit rate = " + logger.shortFormatDouble( 100.0*myBot.bulletHitCnt/myBot.bulletFiredCnt ) + "% with total fired bullets = " + myBot.bulletFiredCnt );
+		logger.routine("Overall virtual guns hit rate = " + logger.shortFormatDouble( 100*overallGunsHitRate() ) + "%" );
+		logger.routine("Overall real guns hit rate " + myBot.bulletHitCnt + "/" + myBot.bulletFiredCnt + " = " + logger.shortFormatDouble( 100.0*myBot.bulletHitCnt/myBot.bulletFiredCnt ) + "%" );
 		logger.routine("-------------------------------------------------------" );
 	}
 
