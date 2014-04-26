@@ -3,6 +3,7 @@ package eem.misc;
 
 import java.awt.geom.Point2D;
 import robocode.util.*;
+import java.util.*;
 import eem.EvBot;
 
 public class math {
@@ -97,6 +98,55 @@ public class math {
 		double forgiveness = 1;
 		return (nEvents + forgiveness ) / ( nTotal + forgiveness );
 	}
+
+	public static int binNumByWeight( LinkedList<Double> weights) {
+		// returns bin number probabilisticly according to its weight
+		int n = 0;
+		// first lets find sum of all weights
+		double sum=0;
+		for ( Double w : weights) {
+			sum += w;
+		}
+		// now we are choosing probabilisticly
+		double accumWeight=0;
+		double rnd=Math.random();
+		for ( Double w : weights) {
+			accumWeight += w/sum;
+			if ( rnd <= accumWeight ) {
+				break;
+			}
+			n++;
+		}
+		if ( n >= weights.size() ) {
+			logger.warning("Improbable happens: rnd == 1, last bin");
+			n = weights.size() - 1;
+		}
+		//logger.dbg("weights = " + weights);
+		//logger.dbg("n = " + n);
+		return n;
+	}
+
+	public static int binNumByMaxWeight( LinkedList<Double> weights) {
+		// returns bin number with highest weight
+		int n = 0;
+		double maxW = 0;
+		int cnt = 0;
+		for ( Double w : weights) {
+			if ( w > maxW ) {
+				maxW = w;
+				n = cnt;
+			}
+			cnt++;
+		}
+		if ( n >= weights.size() ) {
+			logger.warning("Improbable happens: rnd == 1, last bin");
+			n = weights.size() - 1;
+		}
+		//logger.dbg("weights = " + weights);
+		//logger.dbg("n = " + n);
+		return n;
+	}
+
 
 	public static Point2D.Double putWithinBorders( Point2D.Double pnt, Point2D.Double brdr) {
 		Point2D.Double npnt= new Point2D.Double( pnt.x, pnt.y );
