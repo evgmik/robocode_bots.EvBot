@@ -31,7 +31,7 @@ public class gunManager {
 		String fightType;
 		
 		guns = new  LinkedList<baseGun>();
-		//guns.add( new baseGun(myBot) );
+		guns.add( new baseGun(myBot) );
 		//guns.add( new linearGun(myBot) );
 		//guns.add( new randomGun(myBot) );
 		guns.add( new circularGun(myBot) );
