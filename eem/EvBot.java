@@ -324,8 +324,9 @@ public class EvBot extends AdvancedRobot
 			return;
 		}
 		for ( baseGun tmp_gun : luckyGunsList ) {
-			logger.dbg("This gun " + tmp_gun.getName() + " was fired " + tmp_gun.getBulletFiredCount() + " times" );
-			tmp_gun.incBulletHitCount();
+			logger.noise("This gun " + tmp_gun.getName() + " was fired " + tmp_gun.getBulletFiredCount() + " times" );
+			// FIXME differentiate real hits
+			//tmp_gun.incBulletHitCount();
 		}
 	}
 
@@ -344,7 +345,7 @@ public class EvBot extends AdvancedRobot
 			return;
 		}
 		for ( baseGun tmp_gun : luckyGunsList ) {
-			logger.dbg("This gun " + tmp_gun.getName() + " was fired " + tmp_gun.getBulletFiredCount() + " times" );
+			logger.noise("This gun " + tmp_gun.getName() + " was fired " + tmp_gun.getBulletFiredCount() + " times" );
 			tmp_gun.incBulletHitCount();
 		}
 	}
