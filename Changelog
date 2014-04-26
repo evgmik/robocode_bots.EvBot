@@ -1,3 +1,8 @@
+= Version  4.6.0 =
+
+Improvements: fire virtual bullets with my gun as well, using virtual bullets
+counts as base for gun selector  instead of real bullets.
+
 = Version  4.5.18 =
 
 Improvements: better choice of probe point on dangerMap motion. Wave arrival
