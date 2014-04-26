@@ -18,6 +18,7 @@ public class firedBullet {
 	protected Bullet robocodeBullet;
 	protected baseGun firedGun;
 	public boolean isItMine = false;
+	public boolean isItVirtual = true;
 	public Point2D.Double targetPosition;
 	protected Point2D.Double firingPosition;
 	protected long   firedTime;
@@ -91,6 +92,14 @@ public class firedBullet {
 		this.firingPosition = (Point2D.Double) firedBot.getPosition().clone();
 		this.firingAngle = Math.atan2(targetPosition.x-firingPosition.x, targetPosition.y - firingPosition.y);
 		bulletColor = firedGun.gunColor;
+	}
+
+	public void setIsItVirtual(boolean s) {
+		isItVirtual = s;
+	}
+
+	public boolean getIsItVirtual(boolean s) {
+		return isItVirtual;
 	}
 
 	public firedBullet(EvBot bot, baseGun gun) {
