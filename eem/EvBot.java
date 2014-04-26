@@ -37,6 +37,8 @@ public class EvBot extends AdvancedRobot
 	public static int roundsLost = 0;
 	public static int  finishingPlacesStats[] = null;
 	public static int  skippedTurnStats[] = null;
+	public static int bulletFiredCnt = 0;
+        public static int bulletHitCnt = 0;	
 
 	private botVersion botVer;
 	public target _trgt;
@@ -296,14 +298,15 @@ public class EvBot extends AdvancedRobot
 		//setTurnLeft(angle);
 		//moveOrTurn(100,angle);
 		//_trgt.targetUnlocked=true;
-		logger.dbg("Hit by bullet at tic " +  this.ticTime );
+		//logger.dbg("Hit by bullet at tic " +  this.ticTime );
 		_botsmanager.onHitByBullet(e);
 	}
 
 	public void  onBulletHit(BulletHitEvent e) {
 		LinkedList<baseGun> luckyGunsList = null;
 		Bullet b;	
-		logger.noise("Yey, we hit someone");
+		bulletHitCnt++;
+		logger.noise("Yey, we hit someone already " + bulletHitCnt);
 		b = e.getBullet();
 		if ( b == null ) {
 			logger.dbg("Weird, our hit bullet is not known to event");
