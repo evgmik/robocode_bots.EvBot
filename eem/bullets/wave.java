@@ -59,6 +59,11 @@ public class wave {
 		for ( baseGun g: guns ) {
 			// FIXME differentiate between virtual and real fired bullet gun
 			tmpB = new firedBullet( myBot, myBot._tracker, myBot._trgt, g, bEnergy );
+			if ( g.getName().equals( b.getFiredGun() ) ) {
+				tmpB.setIsItVirtual(false); // real bullet
+			} else {
+				tmpB.setIsItVirtual(true);  // virtual bullet
+			}
 			this.addBullet(tmpB);
 			g.incBulletFiredCount();
 		}
@@ -84,6 +89,7 @@ public class wave {
 		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( gunSetKey );
 		for ( baseGun g: guns ) {
 			firedBullet b = new firedBullet( myBot, firedBot,  g, firedBot.energyDrop() );
+			b.setIsItVirtual(true);  // virtual bullet
 			this.addBullet(b);
 		}
 	}
