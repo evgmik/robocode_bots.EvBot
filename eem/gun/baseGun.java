@@ -236,7 +236,7 @@ public class baseGun {
 			gunFired = true;
 			resetTicsInColdState();
 			gunHasTargetPoint = false;
-			this.incBulletFiredCount();
+			//this.incBulletFiredCount();
 		}
 	}
 
