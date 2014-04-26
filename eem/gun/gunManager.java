@@ -171,19 +171,12 @@ public class gunManager {
 		double accumWeight = 0;
 		boolean setNewGun = false;
 		LinkedList<baseGun> guns = gunSets.get( fightTypeStr );
+		LinkedList<Double> weights = new LinkedList<Double>();
 		for ( baseGun tmp_gun: guns ) {
-			accumWeight += getGunWeightForBot( tmp_gun,  bot );
-			if ( rnd <= accumWeight ) {
-				g=tmp_gun;
-				setNewGun = true;
-				break;
-			}
+			weights.add( getGunWeightForBot( tmp_gun,  bot ) );
 		}
-		if ( !setNewGun ) {
-			logger.warning("Improbable happens: rnd == 1, assigning default gun");
-			g = getDefaultGun();
-		}
-
+		int n = math.binNumByWeight( weights );
+		g = guns.get(n);
 		return g;
 	}
 
