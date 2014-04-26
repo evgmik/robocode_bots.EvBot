@@ -168,8 +168,10 @@ public class wave {
 						}
 						// update stats for my bot
 						if ( !bot.getName().equals( myBot.getName() ) ) {
-							b.getFiredGun().incBulletHitCount();
 							//logger.dbg("Enemy hit with " + b.getFiredGun().getName() );
+							if ( !b.getFiredGun().getName().equals("shadow") ) {
+								b.getFiredGun().incBulletHitCount();
+							}
 						}
 					}
 				}
