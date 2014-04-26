@@ -76,7 +76,7 @@ public class InfoBot {
 		String fCstr = String.format("%-4d", this.getBulletFiredCount());
 		String str = "";
 		str += "Enemy gun ratio of hit/fired: " + hCstr + "/" + fCstr;
-		str += " = " + logger.shortFormatDouble( this.getGunHitRate() );
+		str += " = " + logger.shortFormatDouble( 100.0*this.getGunHitRate() ) + "%";
 		str += " | ";
 	       	str += getName();
 		logger.routine( str );
