@@ -175,7 +175,7 @@ public class gunManager {
 		for ( baseGun tmp_gun: guns ) {
 			weights.add( getGunWeightForBot( tmp_gun,  bot ) );
 		}
-		int n = math.binNumByWeight( weights );
+		int n = math.binNumByMaxWeight( weights );
 		g = guns.get(n);
 		return g;
 	}
