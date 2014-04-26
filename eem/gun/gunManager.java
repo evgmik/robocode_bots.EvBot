@@ -322,7 +322,7 @@ public class gunManager {
 		String hdrStr = "";
 		hdrStr += String.format( "%12s", "gun name");
 		hdrStr += " | ";
-		hdrStr += String.format( "%12s    ", "hit rate");
+		hdrStr += String.format( "%14s    ", "hit rate");
 		hdrStr += " | ";
 		hdrStr += String.format( "%9s", "gun weight");
 		logger.routine(hdrStr);
@@ -335,7 +335,7 @@ public class gunManager {
 			fCt += fC;
 			double hR = math.eventRate( hC, fC );
 			// string formatting
-			String hRstr = logger.shortFormatDouble( hR );
+			String hRstr = logger.shortFormatDouble( 100.0*hR ) + "%";
 			String hCstr = String.format("%4d", hC);
 			String fCstr = String.format("%-4d", fC);
 			String strOut = "";
@@ -424,9 +424,9 @@ public class gunManager {
 		String hdrStr = "";
 		hdrStr += String.format( "%12s", "gun name");
 		hdrStr += " | ";
-		hdrStr += String.format( "%12s    ", "hit rate");
+		hdrStr += String.format( "%14s    ", "hit rate");
 		hdrStr += " | ";
-		hdrStr += String.format( "%9s", "firing rate");
+		hdrStr += String.format( "%10s", "firing rate");
 		logger.routine(hdrStr);
 		logger.routine("------------------------------------------------------------" );
 		for ( baseGun tmp_gun: allUsedByMyBotGuns.values() ) {
@@ -436,8 +436,8 @@ public class gunManager {
 			// firing rate
 			double fR = math.eventRate( fC, gunsFiringTotal );
 			// string formatting
-			String hRstr = logger.shortFormatDouble( hR );
-			String fRstr = logger.shortFormatDouble( fR );
+			String hRstr = logger.shortFormatDouble( 100.0*hR ) + "%";
+			String fRstr = logger.shortFormatDouble( 100.0*fR ) + "%";
 			String hCstr = String.format("%4d", hC);
 			String fCstr = String.format("%-4d", fC);
 			String strOut = "";
@@ -453,7 +453,8 @@ public class gunManager {
 			logger.routine(strOut);
 		}
 		logger.routine("-------------------------------------------------------" );
-		logger.routine("Overall guns hit rate = " + logger.shortFormatDouble( overallGunsHitRate() ) );
+		logger.routine("Overall guns hit rate = " + logger.shortFormatDouble( 100*overallGunsHitRate() ) + "%" );
+		logger.routine("Overall real guns hit rate = " + logger.shortFormatDouble( 100.0*myBot.bulletHitCnt/myBot.bulletFiredCnt ) + "% with total fired bullets = " + myBot.bulletFiredCnt );
 		logger.routine("-------------------------------------------------------" );
 	}
 
