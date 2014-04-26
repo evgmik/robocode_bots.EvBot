@@ -126,6 +126,7 @@ public class  bulletsManager {
 
 	public void add( firedBullet b) {
 		// adds my waves
+		myBot.bulletFiredCnt++;
 		wave w = new wave( myBot, b );
 		myWaves.add(w);
 	}
