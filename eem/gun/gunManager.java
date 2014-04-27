@@ -31,20 +31,21 @@ public class gunManager {
 		String fightType;
 		
 		guns = new  LinkedList<baseGun>();
-		guns.add( new baseGun(myBot) );
+		// order is important, the best overall gun should go first
+		guns.add( new circularGun(myBot) ); 
 		//guns.add( new linearGun(myBot) );
 		//guns.add( new randomGun(myBot) );
-		guns.add( new circularGun(myBot) );
 		guns.add( new guessFactorGun(myBot) );
+		guns.add( new baseGun(myBot) );
 		guns.add( new pifGun(myBot) ); // FIXME: too slow
 		fightType = "1on1";
 		gunSets.put( fightType, guns );
 		myFightTypes.add( fightType );
 
 		guns = new  LinkedList<baseGun>();
-		//guns.add( new linearGun(myBot) );
 		guns.add( new circularGun(myBot) );
 		guns.add( new guessFactorGun(myBot) );
+		//guns.add( new linearGun(myBot) );
 		//guns.add( new randomGun(myBot) );
 		//guns.add( new pifGun(myBot) ); // FIXME: too slow
 		fightType = "melee1on1";
@@ -52,58 +53,58 @@ public class gunManager {
 		myFightTypes.add( fightType );
 
 		guns = new  LinkedList<baseGun>();
-		//guns.add( new linearGun(myBot) );
 		guns.add( new circularGun(myBot) );
 		//guns.add( new guessFactorGun(myBot) );
+		//guns.add( new linearGun(myBot) );
 		//guns.add( new randomGun(myBot) );
 		fightType = "meleeMidle";
 		gunSets.put( fightType, guns );
 		myFightTypes.add( fightType );
 
 		guns = new  LinkedList<baseGun>();
-		//guns.add( new linearGun(myBot) );
 		guns.add( new circularGun(myBot) );
 		//guns.add( new guessFactorGun(myBot) );
+		//guns.add( new linearGun(myBot) );
 		fightType = "melee";
 		gunSets.put( fightType, guns );
 		myFightTypes.add( fightType );
 
 		guns = new  LinkedList<baseGun>();
-		guns.add( new baseGun(myBot) );
 		guns.add( new linearGun(myBot) );
 		guns.add( new circularGun(myBot) );
+		guns.add( new baseGun(myBot) );
 		//guns.add( new guessFactorGun(myBot) );
 		//guns.add( new pifGun(myBot) ); // FIXME: too slow
 		gunSets.put( "firingAtMyBot" + "_in_" + "melee", guns );
 
 		guns = new  LinkedList<baseGun>();
-		guns.add( new baseGun(myBot) );
 		guns.add( new linearGun(myBot) );
 		guns.add( new circularGun(myBot) );
+		guns.add( new baseGun(myBot) );
 		//guns.add( new guessFactorGun(myBot) );
 		//guns.add( new pifGun(myBot) ); // FIXME: too slow
 		gunSets.put( "firingAtMyBot" + "_in_" + "meleeMidle", guns );
 
 		guns = new  LinkedList<baseGun>();
-		guns.add( new baseGun(myBot) );
 		guns.add( new linearGun(myBot) );
 		guns.add( new circularGun(myBot) );
+		guns.add( new baseGun(myBot) );
 		guns.add( new guessFactorGun(myBot) );
 		guns.add( new pifGun(myBot) ); // FIXME: too slow
 		gunSets.put( "firingAtMyBot" + "_in_" + "melee1on1", guns );
 		gunSets.put( "firingAtMyBot" + "_in_" + "1on1", guns );
 
 		guns = new  LinkedList<baseGun>();
-		guns.add( new baseGun(myBot) );
 		guns.add( new linearGun(myBot) );
 		guns.add( new circularGun(myBot) );
+		guns.add( new baseGun(myBot) );
 		//guns.add( new guessFactorGun(myBot) );
 		//guns.add( new pifGun(myBot) ); // FIXME: too slow
 		gunSets.put( "firingAtMyBot" + "_in_" + "default", guns );
 
 		guns = new  LinkedList<baseGun>();
-		//guns.add( new linearGun(myBot) );
 		guns.add( new circularGun(myBot) );
+		//guns.add( new linearGun(myBot) );
 		fightType = "defaultGun";
 		gunSets.put( fightType, guns );
 		myFightTypes.add( fightType );
