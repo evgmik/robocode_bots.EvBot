@@ -134,6 +134,7 @@ public class wave {
 		long time = myBot.ticTime;
 		double waveDistNow  = this.getDistanceTraveledAtTime( time ); 
 		double waveDistNext = this.getDistanceTraveledAtTime( time+1 ); 
+		LinkedList<firedBullet> bulletsToRemove = new LinkedList<firedBullet>();
 		LinkedList<InfoBot> aliveBots = new LinkedList<InfoBot>();
 		aliveBots.addAll( myBot._botsmanager.listOfAliveBots() );
 		aliveBots.add( myBot._tracker );
@@ -171,9 +172,15 @@ public class wave {
 							//logger.dbg("Enemy hit with " + b.getFiredGun().getName() );
 							if ( !b.getFiredGun().getName().equals("shadow") ) {
 								b.getFiredGun().incBulletHitCount();
+								// removing this lucky bullet to avoid statistic scewing
+								bulletsToRemove.add(b);
 							}
 						}
 					}
+				}
+				// cleaning bullets which already hit a bot
+				for ( firedBullet b : bulletsToRemove ) {
+					bullets.remove(b);
 				}
 
 			}
