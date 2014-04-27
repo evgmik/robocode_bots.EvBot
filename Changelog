@@ -1,3 +1,11 @@
+= Version  4.6.2 candidate =
+
+Improvements: Gun has cashed firing solution do it does not recalculate it during the same
+tic.
+
+Virtual bullet removed from wave once it hit a target to avoid hit rate
+skewing.
+
 = Version  4.6.1 =
 
 Bug fix: "shadow" gun was used in stats and was reason for a crash since
