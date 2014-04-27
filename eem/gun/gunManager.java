@@ -176,7 +176,8 @@ public class gunManager {
 		for ( baseGun tmp_gun: guns ) {
 			weights.add( getGunWeightForBot( tmp_gun,  bot ) );
 		}
-		int n = math.binNumByMaxWeight( weights );
+		int n = math.binNumByMaxWeight( weights ); // use the most lucky gun
+		//int n = math.binNumByWeight( weights ); // probabilistic choice
 		g = guns.get(n);
 		return g;
 	}
