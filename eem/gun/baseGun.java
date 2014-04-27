@@ -3,6 +3,7 @@
 package eem.gun;
 
 import eem.EvBot;
+import eem.gun.*;
 import eem.target.*;
 import eem.bullets.*;
 import eem.misc.*;
@@ -12,6 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import robocode.Bullet;
 import java.util.HashMap;
+import java.util.*;
 
 
 public class baseGun {
@@ -28,6 +30,7 @@ public class baseGun {
 	private static int bulletHitCount = 0;
 	private static int bulletMissedCount = 0;
 	private static int bulletFiredCount = 0;
+	private static LinkedList<cachedTarget> cachedTargets = new LinkedList<cachedTarget>();
 	public static HashMap<String, gunStats> mapOfGunStats = new HashMap<String, gunStats>();
 	private String strSep = "__zzz__";
 
@@ -357,9 +360,32 @@ public class baseGun {
 		return new_ftPos;
 	}
 
+	public Point2D.Double findSettingInCachedTargets( cachedTarget cT ) {
+		if (cachedTargets.size() == 0) return null;
+		long timeStamp = cT.getTime();
+		for ( int i = cachedTargets.size()-1; i>=0; i-- ) {
+			// check first if cache has current timestamps
+			if ( cachedTargets.get(i).getTime() < timeStamp ) return null;
+			if ( cT.conditionEquals( cachedTargets.get(i) ) )
+				return cachedTargets.get(i).getTargetFuturePosition();
+		}
+		return null; // nothing found if we are here
+	}
+
 	public Point2D.Double calcTargetFuturePosition( InfoBot firedBot, double firePower, InfoBot tgt) {
 		Point2D.Double firingPosition = (Point2D.Double) firedBot.getPosition().clone();
-		return calcTargetFuturePosition( firingPosition, firePower, tgt);
+		Point2D.Double tFP = null;
+		cachedTarget cT = new cachedTarget( myBot, this, firedBot, tgt );
+		tFP = findSettingInCachedTargets( cT );
+		if ( tFP != null ) {
+		       	return tFP;
+		}
+		// ok we do it first time let's do it
+		//logger.dbg("firing bot " + firedBot.getName() + " at target " + tgt.getName() + " with gun " + getName() + " has nothing in the firing solutions cache" );
+		tFP = calcTargetFuturePosition( firingPosition, firePower, tgt);
+		cT.setTargetFuturePosition( tFP );
+		cachedTargets.add(cT);
+		return  tFP;
 	}
 
 	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
@@ -369,7 +395,8 @@ public class baseGun {
 	public void calcGunSettings() {
 		if ( myBot._trgt.haveTarget ) {
 			setFirePower();
-			setTargetFuturePosition(myBot._trgt);
+			Point2D.Double tFP = calcTargetFuturePosition(  myBot._tracker, firePower, myBot._trgt);
+			setTargetFuturePosition(tFP);
 		}
 	}
 
