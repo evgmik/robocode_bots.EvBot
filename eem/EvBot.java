@@ -39,6 +39,7 @@ public class EvBot extends AdvancedRobot
 	public static int  skippedTurnStats[] = null;
 	public static int bulletFiredCnt = 0;
         public static int bulletHitCnt = 0;	
+        public static int bulletHitByPredictedCnt = 0;	
 
 	private botVersion botVer;
 	public target _trgt;
