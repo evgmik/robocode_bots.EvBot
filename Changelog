@@ -1,7 +1,7 @@
 = Version  4.6.2 candidate =
 
 Improvements: Gun has cashed firing solution do it does not recalculate it during the same
-tic.
+tic. Added count when I am hit by predicted bullet as a measure of dodging.
 
 Virtual bullet removed from wave once it hit a target to avoid hit rate
 skewing.
