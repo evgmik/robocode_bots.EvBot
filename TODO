@@ -1,12 +1,4 @@
-* !important: do not recalculate pattern in pif calcTargetFuturePosition method, 
-  reuse found ends. It is done twice during virtual bullet fire and during real target track.
-  On top of it probabilistic gun will give differnt position with every calculation. Use cashed
-  values.
-* !important: increase conner danger in 1on1, often my bot pushed in the conner,
-  which reduces MEA
 * do not go over all pifGun matched ends only as needed, i.e. speedup
-* !important: see why calcTargetFuturePosition called twice per turn for pifGun and may be
-  others
 * in danger map motion do not shrink search distance in direction away from enemy
 * see if flexible distance to probe will help in melee too
 * instead of moving danger in front of enemy wave, calculate hit position at radius
@@ -29,6 +21,14 @@ possible track calculation. This will help to do true goto surfer.
   motion algorithm and lack of enemy bullets avoidance
 
 = Completed =
+* !important: see why calcTargetFuturePosition called twice per turn for pifGun and may be
+  others
+* !important: increase conner danger in 1on1, often my bot pushed in the conner,
+  which reduces MEA
+* !important: do not recalculate pattern in pif calcTargetFuturePosition method, 
+  reuse found ends. It is done twice during virtual bullet fire and during real target track.
+  On top of it probabilistic gun will give differnt position with every calculation. Use cashed
+  values.
 * see what degraded performance between v4.5.11 and v4.5.12:
   prinniung/cleaning points for out of bounds check generated a lot of skipped turns, thus
   overall degraded stats
