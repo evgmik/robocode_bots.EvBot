@@ -32,6 +32,13 @@ public class pifGun extends baseGun {
 		calcGunSettings();
 	}
 
+	public pifGun(EvBot bot, int maxPatLength) {
+		this(bot);
+		this.maxPatLength = maxPatLength;
+		gunName = "pifGun" + maxPatLength;
+		calcGunSettings();
+	}
+
 	public Point2D.Double chosePointFromDistribution(  LinkedList<Point2D.Double> pointsList ) {
 		int N = pointsList.size();
 		int ni = (int)( Math.random() * N );
