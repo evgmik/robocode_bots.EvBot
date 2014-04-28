@@ -29,6 +29,7 @@ public class pifGun extends baseGun {
 	public pifGun(EvBot bot) {
 		this();
 		myBot = bot;
+		gunName = "pifGun" + maxPatLength;
 		calcGunSettings();
 	}
 
