@@ -49,7 +49,7 @@ public class math {
 		dy=to_pnt.y - from_pnt.y;
 
 		angle = Math.atan2(dy,dx);
-		angle = cortesian2game_angles(angle*180/Math.PI);
+		angle = cortesian2game_angles( Math.toDegrees(angle) );
 		return angle;
 	}
 
