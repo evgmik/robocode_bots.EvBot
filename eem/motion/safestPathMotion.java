@@ -253,6 +253,9 @@ public class safestPathMotion extends dangerMapMotion {
 	public double pointDanger( dangerPathPoint p ) {
 		double danger = 0;
 		danger += pointDangerFromWalls( p.getPosition(), 0 );
+		if ( myBot.fightType().equals("1on1") || myBot.fightType().equals("melee1on1") ) {
+			danger += pointDangerFromCorners( p.getPosition(), p.getVelocity() );
+		}
 		danger += pointDangerFromAllBots( p.getPosition() );
 		danger += pointDangerFromEnemyWavesAtTicTime( p.getPosition(), p.getTime() );
 		return danger;
