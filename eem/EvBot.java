@@ -347,7 +347,6 @@ public class EvBot extends AdvancedRobot
 		}
 		for ( baseGun tmp_gun : luckyGunsList ) {
 			logger.noise("This gun " + tmp_gun.getName() + " was fired " + tmp_gun.getBulletFiredCount() + " times" );
-			tmp_gun.incBulletHitCount();
 		}
 	}
 
