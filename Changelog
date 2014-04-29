@@ -1,7 +1,10 @@
-= Version  4.6.2 candidate =
+= Version  4.6.2 =
 
 Improvements: Gun has cashed firing solution do it does not recalculate it during the same
 tic. Added count when I am hit by predicted bullet as a measure of dodging.
+
+Bug fix: safety path uses latest methods getTime instead of addressing tic
+variable.
 
 Virtual bullet removed from wave once it hit a target to avoid hit rate
 skewing.
