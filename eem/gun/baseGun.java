@@ -44,38 +44,38 @@ public class baseGun {
 		return numTicsInColdState;
 	}
 
-	public int getBulletFiredCount(InfoBot targetBot, InfoBot firingBot) {
+	public int getBulletVirtFiredCount(InfoBot targetBot, InfoBot firingBot) {
 		String key = this.buildMapKey( targetBot, firingBot);
 		gunStats gS = mapOfGunStats.get(key);
 		if (gS == null) {
 			return 0;
 		}
-		return gS.getBulletFiredCount();
+		return gS.getBulletVirtFiredCount();
 	}
 
-	public int getBulletFiredCount(InfoBot targetBot) {
-		return getBulletFiredCount(targetBot, myBot._tracker);
+	public int getBulletVirtFiredCount(InfoBot targetBot) {
+		return getBulletVirtFiredCount(targetBot, myBot._tracker);
 	}
 
-	public int getBulletFiredCount() {
-		return getBulletFiredCount(myBot._trgt, myBot._tracker);
+	public int getBulletVirtFiredCount() {
+		return getBulletVirtFiredCount(myBot._trgt, myBot._tracker);
 	}
 
-	public int getBulletHitCount(InfoBot targetBot, InfoBot firingBot) {
+	public int getBulletVirtHitCount(InfoBot targetBot, InfoBot firingBot) {
 		String key = this.buildMapKey( targetBot, firingBot);
 		gunStats gS = mapOfGunStats.get(key);
 		if (gS == null) {
 			return 0;
 		}
-		return gS.getBulletHitCount();
+		return gS.getBulletVirtHitCount();
 	}
 
-	public int getBulletHitCount(InfoBot targetBot) {
-		return getBulletHitCount(targetBot, myBot._tracker);
+	public int getBulletVirtHitCount(InfoBot targetBot) {
+		return getBulletVirtHitCount(targetBot, myBot._tracker);
 	}
 
-	public int getBulletHitCount() {
-		return getBulletHitCount(myBot._trgt, myBot._tracker);
+	public int getBulletVirtHitCount() {
+		return getBulletVirtHitCount(myBot._trgt, myBot._tracker);
 	}
 
 	public int getBulletMissedCount(InfoBot targetBot, InfoBot firingBot) {
@@ -84,7 +84,7 @@ public class baseGun {
 		if (gS == null) {
 			return 0;
 		}
-		return gS.getBulletFiredCount() - gS.getBulletHitCount();
+		return gS.getBulletVirtFiredCount() - gS.getBulletVirtHitCount();
 	}
 
 	public int getBulletMissedCount(InfoBot targetBot) {
@@ -95,76 +95,76 @@ public class baseGun {
 		return getBulletMissedCount(myBot._trgt, myBot._tracker);
 	}
 
-	public void incBulletFiredCount(InfoBot targetBot, InfoBot firingBot) {
+	public void incBulletVirtFiredCount(InfoBot targetBot, InfoBot firingBot) {
 		String key = this.buildMapKey( targetBot, firingBot);
 		gunStats gS = mapOfGunStats.get(key);
 		if (gS == null) {
 			gS = new gunStats();
 			mapOfGunStats.put(key,gS);
 		}
-		gS.incBulletFiredCount();
+		gS.incBulletVirtFiredCount();
 	}
 
-	public void incBulletFiredCount(InfoBot targetBot) {
-		incBulletFiredCount(targetBot, myBot._tracker);
+	public void incBulletVirtFiredCount(InfoBot targetBot) {
+		incBulletVirtFiredCount(targetBot, myBot._tracker);
 	}
 
-	public void incBulletFiredCount() {
-		incBulletFiredCount(myBot._trgt, myBot._tracker);
+	public void incBulletVirtFiredCount() {
+		incBulletVirtFiredCount(myBot._trgt, myBot._tracker);
 	}
 
-	public void incBulletHitCount(InfoBot targetBot, InfoBot firingBot) {
+	public void incBulletVirtHitCount(InfoBot targetBot, InfoBot firingBot) {
 		String key = this.buildMapKey( targetBot, firingBot);
 		gunStats gS = mapOfGunStats.get(key);
 		if (gS == null) {
 			gS = new gunStats();
 			mapOfGunStats.put(key,gS);
 		}
-		gS.incBulletHitCount();
+		gS.incBulletVirtHitCount();
 	}
 
-	public void incBulletHitCount(InfoBot targetBot) {
-		incBulletHitCount(targetBot, myBot._trgt);
+	public void incBulletVirtHitCount(InfoBot targetBot) {
+		incBulletVirtHitCount(targetBot, myBot._trgt);
 	}
 
-	public void incBulletHitCount() {
-		incBulletHitCount(myBot._trgt, myBot._tracker);
+	public void incBulletVirtHitCount() {
+		incBulletVirtHitCount(myBot._trgt, myBot._tracker);
 	}
 
-	public double getGunHitRate(InfoBot targetBot, InfoBot firingBot) {
+	public double getGunVirtHitRate(InfoBot targetBot, InfoBot firingBot) {
 		String key = this.buildMapKey( targetBot, firingBot);
 		gunStats gS = mapOfGunStats.get(key);
 		if (gS == null) {
 			gS = new gunStats();
 			mapOfGunStats.put(key,gS);
 		}
-		return gS.getGunHitRate();
+		return gS.getGunVirtHitRate();
 	}
 
-	public double getGunHitRate(InfoBot targetBot) {
-		return getGunHitRate(targetBot, myBot._tracker);
+	public double getGunVirtHitRate(InfoBot targetBot) {
+		return getGunVirtHitRate(targetBot, myBot._tracker);
 	}
 
-	public double getGunHitRate() {
-		return getGunHitRate(myBot._trgt, myBot._tracker);
+	public double getGunVirtHitRate() {
+		return getGunVirtHitRate(myBot._trgt, myBot._tracker);
 	}
 
-	public double getGunPerformance(InfoBot targetBot, InfoBot firingBot) {
+	public double getGunVirtPerformance(InfoBot targetBot, InfoBot firingBot) {
 		String key = this.buildMapKey( targetBot, firingBot);
 		gunStats gS = mapOfGunStats.get(key);
 		if (gS == null) {
 			gS = new gunStats();
 			mapOfGunStats.put(key,gS);
 		}
-		return gS.getGunPerformance();
+		return gS.getGunVirtPerformance();
 	}
 
-	public double getGunPerformance(InfoBot targetBot) {
-		return getGunPerformance(targetBot, myBot._tracker);
+	public double getGunVirtPerformance(InfoBot targetBot) {
+		return getGunVirtPerformance(targetBot, myBot._tracker);
 	}
 
-	public double getGunPerformance() {
-		return getGunPerformance(myBot._trgt, myBot._tracker);
+	public double getGunVirtPerformance() {
+		return getGunVirtPerformance(myBot._trgt, myBot._tracker);
 	}
 
 	public baseGun() {
@@ -239,7 +239,7 @@ public class baseGun {
 			gunFired = true;
 			resetTicsInColdState();
 			gunHasTargetPoint = false;
-			//this.incBulletFiredCount();
+			//this.incBulletVirtFiredCount();
 		}
 	}
 

@@ -65,7 +65,7 @@ public class wave {
 				tmpB.setIsItVirtual(true);  // virtual bullet
 			}
 			this.addBullet(tmpB);
-			g.incBulletFiredCount();
+			g.incBulletVirtFiredCount();
 		}
 	}
 
@@ -173,7 +173,7 @@ public class wave {
 						if ( !bot.getName().equals( myBot.getName() ) ) {
 							//logger.dbg("Enemy hit with " + b.getFiredGun().getName() );
 							if ( !b.getFiredGun().getName().equals("shadow") ) {
-								b.getFiredGun().incBulletHitCount();
+								b.getFiredGun().incBulletVirtHitCount();
 								// removing this lucky bullet to avoid statistic scewing
 								bulletsToRemove.add(b);
 							}

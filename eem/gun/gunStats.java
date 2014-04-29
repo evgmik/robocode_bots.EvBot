@@ -14,43 +14,45 @@ import robocode.Bullet;
 
 
 public class gunStats {
-	private int bulletHitCount = 0;
-	private int bulletFiredCount = 0;
+	private int bulletVirtHitCount = 0;
+	private int bulletVirtFiredCount = 0;
+	private int bulletRealHitCount = 0;
+	private int bulletRealFiredCount = 0;
 
 	public gunStats() {
 	}
 
-	public int getBulletFiredCount() {
-		return this.bulletFiredCount;
+	public int getBulletVirtFiredCount() {
+		return this.bulletVirtFiredCount;
 	}
 
-	public int getBulletHitCount() {
-		return this.bulletHitCount;
+	public int getBulletVirtHitCount() {
+		return this.bulletVirtHitCount;
 	}
 
-	public int getBulletMissedCount() {
-		return this.bulletFiredCount - this.bulletHitCount;
+	public int getBulletVirtMissedCount() {
+		return this.bulletVirtFiredCount - this.bulletVirtHitCount;
 	}
 
-	public void incBulletFiredCount() {
-		this.bulletFiredCount++;
+	public void incBulletVirtFiredCount() {
+		this.bulletVirtFiredCount++;
 	}
 
-	public void incBulletHitCount() {
-		this.bulletHitCount++;
+	public void incBulletVirtHitCount() {
+		this.bulletVirtHitCount++;
 	}
 
-	public double getGunHitRate() {
-		return (this.getBulletHitCount() ) / (this.getBulletFiredCount() + 1.0);
+	public double getGunVirtHitRate() {
+		return (this.getBulletVirtHitCount() ) / (this.getBulletVirtFiredCount() + 1.0);
 	}
 
-	public double getGunPerformance() {
-		return (this.getBulletHitCount() + 1.0) / (this.getBulletFiredCount() + 1.0);
+	public double getGunVirtPerformance() {
+		return (this.getBulletVirtHitCount() + 1.0) / (this.getBulletVirtFiredCount() + 1.0);
 	}
 
 	public String format() {
 		String str = "";
-		str+= "hit target \t" + getBulletHitCount() + "\t and was fired \t" + getBulletFiredCount();
+		str+= "hit target \t" + getBulletVirtHitCount() + "\t and was fired \t" + getBulletVirtFiredCount();
 		return str;
 	}
 }

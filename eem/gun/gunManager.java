@@ -153,12 +153,12 @@ public class gunManager {
 		// calculate total performance for each weight
 		LinkedList<baseGun> guns = gunSets.get( myBot.fightType() );
 		for ( baseGun tmp_gun: guns ) {
-			perf = tmp_gun.getGunPerformance( bot );
+			perf = tmp_gun.getGunVirtPerformance( bot );
 			logger.noise("Gun[" + tmp_gun.getName() + " ] performance = " + perf);
 			perfNormilizer += perf;
 		} 
 		// normalize gun weights to 1
-		perf = gun.getGunPerformance( bot );
+		perf = gun.getGunVirtPerformance( bot );
 		double weight;
 		weight = perf / perfNormilizer;
 		logger.noise("Gun[" + gun.getName() + " ] weight = " + logger.shortFormatDouble( weight ) );
@@ -239,7 +239,7 @@ public class gunManager {
 		LinkedList<baseGun> guns = gunSets.get( myBot.fightType() );
 		int cnt = 0;
 		for ( baseGun tmp_gun: guns ) {
-			cnt += tmp_gun.getBulletHitCount( bot );
+			cnt += tmp_gun.getBulletVirtHitCount( bot );
 		}
 		return cnt;
 	}
@@ -248,7 +248,7 @@ public class gunManager {
 		LinkedList<baseGun> guns = gunSets.get( myBot.fightType() );
 		int cnt = 0;
 		for ( baseGun tmp_gun: guns ) {
-			cnt += tmp_gun.getBulletFiredCount( bot );
+			cnt += tmp_gun.getBulletVirtFiredCount( bot );
 		}
 		return cnt;
 	}
@@ -296,7 +296,7 @@ public class gunManager {
 		LinkedList<InfoBot> botsList = myBot._botsmanager.listOfKnownBots();
 		int gCount = 0;
 		for ( InfoBot bot: botsList ) {
-			gCount += gun.getBulletHitCount(bot);
+			gCount += gun.getBulletVirtHitCount(bot);
 		}
 		return gCount;
 	}
@@ -305,7 +305,7 @@ public class gunManager {
 		LinkedList<InfoBot> botsList = myBot._botsmanager.listOfKnownBots();
 		int gCount = 0;
 		for ( InfoBot bot: botsList ) {
-			gCount += gun.getBulletFiredCount(bot);
+			gCount += gun.getBulletVirtFiredCount(bot);
 		}
 		return gCount;
 	}
@@ -331,9 +331,9 @@ public class gunManager {
 		logger.routine("------------------------------------------------------------" );
 		for ( baseGun tmp_gun: allUsedByMyBotGuns.values()  ) {
 			String gunName = tmp_gun.getName();
-			int hC = tmp_gun.getBulletHitCount(bot);
+			int hC = tmp_gun.getBulletVirtHitCount(bot);
 			hCt += hC;
-			int fC = tmp_gun.getBulletFiredCount(bot);
+			int fC = tmp_gun.getBulletVirtFiredCount(bot);
 			fCt += fC;
 			double hR = math.eventRate( hC, fC );
 			// string formatting
@@ -419,7 +419,7 @@ public class gunManager {
 		logger.routine("------------------------------------------------------------" );
 		for ( baseGun tmp_gun: allUsedByMyBotGuns.values() ) {
 			for ( InfoBot bot: botsList ) {
-				gunsFiringTotal += tmp_gun.getBulletFiredCount(bot);
+				gunsFiringTotal += tmp_gun.getBulletVirtFiredCount(bot);
 			}
 		}
 
