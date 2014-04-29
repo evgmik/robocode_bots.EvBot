@@ -32,6 +32,8 @@ public class dangerPath implements Comparable<dangerPath> {
 	}
 
 	public dangerPathPoint get(int i) {
+		if ( i >= size() )
+			return null;
 		return path.get(i);
 	}
 
