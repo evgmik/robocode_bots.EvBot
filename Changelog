@@ -1,3 +1,10 @@
+= Version  4.6.3 =
+
+Bug fix: repaired anti bullet shielding bots logic.
+
+Improvements: virtual bullets stats counted separately.
+
+
 = Version  4.6.2 =
 
 Improvements: Gun has cashed firing solution do it does not recalculate it during the same

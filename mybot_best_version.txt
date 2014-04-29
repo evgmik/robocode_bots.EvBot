@@ -1,6 +1,7 @@
 This is to keep track of the best performing bot versions
 
 ||Bot Version  | APS in Melee   | APS in 1on1 |
+| v4.6.1       | 63.07 low stat |  65.46      |
 | v4.6.1       | 63.00          |  64.44      |
 | v4.6.0       |  4.65 low stat |  64.08      |
 | v4.5.18      | 63.35 low stat |  66.07      |
