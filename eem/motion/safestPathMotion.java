@@ -73,7 +73,7 @@ public class safestPathMotion extends dangerMapMotion {
 	//private double guessFactorFlatenerStrength = 1000; gives enemy hit rate 0.18
 	private int NofGenNewPathAttempts = 15000;
 	private int maxPathLength = 50;
-	private int pathSafetyMargin = 49; // when we have less point recalculate path
+	private int pathSafetyMargin = 45; // when we have less point recalculate path
 	
 	public void initTic() {
 		seedDangerPathPoint = formCurDangerPointFromStatsNow();
@@ -256,7 +256,7 @@ public class safestPathMotion extends dangerMapMotion {
 		if ( myBot.fightType().equals("1on1") || myBot.fightType().equals("melee1on1") ) {
 			danger += pointDangerFromCorners( p.getPosition(), p.getVelocity() );
 		}
-		danger += pointDangerFromAllBots( p.getPosition() );
+		danger += pointDangerFromAllBots( p.getPosition() ); // excessive danger make it too predictable
 		danger += pointDangerFromEnemyWavesAtTicTime( p.getPosition(), p.getTime() );
 		return danger;
 	}
