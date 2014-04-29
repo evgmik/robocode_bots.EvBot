@@ -264,15 +264,23 @@ public class baseGun {
 		return (Point2D.Double) targetFuturePosition.clone();
 	}
 
-	public void setTargetFuturePosition(target tgt) {
-		targetFuturePosition = calcTargetFuturePosition( myBot.myCoord, firePower, tgt);
+	public Point2D.Double  addRandomOffsetToTargetFuturePosition(Point2D.Double firingPos, Point2D.Double tFP) {
 		//to counter act bullet shielding bots
 		//add small random offset of about bot size 
-		// FIXME ideally it should be orthogonal shift with respect to fire angle
+		double angle = math.angle2pt( firingPos, tFP);
+		angle = Math.toRadians(angle);
+		double dist  = firingPos.distance( tFP );
+		double offCenterFractDev = 0.05;
+		double tgtAngleDev = Math.atan2(offCenterFractDev*myBot.robotHalfSize, dist); // target angle profile
 		double r1=Math.random();
-		double r2=Math.random();
-		targetFuturePosition.x += r1*myBot.robotHalfSize/4;
-		targetFuturePosition.y += r2*myBot.robotHalfSize/4;
+		angle += math.signNoZero(r1-0.5)*tgtAngleDev; // offsetting target point from target center
+		tFP.x = firingPos.x + dist*Math.sin( angle );
+		tFP.y = firingPos.y + dist*Math.cos( angle );
+		return (Point2D.Double) tFP.clone();
+	}
+
+	public void setTargetFuturePosition(target targetBot) {
+		targetFuturePosition = (Point2D.Double)  calcTargetFuturePosition( myBot._tracker, firePower, targetBot).clone();
 	}
 
         public double firePoverVsDistance( double targetDistance ) {
