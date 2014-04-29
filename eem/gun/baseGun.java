@@ -264,7 +264,7 @@ public class baseGun {
 		return (Point2D.Double) targetFuturePosition.clone();
 	}
 
-	public Point2D.Double  addRandomOffsetToTargetFuturePosition(Point2D.Double firingPos, Point2D.Double tFP) {
+	private Point2D.Double  addRandomOffsetToTargetFuturePosition(Point2D.Double firingPos, Point2D.Double tFP) {
 		//to counter act bullet shielding bots
 		//add small random offset of about bot size 
 		double angle = math.angle2pt( firingPos, tFP);
@@ -283,7 +283,7 @@ public class baseGun {
 		targetFuturePosition = (Point2D.Double)  calcTargetFuturePosition( myBot._tracker, firePower, targetBot).clone();
 	}
 
-        public double firePoverVsDistance( double targetDistance ) {
+        protected double firePoverVsDistance( double targetDistance ) {
                 // calculate firepower based on distance
 		logger.noise("Target distance = " + targetDistance);
                 double firePower;
@@ -311,7 +311,7 @@ public class baseGun {
                 return firePower;
         }
 
-	public Point2D.Double futureTargetWithinPhysicalLimitsBasedOnVelocity( Point2D.Double ftPos, Point2D.Double tVel ) {
+	protected Point2D.Double futureTargetWithinPhysicalLimitsBasedOnVelocity( Point2D.Double ftPos, Point2D.Double tVel ) {
 		// robot center cannot approach walls closer than robotHalfSize
 		// so we take it in account for future target calculation
 		double robotHalfSize = myBot.robotHalfSize;
@@ -368,7 +368,7 @@ public class baseGun {
 		return new_ftPos;
 	}
 
-	public Point2D.Double findSettingInCachedTargets( cachedTarget cT ) {
+	private Point2D.Double findSettingInCachedTargets( cachedTarget cT ) {
 		if (cachedTargets.size() == 0) return null;
 		long timeStamp = cT.getTime();
 		for ( int i = cachedTargets.size()-1; i>=0; i-- ) {
@@ -400,7 +400,7 @@ public class baseGun {
 		return  tFP;
 	}
 
-	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
+	private Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
 		return  tgt.getPosition();
 	}
 
@@ -416,7 +416,7 @@ public class baseGun {
 		firePower = calcFirePower();
 	}
 
-	public double calcFirePower() {
+	protected double calcFirePower() {
 		double firePower =0;
 		if ( myBot._trgt.haveTarget ) {
 			firePower = firePoverVsDistance(myBot._trgt.getLastDistance(myBot.myCoord));
