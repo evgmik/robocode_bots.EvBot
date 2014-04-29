@@ -82,7 +82,7 @@ public class safestPathMotion extends dangerMapMotion {
 		if ( deviation > 1e-3 ) {
 			logger.dbg("Go fix the code: to large deviation from expected position");
 			logger.dbg("Deviation from predicted " + deviation );
-			logger.dbg("Actual time " + myBot.ticTime + " expected " + DestinationDangerPathPoint.getTime() );
+			logger.dbg("Actual time " + myBot.getTime() + " expected " + DestinationDangerPathPoint.getTime() );
 			logger.dbg("Actual position " + myBot.myCoord);
 			logger.dbg("Predicted position " + DestinationDangerPathPoint.getPosition());
 			logger.dbg("Velocity expected " + DestinationDangerPathPoint.getVelocity() + " actual " + myBot.getVelocity() );
@@ -101,7 +101,7 @@ public class safestPathMotion extends dangerMapMotion {
 		double angle = myBot.getHeading();
 		double speed = myBot.getVelocity();
 		seedDangerPathPoint = formCurDangerPointFromStatsNow();
-		DestinationDangerPathPoint = new dangerPathPoint( pos, danger, 0, 0, speed, angle, myBot.ticTime );
+		DestinationDangerPathPoint = new dangerPathPoint( pos, danger, 0, 0, speed, angle, myBot.getTime() );
 	       	safestPath = generateTheBestPath();
 	}
 
@@ -312,7 +312,7 @@ public class safestPathMotion extends dangerMapMotion {
 
 	public dangerPathPoint formCurDangerPointFromStatsNow() {
 			// form fictional previous path point from current
-			long pntTicTime = myBot.ticTime;
+			long pntTicTime = myBot.getTime();
 			double angle = myBot.getHeading();
 			double speed = myBot.getVelocity();
 			Point2D.Double pos = (Point2D.Double) myBot.myCoord.clone();
@@ -328,7 +328,7 @@ public class safestPathMotion extends dangerMapMotion {
 		
 		for(int i=0; i< cnt; i++) {
 			// no point to keep outdated points
-			if ( myBot.ticTime > DestinationDangerPathPoint.getTime() ) continue;
+			if ( myBot.getTime() > DestinationDangerPathPoint.getTime() ) continue;
 			// the current and future point need their danger to be updated
 			dangerPathPoint dp = oldP.get(i);
 			double danger = pointDanger( dp );
