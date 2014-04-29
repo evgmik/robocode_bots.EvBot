@@ -247,9 +247,9 @@ public class baseGun {
 		numTicsInColdState = 0;
 	}
 
-	public void setTargetFuturePosition( Point2D.Double target ) {
-		targetFuturePosition = math.putWithinBorders( target, myBot.BattleField);
-	};
+	//public void setTargetFuturePosition( Point2D.Double target ) {
+		//targetFuturePosition = math.putWithinBorders( target, myBot.BattleField);
+	//};
 
 	public String getName() {
 		return gunName;
@@ -391,6 +391,10 @@ public class baseGun {
 		// ok we do it first time let's do it
 		//logger.dbg("firing bot " + firedBot.getName() + " at target " + tgt.getName() + " with gun " + getName() + " has nothing in the firing solutions cache" );
 		tFP = calcTargetFuturePosition( firingPosition, firePower, tgt);
+		//to counter act bullet shielding bots
+		//add small random offset of about bot size 
+		tFP = addRandomOffsetToTargetFuturePosition( firingPosition, tFP);
+		tFP = math.putWithinBorders( tFP, myBot.BattleField);
 		cT.setTargetFuturePosition( tFP );
 		cachedTargets.add(cT);
 		return  tFP;
@@ -404,7 +408,7 @@ public class baseGun {
 		if ( myBot._trgt.haveTarget ) {
 			setFirePower();
 			Point2D.Double tFP = calcTargetFuturePosition(  myBot._tracker, firePower, myBot._trgt);
-			setTargetFuturePosition(tFP);
+			targetFuturePosition = (Point2D.Double) tFP.clone();	
 		}
 	}
 
