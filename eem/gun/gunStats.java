@@ -52,7 +52,7 @@ public class gunStats {
 
 	public String format() {
 		String str = "";
-		str+= "hit target \t" + getBulletVirtHitCount() + "\t and was fired \t" + getBulletVirtFiredCount();
+		str+= "virtual gun hit target \t" + getBulletVirtHitCount() + "\t and was fired \t" + getBulletVirtFiredCount();
 		return str;
 	}
 }
