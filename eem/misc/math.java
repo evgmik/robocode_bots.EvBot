@@ -15,7 +15,6 @@ public class math {
 		BattleField = (Point2D.Double) myBot.BattleField.clone();
 	}
 
-
 	public static double sqr( double x ) {
 		return x*x;
 	}
