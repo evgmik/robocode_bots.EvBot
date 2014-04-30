@@ -59,7 +59,7 @@ public class wave {
 		for ( baseGun g: guns ) {
 			// FIXME differentiate between virtual and real fired bullet gun
 			tmpB = new firedBullet( myBot, myBot._tracker, myBot._trgt, g, bEnergy );
-			if ( g.getName().equals( b.getFiredGun() ) ) {
+			if ( g.getName().equals( b.getFiredGun().getName() ) ) {
 				tmpB.setIsItVirtual(false); // real bullet
 			} else {
 				tmpB.setIsItVirtual(true);  // virtual bullet
