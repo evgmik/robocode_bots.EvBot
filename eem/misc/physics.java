@@ -28,4 +28,10 @@ public class physics {
 		return bSpeed;
 	}
 
+	public static double  bulletEnergy( double bulletSpeed ) {
+		double bEnergy = ( 20 - bulletSpeed ) / 3;
+		return bEnergy;
+	}
+
+
 }
