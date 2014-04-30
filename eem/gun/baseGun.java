@@ -242,7 +242,7 @@ public class baseGun {
 	}
 
 	public boolean doesItNeedTrackedTarget() {
-		if ( (myBot.getGunHeat()/myBot.getGunCoolingRate() < 3) ) {
+		if ( physics.gunCoolingTime( myBot.getGunHeat() ) <= 3 ) {
 			return true;
 		} else {
 			return false;
