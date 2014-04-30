@@ -17,8 +17,8 @@ public class firedBullet {
 
 	protected Bullet robocodeBullet;
 	protected baseGun firedGun;
-	public boolean belongToMyBot = false;
-	public boolean virtualState = true;
+	private boolean belongToMyBot = false;
+	private boolean virtualState = true;
 	public Point2D.Double targetPosition;
 	protected Point2D.Double firingPosition;
 	protected long   firedTime;
