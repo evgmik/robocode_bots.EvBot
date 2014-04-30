@@ -33,5 +33,10 @@ public class physics {
 		return bEnergy;
 	}
 
+	public static double  bulletDamageByEnergy( double bEnergy ) {
+		double bDamage = 4*bEnergy + 2 * Math.max( bEnergy - 1 , 0 );
+		return bDamage;
+	}
+
 
 }
