@@ -10,6 +10,7 @@ public class physics {
 	public static int robotHalfSize = 0;
 	public static Point2D.Double BattleField = new Point2D.Double(0,0);
 	public static double coolingRate = 0.1; 
+	public static double minimalAllowedBulletEnergy = 0.1; 
 
 	public static void init(EvBot myBot) {
 		robotHalfSize = myBot.robotHalfSize;
@@ -38,5 +39,17 @@ public class physics {
 		return bDamage;
 	}
 
+	public static double minReqBulEnergyToKillTarget(double target_energy) {
+		double tinyBity = 0.1; // in case if there were rounding in energy report
+		target_energy = target_energy + tinyBity;
+		// Bullet_damage = 4 * bullet_power + 2 * max(bullet_power - 1 , 0) see wiki
+		double bPower = target_energy/4;
+	       	if ( bPower > 1) {
+			// Bullet_damage = 4 * bullet_power + 2 * (bullet_power - 1)
+			bPower = (target_energy +2) / 6;
+		}
+		bPower = Math.max( bPower, minimalAllowedBulletEnergy);
+		return bPower;
+	}
 
 }

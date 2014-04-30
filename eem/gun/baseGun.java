@@ -478,13 +478,13 @@ public class baseGun {
 		double firePower =0;
 		if ( myBot._trgt.haveTarget ) {
 			firePower = firePoverVsDistance(myBot._trgt.getLastDistance(myBot.myCoord));
+			firePower = Math.max( firePower, physics.minimalAllowedBulletEnergy );
 			// no point to fire bullets more energetic than enemy bot energy level
-			// fixme replace magic minimal energy bullet = 0.1  with a named var
-			firePower = math.putWithinRange( firePower, 0.1, misc.minReqBulEnergyToKillTarget(myBot._trgt.getEnergy()) );
+			firePower = Math.min( firePower, physics.minReqBulEnergyToKillTarget( myBot._trgt.getEnergy() ) );
 
 			// do not fire more than bot has or it  get itself disabled
 			firePower = Math.min( firePower, myBot.getEnergy() - 1e-4 );
-			firePower = Math.max( firePower, 0.1); //take in account rounding
+			firePower = Math.max( firePower, physics.minimalAllowedBulletEnergy); //take in account rounding
 			// final check after rounding
 			if (myBot.getEnergy() <= firePower + 1e-4 ) {
 				firePower = 0;
