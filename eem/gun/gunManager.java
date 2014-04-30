@@ -321,34 +321,22 @@ public class gunManager {
 		for ( baseGun tmp_gun: activeGuns ) {
 			activeGunsNames.add( tmp_gun.getName() );
 		}
-		String hdrStr = "";
-		hdrStr += String.format( "%12s", "gun name");
-		hdrStr += " | ";
-		hdrStr += String.format( "%18s", "Virt gun hit rate");
-		hdrStr += " | ";
-		hdrStr += String.format( "%9s", "gun weight");
-		logger.routine(hdrStr);
-		logger.routine("------------------------------------------------------------" );
 		String tmpStr;
+		String hdrStr;
+		boolean firstTime = true;
 		for ( baseGun tmp_gun: allUsedByMyBotGuns.values()  ) {
+			if ( firstTime ) {
+				firstTime = false;
+				hdrStr = "";
+				hdrStr += tmp_gun.gunStatsHeader(myBot._tracker, bot );
+				hdrStr += " | ";
+				hdrStr += String.format( "%9s", "gun weight");
+				logger.routine(hdrStr);
+				logger.routine("------------------------------------------------------------" );
+			}
 			String gunName = tmp_gun.getName();
-			int hC = tmp_gun.getBulletVirtHitCount(bot);
-			hCt += hC;
-			int fC = tmp_gun.getBulletVirtFiredCount(bot);
-			fCt += fC;
-			double hR = math.eventRate( hC, fC );
-			// string formatting
-			String hRstr = logger.shortFormatDouble( 100.0*hR ) + "%";
-			String hCstr = String.format("%4d", hC);
-			String fCstr = String.format("%-4d", fC);
 			String strOut = "";
-			//strOut += "Gun[ ";
-			strOut += String.format( "%12s", tmp_gun.getName() );
-			//strOut += " ]";
-			strOut += " | ";
-			//strOut += "hit rate ";
-			tmpStr = hCstr + "/" + fCstr + " = " + hRstr;
-			strOut += String.format( "%16s", tmpStr );
+			strOut += tmp_gun.gunStatsFormat(myBot._tracker, bot );
 			strOut += " | ";
 			if ( activeGunsNames.contains( gunName ) ) {
 				double weight = getGunWeightForBot(tmp_gun, bot);
