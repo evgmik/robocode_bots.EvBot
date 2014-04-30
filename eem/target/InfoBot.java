@@ -303,11 +303,11 @@ public class InfoBot {
 		logger.profiler("For pattern length " + patLength + " find # matches " + newEndsList.size() + " in time " + (endTime - startTime) + " ns" );
 
 		LinkedList<Integer> prevEndsList;
-		prevEndsList = (LinkedList<Integer>) newEndsList.clone();
+		prevEndsList = newEndsList;
 		while ( (newEndsList.size() >=1) && (patLength < maxPatLength) ) {
 			patLength++;
 			startTime = System.nanoTime();
-			prevEndsList = (LinkedList<Integer>) newEndsList.clone();
+			prevEndsList = newEndsList;
 			endsListVsPatternLength.add( prevEndsList );
 			newEndsList = new LinkedList<Integer>();
 			for (Integer i : prevEndsList ) {
