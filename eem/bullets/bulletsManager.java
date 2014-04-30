@@ -256,7 +256,7 @@ public class  bulletsManager {
 		double dx, dy, dist;
 		while (bLIter.hasNext()) {
 			fB = bLIter.next();
-			if ( fB.isItMine ) {
+			if ( fB.isItMine() ) {
 				Point2D.Double bfB = (Point2D.Double) fB.getPosition().clone();
 				dx = Math.abs(bx - bfB.x);
 				dy = Math.abs(by - bfB.y);

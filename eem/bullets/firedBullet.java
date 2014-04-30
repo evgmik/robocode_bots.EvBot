@@ -17,8 +17,8 @@ public class firedBullet {
 
 	protected Bullet robocodeBullet;
 	protected baseGun firedGun;
-	public boolean isItMine = false;
-	public boolean isItVirtual = true;
+	public boolean belongToMyBot = false;
+	public boolean virtualState = true;
 	public Point2D.Double targetPosition;
 	protected Point2D.Double firingPosition;
 	protected long   firedTime;
@@ -38,7 +38,7 @@ public class firedBullet {
 		myBot = bot;
 		robocodeBullet = b;
 		firedGun = gun;
-		isItMine = true;
+		belongToMyBot = true;
 		targetPosition = firedGun.getTargetFuturePosition();
 		logger.noise("fired bullet target position = " + targetPosition);
 		firingPosition = new Point2D.Double( b.getX(), b.getY() );
@@ -59,7 +59,7 @@ public class firedBullet {
 		// to add bullet  passing through curPos to existing wave
 		// intended use for shadowing bullets
 		myBot = bot;
-		isItMine = false;
+		belongToMyBot = false;
 		this.firedGun = firedGun;
 		this.bulletSpeed = wv.bulletSpeed;
 		// fixme enemy bullet detected 1 tic later so I need previous coord here
@@ -83,9 +83,9 @@ public class firedBullet {
 		this.bulletSpeed = firedGun.bulletSpeed(bulletEnergy); 
 		// FIXME my virtual bullet do not coinside with actual ones
 		if ( firedBot.getName().equals( myBot.getName() ) ) {
-			isItMine = true;
+			belongToMyBot = true;
 		} else {
-			isItMine = false;
+			belongToMyBot = false;
 		}
 		// fixme enemy bullet detected 1 tic later so I need previous coord here
 		this.targetPosition = (Point2D.Double) gun.calcTargetFuturePosition( firedBot, bulletEnergy, targetBot);
@@ -95,16 +95,20 @@ public class firedBullet {
 	}
 
 	public void setIsItVirtual(boolean s) {
-		isItVirtual = s;
+		virtualState = s;
 	}
 
-	public boolean getIsItVirtual() {
-		return isItVirtual;
+	public boolean isItVirtual() {
+		return virtualState;
+	}
+
+	public boolean isItMine() {
+		return belongToMyBot;
 	}
 
 	public firedBullet(EvBot bot, baseGun gun) {
 		myBot = bot;
-		isItMine = false;
+		belongToMyBot = false;
 		firedGun = gun;
 		this.bulletSpeed = firedGun.bulletSpeed(myBot._trgt.energyDrop()); 
 		// fixme enemy bullet detected 1 tic later so I need previous coord here
@@ -121,7 +125,7 @@ public class firedBullet {
 
 	public double getDistanceTraveledAtTime(long time) {
 		double timeInFlight = time - firedTime + 1;
-		if ( !isItMine ) {
+		if ( !belongToMyBot ) {
 			timeInFlight = timeInFlight + 1;
 		}
 		double distTraveled = timeInFlight * bulletSpeed;
@@ -166,7 +170,7 @@ public class firedBullet {
 		double danger = 0;
 		double dist;
 		Point2D.Double bPos;
-		if ( isActive() && !isItMine ) {
+		if ( isActive() && !belongToMyBot ) {
 			bPos = getPositionAtTime(time);
 			dist = p.distance(bPos);
 
@@ -200,7 +204,7 @@ public class firedBullet {
 		double danger = 0;
 		double dist;
 		Point2D.Double bPos, bEnd;
-		if ( isActive() && !isItMine ) {
+		if ( isActive() && !belongToMyBot ) {
 			bPos = getPositionAtTime(time);
 			bEnd = endPositionAtBorder();
 			double dBx, dBy;
