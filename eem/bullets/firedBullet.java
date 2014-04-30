@@ -50,9 +50,8 @@ public class firedBullet {
 		bulletColor = firedGun.gunColor;
 	}
 
-	public double  bulletEnergy() {
-		double bEnergy = ( 20 - bulletSpeed ) / 3;
-		return bEnergy;
+	public double  getBulletEnergy() {
+		return physics.bulletEnergy( bulletSpeed );
 	}
 
 	public firedBullet(EvBot bot, wave wv, baseGun firedGun, Point2D.Double curPos) { 
@@ -234,7 +233,7 @@ public class firedBullet {
 					danger = math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet ); // tangent distance contribution
 					 danger *= math.gaussian( distAlongBulletPath, 1, distOfBulletPrecursor ); // distance to travel by bullet contribution
 					 if ( myBot.fightType().equals( "1on1" ) ) {
-						 double bDamage = 4*bulletEnergy() + 2 * Math.max( bulletEnergy() - 1 , 0 );
+						 double bDamage = 4*getBulletEnergy() + 2 * Math.max( getBulletEnergy() - 1 , 0 );
 						 danger *= (1+myBot.totalNumOfEnemiesAtStart/Math.max( myBot.numEnemyBotsAlive, 1) *0.01*bDamage);
 					 }
 

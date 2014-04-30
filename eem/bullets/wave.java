@@ -51,7 +51,7 @@ public class wave {
 		waveColor = (Color) b.getColor();
 		// fill wave with virtual bullets
 		//w.addBullet(b);
-		double bEnergy = b.bulletEnergy();
+		double bEnergy = b.getBulletEnergy();
 		String  gunSetKey = myBot.fightType();
 		//logger.dbg("my bot pos " + myBot._tracker.getPosition() );
 		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( gunSetKey );
