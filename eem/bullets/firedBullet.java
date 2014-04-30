@@ -98,7 +98,7 @@ public class firedBullet {
 		isItVirtual = s;
 	}
 
-	public boolean getIsItVirtual(boolean s) {
+	public boolean getIsItVirtual() {
 		return isItVirtual;
 	}
 
