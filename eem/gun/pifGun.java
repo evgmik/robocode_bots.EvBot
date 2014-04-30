@@ -64,7 +64,7 @@ public class pifGun extends baseGun {
 		return true;
 	}
 
-	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
+	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
 		long startTimeCalc = System.nanoTime();
 		long startTime, endTime;
 		refPoint = tgt.botStats.getLast();

@@ -400,7 +400,7 @@ public class baseGun {
 		return  tFP;
 	}
 
-	private Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
+	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
 		return  tgt.getPosition();
 	}
 

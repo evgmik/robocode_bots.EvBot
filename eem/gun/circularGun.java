@@ -23,7 +23,7 @@ public class circularGun extends baseGun {
 		calcGunSettings();
 	}
 
-	public Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
+	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
 		Point2D.Double p = findTargetHitPositionWithCircularPredictor( firingPosition, firePower, tgt);
 		return p;
 	}
