@@ -117,7 +117,6 @@ public class  bulletsManager {
 
 	public void add_enemy_wave(InfoBot firedBot) {
 		baseGun eGun = new baseGun(myBot);
-		eGun.incBulletVirtFiredCount(myBot._tracker, firedBot);
 
 		// create bullet wave
 		wave w = new wave( myBot, firedBot, firedBot.energyDrop() );
