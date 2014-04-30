@@ -496,10 +496,7 @@ public class baseGun {
 	}
 
 	public double  bulletSpeed( double firePower ) {
-		double bSpeed;
-		bSpeed = ( 20 - firePower * 3 );
-		logger.noise("bullet speed = " + bSpeed + " for firePower = " + firePower);
-		return bSpeed;
+		return physics.bulletSpeed( firePower );
 	}
 
 	public double getFirePower() {
