@@ -21,6 +21,26 @@ public class gunStats {
 
 	public gunStats() {
 	}
+	
+	public void updBulletFiredCount(firedBullet b) {
+		if ( b.isItVirtual() ) {
+			bulletVirtFiredCount ++;
+		} else {
+			// we update both counts for real and virtual
+			bulletVirtFiredCount ++;
+			bulletRealFiredCount ++;
+		}
+	}
+
+	public void updBulletHitCount(firedBullet b) {
+		if ( b.isItVirtual() ) {
+			bulletVirtHitCount ++;
+		} else {
+			// we update both counts for real and virtual
+			bulletVirtHitCount ++;
+			bulletRealHitCount ++;
+		}
+	}
 
 	public int getBulletVirtFiredCount() {
 		return this.bulletVirtFiredCount;
@@ -30,29 +50,39 @@ public class gunStats {
 		return this.bulletVirtHitCount;
 	}
 
-	public int getBulletVirtMissedCount() {
-		return this.bulletVirtFiredCount - this.bulletVirtHitCount;
-	}
-
-	public void incBulletVirtFiredCount() {
-		this.bulletVirtFiredCount++;
-	}
-
-	public void incBulletVirtHitCount() {
-		this.bulletVirtHitCount++;
-	}
-
 	public double getGunVirtHitRate() {
-		return (this.getBulletVirtHitCount() ) / (this.getBulletVirtFiredCount() + 1.0);
+		return math.eventRate( bulletVirtHitCount, bulletVirtFiredCount );
 	}
 
 	public double getGunVirtPerformance() {
-		return (this.getBulletVirtHitCount() + 1.0) / (this.getBulletVirtFiredCount() + 1.0);
+		return math.perfRate( bulletVirtHitCount, bulletVirtFiredCount );
+	}
+
+	public String header() {
+		String str = "";
+		str+= String.format( " |%21s", "Virt gun hit rate");
+		str+= String.format( " |%21s", "Real gun hit rate");
+		return str;
 	}
 
 	public String format() {
 		String str = "";
-		str+= "virtual gun hit target \t" + getBulletVirtHitCount() + "\t and was fired \t" + getBulletVirtFiredCount();
+		str += format( bulletVirtHitCount, bulletVirtFiredCount);
+		str += format( bulletRealHitCount, bulletRealFiredCount);
 		return str;
+	}
+
+	public String format( int hC, int fC ) {
+		double hR = math.eventRate( hC, fC );
+		// string formatting
+		String hRstr = logger.shortFormatDouble( 100.0*hR ) + "%";
+		hRstr = String.format("%8s", hRstr);
+		String hCstr = String.format("%4d", hC);
+		String fCstr = String.format("%-4d", fC);
+		String strOut = "";
+		strOut += " | ";
+		String tmpStr = hCstr + "/" + fCstr + " = " + hRstr;
+		strOut += String.format( "%16s", tmpStr );
+		return strOut;
 	}
 }
