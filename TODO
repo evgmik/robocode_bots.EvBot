@@ -1,4 +1,6 @@
-* do not go over all pifGun matched ends only as needed, i.e. speedup
+* do not add bullet still flying to the fired count, otherwise hit probability is
+  calculated to be smaller than actual. This  is small correction (4 bullet at most) 
+  and it is only important at the beginning of the game.
 * in danger map motion do not shrink search distance in direction away from enemy
 * see if flexible distance to probe will help in melee too
 * instead of moving danger in front of enemy wave, calculate hit position at radius
