@@ -36,7 +36,7 @@ public class linearGun extends baseGun {
 		double sin_vT, cos_vT;
 		double timeToHit;
 		double a, b, c;
-		double bSpeed=bulletSpeed( firePower );
+		double bSpeed=physics.bulletSpeed( firePower );
 
 
 		logger.noise("Bullet speed " + bSpeed );

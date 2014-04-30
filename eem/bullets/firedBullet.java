@@ -80,7 +80,7 @@ public class firedBullet {
 		myBot = bot;
 		firedGun = gun;
 		firedTime = myBot.ticTime;
-		this.bulletSpeed = firedGun.bulletSpeed(bulletEnergy); 
+		this.bulletSpeed = physics.bulletSpeed(bulletEnergy); 
 		// FIXME my virtual bullet do not coinside with actual ones
 		if ( firedBot.getName().equals( myBot.getName() ) ) {
 			belongToMyBot = true;
@@ -110,7 +110,7 @@ public class firedBullet {
 		myBot = bot;
 		belongToMyBot = false;
 		firedGun = gun;
-		this.bulletSpeed = firedGun.bulletSpeed(myBot._trgt.energyDrop()); 
+		this.bulletSpeed = physics.bulletSpeed(myBot._trgt.energyDrop()); 
 		// fixme enemy bullet detected 1 tic later so I need previous coord here
 		this.targetPosition = new Point2D.Double( myBot.myCoord.x, myBot.myCoord.y );
 		this.firingPosition = new Point2D.Double( myBot._trgt.getX(), myBot._trgt.getY() );

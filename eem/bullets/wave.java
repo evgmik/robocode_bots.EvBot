@@ -75,7 +75,7 @@ public class wave {
 		isItMine = false;
 		this.firedBot = firedBot;
 		baseGun firedGun = new baseGun();
-		this.bulletSpeed = firedGun.bulletSpeed(bulletEnergy); 
+		this.bulletSpeed = physics.bulletSpeed(bulletEnergy); 
 		// fixme enemy bullet detected 1 tic later so I need previous coord here
 		this.firingPosition = (Point2D.Double) firedBot.getPosition().clone();
 		firedTime = myBot.ticTime;

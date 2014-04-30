@@ -495,10 +495,6 @@ public class baseGun {
 		return firePower;
 	}
 
-	public double  bulletSpeed( double firePower ) {
-		return physics.bulletSpeed( firePower );
-	}
-
 	public double getFirePower() {
 		return firePower;
 	}

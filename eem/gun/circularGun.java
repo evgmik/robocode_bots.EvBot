@@ -80,7 +80,7 @@ public class circularGun extends baseGun {
 
 	public Point2D.Double  findTargetHitPositionWithCircularPredictor( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
 		Point2D.Double posFut  = new Point2D.Double(0,0);
-		double bSpeed=bulletSpeed( firePower );
+		double bSpeed = physics.bulletSpeed( firePower );
 		int maxIterNum = 10;
 
 

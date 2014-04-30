@@ -52,7 +52,7 @@ public class guessFactorGun extends baseGun {
 		double dx = dist;
 		double dy = dist;
 		double angle2enemyBot = math.angle2pt( firingPosition, tgt.getPosition() );
-		double angle = angle2enemyBot + guessFactor * math.calculateMEA( bulletSpeed( firePower ) );
+		double angle = angle2enemyBot + guessFactor * math.calculateMEA( physics.bulletSpeed( firePower ) );
 		angle *= Math.PI/180;
 		targetFuturePosition.x = firingPosition.x + dist*Math.sin( angle );
 		targetFuturePosition.y = firingPosition.y + dist*Math.cos( angle );
@@ -133,7 +133,7 @@ public class guessFactorGun extends baseGun {
 
 		double angle2enemyBot = math.angle2pt( myBot.myCoord, myBot._trgt.getPosition() );
 		double dist = myBot.myCoord.distance( myBot._trgt.getPosition() );
-		double bSpeed = bulletSpeed( firePoverVsDistance( dist ) );
+		double bSpeed = physics.bulletSpeed( firePoverVsDistance( dist ) );
 		double MEA = math.calculateMEA( bSpeed );
 
 		Point2D.Double gfPnt = new Point2D.Double(0,0);

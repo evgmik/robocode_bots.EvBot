@@ -70,7 +70,7 @@ public class pifGun extends baseGun {
 		refPoint = tgt.botStats.getLast();
 		Point2D.Double p = new Point2D.Double(0,0);
 		LinkedList<Point2D.Double> posList;
-		double bSpeed = bulletSpeed ( calcFirePower() );
+		double bSpeed = physics.bulletSpeed ( calcFirePower() );
 		p = tgt.getPosition();
 
 		double dist = p.distance(myBot.myCoord);
@@ -167,7 +167,7 @@ public class pifGun extends baseGun {
 		// Except apparently getTime out
 		target tgt = myBot._trgt;
 		Point2D.Double p = tgt.getPosition();
-		double bSpeed = bulletSpeed ( calcFirePower() );
+		double bSpeed = physics.bulletSpeed ( calcFirePower() );
 		double Rp = 1; // track point size
 
 
