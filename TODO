@@ -1,3 +1,5 @@
+* track enemy gun heat status and start wave when its cold this is super important in melee
+  where it is impossible to track all bot simultaneously.
 * decide what to do with bullet intercepted waves
 * do not add bullet still flying to the fired count, otherwise hit probability is
   calculated to be smaller than actual. This  is small correction (4 bullet at most) 
