@@ -85,6 +85,7 @@ public class EvBot extends AdvancedRobot
 		logger.routine("=========== Round #" + (roundCnt) + "=============");
 
 		BattleField = new Point2D.Double(getBattleFieldWidth(), getBattleFieldHeight());
+		physics.init(this); // BattleField must be set
 		math.init(this); // BattleField must be set
 
 		myCoord = new Point2D.Double( getX(), getY() );
