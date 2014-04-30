@@ -14,61 +14,45 @@ import robocode.Bullet;
 
 
 public class gunStats {
-	private int bulletVirtHitCount = 0;
-	private int bulletVirtFiredCount = 0;
-	private int bulletRealHitCount = 0;
-	private int bulletRealFiredCount = 0;
+	private int bulletHitCount = 0;
+	private int bulletFiredCount = 0;
 
 	public gunStats() {
 	}
 	
-	public void updBulletFiredCount(firedBullet b) {
-		if ( b.isItVirtual() ) {
-			bulletVirtFiredCount ++;
-		} else {
-			// we update both counts for real and virtual
-			bulletVirtFiredCount ++;
-			bulletRealFiredCount ++;
-		}
+	public void updBulletFiredCount() {
+			bulletFiredCount ++;
 	}
 
-	public void updBulletHitCount(firedBullet b) {
-		if ( b.isItVirtual() ) {
-			bulletVirtHitCount ++;
-		} else {
-			// we update both counts for real and virtual
-			bulletVirtHitCount ++;
-			bulletRealHitCount ++;
-		}
+	public void updBulletHitCount() {
+			bulletHitCount ++;
 	}
 
-	public int getBulletVirtFiredCount() {
-		return this.bulletVirtFiredCount;
+	public int getBulletFiredCount() {
+		return this.bulletFiredCount;
 	}
 
-	public int getBulletVirtHitCount() {
-		return this.bulletVirtHitCount;
+	public int getBulletHitCount() {
+		return this.bulletHitCount;
 	}
 
-	public double getGunVirtHitRate() {
-		return math.eventRate( bulletVirtHitCount, bulletVirtFiredCount );
+	public double getGunHitRate() {
+		return math.eventRate( bulletHitCount, bulletFiredCount );
 	}
 
-	public double getGunVirtPerformance() {
-		return math.perfRate( bulletVirtHitCount, bulletVirtFiredCount );
+	public double getGunPerformance() {
+		return math.perfRate( bulletHitCount, bulletFiredCount );
 	}
 
-	public String header() {
+	public String header(String gunType) {
 		String str = "";
-		str+= String.format( " |%21s", "Virt gun hit rate");
-		str+= String.format( " |%21s", "Real gun hit rate");
+		str+= String.format( " |%21s", gunType + " gun hit rate");
 		return str;
 	}
 
 	public String format() {
 		String str = "";
-		str += format( bulletVirtHitCount, bulletVirtFiredCount);
-		str += format( bulletRealHitCount, bulletRealFiredCount);
+		str += format( bulletHitCount, bulletFiredCount);
 		return str;
 	}
 

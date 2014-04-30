@@ -35,8 +35,15 @@ public class baseGun {
 	private String strSep = "__zzz__";
 
 
-	private String buildMapKey(InfoBot targetBot, InfoBot firingBot) {
-		String key = gunName + strSep + firingBot.getName() + strSep + targetBot.getName();
+	private String buildMapKey(InfoBot targetBot, InfoBot firingBot, boolean bulletVirtualState) {
+		String bulletType = "";
+		if ( bulletVirtualState ) {
+			bulletType = "virtual";
+		} else {
+			bulletType = "real";
+		}
+
+		String key = gunName + strSep + firingBot.getName() + strSep + targetBot.getName() + strSep + bulletType;
 		return key;
 	}
 
@@ -45,12 +52,13 @@ public class baseGun {
 	}
 
 	public int getBulletVirtFiredCount(InfoBot targetBot, InfoBot firingBot) {
-		String key = this.buildMapKey( targetBot, firingBot);
+		boolean isVirtual = true;
+		String key = this.buildMapKey( targetBot, firingBot, isVirtual);
 		gunStats gS = mapOfGunStats.get(key);
 		if (gS == null) {
 			return 0;
 		}
-		return gS.getBulletVirtFiredCount();
+		return gS.getBulletFiredCount();
 	}
 
 	public int getBulletVirtFiredCount(InfoBot targetBot) {
@@ -62,12 +70,13 @@ public class baseGun {
 	}
 
 	public int getBulletVirtHitCount(InfoBot targetBot, InfoBot firingBot) {
-		String key = this.buildMapKey( targetBot, firingBot);
+		boolean isVirtual = true;
+		String key = this.buildMapKey( targetBot, firingBot, isVirtual);
 		gunStats gS = mapOfGunStats.get(key);
 		if (gS == null) {
 			return 0;
 		}
-		return gS.getBulletVirtHitCount();
+		return gS.getBulletHitCount();
 	}
 
 	public int getBulletVirtHitCount(InfoBot targetBot) {
@@ -79,13 +88,14 @@ public class baseGun {
 	}
 
 	public double getGunVirtHitRate(InfoBot targetBot, InfoBot firingBot) {
-		String key = this.buildMapKey( targetBot, firingBot);
+		boolean isVirtual = true;
+		String key = this.buildMapKey( targetBot, firingBot, isVirtual);
 		gunStats gS = mapOfGunStats.get(key);
 		if (gS == null) {
 			gS = new gunStats();
 			mapOfGunStats.put(key,gS);
 		}
-		return gS.getGunVirtHitRate();
+		return gS.getGunHitRate();
 	}
 
 	public double getGunVirtHitRate(InfoBot targetBot) {
@@ -97,13 +107,14 @@ public class baseGun {
 	}
 
 	public double getGunVirtPerformance(InfoBot targetBot, InfoBot firingBot) {
-		String key = this.buildMapKey( targetBot, firingBot);
+		boolean isVirtual = true;
+		String key = this.buildMapKey( targetBot, firingBot, isVirtual);
 		gunStats gS = mapOfGunStats.get(key);
 		if (gS == null) {
 			gS = new gunStats();
 			mapOfGunStats.put(key,gS);
 		}
-		return gS.getGunVirtPerformance();
+		return gS.getGunPerformance();
 	}
 
 	public double getGunVirtPerformance(InfoBot targetBot) {
@@ -114,28 +125,48 @@ public class baseGun {
 		return getGunVirtPerformance(myBot._trgt, myBot._tracker);
 	}
 
-	public void updBulletFiredCount(InfoBot firingBot, InfoBot targetBot, firedBullet b) {
-		String key = this.buildMapKey( targetBot, firingBot);
+	protected void updBulletFiredCount(InfoBot firingBot, InfoBot targetBot, boolean virtualState) {
+		String key = this.buildMapKey( targetBot, firingBot, virtualState);
 		gunStats gS = mapOfGunStats.get(key);
 		if (gS == null) {
 			gS = new gunStats();
 			mapOfGunStats.put(key,gS);
 		}
-		gS.updBulletFiredCount(b);
+		gS.updBulletFiredCount();
+	}
+
+	public void updBulletFiredCount(InfoBot firingBot, InfoBot targetBot, firedBullet b) {
+		if ( b.isItVirtual() ) {
+			updBulletFiredCount( firingBot, targetBot, true);
+		} else {
+			updBulletFiredCount( firingBot, targetBot, false);
+			// for real bullet we still need to update virtual count
+			updBulletFiredCount( firingBot, targetBot, true);
+		}
+	}
+
+	protected void updBulletHitCount(InfoBot firingBot, InfoBot targetBot, boolean virtualState) {
+		String key = this.buildMapKey( targetBot, firingBot, virtualState);
+		gunStats gS = mapOfGunStats.get(key);
+		if (gS == null) {
+			gS = new gunStats();
+			mapOfGunStats.put(key,gS);
+		}
+		gS.updBulletHitCount();
 	}
 
 	public void updBulletHitCount(InfoBot firingBot, InfoBot targetBot, firedBullet b) {
-		String key = this.buildMapKey( targetBot, firingBot);
-		gunStats gS = mapOfGunStats.get(key);
-		if (gS == null) {
-			gS = new gunStats();
-			mapOfGunStats.put(key,gS);
+		if ( b.isItVirtual() ) {
+			updBulletHitCount( firingBot, targetBot, true);
+		} else {
+			// for real bullet we still need to update virtual count
+			updBulletHitCount( firingBot, targetBot, true);
+			updBulletHitCount( firingBot, targetBot, false);
 		}
-		gS.updBulletHitCount(b);
 	}
 
 	public String gunStatsHeader(InfoBot firingBot, InfoBot targetBot) {
-		String key = this.buildMapKey( targetBot, firingBot);
+		String key = this.buildMapKey( targetBot, firingBot, true);
 		gunStats gS = mapOfGunStats.get(key);
 		if (gS == null) {
 			gS = new gunStats();
@@ -143,20 +174,29 @@ public class baseGun {
 		}
 		String str="";
 		str += String.format( "%12s", "gun name" );
-		str += gS.header();
+		str += gS.header("Virt"); // virtual gun
+		str += gS.header("Real"); // real gun
 		return str;
 	}
 
-	public String gunStatsFormat(InfoBot firingBot, InfoBot targetBot) {
-		String key = this.buildMapKey( targetBot, firingBot);
+	public String gunStatsFormat(InfoBot firingBot, InfoBot targetBot, boolean virtualState) {
+		String key;
+	       	key = this.buildMapKey( targetBot, firingBot, virtualState);
 		gunStats gS = mapOfGunStats.get(key);
 		if (gS == null) {
 			gS = new gunStats();
 			mapOfGunStats.put(key,gS);
 		}
 		String str="";
-		str += String.format( "%12s", this.getName() );
 		str += gS.format();
+		return str;
+	}
+
+	public String gunStatsFormat(InfoBot firingBot, InfoBot targetBot) {
+		String str="";
+		str += String.format( "%12s", this.getName() );
+		str += gunStatsFormat( firingBot, targetBot, true );  // virtual gun
+		str += gunStatsFormat( firingBot, targetBot, false ); // real gun
 		return str;
 	}
 
