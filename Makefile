@@ -1,6 +1,6 @@
 # -*- make -*-
 # FILE: "/home/evmik/src/my_src/robocode_bots/Makefile"
-# LAST MODIFICATION: "Tue, 01 Apr 2014 23:10:00 -0400 (evmik)"
+# LAST MODIFICATION: "Wed, 30 Apr 2014 09:57:00 -0400 (evmik)"
 # (C) 2012 by Eugeniy Mikhailov, <evgmik@gmail.com>
 # $Id:$
 
@@ -19,7 +19,7 @@ TESTJAR    = $(SUPERPACKADE).EvBot_$(TESTVERSION).jar
 RELEASEJAR = $(SUPERPACKADE).EvBot_$(VERSION).jar
 
 OUTDIR = out
-JFLAGS = -d $(OUTDIR) -classpath $(ROBOCODEJAR):
+JFLAGS = -d $(OUTDIR) -classpath $(ROBOCODEJAR): -Xlint:unchecked
 
 SRC = eem/EvBot.java eem/botVersion.java \
     $(wildcard eem/misc/*.java) \
