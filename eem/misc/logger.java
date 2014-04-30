@@ -84,5 +84,18 @@ public class logger {
 		return str;
 	}
 
+	public static String hitRateFormat( int hC, int fC) {
+		double hR = math.eventRate( hC, fC );
+		// string formatting
+		String hRstr = logger.shortFormatDouble( 100.0*hR ) + "%";
+		hRstr = String.format("%8s", hRstr);
+		String hCstr = String.format("%4d", hC);
+		String fCstr = String.format("%-4d", fC);
+		String strOut = "";
+		String tmpStr = hCstr + "/" + fCstr + " = " + hRstr;
+		strOut += String.format( "%16s", tmpStr );
+		return strOut;
+	}
+
 }
 
