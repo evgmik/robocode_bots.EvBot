@@ -52,13 +52,8 @@ public class baseGun {
 	}
 
 	public int getBulletVirtFiredCount(InfoBot targetBot, InfoBot firingBot) {
-		boolean isVirtual = true;
-		String key = this.buildMapKey( targetBot, firingBot, isVirtual);
-		gunStats gS = mapOfGunStats.get(key);
-		if (gS == null) {
-			return 0;
-		}
-		return gS.getBulletFiredCount();
+		boolean virtualState = true;
+		return getBulletFiredCount(targetBot, firingBot, virtualState);
 	}
 
 	public int getBulletVirtFiredCount(InfoBot targetBot) {
