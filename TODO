@@ -1,3 +1,4 @@
+* decide what to do with bullet intercepted waves
 * do not add bullet still flying to the fired count, otherwise hit probability is
   calculated to be smaller than actual. This  is small correction (4 bullet at most) 
   and it is only important at the beginning of the game.
