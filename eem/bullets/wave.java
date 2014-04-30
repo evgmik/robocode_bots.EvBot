@@ -65,7 +65,7 @@ public class wave {
 				tmpB.setIsItVirtual(true);  // virtual bullet
 			}
 			this.addBullet(tmpB);
-			g.incBulletVirtFiredCount();
+			g.updBulletFiredCount( myBot._tracker, myBot._trgt, tmpB);
 		}
 	}
 
@@ -91,6 +91,7 @@ public class wave {
 			firedBullet b = new firedBullet( myBot, firedBot,  g, firedBot.energyDrop() );
 			b.setIsItVirtual(true);  // virtual bullet
 			this.addBullet(b);
+			g.updBulletFiredCount( firedBot, myBot._tracker, b );
 		}
 	}
 
@@ -173,7 +174,9 @@ public class wave {
 						if ( !bot.getName().equals( myBot.getName() ) ) {
 							//logger.dbg("Enemy hit with " + b.getFiredGun().getName() );
 							if ( !b.getFiredGun().getName().equals("shadow") ) {
-								b.getFiredGun().incBulletVirtHitCount();
+								b.getFiredGun().updBulletHitCount( myBot._tracker, bot, b );
+								//logger.dbg( b.getFiredGun().gunStatsHeader(myBot._tracker, bot ) );
+								//logger.dbg( b.getFiredGun().gunStatsFormat(myBot._tracker, bot ) );
 								// removing this lucky bullet to avoid statistic scewing
 								bulletsToRemove.add(b);
 							}
