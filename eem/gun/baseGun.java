@@ -69,14 +69,37 @@ public class baseGun {
 		return getBulletVirtFiredCount(myBot._trgt, myBot._tracker);
 	}
 
-	public int getBulletVirtHitCount(InfoBot targetBot, InfoBot firingBot) {
-		boolean isVirtual = true;
+	public int getBulletFiredCount(InfoBot targetBot, InfoBot firingBot, boolean isVirtual) {
+		String key = this.buildMapKey( targetBot, firingBot, isVirtual);
+		gunStats gS = mapOfGunStats.get(key);
+		if (gS == null) {
+			return 0;
+		}
+		return gS.getBulletFiredCount();
+	}
+
+	public int getBulletRealFiredCount(InfoBot targetBot) {
+		boolean virtualState = false;
+		return getBulletFiredCount(targetBot, myBot._tracker, virtualState);
+	}
+
+	public int getBulletHitCount(InfoBot targetBot, InfoBot firingBot, boolean isVirtual) {
 		String key = this.buildMapKey( targetBot, firingBot, isVirtual);
 		gunStats gS = mapOfGunStats.get(key);
 		if (gS == null) {
 			return 0;
 		}
 		return gS.getBulletHitCount();
+	}
+
+	public int getBulletRealHitCount(InfoBot targetBot) {
+		boolean virtualState = false;
+		return getBulletHitCount(targetBot, myBot._tracker, virtualState);
+	}
+
+	public int getBulletVirtHitCount(InfoBot targetBot, InfoBot firingBot) {
+		boolean virtualState = true;
+		return getBulletHitCount(targetBot, myBot._tracker, virtualState);
 	}
 
 	public int getBulletVirtHitCount(InfoBot targetBot) {
@@ -176,6 +199,8 @@ public class baseGun {
 		str += String.format( "%12s", "gun name" );
 		str += gS.header("Virt"); // virtual gun
 		str += gS.header("Real"); // real gun
+		str +=  " | ";
+		str += String.format( "%20s", "fire rate" );
 		return str;
 	}
 
@@ -197,6 +222,10 @@ public class baseGun {
 		str += String.format( "%12s", this.getName() );
 		str += gunStatsFormat( firingBot, targetBot, true );  // virtual gun
 		str += gunStatsFormat( firingBot, targetBot, false ); // real gun
+		// now lets calculate firing rate
+		str +=  " | ";
+		str += logger.hitRateFormat( getBulletFiredCount(targetBot, firingBot, false), 
+			       getBulletFiredCount(targetBot, firingBot, true) );	
 		return str;
 	}
 

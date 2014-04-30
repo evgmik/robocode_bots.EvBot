@@ -296,7 +296,7 @@ public class gunManager {
 		LinkedList<InfoBot> botsList = myBot._botsmanager.listOfKnownBots();
 		int gCount = 0;
 		for ( InfoBot bot: botsList ) {
-			gCount += gun.getBulletVirtHitCount(bot);
+			gCount += gun.getBulletRealHitCount(bot);
 		}
 		return gCount;
 	}
@@ -305,7 +305,7 @@ public class gunManager {
 		LinkedList<InfoBot> botsList = myBot._botsmanager.listOfKnownBots();
 		int gCount = 0;
 		for ( InfoBot bot: botsList ) {
-			gCount += gun.getBulletVirtFiredCount(bot);
+			gCount += gun.getBulletRealFiredCount(bot);
 		}
 		return gCount;
 	}
@@ -409,41 +409,28 @@ public class gunManager {
 		logger.routine("------------------------------------------------------------" );
 		for ( baseGun tmp_gun: allUsedByMyBotGuns.values() ) {
 			for ( InfoBot bot: botsList ) {
-				gunsFiringTotal += tmp_gun.getBulletVirtFiredCount(bot);
+				gunsFiringTotal += tmp_gun.getBulletRealFiredCount(bot);
 			}
 		}
 
 		String hdrStr = "";
 		hdrStr += String.format( "%12s", "gun name");
 		hdrStr += " | ";
-		hdrStr += String.format( "%18s", "Virt gun hit rate");
+		hdrStr += String.format( "%20s", "Real gun hit rate");
 		hdrStr += " | ";
-		hdrStr += String.format( "%10s", "firing rate");
+		hdrStr += String.format( "%20s", "firing rate");
 		logger.routine(hdrStr);
 		logger.routine("------------------------------------------------------------" );
 		String tmpStr;
 		for ( baseGun tmp_gun: allUsedByMyBotGuns.values() ) {
+			String strOut = "";
+			strOut += String.format( "%12s", tmp_gun.getName() );
+			// hit rate
 			int hC = totalGunHitCount(tmp_gun);
 			int fC = totalGunFiredCount(tmp_gun);
-			double hR = math.eventRate( hC, fC );
+			strOut += " | " + logger.hitRateFormat( hC, fC);
 			// firing rate
-			double fR = math.eventRate( fC, gunsFiringTotal );
-			// string formatting
-			String hRstr = logger.shortFormatDouble( 100.0*hR ) + "%";
-			String fRstr = logger.shortFormatDouble( 100.0*fR ) + "%";
-			String hCstr = String.format("%4d", hC);
-			String fCstr = String.format("%-4d", fC);
-			String strOut = "";
-			//strOut += "Gun[ ";
-			strOut += String.format( "%12s", tmp_gun.getName() );
-			//strOut += " ]";
-			strOut += " | ";
-			//strOut += "hit rate "; 
-			tmpStr = hCstr + "/" + fCstr + " = " + hRstr;
-			strOut += String.format( "%16s", tmpStr );
-			strOut += " | ";
-			//strOut += "firing rate = ";
-			strOut += fRstr;
+			strOut += " | " + logger.hitRateFormat( fC, gunsFiringTotal);
 			logger.routine(strOut);
 		}
 		logger.routine("-------------------------------------------------------" );
