@@ -46,7 +46,7 @@ public class randomGun extends baseGun {
 		double timeToHit;
 		double a, b, c;
 		double k, rnd;
-		double bSpeed=bulletSpeed( firePower );
+		double bSpeed=physics.bulletSpeed( firePower );
 
 		logger.noise("Bullet speed " + bSpeed );
 
