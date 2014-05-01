@@ -1,3 +1,5 @@
+* check what is going on with robophysics firing bullets. Recall gun fires first if it can and 
+  only than rotates. See http://robowiki.net/wiki/Robocode/Game_Physics#Firing_Pitfall
 * track enemy gun heat status and start wave when its cold this is super important in melee
   where it is impossible to track all bot simultaneously.
 * decide what to do with bullet intercepted waves
