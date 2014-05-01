@@ -138,6 +138,11 @@ public class EvBot extends AdvancedRobot
 		initTicStartTime = startTime;
 		logger.noise("Game time: " + ticTime);
 		logger.noise("Number of other bots = " + numEnemyBotsAlive);
+		
+		if ( numEnemyBotsAlive == 0 ) {
+			//logger.dbg("Round is over");
+			return;
+		}
 
 		myCoord.x = getX();
 	       	myCoord.y = getY();
@@ -166,7 +171,7 @@ public class EvBot extends AdvancedRobot
 		_gun.initTic();
 		if (_gun.getNumTicsInColdState() > 1 ) {
 			numTicsWhenGunInColdState++;
-			logger.dbg("gun is cold");
+			//logger.dbg("gun is cold");
 		}
 		endTime = System.nanoTime();
 		logger.profiler("gun init Tic execution time  =          \t\t\t" + (endTime - startTime) + " ns" );
@@ -248,6 +253,15 @@ public class EvBot extends AdvancedRobot
 			long endTime;
 			long startTime;
 			initTic() ;
+
+			if ( numEnemyBotsAlive == 0 ) {
+				//logger.dbg("Round is over");
+				setAhead(0);
+				setStop();
+				execute();
+				continue;
+			}
+
 
 			_trgt = _botsmanager.choseTarget() ;
 
