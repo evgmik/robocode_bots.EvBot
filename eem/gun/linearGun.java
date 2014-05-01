@@ -11,6 +11,7 @@ import java.awt.geom.Point2D;
 import robocode.util.*;
 
 public class linearGun extends baseGun {
+	Point2D.Double targetAtFiringTimePos = new Point2D.Double(0,0);
 	public linearGun() {
 		gunName = "linear";
 		gunColor = new Color(0xff, 0x00, 0x00, 0x80);
@@ -61,8 +62,13 @@ public class linearGun extends baseGun {
 		// estimated current target position
 		logger.noise("Round time = " + myBot.getTime());
 		logger.noise("target time = " + tgt.getLastSeenTime());
-		Tx = tgt.getX() + vTvec.x*(myBot.getTime()-tgt.getLastSeenTime());
-		Ty = tgt.getY() + vTvec.y*(myBot.getTime()-tgt.getLastSeenTime());
+		//logger.dbg("gun heat = " + myBot.getGunHeat() + " cooling time = " + physics.gunCoolingTime( myBot.getGunHeat() ) + " tics with cold gun = " + numTicsInColdState);
+		// +1 below accounts for bullet leaving gun at the next after fire tic
+		double dtToFiringTic = (myBot.getTime()-tgt.getLastSeenTime()) + physics.gunCoolingTime( myBot.getGunHeat() ) + 1;
+		Tx = tgt.getX() + vTvec.x*dtToFiringTic;
+		Ty = tgt.getY() + vTvec.y*dtToFiringTic;
+		targetAtFiringTimePos.x = Tx;
+		targetAtFiringTimePos.y = Ty;
 		logger.noise("Target estimated current position Tx = " + Tx + " Ty = " + Ty);
 
 		tF=misc.linear_predictor( bSpeed, new Point2D.Double(Tx, Ty), 
