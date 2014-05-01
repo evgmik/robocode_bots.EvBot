@@ -273,10 +273,25 @@ public class baseGun {
 			logger.noise("Gun heat = " + myBot.getGunHeat() );
 			// if gun is called and
 			// predicted bullet deviation within half a body size of the robot
-			if (myBot.getGunHeat() == 0 && 
-					Math.abs(predictedBulletDeviation) < Math.min( myBot.getHeight(), myBot.getWidth())/2 ) {
-				logger.noise("Firing the gun with power = " + firePower);
-				this.fireGun();
+			if ( myBot.getGunHeat() == 0 ) { 
+				if ( Math.abs(predictedBulletDeviation) < Math.min( myBot.getHeight(), myBot.getWidth())/5 ) {
+					logger.noise("Firing the gun with power = " + firePower);
+					this.fireGun();
+					return;
+				}
+				int maxAllowedTicToBeColdForAGun = 10;
+				if ( numTicsInColdState > maxAllowedTicToBeColdForAGun ) {
+					// this is for the case when we stuck with a single gun
+					// which cannot chose its target.
+					// See voidious.Diamond for example against linear gun.
+					// Diamond will oscillate back and forcr which makes
+					// future target position make large swing
+					// so gun cannot settle and cannot rotate fast enough
+					// to point in predicted place.
+					logger.dbg( "The gun is not firing for " + numTicsInColdState + " we permit to not fire only for " + maxAllowedTicToBeColdForAGun + ". Hell, with targeting, fire anyway");
+					this.fireGun();
+					return;
+				}
 			}
 		}
 	}
