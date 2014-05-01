@@ -1,3 +1,20 @@
+= Version  4.6.4 =
+
+Bug fix: multiple minor things. Among them cold count tics were not properly reset
+
+Improvements: much better gun stats based on virtual and real bullets, keep
+track of how long gun stayed cold and did not fire. Implemented class with
+robocode physics and parameters, and switch to using it. 
+
+Linear gun tries to take in account the time to cool down the gun, so it aims
+at the same point as long as a bot moves with constant velocity.
+
+Major logic change: reduce required precision to fire a gun also if gun jammed
+in cold state (most often target future position changes to much with every
+tick), fire it anyway. I use to have a lot of not fired tics, which reduces
+score drastically.
+
+
 = Version  4.6.3 =
 
 Bug fix: repaired anti bullet shielding bots logic.
