@@ -288,7 +288,7 @@ public class baseGun {
 					// future target position make large swing
 					// so gun cannot settle and cannot rotate fast enough
 					// to point in predicted place.
-					logger.dbg( "The gun is not firing for " + numTicsInColdState + " tics, we permit to not fire only for " + maxAllowedTicToBeColdForAGun + ". Hell, with targeting, fire anyway");
+					logger.dbg( "The gun " + getName() + " is not firing for " + numTicsInColdState + " tics, we permit to not fire only for " + maxAllowedTicToBeColdForAGun + ". Hell, with targeting, fire anyway");
 					this.fireGun();
 					return;
 				}
