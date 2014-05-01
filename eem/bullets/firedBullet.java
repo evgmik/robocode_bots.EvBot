@@ -256,13 +256,23 @@ public class firedBullet {
 		return math.vecCrossesBorder( firingPosition, firingAngle, myBot.BattleField);
 	}
 
+
+	private void drawTargetPosition(Graphics2D g) {
+		double R = physics.robotHalfSize;
+		if ( targetPosition != null ) {
+			logger.noise("draw target at position = " + targetPosition);
+			graphics.drawSquare(g, targetPosition, 2*R+1);
+			graphics.drawSquare(g, targetPosition, 2*R+2);
+			graphics.drawSquare(g, targetPosition, R);
+		}
+	}
+
 	public void onPaint(Graphics2D g) {
 		g.setColor(bulletColor);
 		// draw target position
 		double R = 18;
 		if ( targetPosition != null ) {
-			logger.noise("draw target at position = " + targetPosition);
-			//graphics.drawCircle(g, targetPosition, R);
+			//drawTargetPosition(g);
 
 			// draw line from firing point to target
 			//Point2D.Double lEnd = endPositionAtBorder();
