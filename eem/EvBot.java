@@ -40,6 +40,7 @@ public class EvBot extends AdvancedRobot
 	public static int bulletFiredCnt = 0;
         public static int bulletHitCnt = 0;	
         public static int bulletHitByPredictedCnt = 0;	
+	private static int numTicsWhenGunInColdState = 0;
 
 	private botVersion botVer;
 	public target _trgt;
@@ -163,6 +164,10 @@ public class EvBot extends AdvancedRobot
 		logger.profiler("motion manager initTic execution time =\t\t\t" + (endTime - startTime) + " ns" );
 		startTime = System.nanoTime();
 		_gun.initTic();
+		if (_gun.getNumTicsInColdState() > 1 ) {
+			numTicsWhenGunInColdState++;
+			logger.dbg("gun is cold");
+		}
 		endTime = System.nanoTime();
 		logger.profiler("gun init Tic execution time  =          \t\t\t" + (endTime - startTime) + " ns" );
 		startTime = System.nanoTime();
@@ -451,6 +456,7 @@ public class EvBot extends AdvancedRobot
 		_botsmanager.printGunsStats();
 		logger.routine("Rounds ratio of win/lose = " + roundsWon + "/" + roundsLost );
 		logger.routine("Skipped turns stats: " + Arrays.toString(skippedTurnStats) );
+		logger.routine("The gun was cold " + numTicsWhenGunInColdState + " tics");
 		logger.routine("Finishing places stats: " + Arrays.toString( finishingPlacesStats ) );
 	}
 
