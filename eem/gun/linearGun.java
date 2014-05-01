@@ -7,6 +7,7 @@ import eem.target.*;
 import eem.misc.*;
 import eem.gun.misc;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import robocode.util.*;
 
@@ -81,4 +82,17 @@ public class linearGun extends baseGun {
 		
 		return tF;
 	}
+
+	private void drawTargetAtFiringTime(Graphics2D g) {
+		if ( null != targetAtFiringTimePos ) {
+			g.setColor(gunColor);
+			graphics.drawSquare( g, targetAtFiringTimePos, 2*(myBot.robotHalfSize+2) );
+		}
+	}
+
+	public void onPaint(Graphics2D g) {
+		super.onPaint(g);
+		drawTargetAtFiringTime(g);
+	}
 }	
+
