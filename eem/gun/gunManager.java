@@ -218,8 +218,8 @@ public class gunManager {
 				new_gun = getDefaultGun(); //default gun
 			}
 			if ( !_gun.getName().equals( new_gun.getName() ) ) {
-				_gun.resetTicsInColdState();
 				_gun = new_gun;
+				_gun.resetTicsInColdState();
 			} else {
 				// no need to reset gun which is essentially the same
 			}
