@@ -279,7 +279,7 @@ public class baseGun {
 					this.fireGun();
 					return;
 				}
-				int maxAllowedTicToBeColdForAGun = 10;
+				int maxAllowedTicToBeColdForAGun = 1;
 				if ( numTicsInColdState > maxAllowedTicToBeColdForAGun ) {
 					// this is for the case when we stuck with a single gun
 					// which cannot chose its target.
@@ -288,7 +288,7 @@ public class baseGun {
 					// future target position make large swing
 					// so gun cannot settle and cannot rotate fast enough
 					// to point in predicted place.
-					logger.dbg( "The gun is not firing for " + numTicsInColdState + " we permit to not fire only for " + maxAllowedTicToBeColdForAGun + ". Hell, with targeting, fire anyway");
+					logger.dbg( "The gun is not firing for " + numTicsInColdState + " tics, we permit to not fire only for " + maxAllowedTicToBeColdForAGun + ". Hell, with targeting, fire anyway");
 					this.fireGun();
 					return;
 				}
