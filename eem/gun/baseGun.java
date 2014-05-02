@@ -219,7 +219,7 @@ public class baseGun {
 		str += gunStatsFormat( firingBot, targetBot, false ); // real gun
 		// now lets calculate firing rate
 		str +=  " | ";
-		str += logger.hitRateFormat( getBulletFiredCount(targetBot, firingBot, false), 
+		str += logger.hitRateFormat( getBulletFiredCount(targetBot, firingBot, false),
 			       getBulletFiredCount(targetBot, firingBot, true) );	
 		return str;
 	}
@@ -275,7 +275,7 @@ public class baseGun {
 			logger.noise("Gun heat = " + myBot.getGunHeat() );
 			// if gun is called and
 			// predicted bullet deviation within half a body size of the robot
-			if ( myBot.getGunHeat() == 0 ) { 
+			if ( myBot.getGunHeat() == 0 ) {
 				if ( Math.abs(predictedBulletDeviation) < Math.min( myBot.getHeight(), myBot.getWidth())/5 ) {
 					logger.noise("Firing the gun with power = " + firePower);
 					logger.noise("Target at position " + myBot._trgt.getPosition());
@@ -411,7 +411,7 @@ public class baseGun {
 
 	private Point2D.Double  addRandomOffsetToTargetFuturePosition(Point2D.Double firingPos, Point2D.Double tFP) {
 		//to counter act bullet shielding bots
-		//add small random offset of about bot size 
+		//add small random offset of about bot size
 		double angle = math.angle2pt( firingPos, tFP);
 		angle = Math.toRadians(angle);
 		double dist  = firingPos.distance( tFP );
@@ -549,7 +549,7 @@ public class baseGun {
 		//logger.dbg("firing bot " + firedBot.getName() + " at target " + tgt.getName() + " with gun " + getName() + " has nothing in the firing solutions cache" );
 		tFP = calcTargetFuturePosition( firingPosition, firePower, tgt, fireDelay);
 		//to counter act bullet shielding bots
-		//add small random offset of about bot size 
+		//add small random offset of about bot size
 		tFP = addRandomOffsetToTargetFuturePosition( firingPosition, tFP);
 		tFP = math.putWithinBorders( tFP, myBot.BattleField);
 		cT.setTargetFuturePosition( tFP );
