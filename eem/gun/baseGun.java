@@ -582,7 +582,10 @@ public class baseGun {
 	protected double calcFirePower() {
 		double firePower =0;
 		if ( myBot._trgt.haveTarget ) {
-			firePower = firePoverVsDistance(myBot._trgt.getLastDistance(myBot.myCoord));
+			long fireDelay = physics.gunCoolingTime( myBot.getGunHeat() );
+			Point2D.Double myPosAtFiringTime =  predictBotPositionAtTime( myBot._tracker, myBot.getTime() + fireDelay );
+			Point2D.Double trgtPosAtFiringTime =  predictBotPositionAtTime( myBot._trgt, myBot.getTime() + fireDelay );
+			firePower = firePoverVsDistance( myPosAtFiringTime.distance( trgtPosAtFiringTime) );
 			firePower = Math.max( firePower, physics.minimalAllowedBulletEnergy );
 			// no point to fire bullets more energetic than enemy bot energy level
 			firePower = Math.min( firePower, physics.minReqBulEnergyToKillTarget( myBot._trgt.getEnergy() ) );
