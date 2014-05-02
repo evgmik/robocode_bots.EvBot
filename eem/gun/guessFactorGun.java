@@ -34,7 +34,7 @@ public class guessFactorGun extends baseGun {
 		return super.calcTargetFuturePosition( firedBot, firePower, tgt);
 	}
 
-	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
+	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt, long fireDelay) {
 		if (firingBot == null ) { 
 			//FIXME: this should not happen if I make it right
 			logger.dbg("FIXME: firingBot is not set. This should not happen if I make it right");
