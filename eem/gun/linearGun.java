@@ -12,7 +12,6 @@ import java.awt.geom.Point2D;
 import robocode.util.*;
 
 public class linearGun extends baseGun {
-	Point2D.Double targetAtFiringTimePos = new Point2D.Double(0,0);
 	public linearGun() {
 		gunName = "linear";
 		gunColor = new Color(0xff, 0x00, 0x00, 0x80);
@@ -83,16 +82,8 @@ public class linearGun extends baseGun {
 		return tF;
 	}
 
-	private void drawTargetAtFiringTime(Graphics2D g) {
-		if ( null != targetAtFiringTimePos ) {
-			g.setColor(gunColor);
-			graphics.drawSquare( g, targetAtFiringTimePos, 2*(myBot.robotHalfSize+2) );
-		}
-	}
-
 	public void onPaint(Graphics2D g) {
 		super.onPaint(g);
-		drawTargetAtFiringTime(g);
 	}
 }	
 
