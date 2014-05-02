@@ -318,6 +318,7 @@ public class baseGun {
 	}
 
 	public Point2D.Double predictBotPositionAtTimeCircular( InfoBot bot, double time) {
+		// FIXME should be able to deal with time in past, see while loop condition
 		Point2D.Double posFut  = new Point2D.Double(0,0);
 		Point2D.Double vTvecLast, vTvecPrev;
 		double phi = 0;
