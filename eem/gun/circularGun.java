@@ -23,71 +23,22 @@ public class circularGun extends baseGun {
 		calcGunSettings();
 	}
 
-	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
-		Point2D.Double p = findTargetHitPositionWithCircularPredictor( firingPosition, firePower, tgt);
+	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt, long fireDelay) {
+		Point2D.Double p = findTargetHitPositionWithCircularPredictor( firingPosition, firePower, tgt, fireDelay );
 		return p;
 	}
 
-	public Point2D.Double positionAtFutureTime( InfoBot bot, double time) {
-		Point2D.Double posFut  = new Point2D.Double(0,0);
-		Point2D.Double vTvecLast, vTvecPrev;
-		double phi = 0;
-		botStatPoint bStatLast;
-		botStatPoint bStatPrev;
-
-		bStatLast = bot.getLast();
-		bStatPrev = bot.getPrev();
-
-		vTvecLast = bStatLast.getVelocity();
-		if ( bStatPrev == null ) {
-			phi = 0;
-		} else {
-			vTvecPrev = bStatPrev.getVelocity();
-			double phiLast = Math.atan2( vTvecLast.y, vTvecLast.x);
-			double phiPrev = Math.atan2( vTvecPrev.y, vTvecPrev.x);
-			double dt =  bStatLast.getTime() - bStatPrev.getTime();
-			phi = (phiLast - phiPrev)/dt;
-		}
-		// rotation coefficients
-		double cosPhi = Math.cos(phi);
-		double sinPhi = Math.sin(phi);
-
-		// estimated current target position
-		double dT = time - bot.getLastSeenTime(); 
-
-		double vx = vTvecLast.x;
-		double vy = vTvecLast.y;
-		double vxNew, vyNew;
-		posFut.x = bot.getX();
-		posFut.y = bot.getY();
-
-		for ( int t = 0; t < dT ; t++) {
-			vxNew =  vx * cosPhi - vy * sinPhi;
-			vyNew =  vx * sinPhi + vy * cosPhi;
-			vx = vxNew;
-			vy = vyNew;
-			posFut.x = posFut.x + vx;
-			posFut.y = posFut.y + vy;
-			if ( myBot._motion.shortestDist2wall( posFut ) < (myBot.robotHalfSize-1) ) {
-				// bot hit wall and cannot move anymore
-				posFut.x = posFut.x - vx;
-				posFut.y = posFut.y - vy;
-				break;
-			}
-		}
-		return posFut;
-	}
-
-	public Point2D.Double  findTargetHitPositionWithCircularPredictor( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
+	public Point2D.Double  findTargetHitPositionWithCircularPredictor( Point2D.Double firingPosition, double firePower, InfoBot tgt, long fireDelay) {
 		Point2D.Double posFut  = new Point2D.Double(0,0);
 		double bSpeed = physics.bulletSpeed( firePower );
 		int maxIterNum = 10;
+		long firingTime = myBot.getTime() + fireDelay;
 
 
 		logger.noise("Bullet speed " + bSpeed );
 
-		posFut = positionAtFutureTime( tgt, myBot.getTime() );
-		logger.noise("Estimated target position " + posFut.x +", " + posFut.y);
+		posFut = predictBotPositionAtTimeCircular( tgt, firingTime );
+		//logger.noise("Estimated target position at firing time " + posFut.x +", " + posFut.y);
 
 		double dist = posFut.distance( firingPosition );
 		double dTnew = dist/bSpeed;
@@ -95,7 +46,7 @@ public class circularGun extends baseGun {
 		int cnt = 0;
 		while ( (Math.abs(dT -dTnew) > 1) && (cnt < maxIterNum) ) {
 			dT = dTnew;
-			posFut = positionAtFutureTime( tgt, myBot.getTime() + dT);
+			posFut = predictBotPositionAtTimeCircular( tgt, firingTime + dT);
 			dist = posFut.distance( firingPosition );
 			dTnew = dist/bSpeed;
 			cnt++;
