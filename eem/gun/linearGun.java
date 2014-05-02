@@ -23,13 +23,14 @@ public class linearGun extends baseGun {
 		calcGunSettings();
 	}
 
-	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
-		Point2D.Double p = findTargetHitPositionWithLinearPredictor( firingPosition, firePower, tgt);
+	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt, long fireDelay) {
+		Point2D.Double p = findTargetHitPositionWithLinearPredictor( firingPosition, firePower, tgt, fireDelay);
 		return p;
 	}
 
 
-	public Point2D.Double  findTargetHitPositionWithLinearPredictor( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
+	public Point2D.Double  findTargetHitPositionWithLinearPredictor( Point2D.Double firingPosition, double firePower, InfoBot tgt, long fireDelay) {
+		Point2D.Double targetAtFiringTimePos = new Point2D.Double(0,0);
 		Point2D.Double vTvec;
 		Point2D.Double tF;
 		double Tx, Ty, vT,  dx, dy, dist;
@@ -62,14 +63,11 @@ public class linearGun extends baseGun {
 		// estimated current target position
 		logger.noise("Round time = " + myBot.getTime());
 		logger.noise("target time = " + tgt.getLastSeenTime());
-		//logger.dbg("gun heat = " + myBot.getGunHeat() + " cooling time = " + physics.gunCoolingTime( myBot.getGunHeat() ) + " tics with cold gun = " + numTicsInColdState);
-		// +1 below accounts for bullet leaving gun at the next after fire tic
-		double dtToFiringTic = (myBot.getTime()-tgt.getLastSeenTime()) + physics.gunCoolingTime( myBot.getGunHeat() ) + 1;
-		Tx = tgt.getX() + vTvec.x*dtToFiringTic;
-		Ty = tgt.getY() + vTvec.y*dtToFiringTic;
-		targetAtFiringTimePos.x = Tx;
-		targetAtFiringTimePos.y = Ty;
-		logger.noise("Target estimated current position Tx = " + Tx + " Ty = " + Ty);
+		logger.noise("gun heat = " + myBot.getGunHeat() + " cooling time = " + physics.gunCoolingTime( myBot.getGunHeat() ) + " tics with cold gun = " + numTicsInColdState);
+		targetAtFiringTimePos = predictBotPositionAtTime( tgt, myBot.getTime() + fireDelay );
+		Tx = targetAtFiringTimePos.x;
+		Ty = targetAtFiringTimePos.y;
+		//logger.dbg("Target estimated position at firing time Tx = " + Tx + " Ty = " + Ty);
 
 		tF=misc.linear_predictor( bSpeed, new Point2D.Double(Tx, Ty), 
 				vTvec,  firingPosition);

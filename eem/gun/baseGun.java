@@ -260,12 +260,14 @@ public class baseGun {
 			logger.noise("Predicted target X coordinate = " + this.getTargetFuturePosition().x );
 			logger.noise("Predicted target Y coordinate = " + this.getTargetFuturePosition().y );
 
-			angle2enemyInFutire=math.angle2pt(myBot.myCoord, this.getTargetFuturePosition());
+			Point2D.Double myPosAtFiringTime =  predictBotPositionAtTime( myBot._tracker, myBot.getTime() +  physics.gunCoolingTime( myBot.getGunHeat() ) );
+			angle2enemyInFutire=math.angle2pt( myPosAtFiringTime, this.getTargetFuturePosition());
 
-			// rotate gun dirictives and settings
+			// rotate gun directives and settings
 			double gun_angle =myBot.getGunHeading();
 			angle = math.shortest_arc(angle2enemyInFutire-gun_angle);
 			logger.noise("Pointing gun to enemy by rotating by angle = " + angle);
+			// remember rotation will happen only at the next turn!
 			myBot.setTurnGunRight(angle);
 
 			double predictedBulletDeviation=angle*Math.PI/180*myBot._trgt.getLastDistance(myBot.myCoord);
@@ -276,6 +278,7 @@ public class baseGun {
 			if ( myBot.getGunHeat() == 0 ) { 
 				if ( Math.abs(predictedBulletDeviation) < Math.min( myBot.getHeight(), myBot.getWidth())/5 ) {
 					logger.noise("Firing the gun with power = " + firePower);
+					logger.noise("Target at position " + myBot._trgt.getPosition());
 					this.fireGun();
 					return;
 				}
@@ -294,6 +297,21 @@ public class baseGun {
 				}
 			}
 		}
+	}
+
+	protected Point2D.Double predictBotPositionAtTime( InfoBot bot, long time ) {
+		// this is needed for advance firing when we need to take account in
+		// cooling time for our bot or the fact that we detect enemy bullet only
+		// one click after its fired
+
+		// for now I will use simple linear predictor but probably should use
+		// a particular gun estimate
+		double Tx, Ty;
+		Point2D.Double vTvec = bot.getVelocity();
+		double dt = time-bot.getLastSeenTime();
+		Tx = bot.getX() + vTvec.x*dt;
+		Ty = bot.getY() + vTvec.y*dt;
+		return new Point2D.Double(Tx, Ty);
 	}
 
 	public void fireGun() {
@@ -454,7 +472,19 @@ public class baseGun {
 	}
 
 	public Point2D.Double calcTargetFuturePosition( InfoBot firedBot, double firePower, InfoBot tgt) {
-		Point2D.Double firingPosition = (Point2D.Double) firedBot.getPosition().clone();
+		Point2D.Double firingPosition = null;
+		long fireDelay = 0;
+		if ( firedBot.getName().equals( myBot.getName() ) ) {
+			// firing bot is mine, need to take in account cooling of the gun
+			fireDelay =  physics.gunCoolingTime( myBot.getGunHeat() );
+			firingPosition = predictBotPositionAtTime( myBot._tracker, myBot.getTime() + fireDelay );
+		} else {
+			// enemy is firing.
+			// FIXME take in account that bullet detection happens one tick after
+			// the enemy gun fires
+			fireDelay = 0;
+			firingPosition = (Point2D.Double) firedBot.getPosition().clone();
+		}
 		Point2D.Double tFP = null;
 		cachedTarget cT = new cachedTarget( myBot, this, firedBot, tgt );
 		tFP = findSettingInCachedTargets( cT );
@@ -463,7 +493,7 @@ public class baseGun {
 		}
 		// ok we do it first time let's do it
 		//logger.dbg("firing bot " + firedBot.getName() + " at target " + tgt.getName() + " with gun " + getName() + " has nothing in the firing solutions cache" );
-		tFP = calcTargetFuturePosition( firingPosition, firePower, tgt);
+		tFP = calcTargetFuturePosition( firingPosition, firePower, tgt, fireDelay);
 		//to counter act bullet shielding bots
 		//add small random offset of about bot size 
 		tFP = addRandomOffsetToTargetFuturePosition( firingPosition, tFP);
@@ -474,8 +504,13 @@ public class baseGun {
 	}
 
 	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt) {
-		return  tgt.getPosition();
+		return  calcTargetFuturePosition( firingPosition, firePower, tgt,  0);
 	}
+
+	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt, long fireDelay) {
+		return (Point2D.Double) tgt.getPosition().clone();
+	}
+
 
 	public void calcGunSettings() {
 		if ( myBot._trgt.haveTarget ) {
