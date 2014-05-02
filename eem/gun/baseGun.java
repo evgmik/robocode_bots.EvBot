@@ -259,8 +259,11 @@ public class baseGun {
 
 			logger.noise("Predicted target X coordinate = " + this.getTargetFuturePosition().x );
 			logger.noise("Predicted target Y coordinate = " + this.getTargetFuturePosition().y );
+			long fireDelay = physics.gunCoolingTime( myBot.getGunHeat() );
 
-			Point2D.Double myPosAtFiringTime =  predictBotPositionAtTime( myBot._tracker, myBot.getTime() +  physics.gunCoolingTime( myBot.getGunHeat() ) );
+			Point2D.Double myPosAtFiringTime =  predictBotPositionAtTime( myBot._tracker, myBot.getTime() + fireDelay );
+			logger.noise("My predicted location at firing time = " + myPosAtFiringTime);
+			logger.noise("Enemy predicted location at bullet hit time = " + this.getTargetFuturePosition());
 			angle2enemyInFutire=math.angle2pt( myPosAtFiringTime, this.getTargetFuturePosition());
 
 			// rotate gun directives and settings
