@@ -274,6 +274,7 @@ public class baseGun {
 			myBot.setTurnGunRight(angle);
 
 			double predictedBulletDeviation=angle*Math.PI/180*myBot._trgt.getLastDistance(myBot.myCoord);
+			logger.noise("predicted deviation = " + predictedBulletDeviation );
 
 			logger.noise("Gun heat = " + myBot.getGunHeat() );
 			// if gun is called and
