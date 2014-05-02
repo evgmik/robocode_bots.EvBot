@@ -287,7 +287,7 @@ public class baseGun {
 					// this is for the case when we stuck with a single gun
 					// which cannot chose its target.
 					// See voidious.Diamond for example against linear gun.
-					// Diamond will oscillate back and forcr which makes
+					// Diamond will oscillate back and force which makes
 					// future target position make large swing
 					// so gun cannot settle and cannot rotate fast enough
 					// to point in predicted place.
