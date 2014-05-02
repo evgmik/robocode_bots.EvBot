@@ -302,10 +302,13 @@ public class baseGun {
 	protected Point2D.Double predictBotPositionAtTime( InfoBot bot, long time ) {
 		// this is needed for advance firing when we need to take account in
 		// cooling time for our bot or the fact that we detect enemy bullet only
-		// one click after its fired
-
-		// for now I will use simple linear predictor but probably should use
+		// one click after its fired.
+		// For now I will use simple circular predictor but probably should use
 		// a particular gun estimate
+		return predictBotPositionAtTimeCircular( bot, time );
+	}
+
+	public Point2D.Double predictBotPositionAtTimeLinear( InfoBot bot, double time) {
 		double Tx, Ty;
 		Point2D.Double vTvec = bot.getVelocity();
 		double dt = time-bot.getLastSeenTime();
@@ -313,6 +316,57 @@ public class baseGun {
 		Ty = bot.getY() + vTvec.y*dt;
 		return new Point2D.Double(Tx, Ty);
 	}
+
+	public Point2D.Double predictBotPositionAtTimeCircular( InfoBot bot, double time) {
+		Point2D.Double posFut  = new Point2D.Double(0,0);
+		Point2D.Double vTvecLast, vTvecPrev;
+		double phi = 0;
+		botStatPoint bStatLast;
+		botStatPoint bStatPrev;
+
+		bStatLast = bot.getLast();
+		bStatPrev = bot.getPrev();
+
+		vTvecLast = bStatLast.getVelocity();
+		if ( bStatPrev == null ) {
+			phi = 0;
+		} else {
+			vTvecPrev = bStatPrev.getVelocity();
+			double phiLast = Math.atan2( vTvecLast.y, vTvecLast.x);
+			double phiPrev = Math.atan2( vTvecPrev.y, vTvecPrev.x);
+			double dt =  bStatLast.getTime() - bStatPrev.getTime();
+			phi = (phiLast - phiPrev)/dt;
+		}
+		// rotation coefficients
+		double cosPhi = Math.cos(phi);
+		double sinPhi = Math.sin(phi);
+
+		// estimated current target position
+		double dT = time - bot.getLastSeenTime();
+
+		double vx = vTvecLast.x;
+		double vy = vTvecLast.y;
+		double vxNew, vyNew;
+		posFut.x = bot.getX();
+		posFut.y = bot.getY();
+
+		for ( int t = 0; t < dT ; t++) {
+			vxNew =  vx * cosPhi - vy * sinPhi;
+			vyNew =  vx * sinPhi + vy * cosPhi;
+			vx = vxNew;
+			vy = vyNew;
+			posFut.x = posFut.x + vx;
+			posFut.y = posFut.y + vy;
+			if ( myBot._motion.shortestDist2wall( posFut ) < (myBot.robotHalfSize-1) ) {
+				// bot hit wall and cannot move anymore
+				posFut.x = posFut.x - vx;
+				posFut.y = posFut.y - vy;
+				break;
+			}
+		}
+		return posFut;
+	}
+
 
 	public void fireGun() {
 		if ( firePower != 0 ) {
