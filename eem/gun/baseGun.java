@@ -257,8 +257,6 @@ public class baseGun {
 			//calculate the gun settings
 			this.calcGunSettings();
 
-			logger.noise("Predicted target X coordinate = " + this.getTargetFuturePosition().x );
-			logger.noise("Predicted target Y coordinate = " + this.getTargetFuturePosition().y );
 			long fireDelay = physics.gunCoolingTime( myBot.getGunHeat() );
 
 			Point2D.Double myPosAtFiringTime =  predictBotPositionAtTime( myBot._tracker, myBot.getTime() + fireDelay );
