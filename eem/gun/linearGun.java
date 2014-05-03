@@ -25,6 +25,7 @@ public class linearGun extends baseGun {
 
 	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt, long fireDelay) {
 		Point2D.Double p = findTargetHitPositionWithLinearPredictor( firingPosition, firePower, tgt, fireDelay);
+		//logger.dbg("gun calculated target position at hit time " + p);
 		return p;
 	}
 
