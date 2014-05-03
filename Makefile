@@ -1,13 +1,13 @@
 # -*- make -*-
 # FILE: "/home/evmik/src/my_src/robocode_bots/Makefile"
-# LAST MODIFICATION: "Wed, 30 Apr 2014 09:57:00 -0400 (evmik)"
+# LAST MODIFICATION: "Fri, 02 May 2014 21:57:44 -0400 (evmik)"
 # (C) 2012 by Eugeniy Mikhailov, <evgmik@gmail.com>
 # $Id:$
 
 SUPERPACKADE = eem
 
-ROBOCODE_VERSION_TO_COMPILE = ~/misc/robocode-1.8.2.0
-ROBOCODE_VERSION_TO_RUN = ~/misc/robocode-1.9.1.0
+ROBOCODE_VERSION_TO_COMPILE = ~/misc/robocode-1.9.2.0
+ROBOCODE_VERSION_TO_RUN = ~/misc/robocode-1.9.2.0
 ROBOTS_DIR   = $(ROBOCODE_VERSION_TO_RUN)/robots
 ROBOCODEJAR  = $(ROBOCODE_VERSION_TO_COMPILE)/libs/robocode.jar
 
