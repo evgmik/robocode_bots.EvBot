@@ -279,7 +279,6 @@ public class firedBullet {
 			//graphics.drawLine(g, firingPosition, lEnd );
 		}
 
-
 		// draw current/presumed bullet position
 		int bSize = 10;
 		Point2D.Double bPos = getPosition();
