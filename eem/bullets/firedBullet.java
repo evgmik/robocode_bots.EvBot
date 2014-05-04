@@ -78,17 +78,19 @@ public class firedBullet {
 		// general constructor
 		myBot = bot;
 		firedGun = gun;
-		firedTime = myBot.ticTime;
 		this.bulletSpeed = physics.bulletSpeed(bulletEnergy); 
-		// FIXME my virtual bullet do not coinside with actual ones
 		if ( firedBot.getName().equals( myBot.getName() ) ) {
 			belongToMyBot = true;
+			firedTime = myBot.ticTime;
+			this.firingPosition = (Point2D.Double) firedBot.getPosition().clone();
 		} else {
 			belongToMyBot = false;
+			firedTime = myBot.ticTime - 1;
+			this.firingPosition = (Point2D.Double) firedBot.getPrevTicPosition().clone();
 		}
-		// fixme enemy bullet detected 1 tic later so I need previous coord here
+		//logger.dbg("bullet firingPosition = " + this.firingPosition );
+		// FIXME enemy bullet detected 1 tic later so gun should be able to handle it
 		this.targetPosition = (Point2D.Double) gun.calcTargetFuturePosition( firedBot, bulletEnergy, targetBot);
-		this.firingPosition = (Point2D.Double) firedBot.getPosition().clone();
 		this.firingAngle = Math.atan2(targetPosition.x-firingPosition.x, targetPosition.y - firingPosition.y);
 		bulletColor = firedGun.gunColor;
 	}
@@ -124,9 +126,6 @@ public class firedBullet {
 
 	public double getDistanceTraveledAtTime(long time) {
 		double timeInFlight = time - firedTime + 1;
-		if ( !belongToMyBot ) {
-			timeInFlight = timeInFlight + 1;
-		}
 		double distTraveled = timeInFlight * bulletSpeed;
 		return distTraveled;
 	}

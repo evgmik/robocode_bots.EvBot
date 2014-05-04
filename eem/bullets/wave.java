@@ -76,9 +76,9 @@ public class wave {
 		this.firedBot = firedBot;
 		baseGun firedGun = new baseGun();
 		this.bulletSpeed = physics.bulletSpeed(bulletEnergy); 
-		// fixme enemy bullet detected 1 tic later so I need previous coord here
-		this.firingPosition = (Point2D.Double) firedBot.getPosition().clone();
-		firedTime = myBot.ticTime;
+		firedTime = myBot.ticTime-1; // recall we detect enemy bullet 1 tic later
+		this.firingPosition = (Point2D.Double) firedBot.getPrevTicPosition();
+		//logger.dbg("wave firingPosition = " + this.firingPosition );
 		setEnemyPosAtFiringTime();
 		setEnemyMEAatFiringTime();
 
@@ -88,6 +88,7 @@ public class wave {
 		}
 		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( gunSetKey );
 		for ( baseGun g: guns ) {
+			// FIXME enemy bullet detected 1 tic later so I need previous coord here
 			firedBullet b = new firedBullet( myBot, firedBot,  g, firedBot.energyDrop() );
 			b.setIsItVirtual(true);  // virtual bullet
 			//logger.dbg( "bullet from gun " + g.getName() );
@@ -289,9 +290,6 @@ public class wave {
 
 	public double getDistanceTraveledAtTime(long time) {
 		double timeInFlight = time - firedTime + 1;
-		if ( !isItMine ) {
-			timeInFlight = timeInFlight + 1;
-		}
 		double distTraveled = timeInFlight * bulletSpeed;
 		return distTraveled;
 	}
