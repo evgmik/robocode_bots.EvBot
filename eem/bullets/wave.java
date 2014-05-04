@@ -178,7 +178,7 @@ public class wave {
 							continue;
 						}
 						myBot.bulletHitByPredictedCnt++;
-						logger.dbg("schedule to remove bullet from " + b.getFiredGun().getName() + " gun fired by " + this.firedBot.getName() );
+						//logger.dbg("schedule to remove bullet from " + b.getFiredGun().getName() + " gun fired by " + this.firedBot.getName() );
 						bulletsToRemove.add(b);
 						// update stats for my bot
 						if ( !bot.getName().equals( myBot.getName() ) ) {
