@@ -198,16 +198,55 @@ public class InfoBot {
 		}
 	}
 
+	public Point2D.Double getPrevTicPosition() {
+		// Return position at previous known point
+		// Watch out previous point may be many clicks away !
+		Point2D.Double pos = getPositionAtTime( getLast().getTime() - 1 );
+		if ( pos == null ) {
+			// we do linear approximation to the past
+			pos = (Point2D.Double) getPosition().clone(); // current position
+			pos.x -= getVelocity().x;
+			pos.y -= getVelocity().y;
+		}
+		return pos;
+	}
+
 	public Point2D.Double getPrevPosition() {
-		// Return position at previous point
+		// Return position at previous known point
 		// Watch out previous point may be many clicks away !
 		if ( hasPrev() ) {
 			return  getPrev().getPosition();
 		} else {
-			// TODO better to use some sort of linear aproximation
-			// instead of just reporting last position
-			return  this.getPosition();
+			return  null;
 		}
+	}
+
+	public Point2D.Double getPositionAtTime(long time) {
+		botStatPoint bS = getStatAtTime(time);
+		if (bS == null) return null;
+		return bS.getPosition();
+	}
+
+	public botStatPoint getStatAtTime(long time) {
+		// return position at given time
+		// the main use to find exactly previous time for 
+		// enemy bullets targeting.
+		// Thus we count from the end
+		int N = botStats.size();
+		botStatPoint bS = null;
+		for ( int i=N-1; i >=0; i-- ) {
+			bS = botStats.get(i);
+			if ( bS.getTime() == time ) {
+				return bS;
+			}
+			if ( bS.getTime() < time ) {
+				// we started with lagest/oldest timeTic
+				// and now passed the required time
+				// everything else is before required time
+				return null;
+			}
+		}
+		return null; // no matched time found, but we should not be here at all
 	}
 
 	public long getLastSeenTime() {
