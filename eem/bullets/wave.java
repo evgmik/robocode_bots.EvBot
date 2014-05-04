@@ -142,6 +142,7 @@ public class wave {
 		for ( InfoBot bot : aliveBots ) {
 			//logger.dbg("Wave fired by " + firedBot.getName() + " against bot " + bot.getName() );
 			if ( firedBot.getName().equals( bot.getName() ) ) {
+				// bot's bulllets do not affect their own firing bot
 				continue;
 			}
 			Point2D.Double botPos = bot.getPosition();
@@ -168,7 +169,14 @@ public class wave {
 						if ( myBot.fightType().equals( "1on1" ) ) {
 							//logger.dbg("FIXME sloppy path finding algorithm at tic " +  myBot.ticTime +": myBot should not be hit by predicted bullet " + b.firedGun.getName() );
 						}
+						if ( b.getFiredGun().getName().equals("shadow") ) {
+							// we keep shadow bullets intact
+							// and do not count their stats
+
+							continue;
+						}
 						myBot.bulletHitByPredictedCnt++;
+						logger.dbg("schedule to remove bullet from " + b.getFiredGun().getName() + " gun fired by " + this.firedBot.getName() );
 						bulletsToRemove.add(b);
 						// update stats for my bot
 						if ( !bot.getName().equals( myBot.getName() ) ) {
