@@ -49,6 +49,10 @@ public class  bulletsManager {
 			Point2D.Double firingPos = wE.getFiringPosition();
 			double waveDist = wE.getDistanceTraveledAtTime(time); 
 			for ( InfoBot bot : myBot._botsmanager.listOfAliveBots() ) {
+				if ( bot.getName().equals( wE.firedBot.getName() ) ) {
+					// bot cannot create shadow from itself
+					continue;
+				}
 				Point2D.Double botPos = bot.getPosition();
 				if ( Math.abs( waveDist - firingPos.distance( botPos )  ) <= myBot.robotHalfSize ) {
 					// check if current bullets hit the enemy bot
