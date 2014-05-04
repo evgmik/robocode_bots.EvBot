@@ -90,6 +90,7 @@ public class wave {
 		for ( baseGun g: guns ) {
 			firedBullet b = new firedBullet( myBot, firedBot,  g, firedBot.energyDrop() );
 			b.setIsItVirtual(true);  // virtual bullet
+			//logger.dbg( "bullet from gun " + g.getName() );
 			this.addBullet(b);
 			g.updBulletFiredCount( firedBot, myBot._tracker, b );
 		}
@@ -266,10 +267,12 @@ public class wave {
 	}
 
 	public void addBullet(firedBullet b) {
+		//logger.dbg("adding bullet from gun " + b.getFiredGun().getName() );
 		bullets.add(b);
 	}
 
 	public void removeBullet(firedBullet b) {
+		//logger.dbg("removing bullet from gun " + b.getFiredGun().getName() );
 		bullets.remove(b);
 	}
 
@@ -336,8 +339,10 @@ public class wave {
 		}
 
 		// draw wave bullets
+		//logger.dbg("wave fired by " + firedBot.getName() + " has " + bullets.size() + " bullets");
 		for ( firedBullet b : bullets ) {
 			b.onPaint(g);
+			//logger.dbg(" bullet gun " + b.getFiredGun().getName() );
 		}
 
 		// draw target positions at firing time

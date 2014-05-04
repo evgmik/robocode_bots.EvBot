@@ -64,6 +64,7 @@ public class  bulletsManager {
 						}
 						Point2D.Double bulPos = b.getPosition();
 						if ( ( Math.abs( bulPos.x - botPos.x ) <= myBot.robotHalfSize ) && ( Math.abs( bulPos.y - botPos.y ) <= myBot.robotHalfSize ) ) {
+							//logger.dbg("removing bullet from gun " + b.getFiredGun().getName() + " of bot " + wE.firedBot.getName() );
 							bulletsToRemove.add( b );
 						}
 
@@ -76,6 +77,7 @@ public class  bulletsManager {
 					
 					// add shadow from this bot
 					if ( wE.isPosWithMEAforBot( botPos, myBot._tracker ) ) {
+						//logger.dbg("adding shadow casted by " + botPos );
 						baseGun shadowGun = new shadowGun();
 						firedBullet bShadow = new firedBullet( myBot, wE, shadowGun, botPos);
 						wE.addBullet(bShadow);
