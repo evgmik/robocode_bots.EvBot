@@ -198,6 +198,18 @@ public class InfoBot {
 		}
 	}
 
+	public Point2D.Double getPrevPosition() {
+		// Return position at previous point
+		// Watch out previous point may be many clicks away !
+		if ( hasPrev() ) {
+			return  getPrev().getPosition();
+		} else {
+			// TODO better to use some sort of linear aproximation
+			// instead of just reporting last position
+			return  this.getPosition();
+		}
+	}
+
 	public long getLastSeenTime() {
 		if ( hasLast() ) {
 			return  getLast().getTime();
