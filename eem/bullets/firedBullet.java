@@ -302,5 +302,11 @@ public class firedBullet {
 	public Color getColor(){
 		return bulletColor;
 	}
+
+	public String format() {
+		String str = "";
+		str += "Bullet fired by " + firedGun.getName() + " gun," + " from " + firingPosition + " to " + targetPosition + " with speed " + bulletSpeed;
+		return str;
+	}
 }
 
