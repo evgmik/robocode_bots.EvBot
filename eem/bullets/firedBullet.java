@@ -161,7 +161,7 @@ public class firedBullet {
 	}
 
 	public double pointDangerFromExactBulletHit( Point2D.Double p, long time ) {
-		double dangerLevelBullet = 100;
+		double dangerLevelBullet = 500;
 		double dangerLevelShadowBullet = -dangerLevelBullet/6.0;
 		double safe_distance_from_bullet =  2*myBot.robotHalfSize + 2;
 
@@ -182,12 +182,13 @@ public class firedBullet {
 			}
 
 			// adding proximity danger
+			double dist_coef = 1;
 			if ( !getFiredGun().getName().equals("shadow") ) {
-				danger += math.gaussian( dist, dangerLevelBullet, safe_distance_from_bullet );
+				danger += math.gaussian( dist, dangerLevelBullet, dist_coef*safe_distance_from_bullet );
 
 			} else {
 				// shadow bullets are safe
-				danger += math.gaussian( dist, dangerLevelShadowBullet, safe_distance_from_bullet );
+				danger += math.gaussian( dist, dangerLevelShadowBullet, dist_coef*safe_distance_from_bullet );
 			}
 		}
 		return danger;
