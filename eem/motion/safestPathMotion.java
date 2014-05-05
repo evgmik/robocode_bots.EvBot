@@ -151,6 +151,7 @@ public class safestPathMotion extends dangerMapMotion {
 		// first we will try to pad old path with new points
 		dangerPath bestPath=randomPath(safestPath, maxPathLength, bestDanger);
 		bestDanger = bestPath.getDanger();
+		//logger.dbg("1st path danger " + bestPath.getDanger() );
 		dangerPath trialPath;
 		for (int i=0; i< NofGenNewPathAttempts; i++) {
 			trialPath=randomPath(bestDanger);
@@ -159,7 +160,7 @@ public class safestPathMotion extends dangerMapMotion {
 				bestDanger = bestPath.getDanger();
 			}
 		}
-		//logger.dbg("Path danger " + bestPath.getDanger() );
+		//logger.dbg("Best path danger " + bestPath.getDanger() );
 		return bestPath;
 	}
 
