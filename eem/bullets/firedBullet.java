@@ -34,6 +34,24 @@ public class firedBullet {
 		firingPosition = myBot.myCoord;
 	}
 
+	public firedBullet(EvBot bot, baseGun gun, InfoBot firedBot, Point2D.Double targetPosition, Point2D.Double firingPosition, double firedPower, long firedTime) {
+		// very general constructor with pretty much everything precalculated
+		this.myBot = bot;
+		if ( firedBot.getName().equals( myBot.getName() ) ) {
+			this.belongToMyBot = true;
+		} else {
+			this.belongToMyBot = false;
+		}
+		this.firedGun = gun;
+		this.bulletSpeed = physics.bulletSpeed(firedPower);
+		this.targetPosition = (Point2D.Double) targetPosition.clone();
+		this.firingPosition = (Point2D.Double) firingPosition.clone();
+		this.firedTime = firedTime;
+		this.virtualState = true; // strictly speaking it is unknown
+		this.firingAngle = Math.atan2(targetPosition.x-firingPosition.x, targetPosition.y - firingPosition.y);
+		this.bulletColor = firedGun.gunColor;
+	}
+
 	public firedBullet(EvBot bot, Bullet b, baseGun gun) {
 		myBot = bot;
 		robocodeBullet = b;
