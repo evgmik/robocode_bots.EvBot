@@ -165,21 +165,24 @@ public class wave {
 
 				// now let's check which bullet hit this bot
 				for ( firedBullet b : this.getBullets() ) {
+					if ( b.getFiredGun().getName().equals("shadow") ) {
+						// we keep shadow bullets intact
+						// and do not count their stats
 
-					if ( botPos.distance( b.getPosition() ) <= Math.sqrt(2)*myBot.robotHalfSize ) {
+						continue;
+					}
+
+					if ( b.isPositionHitAtTime( botPos, myBot.getTime() ) ) {
 						// bot hit by this bullet
-						if ( myBot.fightType().equals( "1on1" ) ) {
-							//logger.dbg("FIXME sloppy path finding algorithm at tic " +  myBot.ticTime +": myBot should not be hit by predicted bullet " + b.firedGun.getName() );
+						if ( bot.getName().equals( myBot.getName() ) ) {
+							if ( myBot.fightType().equals( "1on1" ) ) {
+								logger.dbg("FIXME sloppy path finding algorithm at tic " +  myBot.getTime() +": myBot should not be hit by predicted bullet " + b.firedGun.getName() );
+								logger.dbg("Wave fired by " + firedBot.getName() + " intersects with bot " + bName );
+							}
+							myBot.bulletHitByPredictedCnt++;
 						}
-						if ( b.getFiredGun().getName().equals("shadow") ) {
-							// we keep shadow bullets intact
-							// and do not count their stats
-
-							continue;
-						}
-						myBot.bulletHitByPredictedCnt++;
 						//logger.dbg("schedule to remove bullet from " + b.getFiredGun().getName() + " gun fired by " + this.firedBot.getName() );
-						bulletsToRemove.add(b);
+						bulletsToRemove.add(b); // if bullet hit it does not fly anymore
 						// update stats for my bot
 						if ( !bot.getName().equals( myBot.getName() ) ) {
 							//logger.dbg("Enemy hit with " + b.getFiredGun().getName() );
@@ -187,8 +190,6 @@ public class wave {
 								b.getFiredGun().updBulletHitCount( myBot._tracker, bot, b );
 								//logger.dbg( b.getFiredGun().gunStatsHeader(myBot._tracker, bot ) );
 								//logger.dbg( b.getFiredGun().gunStatsFormat(myBot._tracker, bot ) );
-								// removing this lucky bullet to avoid statistic scewing
-								bulletsToRemove.add(b);
 							}
 						}
 					}
