@@ -87,10 +87,13 @@ public class safestPathMotion extends dangerMapMotion {
 			logger.dbg("Predicted position " + DestinationDangerPathPoint.getPosition());
 			logger.dbg("Velocity expected " + DestinationDangerPathPoint.getVelocity() + " actual " + myBot.getVelocity() );
 			logger.dbg("Heading expected " + DestinationDangerPathPoint.getHeading() + " actual " + myBot.getHeading() );
+			// need new path most likely skipped turns did something bad to us
+			safestPath = null;
+			//safestPath = generateTheBestPath();
 		}
-		if ( safestPath.size() < pathSafetyMargin ) {
+		//if ( safestPath.size() < pathSafetyMargin ) {
 			safestPath = generateTheBestPath();
-		}
+		//}
 		DestinationDangerPathPoint = safestPath.removeFirst();
 	}
 
