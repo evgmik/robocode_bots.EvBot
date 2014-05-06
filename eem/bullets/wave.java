@@ -88,8 +88,8 @@ public class wave {
 		}
 		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( gunSetKey );
 		for ( baseGun g: guns ) {
-			// FIXME enemy bullet detected 1 tic later so I need previous coord here
-			firedBullet b = new firedBullet( myBot, firedBot,  g, firedBot.energyDrop() );
+			//firedBullet b = new firedBullet( myBot, firedBot,  g, firedBot.energyDrop(), firedTime );
+			firedBullet b = g.gunBestBulletAtTime( firedBot,  myBot._tracker, firedBot.energyDrop(), firedTime );
 			b.setIsItVirtual(true);  // virtual bullet
 			//logger.dbg( "bullet from gun " + g.getName() );
 			this.addBullet(b);
