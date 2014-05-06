@@ -38,20 +38,32 @@ public class linearGun extends baseGun {
 		double sin_vT, cos_vT;
 		double bSpeed=physics.bulletSpeed( firePower );
 
-		vTvec = tgt.getVelocity();
 
 		// estimated current target position
 		logger.noise("Round time = " + myBot.getTime());
 		logger.noise("target time = " + tgt.getLastSeenTime());
-		targetAtFiringTimePos = predictBotPositionAtTime( tgt, myBot.getTime() + fireDelay );
+
+		long firingTime = myBot.getTime() + fireDelay;
+		botStatPoint bS = tgt.getStatAtTime( firingTime );
+		if ( bS == null ) {
+			// required point does not exist
+			// we will trace back from last known point
+			vTvec = (Point2D.Double) tgt.getVelocity().clone();
+			targetAtFiringTimePos = (Point2D.Double) predictBotPositionAtTime( tgt, firingTime ).clone();
+		} else {
+			targetAtFiringTimePos = (Point2D.Double) bS.getPosition().clone();
+			vTvec = (Point2D.Double) bS.getVelocity().clone();
+		}
+
 		tF=misc.linear_predictor( bSpeed, targetAtFiringTimePos,
 				vTvec,  firingPosition);
+
 		// tF = math.putWithinBorders(tF, myBot.BattleField);
 		//logger.noise("Predicted target position " + tF.x +", " + tF.y);
 		tF = futureTargetWithinPhysicalLimitsBasedOnVelocity( tF, vTvec );
 
 		//logger.noise("boxed target position " + tF.x +", " + tF.y);
-		return tF;
+		return (Point2D.Double) tF.clone();
 	}
 
 	public void onPaint(Graphics2D g) {

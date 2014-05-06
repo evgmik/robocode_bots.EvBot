@@ -319,7 +319,7 @@ public class baseGun {
 		return new Point2D.Double(Tx, Ty);
 	}
 
-	public Point2D.Double predictBotPositionAtTimeCircular( InfoBot bot, double time) {
+	public Point2D.Double predictBotPositionAtTimeCircular( InfoBot bot, long time) {
 		// FIXME should be able to deal with time in past, see while loop condition
 		Point2D.Double posFut  = new Point2D.Double(0,0);
 		Point2D.Double vTvecLast, vTvecPrev;
@@ -327,6 +327,18 @@ public class baseGun {
 		botStatPoint bStatLast;
 		botStatPoint bStatPrev;
 
+		long dT = time - bot.getLastSeenTime();
+		if ( dT <= 0 ) {
+			// required time in past or present
+			// there is a chance we already have this data
+			botStatPoint bS = bot.getStatAtTime( time );
+			if ( bS != null ) {
+				// yey, we have this point
+				return (Point2D.Double) bS.getPosition().clone();
+			}
+		}
+
+		// tough luck, no such point and we need to approximate its position
 		bStatLast = bot.getLast();
 		bStatPrev = bot.getPrev();
 
@@ -340,15 +352,19 @@ public class baseGun {
 			double dt =  bStatLast.getTime() - bStatPrev.getTime();
 			phi = (phiLast - phiPrev)/dt;
 		}
-		// rotation coefficients
-		double cosPhi = Math.cos(phi);
-		double sinPhi = Math.sin(phi);
-
 		// estimated current target position
-		double dT = time - bot.getLastSeenTime();
 
-		double vx = vTvecLast.x;
-		double vy = vTvecLast.y;
+		// if time in past we need to revert time, velocity, and rotation angle phi
+		double vx = vTvecLast.x * math.sign( dT );
+		double vy = vTvecLast.y * math.sign( dT );
+
+		// rotation coefficients
+		double cosPhi = Math.cos(phi * math.sign( dT ) );
+		double sinPhi = Math.sin(phi * math.sign( dT ) );
+
+		//finally making dT positive
+		dT *= math.sign( dT );
+
 		double vxNew, vyNew;
 		posFut.x = bot.getX();
 		posFut.y = bot.getY();
@@ -564,10 +580,52 @@ public class baseGun {
 		return  calcTargetFuturePosition( firingPosition, firePower, tgt,  0);
 	}
 
-	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt, long fireDelay) {
-		return (Point2D.Double) tgt.getPosition().clone();
+	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot targetBot, long fireDelay) {
+		Point2D.Double tP = null;
+		if ( fireDelay >= 0 ) {
+			// there is no better information than this for future with head on gun
+			tP = targetBot.getPosition();
+		} else {
+			// we asked to use information in past without looking into info at present
+			long lastAvailableTargetingInfoTime = myBot.getTime() + fireDelay;
+			tP = targetBot.getPositionAtTime( lastAvailableTargetingInfoTime ); 
+			// error checks
+			if ( tP == null ) {
+				logger.dbg("Do not know former targetBot " + targetBot.getName() + "  position at " + lastAvailableTargetingInfoTime + " time shift or time shift " + fireDelay);
+				tP = targetBot.getPosition(); // this gives absolutely last know position
+			}
+		}
+		return (Point2D.Double) tP.clone();
 	}
 
+	public firedBullet gunBestBulletAtTime( InfoBot firedBot, InfoBot targetBot, double firePower, long firedTime) {
+		// calculates what would be the bullet if gun fired at firedTime
+		// main goal is to prevent an enemy gun to look in the "available" future
+		// when we detect their fire in later time and start making virtual bullets
+
+		// First figure out firing info 
+		Point2D.Double firingPosition = null;
+		if ( ( myBot.getTime() - firedTime ) == 1 ) {
+			// this is special case and there are some helpers with approximation
+			// of missed data
+			firingPosition = firedBot.getPrevTicPosition(); // with respect to now
+		} else {
+			firingPosition = firedBot.getPositionAtTime( firedTime );
+		}
+		// error checks
+		if ( firingPosition == null ) {
+			firingPosition = firedBot.getPosition();
+		}
+
+		// time when causality still permits to have target info
+		long lastAvailableTargetingInfoTime = firedTime - 1; // see wiki
+		long fireDelay = lastAvailableTargetingInfoTime - myBot.getTime();
+		// Where was the target calculation
+		Point2D.Double targetPosition = calcTargetFuturePosition( firingPosition, firePower, targetBot, fireDelay );
+		firedBullet b = new firedBullet(myBot, this, firedBot, targetPosition, firingPosition, firePower, firedTime);
+		//logger.dbg(b.format());
+		return b;
+	}	
 
 	public void calcGunSettings() {
 		if ( myBot._trgt.haveTarget ) {

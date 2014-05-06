@@ -41,14 +41,14 @@ public class circularGun extends baseGun {
 		logger.noise("Estimated target position at firing time " + posFut.x +", " + posFut.y);
 
 		double dist = posFut.distance( firingPosition );
-		double dTnew = dist/bSpeed;
-		double dT = 0;
+		long dTnew = (long) ( dist/bSpeed );
+		long dT = 0;
 		int cnt = 0;
 		while ( (Math.abs(dT -dTnew) > 1) && (cnt < maxIterNum) ) {
 			dT = dTnew;
 			posFut = predictBotPositionAtTimeCircular( tgt, firingTime + dT);
 			dist = posFut.distance( firingPosition );
-			dTnew = dist/bSpeed;
+			dTnew = (long) ( dist/bSpeed );
 			cnt++;
 		}
 
