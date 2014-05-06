@@ -1,3 +1,12 @@
+= Version  4.6.5 =
+
+Bug-fix: wrong count of me hit by other bots
+
+Improvements: when fire virtual bullets by enemy gun take in account that they
+are fired before detected and that they use even older targeting info. Worked
+on safe path motion it is quite useful now, but it is weak against stronger
+bots.
+
 = Version  4.6.4 =
 
 Bug fix: multiple minor things. Among them cold count tics were not properly reset
