@@ -35,6 +35,7 @@ public class guessFactorGun extends baseGun {
 	}
 
 	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt, long fireDelay) {
+		// TODO handle fire delay properly
 		if (firingBot == null ) { 
 			//FIXME: this should not happen if I make it right
 			logger.dbg("FIXME: firingBot is not set. This should not happen if I make it right");

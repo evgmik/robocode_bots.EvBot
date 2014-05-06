@@ -65,6 +65,7 @@ public class pifGun extends baseGun {
 	}
 
 	protected Point2D.Double calcTargetFuturePosition( Point2D.Double firingPosition, double firePower, InfoBot tgt, long fireDelay) {
+		// TODO handle fire delay properly
 		long startTimeCalc = System.nanoTime();
 		long startTime, endTime;
 		refPoint = tgt.botStats.getLast();
