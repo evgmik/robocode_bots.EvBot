@@ -37,7 +37,7 @@ public class safestPathMotion extends dangerMapMotion {
 	private dangerPathPoint seedDangerPathPoint = null;
 	public LinkedList<dangerPath> dangerPaths;
 	private double waveSafetyDist = (Math.sqrt(2)*myBot.robotHalfSize+1);
-	private double guessFactorFlatenerStrength = 100;
+	private double guessFactorFlatenerStrength = 500;
 	// against ds.Versatile
 	// with maxPathLength = 10
 	//private double guessFactorFlatenerStrength = 0; gives enemy hit rate 0.13
@@ -71,9 +71,9 @@ public class safestPathMotion extends dangerMapMotion {
 	//private double guessFactorFlatenerStrength = 50; gives enemy hit rate 0.13
 	//private double guessFactorFlatenerStrength = 100; gives enemy hit rate 0.12
 	//private double guessFactorFlatenerStrength = 1000; gives enemy hit rate 0.18
-	private int NofGenNewPathAttempts = 100;
-	private int maxPathLength = 15;
-	private int pathSafetyMargin = 14; // when we have less point recalculate path
+	private int NofGenNewPathAttempts = 20;
+	private int maxPathLength = 10;
+	private int pathSafetyMargin = 2; // when we have less point recalculate path
 	
 	public void initTic() {
 		seedDangerPathPoint = formCurDangerPointFromStatsNow();
