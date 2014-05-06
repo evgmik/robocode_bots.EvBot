@@ -284,7 +284,14 @@ public class baseGun {
 					this.fireGun();
 					return;
 				}
-				int maxAllowedTicToBeColdForAGun = 1;
+				int maxAllowedTicToBeColdForAGun = 5; // in melee survival bonus is important
+				if ( myBot.fightType().equals("1on1") ) {
+					// in 1on1 it is generally better to fire in a hope to hit
+					// than wait to be hit and give unspent energy taken by bullet
+					// to the enemy
+					maxAllowedTicToBeColdForAGun = 0;
+				}
+			
 				if ( numTicsInColdState > maxAllowedTicToBeColdForAGun ) {
 					// this is for the case when we stuck with a single gun
 					// which cannot chose its target.
