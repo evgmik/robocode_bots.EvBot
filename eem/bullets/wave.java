@@ -176,8 +176,8 @@ public class wave {
 						// bot hit by this bullet
 						if ( bot.getName().equals( myBot.getName() ) ) {
 							if ( myBot.fightType().equals( "1on1" ) ) {
-								logger.dbg("FIXME sloppy path finding algorithm at tic " +  myBot.getTime() +": myBot should not be hit by predicted bullet " + b.firedGun.getName() );
-								logger.dbg("Wave fired by " + firedBot.getName() + " intersects with bot " + bName );
+								//logger.dbg("FIXME sloppy path finding algorithm at tic " +  myBot.getTime() +": myBot should not be hit by predicted bullet " + b.firedGun.getName() );
+								//logger.dbg("Wave fired by " + firedBot.getName() + " intersects with bot " + bName );
 							}
 							myBot.bulletHitByPredictedCnt++;
 						}
