@@ -65,14 +65,14 @@ public class matchedEnds extends LinkedList<LinkedList<Integer>> {
 	}
 
 	public String format() {
-		String outStr = "List of matched ends has " + this.size() + " depth";
+		String outStr = "List of matched ends has " + " depth " + this.size();
 		int cnt = 0;
 		for ( LinkedList<Integer> l : this ) {
 			cnt++;
 			outStr += "\n";
 			outStr += " for pattern length = " + cnt + " find " + l.size() + " matches";
-			outStr += "\n";
-			outStr +=("  matches = " + l );
+			//outStr += "\n";
+			outStr +=(" : " + l );
 		}
 		return outStr;
 	}
