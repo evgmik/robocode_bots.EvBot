@@ -284,12 +284,26 @@ public class baseGun {
 					this.fireGun();
 					return;
 				}
+				// TODO tune maxAllowedTicToBeColdForAGun for melee like situations
+				// maxAllowedTicToBeColdForAGun = 5 seems to give a strong boost
+				// for v4.6.5 in melee against just plain maxAllowedTicToBeColdForAGun=1
+				// may be there is a better choice
 				int maxAllowedTicToBeColdForAGun = 5; // in melee survival bonus is important
 				if ( myBot.fightType().equals("1on1") ) {
 					// in 1on1 it is generally better to fire in a hope to hit
 					// than wait to be hit and give unspent energy taken by bullet
 					// to the enemy
-					maxAllowedTicToBeColdForAGun = 0;
+
+					// TODO check if below is true, I have limited check with 
+					// my test bed, and not so sure about results
+					// maxAllowedTicToBeColdForAGun = 0, and 2, 3 gives worse rating
+					// especially against hard bots,
+					// however 0 seems to help against weaker bots
+					// see v4.6.4 stats for maxAllowedTicToBeColdForAGun = 1
+					// version v4.6.5 has too many changes to be fairly compared
+					// see v4.6.5 stats for maxAllowedTicToBeColdForAGun = 0
+					// why such strong dependence is unclear for me
+					maxAllowedTicToBeColdForAGun = 1; // magically it seems to be the best
 				}
 			
 				if ( numTicsInColdState > maxAllowedTicToBeColdForAGun ) {
