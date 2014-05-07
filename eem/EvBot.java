@@ -107,6 +107,7 @@ public class EvBot extends AdvancedRobot
 		_radar = new radar(this);
 		_motion = new dangerMapMotion(this);
 		//_motion = new safestPathMotion(this); // FIXME slow
+		//_motion = new chaoticMotion(this); // FIXME do not use freezes near walls
 		_bmanager = new bulletsManager(this);
 		_gmanager = new gunManager(this);
 		_gun = _gmanager.getDefaultGun();
