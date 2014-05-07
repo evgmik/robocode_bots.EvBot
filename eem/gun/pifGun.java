@@ -172,8 +172,9 @@ public class pifGun extends baseGun {
 		double Rp = 1; // track point size
 
 
-		LinkedList<Integer> templateEnds = templateEndsList.getEndsForPatternSizeN(1);
+		LinkedList<Integer> templateEnds = templateEndsList.getEndsForPatternSizeN( templateEndsList.size() ); // plot ends for longest matched patterns
 		if ( templateEnds == null ) return;
+		//logger.dbg( templateEndsList.format() );
 		//logger.dbg("number of matching ends to plot = " + templateEnds.size() + " for list " + templateEnds );
 		for ( Integer i : templateEnds ) {
 			// draw matching ends
