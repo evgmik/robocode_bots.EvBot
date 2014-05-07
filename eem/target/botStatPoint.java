@@ -93,11 +93,11 @@ public class botStatPoint {
 	public String format() {
 		String str = "";
 		str = str + "energy = " + energy + ", velocity = [ " + velocity.x + ", " + velocity.y + " ]" + ", heading = " + headingDegrees;
-		str = str + "\n";
+		str = str + ", ";
 		str = str + "position = [ "+ pos.x + ", " + pos.y + " ], tStamp = " + tStamp;
-		str = str + "\n";
+		str = str + ", ";
 		str = str + "distance to " + whichWallAhead() +" wall ahead = " + getDistanceToWallAhead();
-		str = str + "\n";
+		str = str + ", ";
 		str = str + "distance to myBot = " + dist2myBot + ", lateral velocity  = " + latteralVelocity;
 		return str;
 	}
