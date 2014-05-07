@@ -86,7 +86,7 @@ public class basicMotion {
 	}
 
 	public double stopDistanceVector( double velocity ) {
-		return -stopDistanceVector(velocity)*math.sign(velocity);
+		return -stopDistance(velocity)*math.sign(velocity);
 	}
 
 	public double pointDangerFromCorners( Point2D.Double p, double speed ) {
