@@ -190,6 +190,9 @@ public class botStatPoint {
 			if ( Math.abs( dist2wallAheadT - dist2wallAheadR ) > dist2WallDiff )
 				return false;
 		}
+		//logger.dbg("---- The following two bot stats match each other");
+		//logger.dbg( this.format() );
+		//logger.dbg( refPatCurrent.format() );
 		return true;
 	}
 
