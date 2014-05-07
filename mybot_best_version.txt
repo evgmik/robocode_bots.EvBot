@@ -1,5 +1,9 @@
 This is to keep track of the best performing bot versions
 
+== mix of robocode versions stats ==
+||Bot Version  | APS in Melee   | APS in 1on1 |
+| v4.6.5       | 64.08 +        |  67.77      |
+
 == old littlerumble stats ==
 Below is prior littlerumble change to new clients, i.e. when it was run
 with robocode 1.8.1.0 and 1.8.2.0. The last update on 05/02/2014

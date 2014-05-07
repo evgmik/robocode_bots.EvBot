@@ -1,3 +1,8 @@
+= Version  4.6.6 =
+
+maxAllowedTicToBeColdForAGun = 0 --> 1 in 1on1 as it was in v4.6.4
+Let's see if it makes any difference
+
 = Version  4.6.5 =
 
 Bug-fix: wrong count of me hit by other bots
