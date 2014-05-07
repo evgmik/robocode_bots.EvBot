@@ -305,6 +305,7 @@ public class EvBot extends AdvancedRobot
 	       	myCoord.y = getY();
 
 		_botsmanager.onScannedRobot(e);
+		//logger.stats( "Bot stat: " + e.getName() + " " + _botsmanager.getBotByName( e.getName() ).getLast().format() );
 		_radar.onScannedRobot(e);
 		long endTime = System.nanoTime();
 		logger.profiler("EvBot.onScannedRobot execution time =\t\t\t\t" + (endTime - startTime) + " ns" );
