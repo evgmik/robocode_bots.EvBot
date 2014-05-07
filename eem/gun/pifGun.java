@@ -192,9 +192,13 @@ public class pifGun extends baseGun {
 				pTr.y = pT.y + ry;
 				graphics.drawCircle( g, pTr, Rp);
 			}
-			// last point is wide
+			// draw expected targer at hit time
 			//logger.dbg("predicted point = " + pTr );
 			graphics.drawCircle( g, pTr, 4*Rp);
+			double R = physics.robotHalfSize;
+			graphics.drawSquare(g, pTr, 2*R+1);
+			graphics.drawSquare(g, pTr, 2*R+2);
+			//graphics.drawSquare(g, pTr, R);
 			
 		}
 
@@ -202,7 +206,7 @@ public class pifGun extends baseGun {
 
 	public void onPaint(Graphics2D g) {
 		super.onPaint( g );
-		//drawPossiblePlayForwardTracks( g );
+		drawPossiblePlayForwardTracks( g );
 	}
 
 }	
