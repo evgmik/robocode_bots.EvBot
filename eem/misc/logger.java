@@ -13,6 +13,7 @@ public class logger {
 	public final static int log_profiler=11;
 	public final static int log_routine=4;
 	public final static int log_debuging=5;
+	public final static int log_stats=5;
 	public final static int log_noise=10;
 	private static int verbosity_level=log_debuging; // current level, smaller is less noisy
 	private static RobocodeFileWriter fileWriter = null;
@@ -68,6 +69,10 @@ public class logger {
 
 	public static void dbg(String s) {
 		log_message(log_debuging, s);
+	}
+
+	public static void stats(String s) {
+		log_message(log_stats, s);
 	}
 
 	public static void routine(String s) {
