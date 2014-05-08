@@ -72,7 +72,7 @@ public class safestPathMotion extends dangerMapMotion {
 	//private double guessFactorFlatenerStrength = 100; gives enemy hit rate 0.12
 	//private double guessFactorFlatenerStrength = 1000; gives enemy hit rate 0.18
 	private int NofGenNewPathAttempts = 20;
-	private int maxPathLength = 10;
+	private int maxPathLength = 50;
 	private int pathSafetyMargin = 2; // when we have less point recalculate path
 	
 	public void initTic() {
