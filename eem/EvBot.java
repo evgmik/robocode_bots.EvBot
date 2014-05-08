@@ -164,6 +164,7 @@ public class EvBot extends AdvancedRobot
 		_bmanager.initTic();
 		endTime = System.nanoTime();
 		logger.profiler("bullet manager initTic execution time =\t\t\t" + (endTime - startTime) + " ns" );
+		choseMotion();
 		startTime = System.nanoTime();
 		_motion.initTic();
 		endTime = System.nanoTime();
@@ -239,10 +240,18 @@ public class EvBot extends AdvancedRobot
 
 	public void  choseMotion( ) {
 		boolean choseNewMotion = false;
+		// FIXME when chosing new motion do not make new when motion is the same
 		if (choseNewMotion) {
-			//_motion = new basicMotion(this);
-			//_motion = new chaoticMotion(this);
-			_motion = new dangerMapMotion(this);
+			//if ( _trgt.getLast().getDistanceToMyBot() < 300 ) {
+			if (false) {
+				//_motion = new dangerMapMotion(this);
+				_motion = new safestPathMotion(this); // FIXME slow
+				//_motion = new chaoticMotion(this); // FIXME do not use freezes near walls
+				//_motion = new basicMotion(this);
+			} else {
+				//_motion = new chaoticMotion(this);
+				_motion = new dangerMapMotion(this);
+			}
 		}
 	}
 
@@ -270,7 +279,6 @@ public class EvBot extends AdvancedRobot
 				_gun=_gmanager.choseGun();
 			}
 
-			choseMotion();
 			startTime = System.nanoTime();
 			_motion.makeMove();
 			endTime = System.nanoTime();
