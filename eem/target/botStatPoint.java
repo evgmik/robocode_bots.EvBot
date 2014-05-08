@@ -179,7 +179,7 @@ public class botStatPoint {
 			( Math.abs( spdT - spdR ) > maxSpeedDist )
 			|| ( Math.abs( math.shortest_arc( angT - angR) ) > maxAngleDist )
 			//|| ( Math.abs( dist2myBotT - dist2myBotR) > maxDistDist )
-			//|| ( Math.abs( latteralVelocityT - latteralVelocityR) > maxLateralDist )
+			|| ( Math.abs( latteralVelocityT - latteralVelocityR) > maxLateralDist )
 		   ) {
 			return false;
 		}
