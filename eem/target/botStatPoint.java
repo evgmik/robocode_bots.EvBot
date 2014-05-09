@@ -15,6 +15,7 @@ public class botStatPoint {
 	private Point2D.Double velocity;
 	private double headingDegrees;
 	private double energy;
+	private double myBotGunHeat;
 	private double dist2WallAhead;
 	private double dist2myBot;
 	private double latteralVelocity;
@@ -25,6 +26,7 @@ public class botStatPoint {
 		velocity = new  Point2D.Double(0,0);
 		headingDegrees = 0;
 		energy =0;
+		myBotGunHeat =0;
 		dist2WallAhead=0;
 		dist2myBot = 0;
 		latteralVelocity = 0;
@@ -50,6 +52,7 @@ public class botStatPoint {
 			speed = -speed;
 		}
 		energy = e.getEnergy();
+		myBotGunHeat = bot.getGunHeat();
 		dist2WallAhead = distanceToWallAhead();
 
 		double enemyAbsoluteBearing = e.getBearingRadians() + bot.getHeadingRadians();
@@ -151,12 +154,17 @@ public class botStatPoint {
 		return latteralVelocity;
 	}
 
+	public Double getMyBotGunHeat() {
+		return myBotGunHeat;
+	}
+
 	public boolean arePointsOfPathSimilar(botStatPoint refPatStart, botStatPoint refPatCurrent, botStatPoint testPatStart) {
 		// essentially does this point matches refPatCurrent point.
 		// compare how this stat point with respect to testPatStart
 		// matches reference Start and refPatCurrent
 		double dist2WallProximity = 80;
 		double dist2WallDiff = 4;
+		double maxMyBotGunHeatDist = 0.0;
 		double maxSpeedDist = 0.5;
 		double maxDistDist = 50;
 		double maxLateralDist = 2;
@@ -186,6 +194,10 @@ public class botStatPoint {
 		// now let's check that the timing is right
 		if ( timeDiffT != timeDiffR )
 			return false;
+
+		if ( Math.abs( this.getMyBotGunHeat()  - refPatCurrent.getMyBotGunHeat() ) > maxMyBotGunHeatDist )
+			return false;
+
 		if ( Math.min( dist2wallAheadR, dist2wallAheadT) < dist2WallProximity ) {
 			if ( Math.abs( dist2wallAheadT - dist2wallAheadR ) > dist2WallDiff )
 				return false;
