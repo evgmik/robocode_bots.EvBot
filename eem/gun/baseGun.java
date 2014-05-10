@@ -407,6 +407,13 @@ public class baseGun {
 		return posFut;
 	}
 
+	double getTargetWeight( InfoBot firingBot, InfoBot targetBot, double firePower ) {
+		cachedTarget matchedCT = findMatchInCachedTargets( new cachedTarget( myBot, this, firingBot, targetBot ) );
+		if ( matchedCT != null ) {
+			calcTargetFuturePosition(  firingBot, firePower, targetBot);
+		}
+		return matchedCT.getTargetWeight();
+	}
 
 	public void fireGun() {
 		if ( firePower != 0 ) {
