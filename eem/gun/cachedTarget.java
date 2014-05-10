@@ -20,6 +20,11 @@ public class cachedTarget {
 	protected InfoBot targetBot = null;
 	protected baseGun gun = null;
 	protected Point2D.Double targetFuturePosition = null;
+	// weight is to help gun manager to decide which gun fires
+	// 1 -> gun is sure to hit, 0 -> gun did not find solution
+	// and resort to fall back scenarion i.e. head on firing
+	// mostly to help with pif guns
+	protected double targetWeight = 1;
 	protected double firePower = 0;
 	protected long timeStamp = 0;
 
@@ -61,6 +66,14 @@ public class cachedTarget {
 
 	public void setTargetFuturePosition( Point2D.Double fP) {
 		this.targetFuturePosition = (Point2D.Double) fP.clone();	
+	}
+
+	public void setTargetWeight( double w) {
+		targetWeight = w;
+	}
+
+	public double getTargetWeight() {
+		return targetWeight;
 	}
 
 	public long getTime() {
