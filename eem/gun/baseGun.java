@@ -553,16 +553,23 @@ public class baseGun {
 		return new_ftPos;
 	}
 
-	private Point2D.Double findSettingInCachedTargets( cachedTarget cT ) {
+	private cachedTarget findMatchInCachedTargets( cachedTarget cT ) {
 		if (cachedTargets.size() == 0) return null;
 		long timeStamp = cT.getTime();
 		for ( int i = cachedTargets.size()-1; i>=0; i-- ) {
 			// check first if cache has current timestamps
 			if ( cachedTargets.get(i).getTime() < timeStamp ) return null;
 			if ( cT.conditionEquals( cachedTargets.get(i) ) )
-				return cachedTargets.get(i).getTargetFuturePosition();
+				return cachedTargets.get(i);
 		}
 		return null; // nothing found if we are here
+	}
+
+	private Point2D.Double findSettingInCachedTargets( cachedTarget cT ) {
+		cachedTarget matchedCT = findMatchInCachedTargets( cT );
+		if ( matchedCT == null)
+			return null;
+		return matchedCT.getTargetFuturePosition();
 	}
 
 	public Point2D.Double calcTargetFuturePosition( InfoBot firedBot, double firePower, InfoBot tgt) {
