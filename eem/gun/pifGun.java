@@ -94,8 +94,7 @@ public class pifGun extends baseGun {
 		//logger.dbg("number of found matching patterns ends= " + templateEnds.size() );
 		if ( templateEnds.size() == 0 ) {
 			//logger.dbg( "pifGun has no points to work with, suggesting to use another gun" );
-			//for now we will use head on gun approach
-			return (Point2D.Double) refPoint.getPosition().clone();
+			return null;
 		}
 
 		//Let's remove ends which give out of bound solutions
@@ -129,8 +128,7 @@ public class pifGun extends baseGun {
 
 		if (templateEndsList.totalMatches() == 0 ) {
 			//logger.dbg( "pifGun has no points to work with, suggesting to use another gun" );
-			//for now we will use head on gun approach
-			return (Point2D.Double) refPoint.getPosition().clone();
+			return null;
 		}
 
 		// chose randomly a templateEnd to use as pif target
