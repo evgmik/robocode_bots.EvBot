@@ -164,7 +164,7 @@ public class botStatPoint {
 		// matches reference Start and refPatCurrent
 		double dist2WallProximity = 80;
 		double dist2WallDiff = 4;
-		double maxMyBotGunHeatDist = 0.3;
+		double maxMyBotGunHeatDist = 0.1;
 		double maxSpeedDist = 0.5;
 		double maxDistDist = 50;
 		double maxLateralDist = 2;
@@ -195,8 +195,10 @@ public class botStatPoint {
 		if ( timeDiffT != timeDiffR )
 			return false;
 
-		if ( Math.abs( this.getMyBotGunHeat()  - refPatCurrent.getMyBotGunHeat() ) > maxMyBotGunHeatDist )
-			return false;
+		if ( Math.min( this.getMyBotGunHeat(), refPatCurrent.getMyBotGunHeat() ) < .5) {
+			if ( Math.abs( this.getMyBotGunHeat()  - refPatCurrent.getMyBotGunHeat() ) > maxMyBotGunHeatDist )
+				return false;
+		}
 
 		if ( Math.min( dist2wallAheadR, dist2wallAheadT) < dist2WallProximity ) {
 			if ( Math.abs( dist2wallAheadT - dist2wallAheadR ) > dist2WallDiff )
