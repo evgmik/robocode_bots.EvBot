@@ -602,6 +602,11 @@ public class baseGun {
 		// ok we do it first time let's do it
 		//logger.dbg("firing bot " + firedBot.getName() + " at target " + tgt.getName() + " with gun " + getName() + " has nothing in the firing solutions cache" );
 		tFP = calcTargetFuturePosition( firingPosition, firePower, tgt, fireDelay);
+		if ( tFP == null ) {
+			// no solution resort to head on targeting
+			cT.setTargetWeight( 0 );
+			tFP = (Point2D.Double) tgt.getPosition().clone();
+		}
 		//to counter act bullet shielding bots
 		//add small random offset of about bot size
 		tFP = addRandomOffsetToTargetFuturePosition( firingPosition, tFP);
