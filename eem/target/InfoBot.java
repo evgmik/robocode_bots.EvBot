@@ -355,7 +355,7 @@ public class InfoBot {
 
 		LinkedList<Integer> prevEndsList;
 		prevEndsList = newEndsList;
-		while ( (newEndsList.size() >=1) && (patLength < maxPatLength) ) {
+		while ( (newEndsList.size() >=1) && (patLength <= maxPatLength) ) {
 			patLength++;
 			startTime = System.nanoTime();
 			prevEndsList = newEndsList;
