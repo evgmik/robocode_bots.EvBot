@@ -183,7 +183,6 @@ public class gunManager {
 		for ( baseGun tmp_gun: guns ) {
 			tmp_gun.calcGunSettings();
 			double targetWeight= tmp_gun.getTargetWeight( myBot._tracker, bot, tmp_gun.getFirePower() );
-			logger.dbg( "target " + bot.getName() + " has weight " + targetWeight + " for gun " + tmp_gun.getName() );
 			weights.add( targetWeight*getGunWeightForBot( tmp_gun,  bot ) );
 		}
 		int n = math.binNumByMaxWeight( weights ); // use the most lucky gun
