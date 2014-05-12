@@ -90,6 +90,7 @@ public class wave {
 		for ( baseGun g: guns ) {
 			//firedBullet b = new firedBullet( myBot, firedBot,  g, firedBot.energyDrop(), firedTime );
 			firedBullet b = g.gunBestBulletAtTime( firedBot,  myBot._tracker, firedBot.energyDrop(), firedTime );
+			if ( b == null ) continue;
 			b.setIsItVirtual(true);  // virtual bullet
 			//logger.dbg( "bullet from gun " + g.getName() );
 			this.addBullet(b);
