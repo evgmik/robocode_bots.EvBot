@@ -47,7 +47,7 @@ public class cachedTarget {
 
 	public cachedTarget(EvBot bot, baseGun gun, InfoBot firingBot, InfoBot targetBot, Point2D.Double targetFuturePosition, double firePower) {
 		this( bot, gun, firingBot, targetBot);
-		this.targetFuturePosition = (Point2D.Double) targetFuturePosition.clone();
+		this.targetFuturePosition = (Point2D.Double) targetFuturePosition;
 	}
 
 	public boolean conditionEquals( cachedTarget cT ) {
@@ -61,11 +61,11 @@ public class cachedTarget {
 	}
 
 	public Point2D.Double getTargetFuturePosition() {
-		return (Point2D.Double) targetFuturePosition.clone();
+		return (Point2D.Double) targetFuturePosition;
 	}
 
 	public void setTargetFuturePosition( Point2D.Double fP) {
-		this.targetFuturePosition = (Point2D.Double) fP.clone();	
+		this.targetFuturePosition = (Point2D.Double) fP;
 	}
 
 	public void setTargetWeight( double w) {

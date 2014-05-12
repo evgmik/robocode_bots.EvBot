@@ -455,7 +455,7 @@ public class baseGun {
 
 	public Point2D.Double getTargetFuturePosition() {
 		//logger.dbg("aiming at = " + targetFuturePosition );
-		return (Point2D.Double) targetFuturePosition.clone();
+		return (Point2D.Double) targetFuturePosition;
 	}
 
 	private Point2D.Double  addRandomOffsetToTargetFuturePosition(Point2D.Double firingPos, Point2D.Double tFP) {
@@ -474,7 +474,7 @@ public class baseGun {
 	}
 
 	public void setTargetFuturePosition(target targetBot) {
-		targetFuturePosition = (Point2D.Double)  calcTargetFuturePosition( myBot._tracker, firePower, targetBot).clone();
+		targetFuturePosition = (Point2D.Double)  calcTargetFuturePosition( myBot._tracker, firePower, targetBot);
 	}
 
         protected double firePoverVsDistance( double targetDistance ) {
@@ -675,7 +675,7 @@ public class baseGun {
 		if ( myBot._trgt.haveTarget ) {
 			setFirePower();
 			Point2D.Double tFP = calcTargetFuturePosition(  myBot._tracker, firePower, myBot._trgt);
-			targetFuturePosition = (Point2D.Double) tFP.clone();	
+			targetFuturePosition = (Point2D.Double) tFP;	
 		}
 	}
 
