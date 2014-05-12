@@ -57,7 +57,6 @@ public class wave {
 		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( gunSetKey );
 		firedBullet tmpB;
 		for ( baseGun g: guns ) {
-			// FIXME differentiate between virtual and real fired bullet gun
 			double targetWeight= g.getTargetWeight( myBot._tracker, myBot._trgt, bEnergy );
 			if ( targetWeight == 0 ) continue;
 			tmpB = new firedBullet( myBot, myBot._tracker, myBot._trgt, g, bEnergy );
