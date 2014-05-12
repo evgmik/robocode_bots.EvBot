@@ -262,11 +262,15 @@ public class baseGun {
 			Point2D.Double myPosAtFiringTime =  predictBotPositionAtTime( myBot._tracker, myBot.getTime() + fireDelay );
 			logger.noise("My predicted location at firing time = " + myPosAtFiringTime);
 			logger.noise("Enemy predicted location at bullet hit time = " + this.getTargetFuturePosition());
-			angle2enemyInFutire=math.angle2pt( myPosAtFiringTime, this.getTargetFuturePosition());
-
 			// rotate gun directives and settings
-			double gun_angle =myBot.getGunHeading();
-			angle = math.shortest_arc(angle2enemyInFutire-gun_angle);
+			if ( this.getTargetFuturePosition() != null ) {
+				angle2enemyInFutire=math.angle2pt( myPosAtFiringTime, this.getTargetFuturePosition());
+				double gun_angle =myBot.getGunHeading();
+				angle = math.shortest_arc(angle2enemyInFutire-gun_angle);
+			} else {
+				angle = 0; // no rotation for null future target positions
+			}
+
 			logger.noise("Pointing gun to enemy by rotating by angle = " + angle);
 			// remember rotation will happen only at the next turn!
 			myBot.setTurnGunRight(angle);
