@@ -662,6 +662,8 @@ public class baseGun {
 		long fireDelay = lastAvailableTargetingInfoTime - myBot.getTime();
 		// Where was the target calculation
 		Point2D.Double targetPosition = calcTargetFuturePosition( firingPosition, firePower, targetBot, fireDelay );
+		// check if gun can estimate a future target position
+		if ( targetPosition == null ) return null;
 		firedBullet b = new firedBullet(myBot, this, firedBot, targetPosition, firingPosition, firePower, firedTime);
 		//logger.dbg(b.format());
 		return b;
