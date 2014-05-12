@@ -578,13 +578,6 @@ public class baseGun {
 		return null; // nothing found if we are here
 	}
 
-	private Point2D.Double findSettingInCachedTargets( cachedTarget cT ) {
-		cachedTarget matchedCT = findMatchInCachedTargets( cT );
-		if ( matchedCT == null)
-			return null;
-		return matchedCT.getTargetFuturePosition();
-	}
-
 	public Point2D.Double calcTargetFuturePosition( InfoBot firedBot, double firePower, InfoBot tgt) {
 		Point2D.Double firingPosition = null;
 		long fireDelay = 0;
