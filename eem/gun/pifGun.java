@@ -87,6 +87,11 @@ public class pifGun extends baseGun {
 		if ( templateEndsList.size() >= 1 ) {
 			logger.profiler(" Pattern length 1 has " + templateEndsList.getFirst().size() + " matches and total matches size " + templateEndsList.totalMatches() );
 		}
+		if ( templateEndsList.size() < maxPatLength ) {
+			//not enough matches to use this gun
+			//logger.dbg("find only " + templateEndsList.size() + " out of required " + maxPatLength + " matches");
+			return null;
+		}
 		//logger.dbg( templateEndsList.format() );
 		// FIXME: do some weighting based on number of matches
 		LinkedList<Integer> templateEnds = templateEndsList.flatten();
