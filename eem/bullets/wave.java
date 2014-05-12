@@ -56,15 +56,17 @@ public class wave {
 		//logger.dbg("my bot pos " + myBot._tracker.getPosition() );
 		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( gunSetKey );
 		firedBullet tmpB;
+		boolean bVirtualStatus;
 		for ( baseGun g: guns ) {
 			double targetWeight= g.getTargetWeight( myBot._tracker, myBot._trgt, bEnergy );
-			if ( targetWeight == 0 ) continue;
-			tmpB = new firedBullet( myBot, myBot._tracker, myBot._trgt, g, bEnergy );
 			if ( g.getName().equals( b.getFiredGun().getName() ) ) {
-				tmpB.setIsItVirtual(false); // real bullet
+				bVirtualStatus = false;
 			} else {
-				tmpB.setIsItVirtual(true);  // virtual bullet
+				if ( targetWeight == 0 ) continue; // do not fire, when gun cannot aim
+				bVirtualStatus = true; // vritual bullet
 			}
+			tmpB = new firedBullet( myBot, myBot._tracker, myBot._trgt, g, bEnergy );
+			tmpB.setIsItVirtual(bVirtualStatus); // real bullet
 			this.addBullet(tmpB);
 			g.updBulletFiredCount( myBot._tracker, myBot._trgt, tmpB);
 		}
