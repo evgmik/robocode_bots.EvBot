@@ -58,6 +58,8 @@ public class wave {
 		firedBullet tmpB;
 		for ( baseGun g: guns ) {
 			// FIXME differentiate between virtual and real fired bullet gun
+			double targetWeight= g.getTargetWeight( myBot._tracker, myBot._trgt, bEnergy );
+			if ( targetWeight == 0 ) continue;
 			tmpB = new firedBullet( myBot, myBot._tracker, myBot._trgt, g, bEnergy );
 			if ( g.getName().equals( b.getFiredGun().getName() ) ) {
 				tmpB.setIsItVirtual(false); // real bullet
