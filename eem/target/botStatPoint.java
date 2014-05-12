@@ -164,7 +164,7 @@ public class botStatPoint {
 		// matches reference Start and refPatCurrent
 		double dist2WallProximity = 80;
 		double dist2WallDiff = 4;
-		double maxMyBotGunHeatDist = 0.1;
+		double maxMyBotGunHeatDist = 0.2;
 		double maxSpeedDist = 0.5;
 		double maxDistDist = 50;
 		double maxLateralDist = 2;
