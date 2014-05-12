@@ -422,9 +422,11 @@ public class baseGun {
 	}
 
 	public void fireGun() {
+		// check if other algorithms decided not to fire
+		// for example if we low on energy
 		if ( firePower != 0 ) {
-			// other algorithms decided not to fire
-			// for example if we low on energy
+			// FIXME gun with targetWeight = 0 should not even be chosen
+			if ( this.getTargetWeight( myBot._tracker, myBot._trgt, firePower ) == 0 ) return;
 			Bullet b;
 			logger.noise("Gun fire power = " + firePower);
 			b=myBot.setFireBullet(firePower);
