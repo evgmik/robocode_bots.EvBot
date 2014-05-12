@@ -407,7 +407,7 @@ public class baseGun {
 		return posFut;
 	}
 
-	double getTargetWeight( InfoBot firingBot, InfoBot targetBot, double firePower ) {
+	public double getTargetWeight( InfoBot firingBot, InfoBot targetBot, double firePower ) {
 		cachedTarget matchedCT = findMatchInCachedTargets( new cachedTarget( myBot, this, firingBot, targetBot ) );
 		if ( matchedCT != null ) {
 			calcTargetFuturePosition(  firingBot, firePower, targetBot);
