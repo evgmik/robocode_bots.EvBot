@@ -601,22 +601,28 @@ public class baseGun {
 		}
 		Point2D.Double tFP = null;
 		cachedTarget cT = new cachedTarget( myBot, this, firedBot, tgt );
-		tFP = findSettingInCachedTargets( cT );
-		if ( tFP != null ) {
-		       	return tFP;
+		cachedTarget matchedCT = findMatchInCachedTargets( cT );
+		if ( matchedCT != null) {
+			return matchedCT.getTargetFuturePosition();
 		}
-		// ok we do it first time let's do it
+		// no matched solution, so we have to do it for the first time
 		//logger.dbg("firing bot " + firedBot.getName() + " at target " + tgt.getName() + " with gun " + getName() + " has nothing in the firing solutions cache" );
 		tFP = calcTargetFuturePosition( firingPosition, firePower, tgt, fireDelay);
 		if ( tFP == null ) {
-			// no solution resort to head on targeting
+			// Algorithm has no prediciton
+			// setting target weight to 0 as unreachable target
 			cT.setTargetWeight( 0 );
-			tFP = (Point2D.Double) tgt.getPosition().clone();
+			tFP = null; // non existing solution
+			// resort to head on targeting
+			//tFP = (Point2D.Double) tgt.getPosition().clone();
+		} else {
+			// Algorithm has a prediciton
+			cT.setTargetWeight( 1 );
+			//to counter act bullet shielding bots
+			//add small random offset of about bot size
+			tFP = addRandomOffsetToTargetFuturePosition( firingPosition, tFP);
+			tFP = math.putWithinBorders( tFP, myBot.BattleField);
 		}
-		//to counter act bullet shielding bots
-		//add small random offset of about bot size
-		tFP = addRandomOffsetToTargetFuturePosition( firingPosition, tFP);
-		tFP = math.putWithinBorders( tFP, myBot.BattleField);
 		cT.setTargetFuturePosition( tFP );
 		cachedTargets.add(cT);
 		return  tFP;
