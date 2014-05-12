@@ -1,6 +1,8 @@
 = Version  4.6.7 =
 
 Improvements: Added lateral speed comparison to botStats to assist pif gun.
+pifGun returns null if it is unhappy with solution this effectively assign
+weight 0 to such gun. Which in turn is taken in account by the gunManager.
 
 = Version  4.6.6 =
 
