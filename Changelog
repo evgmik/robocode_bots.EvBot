@@ -1,3 +1,8 @@
+= Version  4.6.8 =
+
+Bug-fix: the choice of probing distance was very large for bots which fight
+close.
+
 = Version  4.6.7 =
 
 Improvements: Added lateral speed comparison to botStats to assist pif gun.
