@@ -1,7 +1,10 @@
 = Version  4.6.8 =
 
-Bug-fix: the choice of probing distance was very large for bots which fight
-close.
+Bug-fix: The choice of probing distance was very large for bots which fight
+close. The gun now does not fire neither virtual nor real bullet if it cannot
+predict future target position. This is mainly for pif gun which often does
+not have long enough match, so it was offering head on which skewed
+statistics.
 
 = Version  4.6.7 =
 
