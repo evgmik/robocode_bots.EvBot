@@ -293,7 +293,9 @@ public class dangerMapMotion extends basicMotion {
 				double distWaveConstrained = Math.abs(myBot._bmanager.getClosestToMeWaveTimeArrival())*8;
 				if ( distWaveConstrained < myBot.robotHalfSize) {
 					// wave already hit us too late to worry about it
-					distWaveConstrained = distToProbe;
+					// FIXME instead of dist2enemy use dist to next wave
+					double typicalBulletSpeed = 20;
+					distWaveConstrained = dist2enemy/typicalBulletSpeed*8;
 				}
 				double minorRToEnemy = Math.min( distBotConstrained, distWaveConstrained);
 				minorRToEnemy = Math.min( minorRToEnemy, distToProbe);
