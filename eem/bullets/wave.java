@@ -58,6 +58,8 @@ public class wave {
 		firedBullet tmpB;
 		boolean bVirtualStatus;
 		for ( baseGun g: guns ) {
+			// IMPORTANT: by this time gun heat is  > 0 so take care that guns
+			// use firing time = NOW
 			double targetWeight= g.getTargetWeight( myBot._tracker, myBot._trgt, bEnergy );
 			if ( g.getName().equals( b.getFiredGun().getName() ) ) {
 				bVirtualStatus = false;
