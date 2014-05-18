@@ -12,6 +12,10 @@ Improvements: Added lateral speed comparison to botStats to assist pif gun.
 pifGun returns null if it is unhappy with solution this effectively assign
 weight 0 to such gun. Which in turn is taken in account by the gunManager.
 
+gunManager samples all the guns for firing solution and only then chose the
+firing gun. Before gunManager was choosing based on past performance only.
+This however leads to a lot of skipped turns now.
+
 = Version  4.6.6 =
 
 maxAllowedTicToBeColdForAGun = 0 --> 1 in 1on1 as it was in v4.6.4
