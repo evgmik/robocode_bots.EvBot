@@ -16,9 +16,9 @@ import java.util.HashMap;
 
 public class cachedTarget {
 	protected EvBot myBot = null;
-	protected InfoBot firingBot = null;
-	protected InfoBot targetBot = null;
-	protected baseGun gun = null;
+	protected String firingBot = null;
+	protected String targetBot = null;
+	protected String gun = null;
 	protected Point2D.Double targetFuturePosition = null;
 	// weight is to help gun manager to decide which gun fires
 	// 1 -> gun is sure to hit, 0 -> gun did not find solution
@@ -36,13 +36,13 @@ public class cachedTarget {
 	public cachedTarget(EvBot bot, InfoBot firingBot, InfoBot targetBot) {
 		this( bot );
 		this.timeStamp = myBot.getTime();
-		this.firingBot = firingBot;
-		this.targetBot = targetBot;
+		this.firingBot = firingBot.getName();
+		this.targetBot = targetBot.getName();
 	}
 
 	public cachedTarget(EvBot bot, baseGun gun,  InfoBot firingBot, InfoBot targetBot) {
 		this( bot, firingBot, targetBot);
-		this.gun = gun;
+		this.gun = gun.getName();
 	}
 
 	public cachedTarget(EvBot bot, baseGun gun, InfoBot firingBot, InfoBot targetBot, Point2D.Double targetFuturePosition, double firePower) {
@@ -52,9 +52,9 @@ public class cachedTarget {
 
 	public boolean conditionEquals( cachedTarget cT ) {
 		if ( this.timeStamp != cT.timeStamp ) return false;
-		if (!this.gun.getName().equals( cT.gun.getName() ) ) return false;
-		if ( this.firingBot != cT.firingBot ) return false;
-		if ( this.targetBot != cT.targetBot ) return false;
+		if ( !this.gun.equals( cT.gun ) ) return false;
+		if ( !this.firingBot.equals( cT.firingBot ) ) return false;
+		if ( !this.targetBot.equals( cT.targetBot ) ) return false;
 
 		//logger.dbg("firing bot " + firingBot.getName() + " at target " + targetBot.getName() + " with gun " + gun.getName() + " has the firing solutions cache" );
 		return true;
