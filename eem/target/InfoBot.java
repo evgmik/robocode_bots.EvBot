@@ -138,11 +138,13 @@ public class InfoBot {
 
 	public InfoBot update(Point2D.Double pos, long tStamp) {
 		botStats.add( new botStatPoint(pos, tStamp) );
+		updateEndsOfMatchedSegments();
 		return this;
 	}
 
 	public InfoBot update(botStatPoint statPnt) {
 		botStats.add(statPnt);
+		updateEndsOfMatchedSegments();
 		targetUnlocked = false;
 		return this;
 	}
