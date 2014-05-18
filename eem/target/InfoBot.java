@@ -28,6 +28,7 @@ public class InfoBot {
 	// FIXME: need better search algorithm
 	// more than this amount and we start skipping turns
 	protected int maxDepthOfHistorySearch = 500; 
+	private matchedEnds _matchedEnds = new matchedEnds();
 
 	public InfoBot() {
 		botStats = new LinkedList<botStatPoint>();
@@ -309,6 +310,64 @@ public class InfoBot {
 		str = "Target bot name: " + getName() + "\n" + strL + "\n" + strP;
 		str += "\n stats size " + statSize;
 		return str;
+	}
+
+	protected matchedEnds findPatternLength1MatchesList() {
+		// build list of points which match current point
+		matchedEnds mEL = new matchedEnds();
+		LinkedList<Integer> indexes_to_add = new LinkedList<Integer>();
+
+		int trackN = botStats.size();
+		botStatPoint refPat = botStats.get( trackN - 1 ); // current point
+
+		// let's search in backwards direction for matches from next to now
+		int lastIndToCheck = trackN-2; // trackN - 1 previous to current point
+		for ( int i = lastIndToCheck; i >= Math.max(0, lastIndToCheck - maxDepthOfHistorySearch); i-- ) {
+			botStatPoint testPatPoint = botStats.get( i );
+			if ( testPatPoint.arePointsOfPathSimilar( refPat, refPat, testPatPoint) ) {
+				indexes_to_add.add( i );
+			}
+		}
+		mEL.add( indexes_to_add );
+		return mEL;
+	}
+
+	protected void updateEndsOfMatchedSegments() {
+		// this maintains uptodate matched to the current point segments array
+		int trackN = botStats.size();
+		botStatPoint refPat = botStats.get( trackN - 1 );
+		if ( _matchedEnds.size() >= 1 ) {
+			// let's see if addition of current point would be able to prolong a segment
+			LinkedList<Integer> indexes_to_remove = new LinkedList<Integer>();
+			LinkedList<Integer> indexes_to_add = new LinkedList<Integer>();
+			for ( int i : _matchedEnds.getEndsForPatternSizeN(1) ) {
+				botStatPoint testPatPoint = botStats.get( i + 1 ); // next in future
+				if ( testPatPoint.arePointsOfPathSimilar( refPat, refPat, testPatPoint) ) {
+					indexes_to_add.add( i + 1 );
+				} else {
+					// current point is not continuation of previosly matched pattern
+					indexes_to_remove.add( i + 1 );
+				}
+			}
+			// cleaning obsolete segments
+			for ( int i : indexes_to_remove ) {
+				_matchedEnds.removePoint( i );
+			}
+			if ( indexes_to_add.size() >= 1 ) {
+				_matchedEnds.addFirst( indexes_to_add );
+			} else {
+				// the patterns have no match in future for current point
+				// thus they are not valid and we need to start from scratch
+				_matchedEnds = new matchedEnds();
+			}
+		}
+		if ( _matchedEnds.size() == 0 ) {
+			// No matched ends
+			// but it also means there will be no longer than 1 matched patterns.
+			// Let's attempt to build a new one
+			_matchedEnds =  findPatternLength1MatchesList();
+			
+		}
 	}
 
 	public matchedEnds endsOfMatchedSegments ( long patLength,  int nReqMatches ) {
