@@ -80,7 +80,8 @@ public class pifGun extends baseGun {
 		afterTime += 20; // FIXME: account for bullet flight time in a proper way
 
 		startTime = System.nanoTime();
-		templateEndsList = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-afterTime,  nRequiredMatches);
+		//templateEndsList = tgt.endsOfMatchedSegments( maxPatLength, tgt.botStats.size()-1-afterTime,  nRequiredMatches);
+		templateEndsList = tgt.getMatchedEnds();
 		//logger.dbg( templateEndsList.format() );
 		endTime = System.nanoTime();
 		logger.profiler("Find patterns with depth " + templateEndsList.size() + " in time " + (endTime - startTime) + " ns" );
