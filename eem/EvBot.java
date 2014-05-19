@@ -269,7 +269,7 @@ public class EvBot extends AdvancedRobot
 			endTime = System.nanoTime();
 			logger.profiler("initTic execution time     =\t\t\t\t" + (endTime - startTime) + " ns" );
 
-			if ( numEnemyBotsAlive == 0 ) {
+			if ( getOthers() == 0 ) {
 				//logger.dbg("Round is over");
 				setAhead(0);
 				setStop();
