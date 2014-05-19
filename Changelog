@@ -1,3 +1,12 @@
+= Version  4.6.9pre =
+
+Bug-fix: virtual guns use to select bullets with not proper gunHeat (i.e. gun
+was in hot state already). This leads to wrong virtual gun hit rate since they
+were using wrong solution.
+
+Improvements: keep cache of matched pattern so there is no need to recalculate
+them for every call to pifGun during the same click.
+
 = Version  4.6.8 =
 
 Bug-fix: The choice of probing distance was very large for bots which fight
