@@ -64,6 +64,57 @@ public class matchedEnds extends LinkedList<LinkedList<Integer>> {
 		}
 	}
 
+	public void promote( ) {
+		// increase by 1 all elements
+		// use it if you find that indexes matches a longer pattern spanning in future
+		for ( LinkedList<Integer> l : this ) {
+			for ( int i=0; i < l.size(); i++ ) {
+				int v = l.get(i);
+				v++;
+				l.set(i, v);
+			}
+		}
+	}
+
+	public void promoteAndInsert( LinkedList<Integer> indxs ) {
+		// this function  inserts indxs as pattern of 1 matches
+		// and then increase by 1 every element matching indxs
+		
+		// indxs must be not empty
+		this.addFirst(indxs);
+		this.promote();
+		// indxs must be sorted in descending order, this happens automatically
+		// if they are searched in direction of past in generating code
+	}
+
+	public void addUniqueOnlyToLowLevel( LinkedList<Integer> new_values ) {
+
+		if (new_values.size() == 0) {
+			return; // no changes
+		}
+		if (this.size() == 0) {
+			this.addFirst(new_values);
+			return;
+		}
+		LinkedList<Integer> old_values = this.get(0);
+		// FIXME: use that matchedEnds and indxs are sorted in descendant order
+		// FIXME: be careful it would require sorting updated List
+		for ( int vnew : new_values ) {
+			boolean unique = true;
+			for ( int vold: old_values ) {
+				if (vnew == vold ) {
+					unique = false;
+					break;
+				}
+			}
+			if ( unique ) {
+				old_values.add(vnew);
+			}
+		}
+	}
+
+
+
 	public String format() {
 		String outStr = "List of matched ends has " + " depth " + this.size();
 		int cnt = 0;
