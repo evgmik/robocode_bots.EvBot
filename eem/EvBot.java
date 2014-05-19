@@ -260,6 +260,7 @@ public class EvBot extends AdvancedRobot
 		initBattle();
 
 		while(true) {
+			logger.profiler("<==== Main loop started" );
 			long mainLoopStartTime = System.nanoTime();
 			long endTime;
 			long startTime;
