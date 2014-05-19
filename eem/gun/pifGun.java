@@ -84,9 +84,9 @@ public class pifGun extends baseGun {
 		templateEndsList = tgt.getMatchedEnds();
 		//logger.dbg( templateEndsList.format() );
 		endTime = System.nanoTime();
-		logger.profiler("tic " + myBot.getTime() + ": For target " + tgt.getName() + " Find patterns with depth " + templateEndsList.size() + " in time " + (endTime - startTime) + " ns" );
+		//logger.profiler("tic " + myBot.getTime() + ": For target " + tgt.getName() + " Find patterns with depth " + templateEndsList.size() + " in time " + (endTime - startTime) + " ns" );
 		if ( templateEndsList.size() >= 1 ) {
-			logger.profiler(" Pattern length 1 has " + templateEndsList.getFirst().size() + " matches and total matches size " + templateEndsList.totalMatches() );
+			//logger.profiler(" Pattern length 1 has " + templateEndsList.getFirst().size() + " matches and total matches size " + templateEndsList.totalMatches() );
 		}
 		if ( templateEndsList.size() < maxPatLength ) {
 			//not enough matches to use this gun
@@ -130,7 +130,7 @@ public class pifGun extends baseGun {
 		}
 		//templateEnds = templateEndsList.flatten();
 		endTime = System.nanoTime();
-		logger.profiler("cleaning all possible ends future position took " + (endTime - startTime) + " ns" );
+		//logger.profiler("cleaning all possible ends future position took " + (endTime - startTime) + " ns" );
 
 		if (templateEndsList.totalMatches() == 0 ) {
 			//logger.dbg( "pifGun has no points to work with, suggesting to use another gun" );
@@ -163,7 +163,7 @@ public class pifGun extends baseGun {
 		} while ( ( Math.abs( oldAfterTime -afterTime ) > 1 ) && (iterCnt < 5) ) ;
 		playTime = oldAfterTime;
 		long endTimeCalc = System.nanoTime();
-		logger.profiler("pifGun calculation time " + (endTimeCalc - startTimeCalc) + " ns" );
+		//logger.profiler("pifGun calculation time " + (endTimeCalc - startTimeCalc) + " ns" );
 		return (Point2D.Double) p.clone();
 	}
 
