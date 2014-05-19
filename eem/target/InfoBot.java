@@ -376,7 +376,7 @@ public class InfoBot {
 					logger.error("ERROR: this should not happen, matches set shoulb empty");
 					logger.error( _matchedEnds.format() );
 				}
-				_matchedEnds = new matchedEnds();
+				//_matchedEnds = new matchedEnds();
 			}
 		}
 		// there will be no longer than 1 matched patterns.
