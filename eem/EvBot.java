@@ -430,6 +430,7 @@ public class EvBot extends AdvancedRobot
 
 	public void onSkippedTurn(SkippedTurnEvent e) {
 		skippedTurnStats[getRoundNum()]++;
+		logger.dbg("Skipped turn " + e.getSkippedTurn() );
 		//logger.dbg("Skipped turns stats: " + Arrays.toString(skippedTurnStats) );
 	}
 	
