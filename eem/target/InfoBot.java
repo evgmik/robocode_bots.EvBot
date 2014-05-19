@@ -365,12 +365,7 @@ public class InfoBot {
 				_matchedEnds.removePoint( i );
 			}
 			if ( indexes_to_add.size() >= 1 ) {
-				//logger.dbg( "before addition <---");
-				//logger.dbg( _matchedEnds.format() );
 				_matchedEnds.promoteAndInsert( indexes_to_add );
-				//logger.dbg( "after addition --->");
-				//logger.dbg("adding " + indexes_to_add.size() + " ends: " + indexes_to_add);
-				//logger.dbg( _matchedEnds.format() );
 			} else {
 				// the patterns have no match in future for current point
 				// thus they are not valid and we need to start from scratch
