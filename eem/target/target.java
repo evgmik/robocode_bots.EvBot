@@ -24,6 +24,7 @@ public class target extends InfoBot {
 		this.bulletHitCount = b.getBulletHitCount();
 		this.bulletFiredCount = b.getBulletFiredCount();
 		this.guessFactorsMap = b.guessFactorsMap;
+		this._matchedEnds = b.getMatchedEnds();
 
 		haveTarget = true;
 	}
