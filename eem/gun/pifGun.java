@@ -139,7 +139,7 @@ public class pifGun extends baseGun {
 
 		// chose randomly a templateEnd to use as pif target
 		// with highest matched pattern length
-		templateEnds = templateEndsList.getEndsForPatternSizeN( templateEndsList.size() );
+		templateEnds = templateEndsList.getEndsForPatternSizeN( maxPatLength );
 		int N = templateEnds.size();
 		templateEndIndex = (int)( Math.random() * N );
 
