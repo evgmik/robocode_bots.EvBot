@@ -315,6 +315,10 @@ public class InfoBot {
 		return str;
 	}
 
+	public matchedEnds getMatchedEnds() {
+		return _matchedEnds;
+	}
+
 	protected LinkedList<Integer> findPatternLength1MatchesList() {
 		// build list of points which match current point
 		LinkedList<Integer> indexes_to_add = new LinkedList<Integer>();
