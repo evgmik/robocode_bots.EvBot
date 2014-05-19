@@ -314,13 +314,13 @@ public class InfoBot {
 		return str;
 	}
 
-	protected matchedEnds findPatternLength1MatchesList() {
+	protected LinkedList<Integer> findPatternLength1MatchesList() {
 		// build list of points which match current point
-		matchedEnds mEL = new matchedEnds();
 		LinkedList<Integer> indexes_to_add = new LinkedList<Integer>();
 
 		int trackN = botStats.size();
 		botStatPoint refPat = botStats.get( trackN - 1 ); // current point
+		//logger.dbg("tic " + getLast().getTime() + ": reseeding patterns for " + getName());
 
 		// let's search in backwards direction for matches from next to now
 		int lastIndToCheck = trackN-2; // trackN - 1 previous to current point
@@ -330,12 +330,16 @@ public class InfoBot {
 				indexes_to_add.add( i );
 			}
 		}
-		mEL.add( indexes_to_add );
-		return mEL;
+		//logger.dbg("find " + indexes_to_add.size() + " matches");
+		return indexes_to_add;
 	}
 
 	protected void updateEndsOfMatchedSegments() {
 		// this maintains uptodate matched to the current point segments array
+		//logger.dbg("updating ends for bot " + getName() );
+		long startTime = System.nanoTime();
+		long endTime;
+
 		int trackN = botStats.size();
 		botStatPoint refPat = botStats.get( trackN - 1 );
 		if ( _matchedEnds.size() >= 1 ) {
@@ -345,10 +349,10 @@ public class InfoBot {
 			for ( int i : _matchedEnds.getEndsForPatternSizeN(1) ) {
 				botStatPoint testPatPoint = botStats.get( i + 1 ); // next in future
 				if ( testPatPoint.arePointsOfPathSimilar( refPat, refPat, testPatPoint) ) {
-					indexes_to_add.add( i + 1 );
+					indexes_to_add.add( i );
 				} else {
 					// current point is not continuation of previosly matched pattern
-					indexes_to_remove.add( i + 1 );
+					indexes_to_remove.add( i );
 				}
 			}
 			// cleaning obsolete segments
@@ -356,20 +360,33 @@ public class InfoBot {
 				_matchedEnds.removePoint( i );
 			}
 			if ( indexes_to_add.size() >= 1 ) {
-				_matchedEnds.addFirst( indexes_to_add );
+				//logger.dbg( "before addition <---");
+				//logger.dbg( _matchedEnds.format() );
+				_matchedEnds.promoteAndInsert( indexes_to_add );
+				//logger.dbg( "after addition --->");
+				//logger.dbg("adding " + indexes_to_add.size() + " ends: " + indexes_to_add);
+				//logger.dbg( _matchedEnds.format() );
 			} else {
 				// the patterns have no match in future for current point
 				// thus they are not valid and we need to start from scratch
+				// FIXME: check that this redundant since removal of obsolete
+				// should give us empty list
+				// NOTE: so far checks show that this branch is redundant
+				if ( _matchedEnds.size() != 0 ) {
+					logger.error("ERROR: this should not happen, matches set shoulb empty");
+					logger.error( _matchedEnds.format() );
+				}
 				_matchedEnds = new matchedEnds();
 			}
 		}
-		if ( _matchedEnds.size() == 0 ) {
-			// No matched ends
-			// but it also means there will be no longer than 1 matched patterns.
-			// Let's attempt to build a new one
-			_matchedEnds =  findPatternLength1MatchesList();
-			
-		}
+		// there will be no longer than 1 matched patterns.
+		// but we need to find all new accurance of pattern length 1
+		LinkedList<Integer> new_matches =  findPatternLength1MatchesList();
+		_matchedEnds.addUniqueOnlyToLowLevel( new_matches );
+
+		endTime = System.nanoTime();
+		//logger.dbg( _matchedEnds.format() );
+		logger.profiler("tic " + getLast().getTime() + ": bot " + getName() + " Updated pattern matches with maximum depth " + _matchedEnds.size() + " in time " + (endTime - startTime) + " ns" );
 	}
 
 	public matchedEnds endsOfMatchedSegments ( long patLength,  int nReqMatches ) {
