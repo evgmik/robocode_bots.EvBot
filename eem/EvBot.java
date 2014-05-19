@@ -260,7 +260,7 @@ public class EvBot extends AdvancedRobot
 		initBattle();
 
 		while(true) {
-			logger.profiler("<==== Main loop started" );
+			logger.profiler("<==== Main loop started, tic " + getTime() );
 			long mainLoopStartTime = System.nanoTime();
 			long endTime;
 			long startTime;
@@ -321,6 +321,7 @@ public class EvBot extends AdvancedRobot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
 		long startTime = System.nanoTime();
+		logger.profiler("---> Entering onScannedRobot");
 		myCoord.x = getX();
 	       	myCoord.y = getY();
 
@@ -335,6 +336,7 @@ public class EvBot extends AdvancedRobot
 	 * onHitByBullet: What to do when you're hit by a bullet
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
+		long startTime = System.nanoTime();
 		//double angle = math.shortest_arc( 90 - e.getBearing() );
 		//logger.noise("Evasion maneuver after a hit by rotating body by angle = " + angle);
 		//logger.noise("Attempting to move ahead for bullet evasion");
@@ -343,9 +345,12 @@ public class EvBot extends AdvancedRobot
 		//_trgt.targetUnlocked=true;
 		//logger.dbg("Hit by bullet at tic " +  this.ticTime );
 		_botsmanager.onHitByBullet(e);
+		long endTime = System.nanoTime();
+		logger.profiler("onHitByBullet execution time =\t\t\t\t" + (endTime - startTime) + " ns" );
 	}
 
 	public void  onBulletHit(BulletHitEvent e) {
+		long startTime = System.nanoTime();
 		LinkedList<baseGun> luckyGunsList = null;
 		Bullet b;	
 		bulletHitCnt++;
@@ -371,9 +376,12 @@ public class EvBot extends AdvancedRobot
 			// FIXME differentiate real hits
 			//tmp_gun.incBulletHitCount();
 		}
+		long endTime = System.nanoTime();
+		logger.profiler("onBulletHit execution time =\t\t\t\t" + (endTime - startTime) + " ns" );
 	}
 
 	public void  onBulletMissed(BulletMissedEvent e) {
+		long startTime = System.nanoTime();
 		LinkedList<baseGun> luckyGunsList = null;
 		if ( true ) return;
 		// no need to trace this event it is not used
@@ -390,18 +398,24 @@ public class EvBot extends AdvancedRobot
 		for ( baseGun tmp_gun : luckyGunsList ) {
 			logger.noise("This gun " + tmp_gun.getName() + " was fired " + tmp_gun.getBulletVirtFiredCount() + " times" );
 		}
+		long endTime = System.nanoTime();
+		logger.profiler("onBulletMissed execution time =\t\t\t\t" + (endTime - startTime) + " ns" );
 	}
 
 	public void onRobotDeath(RobotDeathEvent e) {
+		long startTime = System.nanoTime();
 		if (e.getName().equals(_trgt.getName())) {
 			_trgt = new target();
 		}
 		_botsmanager.onRobotDeath(e);
 		_radar.onRobotDeath(e);
+		long endTime = System.nanoTime();
+		logger.profiler("onRobotDeath execution time =\t\t\t\t" + (endTime - startTime) + " ns" );
 	}
 
 
 	public void onHitWall(HitWallEvent e) {
+		long startTime = System.nanoTime();
 		// turn and move along the hit wall
 		double energyDrop = _tracker.getLast().getEnergy()-getEnergy();
 		logger.dbg("FIXME SLOPPY PROGRAMMING: robot hit a wall with energy drop = " + energyDrop);
@@ -422,6 +436,8 @@ public class EvBot extends AdvancedRobot
 		setTurnRight (angle);
 		setBodyRotationDirection( math.sign(angle) );
 		*/
+		long endTime = System.nanoTime();
+		logger.profiler("onHitWall execution time =\t\t\t\t" + (endTime - startTime) + " ns" );
 	}
 		
 	public double setBodyRotationDirection( double dir ) {
@@ -431,14 +447,12 @@ public class EvBot extends AdvancedRobot
 
 	public void onSkippedTurn(SkippedTurnEvent e) {
 		skippedTurnStats[getRoundNum()]++;
-		logger.dbg("Skipped turn " + e.getSkippedTurn() );
+		logger.dbg("Skipped turn " + e.getSkippedTurn() + " reported at " + getTime() );
 		//logger.dbg("Skipped turns stats: " + Arrays.toString(skippedTurnStats) );
 	}
 	
 	public void onPaint(Graphics2D g) {
-		long endTime;
-		long startTime;
-		startTime = System.nanoTime();
+		long startTime = System.nanoTime();
 
 		// Set the paint color to a red half transparent color
 		if (_trgt.haveTarget ) {
@@ -463,7 +477,7 @@ public class EvBot extends AdvancedRobot
 		_bmanager.onPaint(g);
 		_botsmanager.onPaint(g);
 
-		endTime = System.nanoTime();
+		long endTime = System.nanoTime();
 		logger.profiler("onPaint execution time     =\t\t\t\t" + (endTime - startTime) + " ns" );
 	}
 
