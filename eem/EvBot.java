@@ -263,7 +263,11 @@ public class EvBot extends AdvancedRobot
 			long mainLoopStartTime = System.nanoTime();
 			long endTime;
 			long startTime;
+
+			startTime = System.nanoTime();
 			initTic() ;
+			endTime = System.nanoTime();
+			logger.profiler("initTic execution time     =\t\t\t\t" + (endTime - startTime) + " ns" );
 
 			if ( numEnemyBotsAlive == 0 ) {
 				//logger.dbg("Round is over");
@@ -274,11 +278,17 @@ public class EvBot extends AdvancedRobot
 			}
 
 
+			startTime = System.nanoTime();
 			_trgt = _botsmanager.choseTarget() ;
+			endTime = System.nanoTime();
+			logger.profiler("choseTarget execution time  =\t\t\t\t" + (endTime - startTime) + " ns" );
 
+			startTime = System.nanoTime();
 			if (_trgt.haveTarget) {
 				_gun=_gmanager.choseGun();
 			}
+			endTime = System.nanoTime();
+			logger.profiler("choseGun execution time     =\t\t\t\t" + (endTime - startTime) + " ns" );
 
 			startTime = System.nanoTime();
 			_motion.makeMove();
@@ -296,7 +306,7 @@ public class EvBot extends AdvancedRobot
 			logger.profiler("radar manage execution time =\t\t\t\t" + (endTime - startTime) + " ns" );
 
 			endTime = System.nanoTime();
-			logger.profiler("Main loop execution time =\t\t\t\t" + (endTime - mainLoopStartTime) + " ns" );
+			logger.profiler("Main loop execution time    =\t\t\t\t" + (endTime - mainLoopStartTime) + " ns" );
 			execute();
 		}
 	}
@@ -424,6 +434,10 @@ public class EvBot extends AdvancedRobot
 	}
 	
 	public void onPaint(Graphics2D g) {
+		long endTime;
+		long startTime;
+		startTime = System.nanoTime();
+
 		// Set the paint color to a red half transparent color
 		if (_trgt.haveTarget ) {
 			// show our own path
@@ -447,6 +461,8 @@ public class EvBot extends AdvancedRobot
 		_bmanager.onPaint(g);
 		_botsmanager.onPaint(g);
 
+		endTime = System.nanoTime();
+		logger.profiler("onPaint execution time     =\t\t\t\t" + (endTime - startTime) + " ns" );
 	}
 
 	public void onWin(WinEvent  e) {
