@@ -84,7 +84,7 @@ public class pifGun extends baseGun {
 		templateEndsList = tgt.getMatchedEnds();
 		//logger.dbg( templateEndsList.format() );
 		endTime = System.nanoTime();
-		logger.profiler("Find patterns with depth " + templateEndsList.size() + " in time " + (endTime - startTime) + " ns" );
+		logger.profiler("tic " + myBot.getTime() + ": For target " + tgt.getName() + " Find patterns with depth " + templateEndsList.size() + " in time " + (endTime - startTime) + " ns" );
 		if ( templateEndsList.size() >= 1 ) {
 			logger.profiler(" Pattern length 1 has " + templateEndsList.getFirst().size() + " matches and total matches size " + templateEndsList.totalMatches() );
 		}
