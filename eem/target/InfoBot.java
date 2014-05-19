@@ -386,7 +386,7 @@ public class InfoBot {
 
 		endTime = System.nanoTime();
 		//logger.dbg( _matchedEnds.format() );
-		logger.profiler("tic " + getLast().getTime() + ": bot " + getName() + " Updated pattern matches with maximum depth " + _matchedEnds.size() + " in time " + (endTime - startTime) + " ns" );
+		//logger.profiler("tic " + getLast().getTime() + ": bot " + getName() + " Updated pattern matches with maximum depth " + _matchedEnds.size() + " in time " + (endTime - startTime) + " ns" );
 	}
 
 	public matchedEnds endsOfMatchedSegments ( long patLength,  int nReqMatches ) {
