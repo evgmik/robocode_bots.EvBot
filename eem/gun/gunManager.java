@@ -232,7 +232,6 @@ public class gunManager {
 		if ( choseAnotherGun ) {
 			_gun.gunFired = false;
 			logger.noise("new choice of gun instead of old " + _gun.getName());
-			logger.dbg("gun heat " + myBot.getGunHeat());
 			startTime = System.nanoTime();
 			new_gun = weights2gunForBot(myBot._trgt);
 			endTime = System.nanoTime();
