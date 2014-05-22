@@ -2,6 +2,7 @@ This is to keep track of the best performing bot versions
 
 == mix of robocode versions stats ==
 ||Bot Version  | APS in Melee   | APS in 1on1 |  APS im MeleeTop30
+| v4.6.8       | 63.68          |  66.15      |  N/A
 | v4.6.7       | 64.32 +        |  63.87 -    |  46.35
 | v4.6.6       | 64.27 +        |  68.29      |
 | v4.6.5       | 64.08 +        |  67.77      |
