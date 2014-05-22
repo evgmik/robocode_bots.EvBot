@@ -211,13 +211,17 @@ public class gunManager {
 		baseGun new_gun = null;
 		boolean choseAnotherGun = false;
 
-		// always try to chose a better gun
-		// this leads to calculational overhead
-		// IMPORTANT: it needs to be done since this recalculate all other gun
-		// settings so when wave fired we use cached values with gun heat = 0
-		// otherwise guns will think that they already hot during wave bullets
-		// setting
-		choseAnotherGun = true;
+		if ( myBot.getGunHeat() == 0 ) {
+			// we about to fire and need to calculate
+			// settings for all guns or wave with virtual bullets will 
+			// be incorrect
+			// FIXME: may be I should do it a few tics before firing is possible
+			// IMPORTANT: it needs to be done since this recalculate all other gun
+			// settings so when wave fired we use cached values with gun heat = 0
+			// otherwise guns will think that they already hot during wave bullets
+			// setting
+			choseAnotherGun = true;
+		}
 
 		// let's choose the gun if gun is fired
 		if ( _gun.isGunFired() ) {
