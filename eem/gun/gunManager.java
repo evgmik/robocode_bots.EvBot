@@ -211,7 +211,7 @@ public class gunManager {
 		baseGun new_gun = null;
 		boolean choseAnotherGun = false;
 
-		if ( myBot.getGunHeat() == 0 ) {
+		if ( myBot.getGunHeat() <= 0.4 ) {
 			// we about to fire and need to calculate
 			// settings for all guns or wave with virtual bullets will 
 			// be incorrect
