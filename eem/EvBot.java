@@ -268,7 +268,7 @@ public class EvBot extends AdvancedRobot
 			startTime = System.nanoTime();
 			initTic() ;
 			endTime = System.nanoTime();
-			logger.profiler("initTic execution time     =\t\t\t\t" + (endTime - startTime) + " ns" );
+			logger.profiler("initTic execution time      =\t\t\t\t" + (endTime - startTime) + " ns" );
 
 			if ( getOthers() == 0 ) {
 				//logger.dbg("Round is over");
@@ -336,6 +336,7 @@ public class EvBot extends AdvancedRobot
 	 * onHitByBullet: What to do when you're hit by a bullet
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
+		logger.profiler("---> Entering onHitByBullet");
 		long startTime = System.nanoTime();
 		//double angle = math.shortest_arc( 90 - e.getBearing() );
 		//logger.noise("Evasion maneuver after a hit by rotating body by angle = " + angle);
@@ -350,6 +351,7 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void  onBulletHit(BulletHitEvent e) {
+		logger.profiler("---> Entering onBulletHit");
 		long startTime = System.nanoTime();
 		LinkedList<baseGun> luckyGunsList = null;
 		Bullet b;	
@@ -381,6 +383,7 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void  onBulletMissed(BulletMissedEvent e) {
+		logger.profiler("---> Entering onBulletMissed");
 		long startTime = System.nanoTime();
 		LinkedList<baseGun> luckyGunsList = null;
 		if ( true ) return;
