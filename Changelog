@@ -1,3 +1,7 @@
+= Version  4.6.10 =
+
+Improvements: gun start aim a bit before gunHeat drops to zero
+
 = Version  4.6.9 =
 
 Bug-fix: virtual guns use to select bullets with not proper gunHeat (i.e. gun
