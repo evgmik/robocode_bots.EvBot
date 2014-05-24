@@ -158,7 +158,7 @@ public class wave {
 			if ( Math.abs( waveDistNow - dist2bot ) <= physics.robotRadius ) {
 				// the wave is the closest to the bot i.e. crosses the bot
 				String bName = bot.getName();
-				//logger.dbg("Wave fired by " + firedBot.getName() + " intersects with enemy bot " + bName );
+				//logger.dbg("tic: " + myBot.getTime() + ": Wave fired by " + firedBot.getName() + " intersects with enemy bot " + bName );
 				// now we update hit guess factor
 				double angle = math.angle2pt ( this.firingPosition, botPos ) - math.angle2pt ( this.firingPosition, enemyPosAtFiringTime.get(bName) );
 				angle = math.shortest_arc( angle );
