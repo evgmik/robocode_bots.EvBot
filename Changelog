@@ -1,6 +1,11 @@
 = Version  4.6.10 =
 
-Improvements: gun start aim a bit before gunHeat drops to zero
+Bug-fix: proper bullet and wave travel distance calculation; each robocode
+event set ticTime variable otherwise I might get 1 tic time lag
+
+Improvements: gun start aim a bit before gunHeat drops to zero; wave
+intersection uses bot size as a measure for intersection; scan event bump in
+priority, otherwise bullet processing use 1 tic old enemy bots coordinates.
 
 = Version  4.6.9 =
 
