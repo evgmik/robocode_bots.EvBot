@@ -325,6 +325,7 @@ public class EvBot extends AdvancedRobot
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
 		long startTime = System.nanoTime();
+		setTicTime();
 		logger.profiler("---> Entering onScannedRobot");
 		myCoord.x = getX();
 	       	myCoord.y = getY();
@@ -342,6 +343,7 @@ public class EvBot extends AdvancedRobot
 	public void onHitByBullet(HitByBulletEvent e) {
 		logger.profiler("---> Entering onHitByBullet");
 		long startTime = System.nanoTime();
+		setTicTime();
 		//double angle = math.shortest_arc( 90 - e.getBearing() );
 		//logger.noise("Evasion maneuver after a hit by rotating body by angle = " + angle);
 		//logger.noise("Attempting to move ahead for bullet evasion");
@@ -357,6 +359,7 @@ public class EvBot extends AdvancedRobot
 	public void  onBulletHit(BulletHitEvent e) {
 		logger.profiler("---> Entering onBulletHit");
 		long startTime = System.nanoTime();
+		setTicTime();
 		LinkedList<baseGun> luckyGunsList = null;
 		Bullet b;	
 		bulletHitCnt++;
@@ -389,6 +392,7 @@ public class EvBot extends AdvancedRobot
 	public void  onBulletMissed(BulletMissedEvent e) {
 		logger.profiler("---> Entering onBulletMissed");
 		long startTime = System.nanoTime();
+		setTicTime();
 		LinkedList<baseGun> luckyGunsList = null;
 		if ( true ) return;
 		// no need to trace this event it is not used
@@ -411,6 +415,7 @@ public class EvBot extends AdvancedRobot
 
 	public void onRobotDeath(RobotDeathEvent e) {
 		long startTime = System.nanoTime();
+		setTicTime();
 		if (e.getName().equals(_trgt.getName())) {
 			_trgt = new target();
 		}
@@ -423,6 +428,7 @@ public class EvBot extends AdvancedRobot
 
 	public void onHitWall(HitWallEvent e) {
 		long startTime = System.nanoTime();
+		setTicTime();
 		// turn and move along the hit wall
 		double energyDrop = _tracker.getLast().getEnergy()-getEnergy();
 		logger.dbg("FIXME SLOPPY PROGRAMMING: robot hit a wall with energy drop = " + energyDrop);
@@ -453,12 +459,14 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void onSkippedTurn(SkippedTurnEvent e) {
+		setTicTime();
 		skippedTurnStats[getRoundNum()]++;
 		logger.dbg("Skipped turn " + e.getSkippedTurn() + " reported at " + getTime() );
 		//logger.dbg("Skipped turns stats: " + Arrays.toString(skippedTurnStats) );
 	}
 	
 	public void onPaint(Graphics2D g) {
+		setTicTime();
 		long startTime = System.nanoTime();
 
 		// Set the paint color to a red half transparent color
@@ -489,6 +497,7 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void onWin(WinEvent  e) {
+		setTicTime();
 		//logger.dbg("onWin");
 		roundsWon++;
 		updateFinishingPlacesStats();
@@ -496,6 +505,7 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void onDeath(DeathEvent e ) {
+		setTicTime();
 		//logger.dbg("onDeath");
 		roundsLost++;
 		updateFinishingPlacesStats();
@@ -503,6 +513,7 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void onRoundEnded(RoundEndedEvent e) {
+		setTicTime();
 		// this methods is called before onDeath or onWin
 		// so we should not output any valiable stats here
 		// if I want to see it at the end
