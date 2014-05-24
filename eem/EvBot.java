@@ -133,7 +133,7 @@ public class EvBot extends AdvancedRobot
 		setAdjustGunForRobotTurn(true);
 		setAdjustRadarForGunTurn(true); 
 
-		ticTime = this.getTime();
+		setTicTime();
 
 		logger.noise("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
 		logger.profiler("===> time between initTics =        \t\t\t" + ( startTime - initTicStartTime ) + " ns" );
@@ -186,6 +186,10 @@ public class EvBot extends AdvancedRobot
 		//_gmanager.printGunsStats(); // dbg
 		//_gmanager.printGunsStatsTicRelated(); // dbg
 		//_botsmanager.printGunsStats(); // dbg
+	}
+
+	private void setTicTime() {
+		ticTime = this.getTime();
 	}
 
 	public long getTime() {
