@@ -155,7 +155,7 @@ public class wave {
 			}
 			Point2D.Double botPos = bot.getPosition();
 			double dist2bot = botPos.distance( firingPosition );
-			if ( Math.abs( waveDistNow - dist2bot ) <= Math.abs( waveDistNext - dist2bot ) ) {
+			if ( Math.abs( waveDistNow - dist2bot ) <= physics.robotRadius ) {
 				// the wave is the closest to the bot i.e. crosses the bot
 				String bName = bot.getName();
 				//logger.dbg("Wave fired by " + firedBot.getName() + " intersects with enemy bot " + bName );
