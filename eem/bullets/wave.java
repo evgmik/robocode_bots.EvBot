@@ -296,7 +296,7 @@ public class wave {
 	}
 
 	public double getDistanceTraveledAtTime(long time) {
-		double timeInFlight = time - firedTime + 1;
+		double timeInFlight = time - firedTime;
 		double distTraveled = timeInFlight * bulletSpeed;
 		return distTraveled;
 	}
