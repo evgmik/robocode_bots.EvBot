@@ -117,7 +117,10 @@ public class EvBot extends AdvancedRobot
 			// tracker keep stats for guess factors so I need it permanent
 			_tracker = new InfoBot(getName());
 		}
-
+		// give ScannedRobotEvent almost the highest priority,
+		// otherwise when I process bullet related events
+		// I work with old enemy bots coordinates
+		setEventPriority("ScannedRobotEvent", 98);
 		initTicStartTime = System.nanoTime();
 	}
 
