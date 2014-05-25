@@ -195,9 +195,11 @@ public class botStatPoint {
 		if ( timeDiffT != timeDiffR )
 			return false;
 
+		if ( false ) { // disable heat comparison
 		if ( Math.min( this.getMyBotGunHeat(), refPatCurrent.getMyBotGunHeat() ) < .5) {
 			if ( Math.abs( this.getMyBotGunHeat()  - refPatCurrent.getMyBotGunHeat() ) > maxMyBotGunHeatDist )
 				return false;
+		}
 		}
 
 		if ( Math.min( dist2wallAheadR, dist2wallAheadT) < dist2WallProximity ) {
