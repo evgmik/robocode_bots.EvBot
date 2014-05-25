@@ -22,7 +22,7 @@ public class pifGun extends baseGun {
 	botStatPoint refPoint = null;
 	// if it is isItTheBestMatchPif == true than it is a special gun 
 	// which will take the best offer from pattern matcher
-	private boolean isItTheBestMatchPif=false;
+	private boolean isItTheBestMatchPif=true;
 
 	public pifGun() {
 		gunName = "pif";
