@@ -20,6 +20,9 @@ public class pifGun extends baseGun {
 	matchedEnds templateEndsList = null;
 	int templateEndIndex = 0;
 	botStatPoint refPoint = null;
+	// if it is isItTheBestMatchPif == true than it is a special gun 
+	// which will take the best offer from pattern matcher
+	private boolean isItTheBestMatchPif=false;
 
 	public pifGun() {
 		gunName = "pif";
@@ -38,6 +41,11 @@ public class pifGun extends baseGun {
 		this.maxPatLength = maxPatLength;
 		gunName = "pifGun" + maxPatLength;
 		calcGunSettings();
+	}
+
+	public pifGun(EvBot bot, int maxPatLength, boolean isItTheBestMatchPif ) {
+		this( bot, maxPatLength);
+		this.isItTheBestMatchPif = isItTheBestMatchPif;
 	}
 
 	public Point2D.Double chosePointFromDistribution(  LinkedList<Point2D.Double> pointsList ) {
@@ -88,7 +96,9 @@ public class pifGun extends baseGun {
 		if ( templateEndsList.size() >= 1 ) {
 			//logger.profiler(" Pattern length 1 has " + templateEndsList.getFirst().size() + " matches and total matches size " + templateEndsList.totalMatches() );
 		}
-		if ( templateEndsList.size() < maxPatLength ) {
+		if ( isItTheBestMatchPif ) {
+		}
+		if ( (templateEndsList.size() < maxPatLength) && !isItTheBestMatchPif) {
 			//not enough matches to use this gun
 			//logger.dbg("find only " + templateEndsList.size() + " out of required " + maxPatLength + " matches");
 			return null;
@@ -139,7 +149,7 @@ public class pifGun extends baseGun {
 
 		// chose randomly a templateEnd to use as pif target
 		// with highest matched pattern length
-		templateEnds = templateEndsList.getEndsForPatternSizeN( maxPatLength );
+		templateEnds = templateEndsList.getEndsForPatternSizeN( Math.min( maxPatLength,  templateEndsList.size() ) );
 		int N = templateEnds.size();
 		templateEndIndex = (int)( Math.random() * N );
 
