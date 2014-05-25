@@ -1,3 +1,12 @@
+= Version  4.6.11 =
+
+pifGun has option to take best match and not only exact one. Switch pifGun to
+take best match by default.
+
+Disable gunHeat comparison for pif related purposes, when it is on I have
+about 2% APS down on my test set.
+
+
 = Version  4.6.10 =
 
 Bug-fix: proper bullet and wave travel distance calculation; each robocode
