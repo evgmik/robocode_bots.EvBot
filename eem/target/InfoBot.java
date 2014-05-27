@@ -26,8 +26,9 @@ public class InfoBot {
 	protected int numGuessFactorBins = 31;
 
 	// FIXME: need better search algorithm
-	// more than this amount and we start skipping turns A LOT
-	protected int maxDepthOfHistorySearch = 200; // how deep to look for pattern match
+	// more than 200 amount and we start skipping turns A LOT
+	// but less than 500 is very bad pif
+	protected int maxDepthOfHistorySearch = 500; // how deep to look for pattern match
 	protected int nRequiredMatches = 100; // number of matches to look for
 	protected matchedEnds _matchedEnds = new matchedEnds();
 
