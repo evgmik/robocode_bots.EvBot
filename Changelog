@@ -1,3 +1,11 @@
+= Version  4.6.12 =
+
+fix: seems like in 4.6.9 I reduce pif search depth, which dropped my score a
+lot. I am changing it back to prior 4.6.9 value i.e. 200 -> 500
+
+Improvements: redid 1on1 gun choice: remove pif1, pif2 as rather mediocre,
+pif10 and pif20 as almost never fired. Now I use pif3 and pif6.
+
 = Version  4.6.11 =
 
 pifGun has option to take best match and not only exact one. Switch pifGun to
