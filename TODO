@@ -1,6 +1,7 @@
 * Important! make that elusive motion choser, HOT guns should not hit my bot!
 * Important! rethink CPU logic, reroute CPU from move manager when gun is about to fire and vice versa if gun is far from firing condition.
 * Important! think about CPU. Redo pif match for every tic, it is CPU intensive but required only when my gun is about to fire, or enemy fired. May be go back to logic prior 4.6.9 when pif matches were calculated only at the fire time.
+* Important! if pif gun is no in use do not calculate matched segments, now mêlée does not use pif at all
 * Important! fix enemy virtual bullet: they base their information on past and not current 
   situation, as result I miss calculate bullets from some simple bots like suh.nano.MirrorL 
   for example and get hit by trivial bullets.
