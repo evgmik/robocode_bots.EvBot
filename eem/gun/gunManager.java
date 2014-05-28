@@ -173,9 +173,7 @@ public class gunManager {
 	}
 
 	public baseGun weights2gunForBot( InfoBot bot, String fightTypeStr ) {
-		long endTime;
-		long startTime;
-		long wStartTime = System.nanoTime();
+		profiler.start( "weights2gunForBot" );
 		double rnd;
 		baseGun g = null;
 		rnd=Math.random();
@@ -185,18 +183,14 @@ public class gunManager {
 		LinkedList<baseGun> guns = gunSets.get( fightTypeStr );
 		LinkedList<Double> weights = new LinkedList<Double>();
 		for ( baseGun tmp_gun: guns ) {
-			startTime = System.nanoTime();
 			tmp_gun.calcGunSettings();
 			double targetWeight= tmp_gun.getTargetWeight( myBot._tracker, bot, tmp_gun.getFirePower() );
 			weights.add( targetWeight*getGunWeightForBot( tmp_gun,  bot ) );
-			endTime = System.nanoTime();
-			logger.profiler("-> gun " + tmp_gun.getName() + " \tgun weight for bot time \t=\t\t\t\t" + (endTime - startTime) + " ns" );
 		}
 		int n = math.binNumByMaxWeight( weights ); // use the most lucky gun
 		//int n = math.binNumByWeight( weights ); // probabilistic choice
 		g = guns.get(n);
-		endTime = System.nanoTime();
-		logger.profiler("-> weights2gunForBot: time \t=\t\t\t\t" + (endTime - wStartTime) + " ns" );
+		profiler.stop( "weights2gunForBot" );
 		return g;
 	}
 
@@ -205,8 +199,7 @@ public class gunManager {
 	}
 
 	public baseGun choseGun() {
-		long endTime;
-		long startTime;
+		profiler.start( "choseGun" );
 		double rnd;
 		baseGun _gun = myBot.getGun();
 		baseGun new_gun = null;
@@ -237,10 +230,7 @@ public class gunManager {
 		if ( choseAnotherGun ) {
 			_gun.gunFired = false;
 			logger.noise("new choice of gun instead of old " + _gun.getName());
-			startTime = System.nanoTime();
 			new_gun = weights2gunForBot(myBot._trgt);
-			endTime = System.nanoTime();
-			logger.profiler("-> all gun weights calculation time      =\t\t\t\t" + (endTime - startTime) + " ns" );
 			if ( new_gun == null ) {
 				logger.warning("This should not happen: we did not chose a gun");
 				new_gun = getDefaultGun(); //default gun
@@ -252,6 +242,7 @@ public class gunManager {
 				// no need to reset gun which is essentially the same
 			}
 			logger.noise("Gun choice = " + _gun.getName());
+			profiler.stop( "choseGun" );
 		}
 
 
