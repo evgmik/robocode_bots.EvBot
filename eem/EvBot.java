@@ -536,6 +536,7 @@ public class EvBot extends AdvancedRobot
 		logger.routine("Skipped turns stats: " + Arrays.toString(skippedTurnStats) );
 		logger.routine("The gun was cold " + numTicsWhenGunInColdState + " tics");
 		logger.routine("Finishing places stats: " + Arrays.toString( finishingPlacesStats ) );
+		logger.routine( profiler.formatAll() );
 	}
 
 	public baseGun getGun() {
