@@ -125,9 +125,6 @@ public class EvBot extends AdvancedRobot
 	}
 
 	public void initTic() {
-		long startTime = System.nanoTime();
-		long endTime;
-		
 
 		numEnemyBotsAlive = getOthers();
 
@@ -139,8 +136,6 @@ public class EvBot extends AdvancedRobot
 		setTicTime();
 
 		logger.noise("----------- Bot version: " + botVer.getVersion() + "------- Tic # " + ticTime + " -------------");
-		logger.profiler("===> time between initTics =        \t\t\t" + ( startTime - initTicStartTime ) + " ns" );
-		initTicStartTime = startTime;
 		logger.noise("Game time: " + ticTime);
 		logger.noise("Number of other bots = " + numEnemyBotsAlive);
 		
@@ -152,39 +147,29 @@ public class EvBot extends AdvancedRobot
 		myCoord.x = getX();
 	       	myCoord.y = getY();
 
-		startTime = System.nanoTime();
 		_tracker.update( new botStatPoint( this ) );
-		endTime = System.nanoTime();
-		logger.profiler("tracker update execution time =     \t\t\t" + (endTime - startTime) + " ns" );
-		startTime = System.nanoTime();
+
 		_botsmanager.initTic(ticTime);
-		endTime = System.nanoTime();
-		logger.profiler("botsmanager initTic execution time =\t\t\t" + (endTime - startTime) + " ns" );
-		startTime = System.nanoTime();
+
 		_trgt.initTic(ticTime);
-		endTime = System.nanoTime();
-		logger.profiler("target initTic execution time =        \t\t\t" + (endTime - startTime) + " ns" );
-		startTime = System.nanoTime();
+
 		_bmanager.initTic();
-		endTime = System.nanoTime();
-		logger.profiler("bullet manager initTic execution time =\t\t\t" + (endTime - startTime) + " ns" );
+
 		choseMotion();
-		startTime = System.nanoTime();
+		
+		profiler.start( "_motion.initTic" );
 		_motion.initTic();
-		endTime = System.nanoTime();
-		logger.profiler("motion manager initTic execution time =\t\t\t" + (endTime - startTime) + " ns" );
-		startTime = System.nanoTime();
+		profiler.stop( "_motion.initTic" );
+		
+		profiler.start( "_gun.initTic" );
 		_gun.initTic();
 		if (_gun.getNumTicsInColdState() > 1 ) {
 			numTicsWhenGunInColdState++;
 			//logger.dbg("gun is cold");
 		}
-		endTime = System.nanoTime();
-		logger.profiler("gun init Tic execution time  =          \t\t\t" + (endTime - startTime) + " ns" );
-		startTime = System.nanoTime();
+		profiler.stop( "_gun.initTic" );
+		
 		_radar.initTic();
-		endTime = System.nanoTime();
-		logger.profiler("radar init Tic execution time =         \t\t\t" + (endTime - startTime) + " ns" );
 
 		//_gmanager.printGunsStats(); // dbg
 		//_gmanager.printGunsStatsTicRelated(); // dbg
@@ -247,6 +232,7 @@ public class EvBot extends AdvancedRobot
 
 
 	public void  choseMotion( ) {
+		profiler.start( "choseMotion" );
 		boolean choseNewMotion = false;
 		// FIXME when chosing new motion do not make new when motion is the same
 		if (choseNewMotion) {
@@ -261,6 +247,7 @@ public class EvBot extends AdvancedRobot
 				_motion = new dangerMapMotion(this);
 			}
 		}
+		profiler.stop( "choseMotion" );
 	}
 
 	public void run() {
