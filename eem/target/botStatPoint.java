@@ -182,34 +182,44 @@ public class botStatPoint {
 		long   timeDiffR = refPatCurrent.getTime() - refPatStart.getTime();
 		double dist2wallAheadR = refPatCurrent.getDistanceToWallAhead();
 		double latteralVelocityR = refPatCurrent.getLatteralVelocity();
+		boolean areSimilar = true;
 
-		if ( 
-			( Math.abs( spdT - spdR ) > maxSpeedDist )
-			|| ( Math.abs( math.shortest_arc( angT - angR) ) > maxAngleDist )
-			//|| ( Math.abs( dist2myBotT - dist2myBotR) > maxDistDist )
-			|| ( Math.abs( latteralVelocityT - latteralVelocityR) > maxLateralDist )
-		   ) {
-			return false;
-		}
-		// now let's check that the timing is right
-		if ( timeDiffT != timeDiffR )
-			return false;
+		SameOrDifferent: {
+			if (
+				( Math.abs( spdT - spdR ) > maxSpeedDist )
+				|| ( Math.abs( math.shortest_arc( angT - angR) ) > maxAngleDist )
+				//|| ( Math.abs( dist2myBotT - dist2myBotR) > maxDistDist )
+				|| ( Math.abs( latteralVelocityT - latteralVelocityR) > maxLateralDist )
+			   ) {
+				areSimilar = false;
+				break SameOrDifferent;
+			}
+			// now let's check that the timing is right
+			if ( timeDiffT != timeDiffR ) {
+				areSimilar = false;
+				break SameOrDifferent;
+			}
 
-		if ( false ) { // disable heat comparison
-		if ( Math.min( this.getMyBotGunHeat(), refPatCurrent.getMyBotGunHeat() ) < .5) {
-			if ( Math.abs( this.getMyBotGunHeat()  - refPatCurrent.getMyBotGunHeat() ) > maxMyBotGunHeatDist )
-				return false;
-		}
-		}
+			if ( false ) { // disable heat comparison
+			if ( Math.min( this.getMyBotGunHeat(), refPatCurrent.getMyBotGunHeat() ) < .5) {
+				if ( Math.abs( this.getMyBotGunHeat()  - refPatCurrent.getMyBotGunHeat() ) > maxMyBotGunHeatDist ) {
+					areSimilar = false;
+					break SameOrDifferent;
+				}
+			}
+			}
 
-		if ( Math.min( dist2wallAheadR, dist2wallAheadT) < dist2WallProximity ) {
-			if ( Math.abs( dist2wallAheadT - dist2wallAheadR ) > dist2WallDiff )
-				return false;
-		}
-		//logger.dbg("---- The following two bot stats match each other");
-		//logger.dbg( this.format() );
-		//logger.dbg( refPatCurrent.format() );
-		return true;
+			if ( Math.min( dist2wallAheadR, dist2wallAheadT) < dist2WallProximity ) {
+				if ( Math.abs( dist2wallAheadT - dist2wallAheadR ) > dist2WallDiff ) {
+					areSimilar = false;
+					break SameOrDifferent;
+				}
+			}
+			//logger.dbg("---- The following two bot stats match each other");
+			//logger.dbg( this.format() );
+			//logger.dbg( refPatCurrent.format() );
+		} // end of SameOrDifferent
+		return areSimilar;
 	}
 
 	public String whichWallAhead(botStatPoint bStatPnt) {
