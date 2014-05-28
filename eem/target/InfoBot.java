@@ -145,9 +145,12 @@ public class InfoBot {
 	}
 
 	public InfoBot update(botStatPoint statPnt) {
+		String profName = "InfoBot.update for " + getName();
+		profiler.start( profName );
 		botStats.add(statPnt);
 		updateEndsOfMatchedSegments();
 		targetUnlocked = false;
+		profiler.stop( profName );
 		return this;
 	}
 
@@ -343,8 +346,6 @@ public class InfoBot {
 	protected void updateEndsOfMatchedSegments() {
 		// this maintains uptodate matched to the current point segments array
 		//logger.dbg("updating ends for bot " + getName() );
-		long startTime = System.nanoTime();
-		long endTime;
 
 		int trackN = botStats.size();
 		botStatPoint refPat = botStats.get( trackN - 1 );
@@ -385,9 +386,7 @@ public class InfoBot {
 		LinkedList<Integer> new_matches =  findPatternLength1MatchesList();
 		_matchedEnds.addUniqueOnlyToLowLevel( new_matches );
 
-		endTime = System.nanoTime();
 		//logger.dbg( _matchedEnds.format() );
-		//logger.profiler("tic " + getLast().getTime() + ": bot " + getName() + " Updated pattern matches with maximum depth " + _matchedEnds.size() + " in time " + (endTime - startTime) + " ns" );
 	}
 
 	public matchedEnds endsOfMatchedSegments ( long patLength,  int nReqMatches ) {
