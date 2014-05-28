@@ -30,7 +30,9 @@ public class target extends InfoBot {
 	}
 	
 	public void initTic(long ticTime) {
+		profiler.start( "target.initTic" );
 		super.initTic(ticTime);
+		profiler.stop( "target.initTic" );
 	}
 
 	public void onPaint(Graphics2D g) {

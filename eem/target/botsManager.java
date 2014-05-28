@@ -130,6 +130,7 @@ public class  botsManager {
 	}
 
 	public void initTic(long ticTime) {
+		profiler.start( "botsManager.initTic" );
 		for (InfoBot bot : bots.values()) 
 		{
 			bot.initTic(ticTime);
@@ -138,6 +139,7 @@ public class  botsManager {
 				myBot._bmanager.add_enemy_wave( bot );
 			}
 		}
+		profiler.stop( "botsManager.initTic" );
 	}
 
 	public void printGunsStats() {

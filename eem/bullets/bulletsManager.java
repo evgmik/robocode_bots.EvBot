@@ -32,6 +32,7 @@ public class  bulletsManager {
 	}
 
 	public void initTic() {
+		profiler.start( "bulletsManager.initTic" );
 		removeInactiveBulletsAndEmptyWaves();
 		//createShadowsFromMyBullets();
 		createShadowsFromOtherBots();
@@ -41,6 +42,7 @@ public class  bulletsManager {
 		for ( wave w : enemyWaves ) {
 			w.initTic();
 		}
+		profiler.stop( "bulletsManager.initTic" );
 	}
 
 	public void createShadowsFromOtherBots() {
