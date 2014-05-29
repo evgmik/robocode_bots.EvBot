@@ -620,6 +620,12 @@ public class baseGun {
 		}
 		cT.setTargetFuturePosition( tFP );
 		cachedTargets.add(cT);
+		// we need to trim cachedTargets to something reasonable
+		// FIXME: max size should depend on number of used guns and robots firing
+		int maxCacheSize = 40;
+		while ( cachedTargets.size() > maxCacheSize ) {
+			cachedTargets.removeFirst();
+		}
 		return  tFP;
 	}
 
