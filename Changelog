@@ -1,3 +1,9 @@
+= Version  4.6.13 =
+
+No logic change.
+
+Improvements: use a new profiler code.
+
 = Version  4.6.12 =
 
 fix: seems like in 4.6.9 I reduce pif search depth, which dropped my score a
