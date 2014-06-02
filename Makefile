@@ -1,6 +1,6 @@
 # -*- make -*-
 # FILE: "/home/evmik/src/my_src/robocode_bots/Makefile"
-# LAST MODIFICATION: "Fri, 02 May 2014 21:57:44 -0400 (evmik)"
+# LAST MODIFICATION: "Sun, 01 Jun 2014 22:59:16 -0400 (evmik)"
 # (C) 2012 by Eugeniy Mikhailov, <evgmik@gmail.com>
 # $Id:$
 
@@ -19,6 +19,7 @@ TESTJAR    = $(SUPERPACKADE).EvBot_$(TESTVERSION).jar
 RELEASEJAR = $(SUPERPACKADE).EvBot_$(VERSION).jar
 
 OUTDIR = out
+JAVAC = /usr/lib/jvm/java-7-openjdk-i386/bin/javac
 JFLAGS = -d $(OUTDIR) -classpath $(ROBOCODEJAR): -Xlint:unchecked
 
 SRC = eem/EvBot.java eem/botVersion.java \
@@ -66,7 +67,7 @@ out:
 	mkdir -p $(OUTDIR)
 
 $(CLASSES):$(OUTDIR)/%.class : %.java $(OUTDIR)
-	javac $(JFLAGS) $<
+	$(JAVAC) $(JFLAGS) $<
 
 clean:
 	rm -f $(CLASSES)
