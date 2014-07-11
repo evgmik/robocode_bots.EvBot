@@ -344,7 +344,7 @@ public class InfoBot {
 	}
 
 	protected void updateEndsOfMatchedSegments() {
-		// this maintains uptodate matched to the current point segments array
+		// this maintains up to date matched to the current point segments array
 		//logger.dbg("updating ends for bot " + getName() );
 
 		int trackN = botStats.size();
@@ -358,7 +358,7 @@ public class InfoBot {
 				if ( testPatPoint.arePointsOfPathSimilar( refPat, refPat, testPatPoint) ) {
 					indexes_to_add.add( i );
 				} else {
-					// current point is not continuation of previosly matched pattern
+					// current point is not continuation of previously matched pattern
 					indexes_to_remove.add( i );
 				}
 			}
@@ -375,14 +375,14 @@ public class InfoBot {
 				// should give us empty list
 				// NOTE: so far checks show that this branch is redundant
 				if ( _matchedEnds.size() != 0 ) {
-					logger.error("ERROR: this should not happen, matches set shoulb empty");
+					logger.error("ERROR: this should not happen, matches set should empty");
 					logger.error( _matchedEnds.format() );
 				}
 				//_matchedEnds = new matchedEnds();
 			}
 		}
 		// there will be no longer than 1 matched patterns.
-		// but we need to find all new accurance of pattern length 1
+		// but we need to find all new occurrence of pattern length 1
 		LinkedList<Integer> new_matches =  findPatternLength1MatchesList();
 		_matchedEnds.addUniqueOnlyToLowLevel( new_matches );
 
