@@ -1,3 +1,10 @@
+= Version  4.6.15 =
+
+No logic change.
+
+Distance to probe on 1on1 decreased, 300 -> 100. This way my bot dodge better
+from known guns.
+
 = Version  4.6.14 =
 
 No logic change.
