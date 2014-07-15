@@ -93,8 +93,22 @@ public class wave {
 		}
 		LinkedList<baseGun> guns = myBot._gmanager.gunSets.get( gunSetKey );
 		for ( baseGun g: guns ) {
-			//firedBullet b = new firedBullet( myBot, firedBot,  g, firedBot.energyDrop(), firedTime );
-			firedBullet b = g.gunBestBulletAtTime( firedBot,  myBot._tracker, firedBot.energyDrop(), firedTime );
+			// FIXME  the following line drops performance of the bot by quite 
+			// a lot, despite a better tracking of enemy bullets,
+			// at least head on ones are tracked well
+			// but possibly a more advanced gun are faulty
+			// following single line drop performance of my
+			// v4.6.4 very significantly and looks like it was the only important
+			// change. 
+			// But it much proper from physics point of vies, so I need
+			// to investigate what is going on inside gunBestBulletAtTime
+			//firedBullet b = g.gunBestBulletAtTime( firedBot,  myBot._tracker, firedBot.energyDrop(), firedTime );
+			// for now I revert to assumption that enemy is smart and can see 
+			// in future to track my position. 
+			// Recall I detect enemy fire one
+			// tick later, and there is no way for enemy to know my parameters
+			// 2 ticks from now
+			firedBullet b = new firedBullet( myBot, firedBot,  g, firedBot.energyDrop() );
 			if ( b == null ) continue;
 			b.setIsItVirtual(true);  // virtual bullet
 			//logger.dbg( "bullet from gun " + g.getName() );
