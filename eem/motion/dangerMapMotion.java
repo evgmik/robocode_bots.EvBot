@@ -25,7 +25,7 @@ public class dangerMapMotion extends basicMotion {
 	Point2D.Double DestinationPoint = new Point2D.Double(0,0);
 	int nPointsToCheckForNewDestination = 50;
 	double distToProbeDefault = 100;
-	double distToProbe1on1 = 100;
+	double distToProbe1on1 = 200;
 	double distToProbeWhenRamming = 50;
 	double distToProbeWhenAtReducedDistance = 50;
 	double distToProbe = distToProbeDefault;
