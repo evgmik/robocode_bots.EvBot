@@ -98,7 +98,7 @@ public class gunManager {
 		guns.add( new circularGun(myBot) );
 		guns.add( new baseGun(myBot) );
 		guns.add( new guessFactorGun(myBot) );
-		guns.add( new pifGun(myBot,3) );
+		//guns.add( new pifGun(myBot,3) );
 		gunSets.put( "firingAtMyBot" + "_in_" + "melee1on1", guns );
 		gunSets.put( "firingAtMyBot" + "_in_" + "1on1", guns );
 
