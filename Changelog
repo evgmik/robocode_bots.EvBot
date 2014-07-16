@@ -1,3 +1,17 @@
+= Version  4.6.16 =
+
+Distance to probe on 1on1 decreased, 100 -> 200. This way my bot dodge better
+from known guns. Small distance help with simple bots since I can avoid enemy
+bullets, but than it make me very predictable for top bot and overall APS
+drops. So I put it back to "a golden middle"
+
+Revert enemy bullet predictor to v4.6.4 logic, i.e. do not assume that enemy
+has info about me from 2 ticks before firing detected. This is not what robocode
+physics dictate, but otherwise my APS is not that good.
+
+Above required to disable enemy pif gun, since it not always can fire and fail
+the simple bullet creator.
+
 = Version  4.6.15 =
 
 No logic change.
